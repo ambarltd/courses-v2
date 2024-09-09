@@ -1,0 +1,48 @@
+name: Apply
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: plan-and-apply
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Credential Attributes
+        id: credential-attributes
+        run: |
+          echo "role=$(echo '${{ secrets.STATE_MANAGEMENT_BASE64 }}' | base64 --decode | jq .state_management_role -r)" >> "$GITHUB_OUTPUT"
+          echo "region=$(echo '${{ secrets.STATE_MANAGEMENT_BASE64 }}' | base64 --decode | jq .state_management_region -r)" >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ steps.credential-attributes.outputs.role }}
+          aws-region: ${{ steps.credential-attributes.outputs.region }}
+          role-session-name: "GithubAction"
+
+      - name: Save Environment Variables
+        run: >
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" >> ${PWD}/.env &&
+          echo "AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> ${PWD}/.env &&
+          echo "AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN" >> ${PWD}/.env &&
+          echo "STATE_MANAGEMENT_BASE64=${{ secrets.STATE_MANAGEMENT_BASE64 }}" >> ${PWD}/.env &&
+          echo "CREDENTIALS_BASE64=${{ secrets.CREDENTIALS_BASE64 }}" >> ${PWD}/.env 
+
+      - name: TERRAFORM APPLY
+        run: ./ci.sh apply
