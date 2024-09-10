@@ -25,8 +25,17 @@ module "event_store" {
 
 module "application" {
   source = "./../templates/application"
-  application_docker_tag = var.application_docker_tag
   environment_name = local.environment_name
+  application_directory_name = "http-server"
+  git_commit_hash = var.git_commit_hash
+  event_store_pg_database = module.event_store.database_name
+  event_store_pg_host = module.event_store.database_private_ip_address
+  event_store_pg_username = module.event_store.database_admin_username
+  event_store_pg_password = module.event_store.database_admin_password
+  event_store_pg_port = "5432"
+  network_connector_cidr = "10.0.2.128/30"
+  network_name = module.networking.network_id
+  network_region = module.networking.network_region
 }
 
 module "pgt_proxy" {

@@ -57,7 +57,7 @@ data "external" "dns_probe" {
     dns_probe_ssh_key_filename = "dns_probe_key_${random_id.dns_probe.hex}.pem"
     dns_probe_instance_public_ip = google_compute_instance.dns_probe.network_interface.0.access_config.0.nat_ip
     database_local_network_ip_address = var.database_local_network_ip_address
-    dns_probe_resolved_filename = "dns_probe_resolved_filename_{random_id.dns_probe.hex}.resolved"
+    dns_probe_resolved_filename = "dns_probe_resolved_filename_${random_id.dns_probe.hex}.resolved"
   }
 
   working_dir = path.module

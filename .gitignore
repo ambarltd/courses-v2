@@ -5,3 +5,4 @@
 infrastructure/templates/pgt-proxy/*.pem
 infrastructure/templates/pgt-proxy/*.resolved
 infrastructure/templates/pgt-proxy/docker_image_builder_*
+infrastructure/templates/application/docker_image_builder_*

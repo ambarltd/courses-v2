@@ -10,3 +10,15 @@ output "database_connection_name" {
 output "database_ca_cert_in_base64" {
   value = base64encode(google_sql_database_instance.main.server_ca_cert.0.cert)
 }
+
+output "database_name" {
+  value = google_sql_database.main.name
+}
+
+output "database_admin_username" {
+  value = google_sql_user.admin_user.name
+}
+
+output "database_admin_password" {
+  value = random_password.admin_user.result
+}
