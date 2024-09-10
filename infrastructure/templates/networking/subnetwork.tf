@@ -18,3 +18,10 @@ resource "google_compute_subnetwork" "subnet3" {
   region        = local.gcp_default_region
   network       = google_compute_network.main_network.id
 }
+
+resource "google_compute_subnetwork" "vpc_connector_subnetwork" {
+  name          = "subnvpcconn-${var.environment_name}"
+  ip_cidr_range = "10.0.196.0/28"
+  region        = local.gcp_default_region
+  network       = google_compute_network.main_network.id
+}

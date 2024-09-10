@@ -33,9 +33,7 @@ module "application" {
   event_store_pg_username = module.event_store.database_admin_username
   event_store_pg_password = module.event_store.database_admin_password
   event_store_pg_port = "5432"
-  network_connector_cidr = "10.0.2.128/30"
-  network_name = module.networking.network_id
-  network_region = module.networking.network_region
+  vpc_connector_subnetwork_name = module.networking.vpc_connector_name
 }
 
 module "pgt_proxy" {

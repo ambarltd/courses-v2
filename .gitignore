@@ -2,6 +2,7 @@
 .env
 .terraform
 .terraform.lock.hcl
+errored.tfstate
 infrastructure/templates/pgt-proxy/*.pem
 infrastructure/templates/pgt-proxy/*.resolved
 infrastructure/templates/pgt-proxy/docker_image_builder_*

@@ -30,15 +30,6 @@ variable "event_store_pg_port" {
   type = string
 }
 
-
-variable "network_name" {
-  type = string
-}
-
-variable "network_region" {
-  type = string
-}
-
-variable "network_connector_cidr" {
+variable "vpc_connector_subnetwork_name" {
   type = string
 }
