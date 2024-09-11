@@ -1,0 +1,29 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "primaryEmail": {
+      "$ref": "Request/Shared/ValidatedEmail.json"
+    },
+    "password": {
+      "$ref": "Request/Shared/ValidatedPassword.json"
+    },
+    "username": {
+      "$ref": "Request/Shared/ValidatedUsername.json"
+    },
+    "termsOfUseAccepted": {
+      "type": "boolean"
+    },
+    "metadata": {
+      "$ref": "Request/Shared/Metadata.json"
+    }
+  },
+  "required": [
+    "primaryEmail",
+    "password",
+    "username",
+    "termsOfUseAccepted",
+    "metadata"
+  ]
+}

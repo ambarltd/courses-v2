@@ -1,0 +1,14 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "folderOpenedId": {
+      "title": "FolderOpened id (not the id of the folder itself)",
+      "type": "string"
+    }
+  },
+  "required": [
+    "folderOpenedId"
+  ]
+}

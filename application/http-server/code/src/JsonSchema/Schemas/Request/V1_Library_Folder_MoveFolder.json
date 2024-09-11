@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "folderId": {
+      "type": "string"
+    },
+    "destinationFolderId": {
+      "type": ["string", "null"]
+    },
+    "metadata": {
+      "$ref": "Request/Shared/Metadata.json"
+    }
+  },
+  "required": [
+    "folderId",
+    "destinationFolderId"
+  ]
+}

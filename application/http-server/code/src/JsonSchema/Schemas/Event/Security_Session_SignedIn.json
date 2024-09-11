@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "aggregateId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "authorizerId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "sourceEventId": {
+      "$ref": "Event/Shared/GaleasIdNull.json"
+    },
+    "eventOccurredOn": {
+      "$ref": "Event/Shared/GaleasDateNoTimezoneString.json"
+    },
+    "eventName": {
+      "$ref": "Event/Shared/GaleasEventNameString.json"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "asUser": {
+          "$ref": "Event/Shared/GaleasIdObject.json"
+        },
+        "withUsername": {
+          "type": ["string", "null"]
+        },
+        "withEmail": {
+          "type": ["string", "null"]
+        },
+        "withHashedPassword": {
+          "type": "string"
+        },
+        "byDeviceLabel": {
+          "type": "string"
+        },
+        "withIp": {
+          "type": "string"
+        },
+        "sessionTokenCreated": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "asUser",
+        "withUsername",
+        "withEmail",
+        "withHashedPassword",
+        "byDeviceLabel",
+        "withIp",
+        "sessionTokenCreated"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "eventId",
+    "aggregateId",
+    "authorizerId",
+    "sourceEventId",
+    "eventOccurredOn",
+    "eventName",
+    "payload",
+    "metadata"
+  ]
+}

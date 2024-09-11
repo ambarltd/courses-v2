@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping                   http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername" collection="Identity_User_TakenUsername_TakenUsername">
+    <indexes>
+      <index name="canonicalUsername">
+        <key name="canonicalUsername"/>
+        <option name="unique" value="false"/>
+        <option name="safe" value="false"/>
+      </index>
+    </indexes>
+    <id type="string" strategy="NONE"/>
+    <field field-name="canonicalUsername" type="string" nullable="true"/>
+  </document>
+</doctrine-mongo-mapping>

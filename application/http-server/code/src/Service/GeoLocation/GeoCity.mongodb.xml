@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping                   http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+    <document name="Galeas\Api\Service\GeoLocation\GeoCity" collection="GeoCity" repository-class="Galeas\Api\Service\GeoLocation\GeoCityRepository">
+        <!-- Indexes are created directly in the mongo-geo container -->
+        <id type="string" strategy="auto"/>
+        <field field-name="geoNameId" type="int" nullable="true"/>
+        <field field-name="localeCode" type="string" nullable="true"/>
+        <field field-name="countryName" type="string" nullable="true"/>
+        <field field-name="cityName" type="string" nullable="true"/>
+        <embed-one field="coordinates" target-document="Galeas\Api\Service\GeoLocation\Coordinates"/>
+    </document>
+</doctrine-mongo-mapping>

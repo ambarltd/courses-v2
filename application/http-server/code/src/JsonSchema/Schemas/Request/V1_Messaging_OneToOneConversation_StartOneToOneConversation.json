@@ -1,0 +1,23 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "recipient": {
+      "$ref": "Request/Shared/GaleasIdString.json"
+    },
+    "expirationDate": {
+      "type": ["date-time", "null"]
+    },
+    "maxNumberOfViews": {
+      "$ref": "Request/Shared/NullablePositiveIntMax1Million.json"
+    },
+    "metadata": {
+      "$ref": "Request/Shared/Metadata.json"
+    }
+  },
+  "required": [
+    "recipient",
+    "metadata"
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["galeas_datetime"]
+    },
+    "timezone": {
+      "type": "string",
+      "minLength": 1
+    },
+    "datetime": {
+      "$ref": "Event/Shared/GaleasDateNoTimezoneString.json"
+    }
+  },
+  "required": [
+    "type",
+    "timezone",
+    "datetime"
+  ]
+}

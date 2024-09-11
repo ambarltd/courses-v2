@@ -1,0 +1,17 @@
+{
+  "type": ["object", "null"],
+  "additionalProperties": false,
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": ["galeas_id"]
+    },
+    "id": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    }
+  },
+  "required": [
+    "type",
+    "id"
+  ]
+}

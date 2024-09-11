@@ -1,0 +1,21 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+
+parameters:
+    ignoreErrors:
+        -
+            message: '#PHPUnit\\Framework\\MockObject\\MockObject given\.#' #todo change this to phpunit extension
+            path: '%currentWorkingDirectory%/tests/UnitAndIntegration/**HandlerTest.php'
+        -
+            message: '#Parameter \#4 $sourceEventId of static method Galeas\\Api\\Common\\Event\\SerializedEvent::fromProperties() expects string|null, Galeas\\Api\\Common\\Id\\Id|null given. #'
+            path: '%currentWorkingDirectory%/tests/UnitAndIntegration/Common/Event/EventMapperTest.php'
+        -
+            message: '#Cannot call method toArray\(\) on array\|int\|object\|null\.#'
+            path: '%currentWorkingDirectory%/tests/**'
+    exceptionRules:
+        reportUnusedCatchesOfUncheckedExceptions: true
+        uncheckedExceptions:
+    symfony:
+        container_xml_path: /symfony_tmp/cache/environment_test/srcGaleas_Api_KernelEnvironment_testDebugContainer.xml
+    excludes_analyse:
+        - tests/bootstrap.php

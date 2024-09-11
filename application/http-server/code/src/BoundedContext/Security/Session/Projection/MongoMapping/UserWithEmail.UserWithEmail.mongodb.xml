@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping                   http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
+  <document name="Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmail" collection="Security_Session_UserWithEmail_UserWithEmail">
+    <indexes>
+      <index name="combinedVerifiedEmailStatus">
+        <key name="canonicalVerifiedEmail"/>
+        <key name="status"/>
+        <option name="unique" value="false"/>
+        <option name="safe" value="false"/>
+      </index>
+      <index name="combinedRequestedEmailStatus">
+        <key name="canonicalRequestedEmail"/>
+        <key name="status"/>
+        <option name="unique" value="false"/>
+        <option name="safe" value="false"/>
+      </index>
+    </indexes>
+    <id type="string" strategy="NONE"/>
+    <field field-name="canonicalRequestedEmail" type="string" nullable="true"/>
+    <field field-name="canonicalVerifiedEmail" type="string" nullable="true"/>
+    <embed-one field="status">
+      <discriminator-field name="type"/>
+      <discriminator-map>
+        <discriminator-mapping value="unverified" class="Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Unverified"/>
+        <discriminator-mapping value="verified" class="Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified"/>
+        <discriminator-mapping value="requestedChange" class="Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\RequestedChange"/>
+      </discriminator-map>
+    </embed-one>
+  </document>
+</doctrine-mongo-mapping>

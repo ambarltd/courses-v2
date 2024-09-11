@@ -1,0 +1,68 @@
+{
+  "properties": {
+    "environment": {
+      "type": "string",
+      "enum": ["native", "browser", "other", "unknown"]
+    },
+    "devicePlatform": {
+      "type": "string",
+      "enum": ["ios", "android", "mac", "windows", "linux", "other", "unknown"]
+    },
+    "deviceModel": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "deviceOSVersion": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "deviceOrientation": {
+      "type": "string",
+      "enum": ["portrait", "landscape", "does_not_apply", "other", "unknown"]
+    },
+    "referer": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 4096,
+      "description": "Overrides the 'Referer' http header."
+    },
+    "userAgent": {
+      "type": ["string", "null"],
+      "minLength": 1,
+      "maxLength": 4096,
+      "description": "Overrides the 'User-Agent' http header."
+    },
+    "withSessionToken": {
+      "type": ["string", "null"],
+      "minLength": 96,
+      "maxLength": 96,
+      "description": "Overrides the with 'X-With-Session-Token' http header."
+    },
+    "latitude": {
+      "type": ["number", "null"],
+      "multipleOf": 0.0000000001,
+      "minimum": -90,
+      "maximum": 90,
+      "exclusiveMinimum": false,
+      "exclusiveMaximum": false
+    },
+    "longitude": {
+      "type": ["number", "null"],
+      "multipleOf": 0.0000000001,
+      "minimum": -180,
+      "maximum": 180,
+      "exclusiveMinimum": false,
+      "exclusiveMaximum": false
+    }
+  },
+  "type": "object",
+  "required": [
+    "environment",
+    "devicePlatform",
+    "deviceModel",
+    "deviceOSVersion",
+    "deviceOrientation"
+  ]
+}

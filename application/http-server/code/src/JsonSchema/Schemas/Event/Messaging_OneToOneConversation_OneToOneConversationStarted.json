@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "eventId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "aggregateId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "authorizerId": {
+      "$ref": "Event/Shared/GaleasIdString.json"
+    },
+    "sourceEventId": {
+      "$ref": "Event/Shared/GaleasIdNull.json"
+    },
+    "eventOccurredOn": {
+      "$ref": "Event/Shared/GaleasDateNoTimezoneString.json"
+    },
+    "eventName": {
+      "$ref": "Event/Shared/GaleasEventNameString.json"
+    },
+    "payload": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sender": {
+          "$ref": "Event/Shared/GaleasIdObject.json"
+        },
+        "recipient": {
+          "$ref": "Event/Shared/GaleasIdObject.json"
+        },
+        "maxNumberOfViews": {
+          "type": "integer"
+        },
+        "expirationDate": {
+          "$ref": "Event/Shared/GaleasDateObject.json"
+        }
+      },
+      "required": [
+        "sender",
+        "recipient",
+        "maxNumberOfViews",
+        "expirationDate"
+      ]
+    },
+    "metadata": {
+      "type": "object"
+    }
+  },
+  "required": [
+    "eventId",
+    "aggregateId",
+    "authorizerId",
+    "sourceEventId",
+    "eventOccurredOn",
+    "eventName",
+    "payload",
+    "metadata"
+  ]
+}
