@@ -5,11 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\Common\Event;
 
 use Galeas\Api\BoundedContext\Identity\User;
-use Galeas\Api\BoundedContext\Library\Folder;
-use Galeas\Api\BoundedContext\Library\LoggedFolderOpened;
-use Galeas\Api\BoundedContext\Library\LoggedRootFolderOpened;
-use Galeas\Api\BoundedContext\Messaging\Contact;
-use Galeas\Api\BoundedContext\Messaging\OneToOneConversation;
 use Galeas\Api\BoundedContext\Security\Session;
 use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\Exception as EventException;
@@ -34,25 +29,9 @@ abstract class EventMapper
         'Identity_User_SignedUp' => User\Event\SignedUp::class,
         'Identity_User_PrimaryEmailVerified' => User\Event\PrimaryEmailVerified::class,
         'Identity_User_PrimaryEmailChangeRequested' => User\Event\PrimaryEmailChangeRequested::class,
-        'Messaging_Contact_ContactRequested' => Contact\Event\ContactRequested::class,
-        'Messaging_Contact_ContactRequestAccepted' => Contact\Event\ContactRequestAccepted::class,
-        'Messaging_Contact_ContactRequestRejected' => Contact\Event\ContactRequestRejected::class,
-        'Messaging_Contact_ContactRequestCancelled' => Contact\Event\ContactRequestCancelled::class,
-        'Messaging_Contact_ContactRequestedAgain' => Contact\Event\ContactRequestedAgain::class,
-        'Messaging_Contact_ContactDeleted' => Contact\Event\ContactDeleted::class,
         'Security_Session_SignedIn' => Session\Event\SignedIn::class,
         'Security_Session_TokenRefreshed' => Session\Event\TokenRefreshed::class,
         'Security_Session_SignedOut' => Session\Event\SignedOut::class,
-        'Messaging_OneToOneConversation_OneToOneConversationStarted' => OneToOneConversation\Event\OneToOneConversationStarted::class,
-        'Messaging_OneToOneConversation_OneToOneConversationPulledBySender' => OneToOneConversation\Event\OneToOneConversationPulledBySender::class,
-        'Messaging_OneToOneConversation_OneToOneConversationDeletedBySender' => OneToOneConversation\Event\OneToOneConversationDeletedBySender::class,
-        'Messaging_OneToOneConversation_OneToOneConversationRejectedByRecipient' => OneToOneConversation\Event\OneToOneConversationRejectedByRecipient::class,
-        'Library_Folder_FolderCreated' => Folder\Event\FolderCreated::class,
-        'Library_Folder_FolderRenamed' => Folder\Event\FolderRenamed::class,
-        'Library_Folder_FolderDeleted' => Folder\Event\FolderDeleted::class,
-        'Library_Folder_FolderMoved' => Folder\Event\FolderMoved::class,
-        'Library_LoggedFolderOpened_LoggedFolderOpened' => LoggedFolderOpened\Event\LoggedFolderOpened::class,
-        'Library_LoggedRootFolderOpened_LogRootFolderOpened' => LoggedRootFolderOpened\Event\LoggedRootFolderOpened::class,
     ];
 
     /**

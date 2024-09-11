@@ -5,7 +5,7 @@
     "description": "Galeas API - depends on Symfony. nette/di is forced to version 2 because it breaks PHPStan's integration with Symfony.",
     "minimum-stability": "beta",
     "require": {
-        "php": "^7.3.1",
+        "php": "^8.3.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "alcaeus/mongo-php-adapter": "^1.1.3",
@@ -25,7 +25,6 @@
         "behat/behat": "^3.0.5",
         "friendsofphp/php-cs-fixer": "^2.12",
         "guzzlehttp/guzzle": "~6.0",
-        "kwn/php-rdkafka-stubs": "^1.0.2",
         "nette/bootstrap": "^2.4",
         "nette/di": "^2.4.7",
         "pepakriz/phpstan-exception-rules": "^0.5",
