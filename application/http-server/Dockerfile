@@ -1,4 +1,4 @@
-FROM php:8.3-cli
+FROM php:7.3-cli
 
 RUN rm /etc/localtime
 RUN ln -s /usr/share/zoneinfo/UTC /etc/localtime

@@ -49,30 +49,6 @@ services:
             - '%event_store_database_user%'
             - '%event_store_database_password%'
 
-    ### GEOLOCATION ####
-
-    galeas.geoip.city_reader:
-        class: MaxMind\Db\Reader
-        arguments:
-            - '%file_location.geoip.city_reader%'
-
-    galeas.geoip.asn_reader:
-        class: MaxMind\Db\Reader
-        arguments:
-            - '%file_location.geoip.asn_reader%'
-
-    Galeas\Api\Service\GeoLocation\GeoCityRepository:
-        class: Galeas\Api\Service\GeoLocation\GeoCityRepository
-        factory: ['@doctrine_mongodb.odm.geolocation_document_manager', getRepository]
-        arguments:
-            - 'Galeas\Api\Service\GeoLocation\GeoCity'
-
-    Galeas\Api\Service\GeoLocation\GeoLocation:
-        class: Galeas\Api\Service\GeoLocation\GeoLocation
-        arguments:
-            $cityIpReader: '@galeas.geoip.city_reader'
-            $asnIpReader: '@galeas.geoip.asn_reader'
-
     ### REQUEST MAPPER ####
 
     Galeas\Api\Service\RequestMapper\JsonPostRequestMapper:

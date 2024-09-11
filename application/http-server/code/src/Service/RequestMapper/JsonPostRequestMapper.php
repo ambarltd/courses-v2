@@ -6,8 +6,6 @@ namespace Galeas\Api\Service\RequestMapper;
 
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Service\GeoLocation\GeoDatabaseCrash;
-use Galeas\Api\Service\GeoLocation\GeoLocation;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
@@ -16,10 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class JsonPostRequestMapper
 {
-    /**
-     * @var GeoLocation
-     */
-    private $geolocation;
 
     /**
      * @var UserIdFromSignedInSessionToken
@@ -35,11 +29,9 @@ class JsonPostRequestMapper
      * @throws \RuntimeException
      */
     public function __construct(
-        GeoLocation $geolocation,
         UserIdFromSignedInSessionToken $userIdFromSignedInSessionToken,
         string $sessionExpiresAfterSeconds
     ) {
-        $this->geolocation = $geolocation;
         $this->userIdFromSignedInSessionToken = $userIdFromSignedInSessionToken;
         if (!is_numeric($sessionExpiresAfterSeconds)) {
             throw new \RuntimeException('Invalid sessionExpiresAfterSeconds: '.$sessionExpiresAfterSeconds);
@@ -98,42 +90,6 @@ class JsonPostRequestMapper
         $requestArray['sourceEventId'] = $sourceEventId;
         $requestArray['withSessionToken'] = $withSessionToken;
 
-        $receivedLatitude = null;
-        $receivedLongitude = null;
-        $cityFromReceivedLatLon = null;
-        $cityLatitudeFromReceivedLatLon = null;
-        $cityLongitudeFromReceivedLatLon = null;
-        $countryFromReceivedLatLon = null;
-
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('latitude', $requestArray['metadata']) &&
-            array_key_exists('longitude', $requestArray['metadata']) &&
-            (is_int($requestArray['metadata']['latitude']) || is_float($requestArray['metadata']['latitude'])) &&
-            (is_int($requestArray['metadata']['longitude']) || is_float($requestArray['metadata']['longitude'])) &&
-            ($requestArray['metadata']['latitude'] <= 90 && $requestArray['metadata']['latitude'] >= -90) &&
-            ($requestArray['metadata']['longitude'] <= 180 && $requestArray['metadata']['longitude'] >= -180)
-        ) {
-            $receivedLatitude = $requestArray['metadata']['latitude'];
-            $receivedLongitude = $requestArray['metadata']['longitude'];
-            $cityFromReceivedLatLon = $this->geolocation->getCityFromLatitudeAndLongitude(
-                $receivedLatitude,
-                $receivedLongitude
-            );
-            $cityLatitudeFromReceivedLatLon = $this->geolocation->getCityLatitudeFromLatitudeAndLongitude(
-                $receivedLatitude,
-                $receivedLongitude
-            );
-            $cityLongitudeFromReceivedLatLon = $this->geolocation->getCityLongitudeFromLatitudeAndLongitude(
-                $receivedLatitude,
-                $receivedLongitude
-            );
-            $countryFromReceivedLatLon = $this->geolocation->getCountryFromLatitudeAndLongitude(
-                $receivedLatitude,
-                $receivedLongitude
-            );
-        }
-
         $receivedEnvironment = null;
         if (
             array_key_exists('metadata', $requestArray) &&
@@ -184,26 +140,12 @@ class JsonPostRequestMapper
 
         // Override metadata such that only whitelisted fields can be passed by the end user.
         $requestArray['metadata'] = [
-            'latitude' => $receivedLatitude,
-            'longitude' => $receivedLongitude,
-            'city' => $cityFromReceivedLatLon,
-            'cityLatitude' => $cityLatitudeFromReceivedLatLon,
-            'cityLongitude' => $cityLongitudeFromReceivedLatLon,
-            'country' => $countryFromReceivedLatLon,
             'environment' => $receivedEnvironment,
             'devicePlatform' => $receivedDevicePlatform,
             'deviceModel' => $receivedDeviceModel,
             'deviceOSVersion' => $receivedDeviceOSVersion,
             'deviceOrientation' => $receivedDeviceOrientation,
             'ipAddress' => $ipAddress,
-            'latitudeFromIpAddress' => $this->geolocation->getLatitudeFromIp($ipAddress),
-            'longitudeFromIpAddress' => $this->geolocation->getLongitudeFromIp($ipAddress),
-            'cityFromIpAddress' => $this->geolocation->getCityFromIp($ipAddress),
-            'cityLatitudeFromIpAddress' => $this->geolocation->getCityLatitudeFromIp($ipAddress),
-            'cityLongitudeFromIpAddress' => $this->geolocation->getCityLongitudeFromIp($ipAddress),
-            'countryFromIpAddress' => $this->geolocation->getCountryFromIp($ipAddress),
-            'asnFromIpAddress' => $this->geolocation->getAutonomousSystemNumberFromIp($ipAddress),
-            'asoFromIpAddress' => $this->geolocation->getAutonomousSystemOrganizationFromIp($ipAddress),
             'userAgent' => array_key_exists('userAgent', $requestArray['metadata']) ? $requestArray['metadata']['userAgent'] : $userAgent,
             'referer' => array_key_exists('referer', $requestArray['metadata']) ? $requestArray['metadata']['referer'] : $referer,
             'withSessionToken' => $withSessionToken,
@@ -227,7 +169,7 @@ class JsonPostRequestMapper
 
     /**
      * @throws InvalidContentType|InvalidJson
-     * @throws CannotResolveAuthorizerFromSessionTokenDatabase|GeoDatabaseCrash|MissingExpectedSessionToken
+     * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
      */
     public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
     {

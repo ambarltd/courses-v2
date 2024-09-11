@@ -9,23 +9,3 @@ identity_user_controller:
 security_session_controller:
   resource: ../src/BoundedContext/Security/Session/Controller/
   type: annotation
-
-messaging_contact_controller:
-  resource: ../src/BoundedContext/Messaging/Contact/Controller/
-  type: annotation
-
-messaging_one_to_one_conversation_controller:
-  resource: ../src/BoundedContext/Messaging/OneToOneConversation/Controller/
-  type: annotation
-
-library_folder_controller:
-  resource: ../src/BoundedContext/Library/Folder/Controller/
-  type: annotation
-
-library_logged_folder_opened_controller:
-  resource: ../src/BoundedContext/Library/LoggedFolderOpened/Controller/
-  type: annotation
-
-library_logged_root_logged_folder_opened_controller:
-  resource: ../src/BoundedContext/Library/LoggedRootFolderOpened/Controller/
-  type: annotation

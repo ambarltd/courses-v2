@@ -452,14 +452,8 @@ abstract class EventMapper
 
         if ($creationEvent instanceof User\Event\EventCreatedUser) {
             $aggregate = $creationEvent->createUser();
-        } elseif ($creationEvent instanceof Contact\Event\EventCreatedContact) {
-            $aggregate = $creationEvent->createContact();
         } elseif ($creationEvent instanceof Session\Event\EventCreatedSession) {
             $aggregate = $creationEvent->createSession();
-        } elseif ($creationEvent instanceof OneToOneConversation\Event\EventCreatedOneToOneConversation) {
-            $aggregate = $creationEvent->createOneToOneConversation();
-        } elseif ($creationEvent instanceof Folder\Event\EventCreatedFolder) {
-            $aggregate = $creationEvent->createFolder();
         } else {
             throw new EventException\NoCreationMappingFound('No mapping found for: '.get_class($creationEvent));
         }
@@ -471,26 +465,11 @@ abstract class EventMapper
             ) {
                 $aggregate = $transformationEvent->transformUser($aggregate);
             } elseif (
-                $transformationEvent instanceof Contact\Event\EventTransformedContact &&
-                $aggregate instanceof Contact\Aggregate\Contact
-            ) {
-                $aggregate = $transformationEvent->transformContact($aggregate);
-            } elseif (
                 $transformationEvent instanceof Session\Event\EventTransformedSession &&
                 $aggregate instanceof Session\Aggregate\Session
             ) {
                 $aggregate = $transformationEvent->transformSession($aggregate);
-            } elseif (
-                $transformationEvent instanceof OneToOneConversation\Event\EventTransformedOneToOneConversation &&
-                $aggregate instanceof OneToOneConversation\Aggregate\OneToOneConversation
-            ) {
-                $aggregate = $transformationEvent->transformOneToOneConversation($aggregate);
-            } elseif (
-                $transformationEvent instanceof Folder\Event\EventTransformedFolder &&
-                $aggregate instanceof Folder\Aggregate\Folder
-            ) {
-                $aggregate = $transformationEvent->transformFolder($aggregate);
-            } else {
+            }  else {
                 throw new EventException\NoTransformationMappingFound('No mapping found for: '.get_class($transformationEvent));
             }
         }

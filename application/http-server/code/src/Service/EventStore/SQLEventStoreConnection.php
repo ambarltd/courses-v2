@@ -47,7 +47,7 @@ class SQLEventStoreConnection
                     'port' => $databasePort,
                     'user' => $databaseUser,
                     'password' => $databasePassword,
-                    'driver' => 'pdo_mysql',
+                    'driver' => 'pdo_pgsql',
                 ],
                 $configuration,
                 null

@@ -19,13 +19,6 @@ doctrine_mongodb:
     auto_generate_proxy_classes: '%kernel.debug%'
     auto_generate_hydrator_classes: '%kernel.debug%'
     connections:
-        geolocation:
-            server: 'mongodb://%mongodb_geolocation_host%'
-            options:
-                username: '%mongodb_geolocation_username%'
-                password: '%mongodb_geolocation_password%'
-                db: '%mongodb_geolocation_database_name%'
-                authSource: '%mongodb_geolocation_authentication_database%'
         projection:
             server: 'mongodb://%mongodb_projection_host%'
             options:
@@ -41,16 +34,6 @@ doctrine_mongodb:
                 db: '%mongodb_reaction_database_name%'
                 authSource: '%mongodb_reaction_authentication_database%'
     document_managers:
-        geolocation:
-            connection: geolocation
-            database: '%mongodb_geolocation_database_name%'
-            mappings:
-                Galeas\Api\Service\GeoLocation:
-                    type: xml
-                    is_bundle: false
-                    prefix: Galeas\Api\Service\GeoLocation
-                    dir: '%kernel.root_dir%/Service/GeoLocation'
-                    alias: Galeas\Api\Service\GeoLocation
         projection:
             connection: projection
             database: '%mongodb_projection_database_name%'
@@ -61,61 +44,16 @@ doctrine_mongodb:
                     prefix: Galeas\Api\BoundedContext\Identity\User\Projection
                     dir: '%kernel.root_dir%/BoundedContext/Identity/User/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Identity\User\Projection
-                Galeas\Api\BoundedContext\Messaging\Contact\Projection:
-                    type: xml
-                    is_bundle: false
-                    prefix: Galeas\Api\BoundedContext\Messaging\Contact\Projection
-                    dir: '%kernel.root_dir%/BoundedContext/Messaging/Contact/Projection/MongoMapping'
-                    alias: Galeas\Api\BoundedContext\Messaging\Contact\Projection
                 Galeas\Api\BoundedContext\Security\Session\Projection:
                     type: xml
                     is_bundle: false
                     prefix: Galeas\Api\BoundedContext\Security\Session\Projection
                     dir: '%kernel.root_dir%/BoundedContext/Security/Session/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Security\Session\Projection
-                Galeas\Api\BoundedContext\Messaging\OneToOneConversation\Projection:
-                    type: xml
-                    is_bundle: false
-                    prefix: Galeas\Api\BoundedContext\Messaging\OneToOneConversation\Projection
-                    dir: '%kernel.root_dir%/BoundedContext/Messaging/OneToOneConversation/Projection/MongoMapping'
-                    alias: Galeas\Api\BoundedContext\Messaging\OneToOneConversation\Projection
-                Galeas\Api\BoundedContext\Library\Folder\Projection:
-                    type: xml
-                    is_bundle: false
-                    prefix: Galeas\Api\BoundedContext\Library\Folder\Projection
-                    dir: '%kernel.root_dir%/BoundedContext/Library/Folder/Projection/MongoMapping'
-                    alias: Galeas\Api\BoundedContext\Library\Folder\Projection
         reaction:
             connection: reaction
             database: '%mongodb_reaction_database_name%'
             mappings:
-
-# See key at https://github.com/ekino/EkinoNewRelicBundle
-ekino_new_relic:
-    enabled: "%new_relic_enabled%"
-    deployment_names:
-        - "%new_relic_application_name%"
-    api_key: "%new_relic_api_key%"
-    license_key: "%new_relic_license_key%"
-    xmit: false
-    logging: false
-    interactor: ~
-    twig: false
-    exceptions: true
-    deprecations: true
-    instrument: false
-    http:
-        enabled: true
-        using_symfony_cache: false
-        transaction_naming: route
-        transaction_naming_service: ~
-        ignored_routes: []
-        ignored_paths: []
-    monolog:
-        enabled: false
-    commands:
-        enabled: true
-        ignored_commands: []
 
 parameters:
     api_domain: '%env(API_DOMAIN)%'
@@ -124,12 +62,6 @@ parameters:
     event_store_database_name: '%env(EVENT_STORE_DATABASE_NAME)%'
     event_store_database_user: '%env(EVENT_STORE_USER)%'
     event_store_database_password: '%env(EVENT_STORE_PASSWORD)%'
-    mongodb_geolocation_host: '%env(MONGODB_GEOLOCATION_HOST)%'
-    mongodb_geolocation_port: '%env(MONGODB_GEOLOCATION_PORT)%'
-    mongodb_geolocation_authentication_database: '%env(MONGODB_GEOLOCATION_AUTHENTICATION_DATABASE)%'
-    mongodb_geolocation_database_name: '%env(MONGODB_GEOLOCATION_DATABASE_NAME)%'
-    mongodb_geolocation_username: '%env(MONGODB_GEOLOCATION_DATABASE_USERNAME)%'
-    mongodb_geolocation_password: '%env(MONGODB_GEOLOCATION_DATABASE_PASSWORD)%'
     mongodb_projection_host: '%env(MONGODB_PROJECTION_HOST)%'
     mongodb_projection_port: '%env(MONGODB_PROJECTION_PORT)%'
     mongodb_projection_authentication_database: '%env(MONGODB_PROJECTION_AUTHENTICATION_DATABASE)%'
@@ -143,10 +75,4 @@ parameters:
     mongodb_reaction_username: '%env(MONGODB_REACTION_DATABASE_USERNAME)%'
     mongodb_reaction_password: '%env(MONGODB_REACTION_DATABASE_PASSWORD)%'
     kafka_queue_host: '%env(KAFKA_QUEUE_HOST)%'
-    file_location.geoip.city_reader: '/usr/local/share/GeoIP/GeoLite2-City.mmdb'
-    file_location.geoip.asn_reader: '/usr/local/share/GeoIP/GeoLite2-ASN.mmdb'
     session_tokens_expire_after_seconds: '%env(SESSION_TOKENS_EXPIRE_AFTER_SECONDS)%'
-    new_relic_enabled: '%env(bool:API_NEW_RELIC_ENABLED)%'
-    new_relic_api_key: '%env(API_NEW_RELIC_API_KEY)%'
-    new_relic_application_name: '%env(API_NEW_RELIC_APPLICATION_NAME)%'
-    new_relic_license_key: '%env(API_NEW_RELIC_LICENSE_KEY)%'
