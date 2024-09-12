@@ -44,6 +44,15 @@ class Id
 
     /**
      * Factory method.
+     * Should create a new deterministic Id by being passed a string of another Id.
+     */
+    public static function newDeterministicIdFromAnotherId(string $anotherId): Id
+    {
+        return new self(IdCreator::createFromString($anotherId));
+    }
+
+    /**
+     * Factory method.
      * Should create a new Id.
      */
     public static function createNew(): Id

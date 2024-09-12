@@ -24,4 +24,10 @@ abstract class IdCreator
 
         return $urlSafeString;
     }
+    public static function createFromString(string $string): string
+    {
+        // TODO
+
+        return "";
+    }
 }

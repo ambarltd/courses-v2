@@ -32,6 +32,11 @@ interface EventStore
     public function find(string $aggregateId): ?Aggregate;
 
     /**
+     * @throws EventStoreCannotRead
+     */
+    public function findEvent(string $eventId): ?Event;
+
+    /**
      * @throws EventStoreCannotWrite
      */
     public function save(Event $event): void;

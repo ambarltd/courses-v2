@@ -126,6 +126,12 @@ class SQLEventStore implements EventStore
         }
     }
 
+    public function findEvent(string $eventId): ?Event
+    {
+        // TODO: Implement findEvent() method.
+    }
+
+
     /**
      * {@inheritdoc}
      */

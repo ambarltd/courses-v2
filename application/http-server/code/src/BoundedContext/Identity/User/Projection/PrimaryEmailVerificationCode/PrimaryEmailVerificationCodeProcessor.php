@@ -6,6 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerific
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
+use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
@@ -33,6 +34,8 @@ class PrimaryEmailVerificationCodeProcessor implements ProjectionEventProcessor
                 $code = $event->primaryEmailVerificationCode();
             } elseif ($event instanceof PrimaryEmailChangeRequested) {
                 $code = $event->newVerificationCode();
+            } elseif ($event instanceof PrimaryEmailVerified) {
+                $code = null;
             } else {
                 return;
             }
@@ -50,13 +53,13 @@ class PrimaryEmailVerificationCodeProcessor implements ProjectionEventProcessor
                 throw new \Exception('Could not process event with id '.$event->eventId()->id());
             }
 
-            if ($userIdToPrimaryEmailVerificationCode) {
-                $userIdToPrimaryEmailVerificationCode->updateVerificationCode($code);
-            } else {
+            if (!$userIdToPrimaryEmailVerificationCode) {
                 $userIdToPrimaryEmailVerificationCode = PrimaryEmailVerificationCode::fromUserIdAndVerificationCode(
                     $event->aggregateId()->id(),
                     $code
                 );
+            } else {
+                $userIdToPrimaryEmailVerificationCode->updateVerificationCode($code);
             }
 
             $this->projectionDocumentManager->persist($userIdToPrimaryEmailVerificationCode);
