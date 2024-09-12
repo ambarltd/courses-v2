@@ -47,7 +47,9 @@ module "pgt_proxy" {
   database_local_network_ip_address = module.event_store.database_private_ip_address
 }
 
-module "projection_store" {
-  source = "./../templates/projection-store"
+module "projection_and_reaction_store" {
+  source = "./../templates/projection-and-reaction-db"
   environment_name = local.environment_name
+  network_name = module.networking.network_name
+  subnetwork_name = module.networking.subnetwork1_name
 }

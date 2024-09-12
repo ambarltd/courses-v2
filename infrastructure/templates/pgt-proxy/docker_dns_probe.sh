@@ -18,4 +18,7 @@ ssh -oStrictHostKeyChecking=no -i $DNS_PROBE_SSH_KEY_FILENAME \
 cat $DNS_PROBE_RESOLVED_FILENAME | grep "sql.goog" >> /dev/null
 MY_RESULT=$(cat $DNS_PROBE_RESOLVED_FILENAME)
 
+rm $DNS_PROBE_SSH_KEY_FILENAME
+rm $DNS_PROBE_RESOLVED_FILENAME
+
 jq -n --arg result "$MY_RESULT" '{"database_tls_host":$result}'
