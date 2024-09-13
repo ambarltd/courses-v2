@@ -6,8 +6,9 @@ namespace Galeas\Api\Service\EventStore;
 
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\DBALException;
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\TransactionIsolationLevel;
 
 class SQLEventStoreConnection
 {
@@ -52,11 +53,11 @@ class SQLEventStoreConnection
                 $configuration,
                 null
             );
-        } catch (DBALException $DBALException) {
-            throw new \InvalidArgumentException(sprintf('Could not connect. dbname "%s" user "%s" password "%s" host "%s" port "%s" driver "%s"', $databaseName, $databaseUser, $databasePassword, $databaseHost, $databasePort, 'pdo_mysql'));
+        } catch (DriverException $DBALException) {
+            throw new \InvalidArgumentException(sprintf('Could not connect. dbname "%s" user "%s" password *** host "%s" port "%s" driver "%s"', $databaseName, $databaseUser, $databaseHost, $databasePort, 'pdo_pgsql'));
         }
 
-        $this->connection->setTransactionIsolation(Connection::TRANSACTION_SERIALIZABLE);
+        $this->connection->setTransactionIsolation(TransactionIsolationLevel::SERIALIZABLE);
     }
 
     public function getConnection(): Connection

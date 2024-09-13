@@ -18,12 +18,26 @@ module "application" {
   resource_id_prefix = "${local.resource_id_prefix_prefix}-app"
   application_directory_name = var.application_directory_name
   git_commit_hash = var.git_commit_hash
-  event_store_pg_database = module.event_store.database_name
-  event_store_pg_host = module.event_store.database_private_ip_address
-  event_store_pg_username = module.event_store.database_admin_username
-  event_store_pg_password = module.event_store.database_admin_password
-  event_store_pg_port = "5432"
   vpc_connector_subnetwork_name = module.networking.vpc_connector_name
+  api_domain = "example.com"
+  event_store_database_name = module.event_store.database_name
+  event_store_host = module.event_store.database_private_ip_address
+  event_store_password = module.event_store.database_admin_password
+  event_store_port = 5432
+  event_store_user = module.event_store.database_admin_username
+  mongodb_projection_authentication_database = "projections"
+  mongodb_projection_database_name = "projections"
+  mongodb_projection_database_password = module.projection_and_reaction_store.admin_password
+  mongodb_projection_database_username = module.projection_and_reaction_store.admin_username
+  mongodb_projection_host = module.projection_and_reaction_store.database_public_ip
+  mongodb_projection_port = module.projection_and_reaction_store.database_port
+  mongodb_reaction_authentication_database = "reactions"
+  mongodb_reaction_database_name = "reactions"
+  mongodb_reaction_database_password = module.projection_and_reaction_store.admin_password
+  mongodb_reaction_database_username = module.projection_and_reaction_store.admin_username
+  mongodb_reaction_host = module.projection_and_reaction_store.database_public_ip
+  mongodb_reaction_port = module.projection_and_reaction_store.database_port
+  session_tokens_expire_after_seconds = 72000
 }
 
 module "pgt_proxy" {

@@ -82,7 +82,7 @@ class SchemaController extends AbstractController
     public function schemaList(Request $request): Response
     {
         $betterRoutes = array_values(
-            $this->allNonSchemaRoutes($request->getSchemeAndHttpHost())
+            $this->allNonSchemaRoutesExceptRoot($request->getSchemeAndHttpHost())
         );
 
         $response = JsonResponse::fromJsonString(
@@ -211,7 +211,7 @@ class SchemaController extends AbstractController
         }
     }
 
-    private function allNonSchemaRoutes(string $schemeAndHttpHost): array
+    private function allNonSchemaRoutesExceptRoot(string $schemeAndHttpHost): array
     {
         $routes = $this->router->getRouteCollection()->all();
 
@@ -234,6 +234,7 @@ class SchemaController extends AbstractController
             $betterRoutes,
             function (array $route) use ($schemeAndHttpHost): bool {
                 $notThesePaths = [
+                    $schemeAndHttpHost.'/',
                     $schemeAndHttpHost.'/schema/list',
                     $schemeAndHttpHost.'/schema/request',
                     $schemeAndHttpHost.'/schema/response',
