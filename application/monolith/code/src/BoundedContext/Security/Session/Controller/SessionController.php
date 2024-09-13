@@ -17,9 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route("/api/v1")
- */
+#[Route('/api/v1')]
 class SessionController extends BaseController
 {
     public function __construct(
@@ -44,6 +42,7 @@ class SessionController extends BaseController
      * @RequestSchema(name="V1_Security_Session_SignIn")
      * @ResponseSchema(name="V1_Security_Session_SignIn")
      */
+    #[Route('/security/session/sign-in', name: 'V1_Security_Session_SignIn', methods: ['POST'])]
     public function signIn(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -63,6 +62,7 @@ class SessionController extends BaseController
      * @RequestSchema(name="V1_Security_Session_RefreshToken")
      * @ResponseSchema(name="V1_Security_Session_RefreshToken")
      */
+    #[Route('/security/session/refresh-token', name: 'V1_Security_Session_RefreshToken', methods: ['POST'])]
     public function refreshToken(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -82,6 +82,7 @@ class SessionController extends BaseController
      * @RequestSchema(name="V1_Security_Session_SignOut")
      * @ResponseSchema(name="V1_Security_Session_SignOut")
      */
+    #[Route('/security/session/sign-out', name: 'V1_Security_Session_SignOut', methods: ['POST'])]
     public function signOut(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

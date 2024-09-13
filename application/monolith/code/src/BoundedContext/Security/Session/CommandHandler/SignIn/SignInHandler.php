@@ -24,11 +24,6 @@ class SignInHandler
     private $eventStore;
 
     /**
-     * @var Queue
-     */
-    private $queue;
-
-    /**
      * @var UserIdFromSignInUsername
      */
     private $userIdFromSignInUsername;
@@ -45,13 +40,11 @@ class SignInHandler
 
     public function __construct(
         EventStore $eventStore,
-        Queue $queue,
         UserIdFromSignInUsername $userIdFromSignInUsername,
         UserIdFromSignInEmail $userIdFromSignInEmail,
         HashedPasswordFromUserId $hashedPasswordFromUserId
     ) {
         $this->eventStore = $eventStore;
-        $this->queue = $queue;
         $this->userIdFromSignInUsername = $userIdFromSignInUsername;
         $this->userIdFromSignInEmail = $userIdFromSignInEmail;
         $this->hashedPasswordFromUserId = $hashedPasswordFromUserId;
@@ -112,8 +105,6 @@ class SignInHandler
         $this->eventStore->beginTransaction();
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
-
-        $this->queue->enqueue($event);
 
         return [
             'sessionTokenCreated' => $event->sessionTokenCreated(),

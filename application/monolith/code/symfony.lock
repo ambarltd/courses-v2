@@ -71,15 +71,6 @@
     "doctrine/reflection": {
         "version": "v1.0.0"
     },
-    "ekino/newrelic-bundle": {
-        "version": "2.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes-contrib",
-            "branch": "master",
-            "version": "2.0",
-            "ref": "c6535bb5fa418c5180be1b5c219e277d5f5a9998"
-        }
-    },
     "friendsofphp/php-cs-fixer": {
         "version": "2.2",
         "recipe": {

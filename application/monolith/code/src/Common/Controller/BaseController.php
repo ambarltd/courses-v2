@@ -102,12 +102,12 @@ class BaseController extends AbstractController
                 );
 
             if (!empty($errors)) {
-                return JsonResponse::create(
-                    [
+                return JsonResponse::fromJsonString(
+                    json_encode([
                         'errors' => $errors,
                         'errorIdentifier' => 'json_schema_validation_error',
                         'errorMessage' => 'Json Schema Validation Error',
-                    ],
+                    ]),
                     Response::HTTP_BAD_REQUEST
                 );
             }
@@ -122,7 +122,7 @@ class BaseController extends AbstractController
                 throw new \RuntimeException('Handler must have handle method');
             }
             $response = $commandOrQueryHandler->handle($command);
-            $jsonResponse = JsonResponse::create($response, $successStatusCode);
+            $jsonResponse = JsonResponse::fromJsonString(json_encode($response), $successStatusCode);
 
             $responseSchema = $this->jsonSchemaFetcher->fetch($responseSchema);
 
@@ -137,12 +137,12 @@ class BaseController extends AbstractController
             }
 
             if (!empty($errors)) {
-                return JsonResponse::create(
-                    [
+                return JsonResponse::fromJsonString(
+                    json_encode([
                         'errors' => $errors,
                         'errorIdentifier' => 'invalid_response_against_json_schema',
                         'errorMessage' => 'Invalid Response Against Json Schema',
-                    ],
+                    ]),
                     Response::HTTP_INTERNAL_SERVER_ERROR
                 );
             }
@@ -158,12 +158,12 @@ class BaseController extends AbstractController
                 $errorMessage = '';
             }
 
-            return JsonResponse::create(
-                [
+            return JsonResponse::fromJsonString(
+                json_encode([
                     'errors' => [],
                     'errorIdentifier' => $exception::getErrorIdentifier(),
                     'errorMessage' => $errorMessage,
-                ],
+                ]),
                 $exception::getHttpCode()
             );
         } catch (\Throwable $throwable) {
@@ -173,12 +173,12 @@ class BaseController extends AbstractController
                 $errorMessage = '';
             }
 
-            return JsonResponse::create(
-                [
+            return JsonResponse::fromJsonString(
+                json_encode([
                     'errors' => [],
                     'errorIdentifier' => 'internal_server_error',
                     'errorMessage' => $errorMessage,
-                ],
+                ]),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -187,16 +187,14 @@ class BaseController extends AbstractController
     private function environmentShouldShowStackTraces(): bool
     {
         return
-            'environment_staging_debug' === $this->environment ||
-            'environment_test' === $this->environment
+            'production' === $this->environment
         ;
     }
 
     private function environmentShouldValidateResponseSchemas(): bool
     {
         return
-            'environment_staging_debug' === $this->environment ||
-            'environment_test' === $this->environment
+            'production' === $this->environment
         ;
     }
 }

@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
-use Symfony\Component\Routing\RouteCollectionBuilder;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
 class Kernel extends BaseKernel
 {
@@ -18,12 +18,12 @@ class Kernel extends BaseKernel
 
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
-    public function getCacheDir()
+    public function getCacheDir(): string
     {
         return '/symfony_tmp/cache/'.$this->getEnvironment();
     }
 
-    public function getLogDir()
+    public function getLogDir(): string
     {
         return '/symfony_tmp/logs';
     }
@@ -33,7 +33,7 @@ class Kernel extends BaseKernel
      *
      * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
      */
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         $contents = require $this->getProjectDir().'/config/bundles.php';
         foreach ($contents as $class => $envs) {
@@ -65,11 +65,11 @@ class Kernel extends BaseKernel
     /**
      * @throws \Symfony\Component\Config\Exception\LoaderLoadException
      */
-    protected function configureRoutes(RouteCollectionBuilder $routes): void
+    protected function configureRoutes(RoutingConfigurator $routes): void
     {
         $confDir = $this->getProjectDir().'/config';
 
-        $routes->import($confDir.'/routes'.self::CONFIG_EXTS, '/', 'glob');
-        $routes->import($confDir.'/routes_'.$this->environment.self::CONFIG_EXTS, '/', 'glob');
+        $routes->import($confDir.'/routes'.self::CONFIG_EXTS);
+        $routes->import($confDir.'/routes_'.$this->environment.self::CONFIG_EXTS);
     }
 }

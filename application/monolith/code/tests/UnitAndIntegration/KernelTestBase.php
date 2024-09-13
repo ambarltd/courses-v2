@@ -50,12 +50,6 @@ abstract class KernelTestBase extends TestCase
      */
     private function deleteDatabasesAndCloseConnections(): void
     {
-        $environment = getenv('API_ENVIRONMENT_TYPE');
-
-        if ('environment_test' !== $environment) {
-            throw new \RuntimeException('Cannot delete databases unless in test mode');
-        }
-
         $projectionDocumentManager = self::getProjectionDocumentManager();
         $projectionDocumentManager->clear();
         $projectionDatabase = $projectionDocumentManager->getClient()
@@ -125,13 +119,9 @@ abstract class KernelTestBase extends TestCase
 
         require __DIR__.'/../../vendor/autoload.php';
 
-        $environment = getenv('API_ENVIRONMENT_TYPE');
-        if (!is_string($environment)) {
-            throw new \RuntimeException();
-        }
         // debug = true, because running a test should refresh the cache
         // this is only run once, so it shouldn't impact CI time
-        $this->kernel = new Kernel($environment, true);
+        $this->kernel = new Kernel("production", true);
         $this->kernel->boot();
         $this->nonTestContainer = $this->containerFromKernel($this->kernel);
         $this->testContainer = $this->nonTestContainer->get('test.service_container');
@@ -164,17 +154,5 @@ abstract class KernelTestBase extends TestCase
 
         $this->testContainer->reset();
         $this->nonTestContainer->reset();
-    }
-
-    /**
-     * @throws \RuntimeException
-     */
-    final public static function setUpBeforeClass(): void
-    {
-        $environment = getenv('API_ENVIRONMENT_TYPE');
-
-        if ('environment_test' !== $environment) {
-            throw new \RuntimeException('Cannot execute tests unless in test mode');
-        }
     }
 }

@@ -29,22 +29,15 @@ class VerifyPrimaryEmailHandler
     private $eventStore;
 
     /**
-     * @var Queue
-     */
-    private $queue;
-
-    /**
      * @var UserIdFromPrimaryEmailVerificationCode
      */
     private $userIdFromVerificationCode;
 
     public function __construct(
         EventStore $eventStore,
-        Queue $queue,
         UserIdFromPrimaryEmailVerificationCode $userIdFromVerificationCode
     ) {
         $this->eventStore = $eventStore;
-        $this->queue = $queue;
         $this->userIdFromVerificationCode = $userIdFromVerificationCode;
     }
 
@@ -102,7 +95,5 @@ class VerifyPrimaryEmailHandler
 
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
-
-        $this->queue->enqueue($event);
     }
 }

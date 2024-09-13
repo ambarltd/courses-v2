@@ -24,22 +24,15 @@ class SignOutHandler
     private $eventStore;
 
     /**
-     * @var Queue
-     */
-    private $queue;
-
-    /**
      * @var SessionIdFromSessionToken
      */
     private $sessionIdFromSessionToken;
 
     public function __construct(
         EventStore $eventStore,
-        Queue $queue,
         SessionIdFromSessionToken $sessionIdFromSessionToken
     ) {
         $this->eventStore = $eventStore;
-        $this->queue = $queue;
         $this->sessionIdFromSessionToken = $sessionIdFromSessionToken;
     }
 
@@ -83,7 +76,5 @@ class SignOutHandler
 
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
-
-        $this->queue->enqueue($event);
     }
 }

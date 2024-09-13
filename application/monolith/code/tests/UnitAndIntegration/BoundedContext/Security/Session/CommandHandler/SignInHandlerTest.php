@@ -38,7 +38,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -134,7 +133,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -223,7 +221,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -260,7 +257,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -298,7 +294,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -336,7 +331,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
@@ -374,7 +368,6 @@ class SignInHandlerTest extends HandlerTestBase
 
         $handler = new SignInHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',

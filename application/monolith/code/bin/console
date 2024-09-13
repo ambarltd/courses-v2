@@ -14,19 +14,9 @@ if (!class_exists(Application::class)) {
     throw new \RuntimeException('You need to add "symfony/framework-bundle" as a Composer dependency.');
 }
 
-$environment = getenv('API_ENVIRONMENT_TYPE');
-
-if (!$environment) {
-    throw new \InvalidArgumentException('Undefined environment type');
-}
-
 $input = new ArgvInput();
-$environmentWithOverride = $input->getParameterOption(['--env', '-e'], $environment); // allow override by command line
 
-$phpDebug = (
-    'environment_staging_debug' === $environmentWithOverride ||
-    'environment_test' === $environmentWithOverride
-);
+$phpDebug = false;
 if ($phpDebug) {
     umask(0000);
 
@@ -37,6 +27,6 @@ $kernelDebug = true;
 if ($input->hasParameterOption(['--no-debug'])) {
     $kernelDebug = false;
 }
-$kernel = new Kernel($environmentWithOverride, $kernelDebug);
+$kernel = new Kernel("production", $kernelDebug);
 $application = new Application($kernel);
 $application->run($input);

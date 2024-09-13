@@ -24,11 +24,6 @@ class SignUpHandler
     private $eventStore;
 
     /**
-     * @var Queue
-     */
-    private $queue;
-
-    /**
      * @var IsEmailTaken
      */
     private $isEmailTaken;
@@ -40,12 +35,10 @@ class SignUpHandler
 
     public function __construct(
         EventStore $eventStore,
-        Queue $queue,
         IsEmailTaken $isEmailTaken,
         IsUsernameTaken $isUsernameTaken
     ) {
         $this->eventStore = $eventStore;
-        $this->queue = $queue;
         $this->isEmailTaken = $isEmailTaken;
         $this->isUsernameTaken = $isUsernameTaken;
     }
@@ -92,8 +85,6 @@ class SignUpHandler
         $this->eventStore->beginTransaction();
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
-
-        $this->queue->enqueue($event);
 
         return [
             'userId' => $event->aggregateId()->id(),

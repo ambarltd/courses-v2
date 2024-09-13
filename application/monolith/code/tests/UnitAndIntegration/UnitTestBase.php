@@ -11,16 +11,4 @@ use PHPUnit\Framework\TestCase;
  * be carefully considered.
  */
 abstract class UnitTestBase extends TestCase
-{
-    /**
-     * @throws \RuntimeException
-     */
-    final public static function setUpBeforeClass(): void
-    {
-        $environment = getenv('API_ENVIRONMENT_TYPE');
-
-        if ('environment_test' !== $environment) {
-            throw new \RuntimeException('Cannot execute tests unless in test mode');
-        }
-    }
-}
+{}

@@ -40,7 +40,6 @@ class RefreshTokenHandlerTest extends HandlerTestBase
 
         $handler = new RefreshTokenHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -121,7 +120,6 @@ class RefreshTokenHandlerTest extends HandlerTestBase
 
         $handler = new RefreshTokenHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -165,7 +163,6 @@ class RefreshTokenHandlerTest extends HandlerTestBase
 
         $handler = new RefreshTokenHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -209,7 +206,6 @@ class RefreshTokenHandlerTest extends HandlerTestBase
 
         $handler = new RefreshTokenHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -247,7 +243,6 @@ class RefreshTokenHandlerTest extends HandlerTestBase
 
         $handler = new RefreshTokenHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',

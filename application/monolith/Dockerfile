@@ -14,8 +14,8 @@ RUN apt-get install -y zlib1g-dev
 RUN pecl install mongodb
 RUN docker-php-ext-enable mongodb
 RUN apt-get install -y libpq-dev
-RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql \
+RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql
+RUN docker-php-ext-install pdo pdo_pgsql pgsql
 RUN apt-get install -y libicu-dev
 RUN docker-php-ext-configure intl && docker-php-ext-install intl
 
@@ -37,10 +37,10 @@ RUN mkdir -p /symfony_tmp/cache/environment_test/doctrine/odm/mongodb/Hydrators
 RUN chmod 777 -R /symfony_tmp
 
 WORKDIR /srv
-COPY code/vendor /srv/vendor
 COPY code/composer.json /srv/composer.json
 COPY code/composer.lock /srv/composer.lock
 RUN composer install
+# vendor folder is ignored in COPY because of .dockerignore
 COPY code /srv
 RUN composer install
 

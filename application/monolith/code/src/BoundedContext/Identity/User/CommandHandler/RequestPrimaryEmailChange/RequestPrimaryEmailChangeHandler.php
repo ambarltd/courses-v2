@@ -30,22 +30,15 @@ class RequestPrimaryEmailChangeHandler
     private $eventStore;
 
     /**
-     * @var Queue
-     */
-    private $queue;
-
-    /**
      * @var IsEmailTaken
      */
     private $isEmailTaken;
 
     public function __construct(
         EventStore $eventStore,
-        Queue $queue,
         IsEmailTaken $isEmailTaken
     ) {
         $this->eventStore = $eventStore;
-        $this->queue = $queue;
         $this->isEmailTaken = $isEmailTaken;
     }
 
@@ -130,7 +123,5 @@ class RequestPrimaryEmailChangeHandler
 
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
-
-        $this->queue->enqueue($event);
     }
 }

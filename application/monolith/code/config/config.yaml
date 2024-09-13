@@ -42,13 +42,13 @@ doctrine_mongodb:
                     type: xml
                     is_bundle: false
                     prefix: Galeas\Api\BoundedContext\Identity\User\Projection
-                    dir: '%kernel.root_dir%/BoundedContext/Identity/User/Projection/MongoMapping'
+                    dir: '%kernel.project_dir%/src/BoundedContext/Identity/User/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Identity\User\Projection
                 Galeas\Api\BoundedContext\Security\Session\Projection:
                     type: xml
                     is_bundle: false
                     prefix: Galeas\Api\BoundedContext\Security\Session\Projection
-                    dir: '%kernel.root_dir%/BoundedContext/Security/Session/Projection/MongoMapping'
+                    dir: '%kernel.project_dir%/src/BoundedContext/Security/Session/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Security\Session\Projection
         reaction:
             connection: reaction
@@ -74,5 +74,4 @@ parameters:
     mongodb_reaction_database_name: '%env(MONGODB_REACTION_DATABASE_NAME)%'
     mongodb_reaction_username: '%env(MONGODB_REACTION_DATABASE_USERNAME)%'
     mongodb_reaction_password: '%env(MONGODB_REACTION_DATABASE_PASSWORD)%'
-    kafka_queue_host: '%env(KAFKA_QUEUE_HOST)%'
     session_tokens_expire_after_seconds: '%env(SESSION_TOKENS_EXPIRE_AFTER_SECONDS)%'

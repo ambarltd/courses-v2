@@ -56,13 +56,6 @@ services:
         arguments:
             $sessionExpiresAfterSeconds: '%session_tokens_expire_after_seconds%'
 
-    ### QUEUE ####
-
-    Galeas\Api\Service\Queue\KafkaQueue:
-        class: Galeas\Api\Service\Queue\KafkaQueue
-        arguments:
-            $kafkaHost: '%kafka_queue_host%'
-
     #### INSTANCE OF (Controller setters, bound properties) (Console commands bound properties) (Reaction/Projection processors) ####
 
     _instanceof:
@@ -77,41 +70,13 @@ services:
             public: true
             bind:
                 $environment: '%kernel.environment%'
+            tags: [ 'controller.service_arguments' ]
+            calls:
+                - ['setContainer', ['@service_container']]
+
         Symfony\Component\Console\Command\Command:
             public: true
             bind:
                 $environment: '%kernel.environment%'
                 $apiDomain: '%api_domain%'
             tags: [console.command]
-        Galeas\Api\Service\QueueProcessor\ReactionEventProcessor:
-            tags:
-                - { name: 'tag_reaction_event_processor' }
-        Galeas\Api\Service\QueueProcessor\ProjectionEventProcessor:
-            tags:
-                - { name: 'tag_projection_event_processor' }
-
-    #### REACTION QUEUE READER & PROCESSOR ####
-
-    Galeas\Api\Service\QueueProcessor\ReactionKafkaQueueReader:
-        class: Galeas\Api\Service\QueueProcessor\ReactionKafkaQueueReader
-        arguments:
-            $kafkaHost: '%kafka_queue_host%'
-            $kafkaConsumerGroupId: 'kafka_reader_reaction'
-
-    Galeas\Api\Service\QueueProcessor\ReactionQueueProcessor:
-        class: Galeas\Api\Service\QueueProcessor\ReactionQueueProcessor
-        arguments:
-            $eventProcessors: !tagged tag_reaction_event_processor
-
-    #### PROJECTION QUEUE READER & PROCESSOR ####
-
-    Galeas\Api\Service\QueueProcessor\ProjectionKafkaQueueReader:
-        class: Galeas\Api\Service\QueueProcessor\ProjectionKafkaQueueReader
-        arguments:
-            $kafkaHost: '%kafka_queue_host%'
-            $kafkaConsumerGroupId: 'kafka_reader_projection'
-
-    Galeas\Api\Service\QueueProcessor\ProjectionQueueProcessor:
-        class: Galeas\Api\Service\QueueProcessor\ProjectionQueueProcessor
-        arguments:
-            $eventProcessors: !tagged tag_projection_event_processor

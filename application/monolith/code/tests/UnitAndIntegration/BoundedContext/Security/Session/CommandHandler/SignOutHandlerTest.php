@@ -41,7 +41,6 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $handler = new SignOutHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -114,7 +113,6 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $handler = new SignOutHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -152,7 +150,6 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $handler = new SignOutHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
@@ -190,7 +187,6 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $handler = new SignOutHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
