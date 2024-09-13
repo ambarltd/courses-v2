@@ -1,13 +1,16 @@
 module "networking" {
   source = "./../networking"
   resource_id_prefix = "${local.resource_id_prefix_prefix}-net"
+  public_cidrs_with_mongo_port_access_to_instances = []
+  public_cidrs_with_pg_port_access_to_instances = []
+  public_cidrs_with_ssh_port_access_to_instances = []
 }
 
 module "event_store" {
   source = "./../event-store"
   resource_id_prefix = "${local.resource_id_prefix_prefix}-es"
   network_id_with_private_access = module.networking.network_id
-  public_cidr_ranges_with_access = []
+  public_cidrs_with_access = []
 }
 
 module "application" {

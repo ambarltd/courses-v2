@@ -39,7 +39,7 @@ resource "google_sql_database_instance" "main" {
       enable_private_path_for_google_cloud_services = true
 
       dynamic "authorized_networks" {
-        for_each = var.public_cidr_ranges_with_access
+        for_each = var.public_cidrs_with_access
         iterator = cidr
 
         content {
