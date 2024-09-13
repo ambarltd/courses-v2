@@ -2,7 +2,7 @@
     "name": "galeas/galeas-api",
     "license": "Proprietary",
     "type": "project",
-    "description": "Galeas API - depends on Symfony. nette/di is forced to version 2 because it breaks PHPStan's integration with Symfony.",
+    "description": "API - depends on Symfony. nette/di is forced to version 2 because it breaks PHPStan's integration with Symfony.",
     "minimum-stability": "beta",
     "require": {
         "php": "^7.3.1",
