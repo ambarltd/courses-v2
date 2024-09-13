@@ -59,6 +59,21 @@ class SchemaController extends AbstractController
     }
 
     /**
+     * @return JsonResponse
+     */
+    #[Route('/', name: 'root', methods: ['GET'])]
+    public function root(Request $request): Response
+    {
+        $response = JsonResponse::fromJsonString(
+            json_encode(new \stdClass()),
+            Response::HTTP_OK
+        );
+        $response->setEncodingOptions(JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES);
+
+        return $response;
+    }
+
+    /**
      * @Route("/schema/list", name="schema_list", methods={"GET"})
      *
      * @return JsonResponse
