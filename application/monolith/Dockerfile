@@ -15,7 +15,10 @@ RUN pecl install mongodb
 RUN docker-php-ext-enable mongodb
 RUN apt-get install -y libpq-dev
 RUN docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
-    && docker-php-ext-install pdo pdo_pgsql pgsql
+    && docker-php-ext-install pdo pdo_pgsql pgsql \
+RUN apt-get install -y libicu-dev
+RUN docker-php-ext-configure intl && docker-php-ext-install intl
+
 
 # Symfony cache, logs, session directories
 RUN rm -rf /symfony_tmp
