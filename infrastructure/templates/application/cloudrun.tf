@@ -1,5 +1,5 @@
 resource "google_cloud_run_service" "application" {
-  name     = "appl-${var.environment_name}-${var.application_directory_name}"
+  name     = "${var.resource_id_prefix}-app"
   location = local.gcp_default_region
 
   template {
@@ -43,7 +43,7 @@ resource "google_cloud_run_service" "application" {
     latest_revision = true
   }
 
-  depends_on = [null_resource.push_image]
+  depends_on = [null_resource.push_app_image]
 }
 
 resource "google_cloud_run_service_iam_policy" "public_policy" {

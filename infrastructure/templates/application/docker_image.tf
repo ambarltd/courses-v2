@@ -6,7 +6,7 @@ resource "random_id" "image_tag" {
   }
 }
 
-resource "null_resource" "push_image" {
+resource "null_resource" "push_app_image" {
   triggers = {
     "image_tag": random_id.image_tag.hex
   }

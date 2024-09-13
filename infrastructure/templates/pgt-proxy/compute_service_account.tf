@@ -1,6 +1,6 @@
 resource "google_service_account" "pgt_service_acc" {
-  account_id   = "pgtacc${var.environment_name}"
-  display_name = "pgtacc${var.environment_name}"
+  account_id   = "${var.resource_id_prefix}-acc"
+  display_name = "${var.resource_id_prefix}-acc"
 }
 
 resource "google_project_iam_member" "pgt_art_read" {

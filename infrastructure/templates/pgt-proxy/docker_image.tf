@@ -1,11 +1,11 @@
 resource "google_artifact_registry_repository" "docker_repository" {
   location      = local.gcp_default_region
-  repository_id = "pgt-proxy-repository-${var.environment_name}"
+  repository_id = "${var.resource_id_prefix}-pgtre"
   format        = "DOCKER"
 }
 
 resource "random_id" "image_tag" {
-  byte_length = 16
+  byte_length = 8
   keepers = {
     database_ca_cert_hash: md5(var.database_ca_cert_in_base64)
     proxy_key_hash: md5(var.pgtproxy_key_in_base64)

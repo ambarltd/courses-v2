@@ -1,45 +1,7 @@
-resource "random_id" "random_id" {
-  byte_length = 10
-}
-
-resource "google_compute_address" "database_public_ip" {
-  name     = "prdb-${var.environment_name}-${random_id.random_id.hex}"
-  region = local.gcp_default_region
-}
-
-resource "google_compute_firewall" "allow_http_https_ssh" {
-  name    = "allow-${var.environment_name}-${random_id.random_id.hex}"
-  network = var.network_name
-
-  allow {
-    protocol = "tcp"
-    ports    = ["22", "27017", "27018", "27019", "28017"]
-  }
-
-  source_ranges = ["0.0.0.0/0"]  # Allowing all traffic, private and public
-}
-
-resource "google_compute_disk" "persistent_disk" {
-  name    = "disk-${var.environment_name}-${random_id.random_id.hex}"
-  type  = "pd-standard"
-  size  = 100
-  zone  = "${local.gcp_default_region}a"
-}
-
-resource "random_password" "admin_user" {
-  length      = 16
-  min_lower   = 2
-  min_upper   = 2
-  min_numeric = 2
-  special     = false
-  min_special = 0
-}
-
-
 resource "google_compute_instance" "vm_instance" {
-  name    = "prdb-${var.environment_name}-${random_id.random_id.hex}"
+  name    = "${var.resource_id_prefix}-prdb"
   machine_type = "e2-standard-2"
-  zone  = "${local.gcp_default_region}a"
+  zone  = "${local.gcp_default_region}-a"
 
   boot_disk {
     initialize_params {

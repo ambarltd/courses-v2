@@ -1,5 +1,3 @@
-data "google_client_config" "this" {}
-
 locals {
   docker_registry_url = "${google_artifact_registry_repository.docker_repository.location}-docker.pkg.dev"
   docker_repository_name = "${google_artifact_registry_repository.docker_repository.project}/${google_artifact_registry_repository.docker_repository.name}/pgt-proxy"

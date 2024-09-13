@@ -1,5 +1,5 @@
 resource "random_id" "dns_probe" {
-  byte_length = 16
+  byte_length = 8
   keepers = {
       force_redeploy: "green" # alternate between blue/green to force redeploy
   }
@@ -11,7 +11,7 @@ resource "tls_private_key" "dns_probe" {
 }
 
 resource "google_compute_instance" "dns_probe" {
-  name         = "pgt-probe--${var.environment_name}-${random_id.dns_probe.hex}"
+  name         = "${var.resource_id_prefix}-${random_id.dns_probe.hex}-dnsp"
   machine_type = "e2-micro"
   zone = "${local.gcp_default_region}-a"
 

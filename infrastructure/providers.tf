@@ -18,6 +18,6 @@ terraform {
 provider "google" {
   credentials = base64decode(local.credentials["gcp_service_account_json_in_base64"])
   project     = "drew-production"
-  region      = "australia-southeast1"
+  region      = "europe-west2"
   alias       = "production"
 }

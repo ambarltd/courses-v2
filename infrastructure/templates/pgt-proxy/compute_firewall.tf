@@ -1,5 +1,5 @@
 resource "google_compute_firewall" "pgt_proxy" {
-  name    = "pgt-proxy-firewall-${var.environment_name}"
+  name    = "${var.resource_id_prefix}-pginb"
   network = var.network_id_with_destination_database
 
   allow {
@@ -12,7 +12,7 @@ resource "google_compute_firewall" "pgt_proxy" {
 }
 
 resource "google_compute_firewall" "inbound_ssh" {
-  name    = "inbound-ssh-${var.environment_name}"
+  name    = "${var.resource_id_prefix}-sshinb"
   network = var.network_id_with_destination_database
 
   allow {
