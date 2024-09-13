@@ -1,16 +1,16 @@
 module "networking" {
   source = "./../networking"
   resource_id_prefix = "${local.resource_id_prefix_prefix}-net"
-  public_cidrs_with_mongo_port_access_to_instances = []
-  public_cidrs_with_pg_port_access_to_instances = []
-  public_cidrs_with_ssh_port_access_to_instances = []
+  public_cidrs_with_mongo_port_access_to_instances = ["0.0.0.0/0"]
+  public_cidrs_with_pg_port_access_to_instances = ["0.0.0.0/0"]
+  public_cidrs_with_ssh_port_access_to_instances = ["0.0.0.0/0"]
 }
 
 module "event_store" {
   source = "./../event-store"
   resource_id_prefix = "${local.resource_id_prefix_prefix}-es"
   network_id_with_private_access = module.networking.network_id
-  public_cidrs_with_access = []
+  public_cidrs_with_access = ["0.0.0.0/0"]
 }
 
 module "application" {
@@ -23,15 +23,15 @@ module "application" {
   event_store_database_name = module.event_store.database_name
   event_store_host = module.event_store.database_private_ip_address
   event_store_password = module.event_store.database_admin_password
-  event_store_port = 5432
+  event_store_port = module.event_store.database_port
   event_store_user = module.event_store.database_admin_username
-  mongodb_projection_authentication_database = "projections"
+  mongodb_projection_authentication_database = "admin"
   mongodb_projection_database_name = "projections"
   mongodb_projection_database_password = module.projection_and_reaction_store.admin_password
   mongodb_projection_database_username = module.projection_and_reaction_store.admin_username
   mongodb_projection_host = module.projection_and_reaction_store.database_public_ip
   mongodb_projection_port = module.projection_and_reaction_store.database_port
-  mongodb_reaction_authentication_database = "reactions"
+  mongodb_reaction_authentication_database = "admin"
   mongodb_reaction_database_name = "reactions"
   mongodb_reaction_database_password = module.projection_and_reaction_store.admin_password
   mongodb_reaction_database_username = module.projection_and_reaction_store.admin_username

@@ -22,3 +22,7 @@ output "database_admin_username" {
 output "database_admin_password" {
   value = random_password.admin_user.result
 }
+
+output "database_port" {
+  value = 5432
+}

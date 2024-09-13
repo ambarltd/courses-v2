@@ -17,3 +17,9 @@ module "production_monolith" {
   }
 }
 
+output "production_connection_outputs" {
+  value = {
+    "monolith" = module.production_monolith.connection_outputs
+  }
+  sensitive = true
+}
