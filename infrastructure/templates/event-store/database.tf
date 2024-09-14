@@ -1,8 +1,8 @@
 resource "google_sql_database" "main" {
-  project  = local.gcp_default_project
-  name     = "${var.resource_id_prefix}-db"
-  instance = google_sql_database_instance.main.name
-  charset  = "UTF8"
+  project   = local.gcp_default_project
+  name      = "${var.resource_id_prefix}-db"
+  instance  = google_sql_database_instance.main.name
+  charset   = "UTF8"
   collation = "en_US.UTF8"
 }
 
@@ -16,8 +16,8 @@ resource "google_sql_database_instance" "main" {
 
   settings {
     # i.e., 1cpu, 4gb ram
-    tier    = "db-custom-1-4096"
-    edition = "ENTERPRISE"
+    tier              = "db-custom-1-4096"
+    edition           = "ENTERPRISE"
     activation_policy = "ALWAYS"
     availability_type = "ZONAL"
 

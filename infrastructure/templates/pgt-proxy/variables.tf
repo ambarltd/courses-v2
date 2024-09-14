@@ -3,7 +3,7 @@ variable "resource_id_prefix" {
 }
 
 variable "pgtproxy_key_in_base64" {
-  type = string
+  type      = string
   sensitive = true
 }
 

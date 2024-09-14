@@ -1,5 +1,5 @@
 variable "environment_uuid" {
-  type = string
+  type        = string
   description = "Must be unique, across all deployments in the universe."
   validation {
     condition     = length(var.environment_uuid) == 17

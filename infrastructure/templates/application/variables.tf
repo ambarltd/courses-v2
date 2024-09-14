@@ -13,9 +13,6 @@ variable "application_directory_name" {
 variable "vpc_connector_subnetwork_name" {
   type = string
 }
-variable "api_domain" {
-  type = string
-}
 
 variable "event_store_host" {
   type = string

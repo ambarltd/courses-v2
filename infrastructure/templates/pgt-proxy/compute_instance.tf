@@ -1,8 +1,8 @@
 resource "google_compute_instance" "postgres_proxy" {
   # Forces recreation on new image (gcp docker doesn't actually deploy new image)
-  name         = "${var.resource_id_prefix}-${random_id.image_tag.hex}-ins"
-  machine_type = "e2-small"
-  zone = "${local.gcp_default_region}-a"
+  name                      = "${var.resource_id_prefix}-${random_id.image_tag.hex}-ins"
+  machine_type              = "e2-small"
+  zone                      = "${local.gcp_default_region}-a"
   allow_stopping_for_update = true
 
   boot_disk {
@@ -12,7 +12,7 @@ resource "google_compute_instance" "postgres_proxy" {
   }
 
   network_interface {
-    network = var.network_id_with_destination_database
+    network    = var.network_id_with_destination_database
     subnetwork = var.subnetwork_id
     access_config {
       nat_ip = google_compute_address.pgt_proxy_ip.address
@@ -20,7 +20,7 @@ resource "google_compute_instance" "postgres_proxy" {
   }
 
   service_account {
-    email  = google_service_account.pgt_service_acc.email
+    email = google_service_account.pgt_service_acc.email
     scopes = [
       "https://www.googleapis.com/auth/cloud-platform",
       "https://www.googleapis.com/auth/devstorage.read_only",
@@ -45,7 +45,7 @@ spec:
           containerPort: 5432
   restartPolicy: Always
 EOT
-    google-logging-enabled = "true"
+    google-logging-enabled    = "true"
     google-monitoring-enabled = "true"
   }
 

@@ -7,25 +7,25 @@ resource "google_artifact_registry_repository" "docker_repository" {
 resource "random_id" "image_tag" {
   byte_length = 8
   keepers = {
-    database_ca_cert_hash: md5(var.database_ca_cert_in_base64)
-    proxy_key_hash: md5(var.pgtproxy_key_in_base64)
-    proxy_cert_hash: md5(var.pgtproxy_cert_in_base64)
-    local_ip: var.database_local_network_ip_address
+    database_ca_cert_hash : md5(var.database_ca_cert_in_base64)
+    proxy_key_hash : md5(var.pgtproxy_key_in_base64)
+    proxy_cert_hash : md5(var.pgtproxy_cert_in_base64)
+    local_ip : var.database_local_network_ip_address
     database_tl_host = data.external.dns_probe.result["database_tls_host"]
-    docker_registry_url: local.docker_registry_url
-    docker_repository_name: local.docker_repository_name
-    dockerfile_hash: filemd5("${path.module}/Dockerfile")
-    force_redeploy: "green" # alternate between blue/green to force redeploy
+    docker_registry_url : local.docker_registry_url
+    docker_repository_name : local.docker_repository_name
+    dockerfile_hash : filemd5("${path.module}/Dockerfile")
+    force_redeploy : "green" # alternate between blue/green to force redeploy
   }
 }
 
 resource "null_resource" "push_image" {
   triggers = {
-    "image_tag": random_id.image_tag.hex
+    "image_tag" : random_id.image_tag.hex
   }
   provisioner "local-exec" {
     # base64 --decode doesn't work in alpine images, needs -d instead
-    command = <<EOT
+    command     = <<EOT
       set -e
       mkdir -p docker_image_builder_${random_id.image_tag.hex}
       cp Dockerfile docker_image_builder_${random_id.image_tag.hex}/

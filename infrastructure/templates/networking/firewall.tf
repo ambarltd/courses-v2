@@ -3,8 +3,8 @@ resource "google_compute_firewall" "inbound_internal" {
   network = google_compute_network.main_network.id
 
   allow {
-     protocol = "tcp"
-     ports    = ["1-65535"]
+    protocol = "tcp"
+    ports    = ["1-65535"]
   }
 
   source_ranges = ["10.0.0.0/16"]
@@ -15,8 +15,8 @@ resource "google_compute_firewall" "inbound_postgres" {
   network = google_compute_network.main_network.id
 
   allow {
-     protocol = "tcp"
-     ports    = ["5432"]
+    protocol = "tcp"
+    ports    = ["5432"]
   }
 
   source_ranges = var.public_cidrs_with_pg_port_access_to_instances
@@ -27,8 +27,8 @@ resource "google_compute_firewall" "inbound_ssh" {
   network = google_compute_network.main_network.id
 
   allow {
-     protocol = "tcp"
-     ports    = ["22"]
+    protocol = "tcp"
+    ports    = ["22"]
   }
 
   source_ranges = var.public_cidrs_with_ssh_port_access_to_instances

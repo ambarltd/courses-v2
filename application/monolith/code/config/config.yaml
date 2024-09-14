@@ -56,7 +56,6 @@ doctrine_mongodb:
             mappings:
 
 parameters:
-    api_domain: '%env(API_DOMAIN)%'
     event_store_database_host: '%env(EVENT_STORE_HOST)%'
     event_store_database_port: '%env(EVENT_STORE_PORT)%'
     event_store_database_name: '%env(EVENT_STORE_DATABASE_NAME)%'

@@ -78,5 +78,4 @@ services:
             public: true
             bind:
                 $environment: '%kernel.environment%'
-                $apiDomain: '%api_domain%'
             tags: [console.command]

@@ -1,7 +1,7 @@
 resource "random_id" "dns_probe" {
   byte_length = 8
   keepers = {
-      force_redeploy: "green" # alternate between blue/green to force redeploy
+    force_redeploy : "green" # alternate between blue/green to force redeploy
   }
 }
 
@@ -13,7 +13,7 @@ resource "tls_private_key" "dns_probe" {
 resource "google_compute_instance" "dns_probe" {
   name         = "${var.resource_id_prefix}-${random_id.dns_probe.hex}-dnsp"
   machine_type = "e2-micro"
-  zone = "${local.gcp_default_region}-a"
+  zone         = "${local.gcp_default_region}-a"
 
   boot_disk {
     initialize_params {
@@ -22,7 +22,7 @@ resource "google_compute_instance" "dns_probe" {
   }
 
   network_interface {
-    network = var.network_id_with_destination_database
+    network    = var.network_id_with_destination_database
     subnetwork = var.subnetwork_id
     access_config {
       // empty block -> gets random public ip
@@ -53,11 +53,11 @@ data "external" "dns_probe" {
   program = ["bash", "docker_dns_probe.sh"]
 
   query = {
-    private_key_pem_in_base64 = base64encode(tls_private_key.dns_probe.private_key_pem)
-    dns_probe_ssh_key_filename = "dns_probe_key_${random_id.dns_probe.hex}.pem"
-    dns_probe_instance_public_ip = google_compute_instance.dns_probe.network_interface.0.access_config.0.nat_ip
+    private_key_pem_in_base64         = base64encode(tls_private_key.dns_probe.private_key_pem)
+    dns_probe_ssh_key_filename        = "dns_probe_key_${random_id.dns_probe.hex}.pem"
+    dns_probe_instance_public_ip      = google_compute_instance.dns_probe.network_interface.0.access_config.0.nat_ip
     database_local_network_ip_address = var.database_local_network_ip_address
-    dns_probe_resolved_filename = "dns_probe_resolved_filename_${random_id.dns_probe.hex}.resolved"
+    dns_probe_resolved_filename       = "dns_probe_resolved_filename_${random_id.dns_probe.hex}.resolved"
   }
 
   working_dir = path.module
