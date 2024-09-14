@@ -21,17 +21,15 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserController extends BaseController
 {
     public function __construct(
-        string $environment,
         SignUpHandler $signUpHandler,
         VerifyPrimaryEmailHandler $verifyPrimaryEmailHandler,
         RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler
     ) {
         parent::__construct(
-            $environment,
             [
                 $signUpHandler,
                 $verifyPrimaryEmailHandler,
-                $requestPrimaryEmailChangeHandler,
+                $requestPrimaryEmailChangeHandler
             ]
         );
     }

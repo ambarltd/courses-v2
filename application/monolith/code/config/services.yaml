@@ -29,7 +29,7 @@ services:
         namespace: Galeas\Api\JsonSchema\
         resource: '../src/JsonSchema/*'
 
-    galeas.console_esrvices:
+    galeas.console_services:
         namespace: Galeas\Api\Console\
         resource: '../src/Console/*'
 
@@ -64,18 +64,15 @@ services:
                 - setJsonPostRequestMapper: ['@Galeas\Api\Service\RequestMapper\JsonPostRequestMapper']
                 - setJsonSchemaFetcher: ['@Galeas\Api\JsonSchema\JsonSchemaFetcher']
                 - setJsonSchemaValidator: ['@Galeas\Api\JsonSchema\JsonSchemaValidator']
+                - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
         Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
             # Handlers and their dependencies will only be testable if they're in the test container.
             # For this to be true at least one public service has to use them. Controllers will do the job.
             public: true
-            bind:
-                $environment: '%kernel.environment%'
             tags: [ 'controller.service_arguments' ]
             calls:
                 - ['setContainer', ['@service_container']]
 
         Symfony\Component\Console\Command\Command:
             public: true
-            bind:
-                $environment: '%kernel.environment%'
             tags: [console.command]

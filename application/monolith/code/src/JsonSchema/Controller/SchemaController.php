@@ -20,11 +20,6 @@ use Symfony\Component\Routing\RouterInterface;
 class SchemaController extends AbstractController
 {
     /**
-     * @var string
-     */
-    private $environment;
-
-    /**
      * @var JsonSchemaFetcher
      */
     private $jsonSchemaFetcher;
@@ -45,13 +40,11 @@ class SchemaController extends AbstractController
     private $controllerExceptionsSerializer;
 
     public function __construct(
-        string $environment,
         JsonSchemaFetcher $jsonSchemaFetcher,
         RouterInterface $router,
         SchemaAnnotationReader $schemaAnnotationReader,
         ControllerExceptionsSerializer $controllerExceptionsSerializer
     ) {
-        $this->environment = $environment;
         $this->jsonSchemaFetcher = $jsonSchemaFetcher;
         $this->router = $router;
         $this->schemaAnnotationReader = $schemaAnnotationReader;

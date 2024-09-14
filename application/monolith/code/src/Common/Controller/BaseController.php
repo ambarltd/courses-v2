@@ -8,6 +8,7 @@ use Galeas\Api\Common\ExceptionBase\BaseException;
 use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use Galeas\Api\JsonSchema\JsonSchemaValidator;
+use Galeas\Api\Service\Logger\PhpOutLogger;
 use Galeas\Api\Service\RequestMapper\JsonPostRequestMapper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,11 +17,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends AbstractController
 {
-    /**
-     * @var string
-     */
-    private $environment;
-
     /**
      * @var object[]
      */
@@ -41,11 +37,16 @@ class BaseController extends AbstractController
      */
     private $jsonSchemaValidator;
 
+    /**
+     * @var PhpOutLogger
+     */
+    private $phpOutLogger;
+
+    private bool $shouldValidateResponseSchemas = false;
+
     public function __construct(
-        string $environment,
         array $services
     ) {
-        $this->environment = $environment;
         foreach ($services as $service) {
             $this->services[get_class($service)] = $service;
         }
@@ -64,6 +65,11 @@ class BaseController extends AbstractController
     public function setJsonSchemaValidator(JsonSchemaValidator $jsonSchemaValidator): void
     {
         $this->jsonSchemaValidator = $jsonSchemaValidator;
+    }
+
+    public function setPhpOutLogger(PhpOutLogger $phpOutLogger): void
+    {
+        $this->phpOutLogger = $phpOutLogger;
     }
 
     /**
@@ -102,6 +108,7 @@ class BaseController extends AbstractController
                 );
 
             if (!empty($errors)) {
+                $this->phpOutLogger->warning("json_schema_validation_error");
                 return JsonResponse::fromJsonString(
                     json_encode([
                         'errors' => $errors,
@@ -128,7 +135,7 @@ class BaseController extends AbstractController
 
             $responseContent = $jsonResponse->getContent();
 
-            if ($this->environmentShouldValidateResponseSchemas()) {
+            if ($this->shouldValidateResponseSchemas) {
                 $errors = $this->jsonSchemaValidator
                     ->validate(
                         is_string($responseContent) ? $responseContent : '',
@@ -137,6 +144,7 @@ class BaseController extends AbstractController
             }
 
             if (!empty($errors)) {
+                $this->phpOutLogger->warning("invalid_response_against_json_schema");
                 return JsonResponse::fromJsonString(
                     json_encode([
                         'errors' => $errors,
@@ -150,28 +158,32 @@ class BaseController extends AbstractController
             return $jsonResponse;
         } catch (BaseException $exception) {
             $errorMessage = substr($exception->getMessage(), 0, 8192);
-
-            if (
-                $exception instanceof InternalServerErrorException &&
-                false === $this->environmentShouldShowStackTraces()
-            ) {
-                $errorMessage = '';
-            }
+            $stackTrace = substr($exception->getTraceAsString(), 0, 8192);
+            $this->phpOutLogger->warning(sprintf(
+                "BaseException caught, classFQN %s, message: %s, stack trace: %s",
+                $exception::class,
+                $errorMessage,
+                $stackTrace
+            ));
 
             return JsonResponse::fromJsonString(
                 json_encode([
                     'errors' => [],
                     'errorIdentifier' => $exception::getErrorIdentifier(),
-                    'errorMessage' => $errorMessage,
+                    'errorMessage' => '',
                 ]),
                 $exception::getHttpCode()
             );
         } catch (\Throwable $throwable) {
             $errorMessage = substr($throwable->getMessage(), 0, 8192);
+            $stackTrace = substr($throwable->getTraceAsString(), 0, 8192);
+            $this->phpOutLogger->warning(sprintf(
+                "Throwable caught, classFQN %s, message: %s, stack trace: %s",
+                $throwable::class,
+                $errorMessage,
+                $stackTrace
+            ));
 
-            if (false === $this->environmentShouldShowStackTraces()) {
-                $errorMessage = '';
-            }
 
             return JsonResponse::fromJsonString(
                 json_encode([
@@ -182,19 +194,5 @@ class BaseController extends AbstractController
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    private function environmentShouldShowStackTraces(): bool
-    {
-        return
-            'production' === $this->environment
-        ;
-    }
-
-    private function environmentShouldValidateResponseSchemas(): bool
-    {
-        return
-            'production' === $this->environment
-        ;
     }
 }

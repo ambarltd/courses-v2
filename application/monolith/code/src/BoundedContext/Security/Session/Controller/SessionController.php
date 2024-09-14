@@ -21,13 +21,11 @@ use Symfony\Component\Routing\Annotation\Route;
 class SessionController extends BaseController
 {
     public function __construct(
-        string $environment,
         SignInHandler $signInHandler,
         RefreshTokenHandler $refreshTokenHandler,
         SignOutHandler $signOutHandler
     ) {
         parent::__construct(
-            $environment,
             [
                 $signInHandler,
                 $refreshTokenHandler,

@@ -6,8 +6,6 @@ namespace Galeas\Api\Console;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,42 +13,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 class TestConnections extends Command
 {
     /**
-     * @var string
+     * @var DocumentManager
      */
-    private $environment;
-
-    /**
-     * @var string
-     */
-    private $apiDomain;
+    private DocumentManager $reactionDocumentManager;
 
     /**
      * @var DocumentManager
      */
-    private $reactionDocumentManager;
-
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     /**
      * @var SQLEventStoreConnection
      */
-    private $sqlEventStoreConnection;
-
+    private SQLEventStoreConnection $sqlEventStoreConnection;
 
     public function __construct(
-        string $environment,
-        string $apiDomain,
         DocumentManager $reactionDocumentManager,
         DocumentManager $projectionDocumentManager,
         SQLEventStoreConnection $sqlEventStoreConnection,
     ) {
         parent::__construct();
 
-        $this->environment = $environment;
-        $this->apiDomain = $apiDomain;
         $this->reactionDocumentManager = $reactionDocumentManager;
         $this->projectionDocumentManager = $projectionDocumentManager;
         $this->sqlEventStoreConnection = $sqlEventStoreConnection;
@@ -74,23 +57,6 @@ class TestConnections extends Command
         OutputInterface $output
     ): int {
         try {
-            // API
-            $url = $this->apiDomain.'/schema/list';
-            $client = new Client();
-
-            $response = $client->request(
-                'GET',
-                $url,
-                [
-                    'http_errors' => false,
-                    'verify' => false,
-                ]
-            );
-            if (200 !== $response->getStatusCode()) {
-                throw new \RuntimeException('Cannot connect to api via '.$url);
-            }
-            $output->writeln('Nginx and PHP-API responding via '.$url);
-
             // PROJECTION DB
             $this->projectionDocumentManager->getClient()->listDatabases();
             $output->writeln('Projection DB OK');
@@ -108,11 +74,6 @@ class TestConnections extends Command
             }
             $output->writeln('EventStore DB OK');
 
-        } catch (GuzzleException $throwable) {
-            $output->writeln('Error, could not verify all connections.');
-            $output->writeln($throwable->getMessage());
-
-            return 1;
         } catch (\Throwable $throwable) {
             $output->writeln('Error, could not verify all connections.');
             $output->writeln($throwable->getMessage());
