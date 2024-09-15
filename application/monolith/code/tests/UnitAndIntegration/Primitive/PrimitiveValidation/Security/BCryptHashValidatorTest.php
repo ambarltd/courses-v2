@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class BCryptHashValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValid(): void
     {
         foreach (ValidBCryptHashes::listValidBCryptHashes() as $hash) {
@@ -24,9 +21,6 @@ class BCryptHashValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalid(): void
     {
         foreach (InvalidBCryptHashes::listInvalidBCryptHashes() as $hash) {

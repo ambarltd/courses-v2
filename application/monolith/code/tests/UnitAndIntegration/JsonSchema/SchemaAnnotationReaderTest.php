@@ -13,9 +13,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SchemaAnnotationReaderTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testRequestAnnotationExtraction(): void
     {
         $schemaAnnotationReader = new SchemaAnnotationReader();
@@ -57,9 +54,6 @@ class SchemaAnnotationReaderTest extends UnitTestBase
         }
     }
 
-    /**
-     * @test
-     */
     public function testResponseAnnotationExtraction(): void
     {
         $schemaAnnotationReader = new SchemaAnnotationReader();

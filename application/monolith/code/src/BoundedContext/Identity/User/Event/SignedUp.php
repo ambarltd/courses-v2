@@ -10,39 +10,24 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 
 class SignedUp implements EventCreatedUser
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $primaryEmail;
+    private string $primaryEmail;
+    
+    private string $primaryEmailVerificationCode;
+    
+    private string $hashedPassword;
 
-    /**
-     * @var string
-     */
-    private $primaryEmailVerificationCode;
+    private string $username;
 
-    /**
-     * @var string
-     */
-    private $hashedPassword;
-
-    /**
-     * @var string
-     */
-    private $username;
-
-    /**
-     * @var bool
-     */
-    private $termsOfUseAccepted;
+    private bool $termsOfUseAccepted;
 
     public function primaryEmail(): string
     {
@@ -72,15 +57,28 @@ class SignedUp implements EventCreatedUser
     /**
      * @throws CouldNotHashWithBCrypt
      */
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         string $primaryEmail,
         string $password,
         string $username,
         bool $termsOfUseAccepted
     ): SignedUp {
-        $aggregateId = Id::createNew();
-        $event = new self($aggregateId, $aggregateId, $metadata);
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
 
         $event->primaryEmail = $primaryEmail;
         $event->primaryEmailVerificationCode = EmailVerificationCodeCreator::create();
@@ -95,13 +93,11 @@ class SignedUp implements EventCreatedUser
         return $event;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createUser(): User
     {
         return User::fromProperties(
             $this->aggregateId(),
+            $this->aggregateVersion(),
             UnverifiedEmail::fromEmailAndVerificationCode(
                 Email::fromEmail(
                     $this->primaryEmail

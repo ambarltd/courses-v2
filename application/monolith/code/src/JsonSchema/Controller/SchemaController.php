@@ -19,41 +19,29 @@ use Symfony\Component\Routing\RouterInterface;
 
 class SchemaController extends AbstractController
 {
-    /**
-     * @var JsonSchemaFetcher
-     */
-    private $jsonSchemaFetcher;
+    private string $kernelEnvironment;
+    private JsonSchemaFetcher $jsonSchemaFetcher;
 
-    /**
-     * @var RouterInterface
-     */
-    private $router;
+    private RouterInterface $router;
 
-    /**
-     * @var SchemaAnnotationReader
-     */
-    private $schemaAnnotationReader;
+    private SchemaAnnotationReader $schemaAnnotationReader;
 
-    /**
-     * @var ControllerExceptionsSerializer
-     */
-    private $controllerExceptionsSerializer;
+    private ControllerExceptionsSerializer $controllerExceptionsSerializer;
 
     public function __construct(
+        string $kernelEnvironment,
         JsonSchemaFetcher $jsonSchemaFetcher,
         RouterInterface $router,
         SchemaAnnotationReader $schemaAnnotationReader,
         ControllerExceptionsSerializer $controllerExceptionsSerializer
     ) {
+        $this->kernelEnvironment = $kernelEnvironment;
         $this->jsonSchemaFetcher = $jsonSchemaFetcher;
         $this->router = $router;
         $this->schemaAnnotationReader = $schemaAnnotationReader;
         $this->controllerExceptionsSerializer = $controllerExceptionsSerializer;
     }
 
-    /**
-     * @return JsonResponse
-     */
     #[Route('/', name: 'root', methods: ['GET'])]
     public function root(Request $request): Response
     {
@@ -66,11 +54,6 @@ class SchemaController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/schema/list", name="schema_list", methods={"GET"})
-     *
-     * @return JsonResponse
-     */
     #[Route('/schema/list', name: 'schema_list', methods: ['GET'])]
     public function schemaList(Request $request): Response
     {
@@ -87,11 +70,6 @@ class SchemaController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/schema/request", name="schema_request", methods={"GET"})
-     *
-     * @return JsonResponse
-     */
     #[Route('/schema/request', name: 'schema_request', methods: ['GET'])]
     public function schemaRequest(Request $request): Response
     {
@@ -127,11 +105,6 @@ class SchemaController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/schema/response", name="schema_response", methods={"GET"})
-     *
-     * @return JsonResponse
-     */
     #[Route('/schema/response', name: 'schema_response', methods: ['GET'])]
     public function schemaResponse(Request $request): Response
     {
@@ -167,11 +140,7 @@ class SchemaController extends AbstractController
         }
     }
 
-    /**
-     * @Route("/schema/error", name="schema_error", methods={"GET"})
-     *
-     * @return JsonResponse
-     */
+    #[Route('/schema/error', name: 'schema_error', methods: ['GET'])]
     public function schemaError(Request $request): Response
     {
         try {
@@ -253,8 +222,6 @@ class SchemaController extends AbstractController
     }
 
     /**
-     * @return string|null (null if no route matches)
-     *
      * @throws AnnotationReaderFailed
      */
     private function getRequestSchemaFromRoutePath(string $routePath): ?string
@@ -273,8 +240,6 @@ class SchemaController extends AbstractController
     }
 
     /**
-     * @return string|null (null if no route matches)
-     *
      * @throws AnnotationReaderFailed
      */
     private function getResponseSchemaNameFromRoutePath(string $routePath): ?string
@@ -293,8 +258,6 @@ class SchemaController extends AbstractController
     }
 
     /**
-     * @return array|null (null if no route matches)
-     *
      * @throws ExceptionSerializerFailed
      */
     private function getExceptionSchemaFromRoutePath(string $routePath): ?array
@@ -314,6 +277,6 @@ class SchemaController extends AbstractController
 
     private function environmentShouldShowStackTraces(): bool
     {
-        return 'production' === $this->environment;
+        return 'test' === $this->kernelEnvironment;
     }
 }

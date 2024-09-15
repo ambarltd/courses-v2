@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class DeviceLabelValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidDeviceLabels(): void
     {
         foreach (ValidDeviceLabels::listValidDeviceLabels() as $label) {
@@ -24,9 +21,6 @@ class DeviceLabelValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidDeviceLabels(): void
     {
         foreach (InvalidDeviceLabels::listInvalidDeviceLabels() as $label) {

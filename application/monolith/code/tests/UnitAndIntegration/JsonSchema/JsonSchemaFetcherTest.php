@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 
+use Galeas\Api\JsonSchema\CouldNotFetchJsonSchema;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class JsonSchemaFetcherTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testFetch(): void
     {
         $jsonSchemaFetcher = new JsonSchemaFetcher();
@@ -102,7 +100,7 @@ class JsonSchemaFetcherTest extends UnitTestBase
                                 ],
                                 "minLength": 96,
                                 "maxLength": 96,
-                                "description": "Overrides the with \'X-With-Session-Token\' http header."
+                                "description": "Overrides the \'X-With-Session-Token\' http header."
                             },
                             "latitude": {
                                 "type": [
@@ -153,12 +151,11 @@ class JsonSchemaFetcherTest extends UnitTestBase
     }
 
     /**
-     * @expectedException \Galeas\Api\JsonSchema\CouldNotFetchJsonSchema
-     *
      * @throws \Galeas\Api\JsonSchema\CouldNotFetchJsonSchema
      */
     public function testCannotFetch(): void
     {
+        $this->expectException(CouldNotFetchJsonSchema::class);
         $jsonSchemaFetcher = new JsonSchemaFetcher();
         $jsonSchemaFetcher->fetch('Request/V1_This_Does_Not_exist.json');
         $jsonSchemaFetcher->fetch('V1_This_Does_Not_exist.json');

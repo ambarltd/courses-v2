@@ -20,14 +20,14 @@ class HashedPasswordProcessorTest extends KernelTestBase
         $hashedPasswordProcessor = $this->getContainer()
             ->get(HashedPasswordProcessor::class);
 
-        $signedUp1 = SignedUp::fromProperties(
+        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'primary_email@test.com',
             'password_4123',
             'username_4123',
             true
         );
-        $signedUp2 = SignedUp::fromProperties(
+        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'primary_email_2@test.com',
             'password_2_4123',

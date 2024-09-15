@@ -35,7 +35,7 @@ class SignedOutTest extends UnitTestBase
 
         Assert::assertEquals($aggregateId, $signedOut->aggregateId());
         Assert::assertEquals($authorizerId, $signedOut->authorizerId());
-        Assert::assertEquals($metadata, $signedOut->eventMetadata());
+        Assert::assertEquals($metadata, $signedOut->metadata());
         Assert::assertEquals($withIp, $signedOut->withIp());
         Assert::assertEquals($withSessionToken, $signedOut->withSessionToken());
     }

@@ -13,7 +13,7 @@ abstract class SessionTokenValidator
             return false;
         }
 
-        if (1 === preg_match('/^[0-9a-zA-Z\-_]+$/', $sesionToken)) {
+        if (1 === preg_match('/^[0-9a-zA-Z]+$/', $sesionToken)) {
             return true;
         }
 

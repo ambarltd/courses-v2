@@ -9,29 +9,19 @@ use Galeas\Api\BoundedContext\Identity\User\Event\CouldNotHashWithBCrypt;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
+use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use Galeas\Api\Primitive\PrimitiveValidation\Security\PasswordValidator;
 use Galeas\Api\Primitive\PrimitiveValidation\Username\UsernameValidator;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class SignUpHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var IsEmailTaken
-     */
-    private $isEmailTaken;
+    private IsEmailTaken $isEmailTaken;
 
-    /**
-     * @var IsUsernameTaken
-     */
-    private $isUsernameTaken;
+    private IsUsernameTaken $isUsernameTaken;
 
     public function __construct(
         EventStore $eventStore,
@@ -46,7 +36,7 @@ class SignUpHandler
     /**
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
      * @throws UsernameIsTaken|EmailIsTaken|CouldNotHashWithBCrypt
-     * @throws EventStoreCannotWrite|QueuingFailure|ProjectionCannotRead
+     * @throws EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(SignUp $command): array
     {
@@ -62,7 +52,7 @@ class SignUpHandler
             throw new InvalidUsername();
         }
 
-        if (false === $command->termsOfUseAccepted) {
+        if (!$command->termsOfUseAccepted) {
             throw new TermsAreNotAgreedTo();
         }
 
@@ -74,7 +64,14 @@ class SignUpHandler
             throw new UsernameIsTaken();
         }
 
-        $event = SignedUp::fromProperties(
+        $eventId = Id::createNew();
+        $event = SignedUp::new(
+            Id::createNew(),
+            Id::createNew(),
+            1,
+            $eventId,
+            $eventId,
+            new \DateTimeImmutable("now"),
             $command->metadata,
             $command->primaryEmail,
             $command->password,

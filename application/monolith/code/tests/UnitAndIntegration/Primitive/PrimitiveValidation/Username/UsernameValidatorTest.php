@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class UsernameValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidUsernames(): void
     {
         foreach (ValidUsernames::listValidUsernames() as $username) {
@@ -24,9 +21,6 @@ class UsernameValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidUsernames(): void
     {
         foreach (InvalidUsernames::listInvalidUsernames() as $username) {

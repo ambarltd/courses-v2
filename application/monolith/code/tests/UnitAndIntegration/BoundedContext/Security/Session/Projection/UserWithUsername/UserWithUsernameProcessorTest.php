@@ -19,14 +19,14 @@ class UserWithUsernameProcessorTest extends KernelTestBase
         $userWithUsernameProcessor = $this->getContainer()
             ->get(UserWithUsernameProcessor::class);
 
-        $signedUp1 = SignedUp::fromProperties(
+        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'Email_1_a@example.com',
             'password',
             'uSername',
             true
         );
-        $signedUp2 = SignedUp::fromProperties(
+        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'Email_2_a@@example.com',
             'password_2',

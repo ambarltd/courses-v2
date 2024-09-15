@@ -20,7 +20,6 @@ use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\Event\EventMapper;
 use Galeas\Api\Common\Event\SerializedEvent;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
@@ -141,7 +140,7 @@ class EventMapperTest extends UnitTestBase
     public function test_Identity_User_Serialization_Deserialization_ObjectAndJSON_PlusSchema(): void
     {
         $events = [
-            SignedUp::fromProperties(
+            SignedUp::fromPropertiesAndDefaultOthers(
                 $this->sampleMetadata(),
                 'email',
                 'password',
@@ -171,7 +170,7 @@ class EventMapperTest extends UnitTestBase
      */
     public function test_Identity_User_AggregateFromEvents(): void
     {
-        $creationEvent = SignedUp::fromProperties(
+        $creationEvent = SignedUp::fromPropertiesAndDefaultOthers(
             $this->sampleMetadata(),
             'email@example.com',
             'password',

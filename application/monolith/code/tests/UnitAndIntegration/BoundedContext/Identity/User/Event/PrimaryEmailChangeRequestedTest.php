@@ -58,11 +58,11 @@ class PrimaryEmailChangeRequestedTest extends UnitTestBase
         );
         Assert::assertEquals(
             null,
-            $primaryEmailChangeRequested->sourceEventId()
+            $primaryEmailChangeRequested->causationId()
         );
         Assert::assertEquals(
             [1, 2, 3],
-            $primaryEmailChangeRequested->eventMetadata()
+            $primaryEmailChangeRequested->metadata()
         );
         Assert::assertEquals(
             'new@example.com',

@@ -4,7 +4,7 @@
   "additionalProperties": false,
   "properties": {
     "verificationCode": {
-      "$ref": "Request/Shared/1024String.json"
+      "$ref": "Request/Shared/StringMaxLength1024.json"
     },
     "metadata": {
       "$ref": "Request/Shared/Metadata.json"

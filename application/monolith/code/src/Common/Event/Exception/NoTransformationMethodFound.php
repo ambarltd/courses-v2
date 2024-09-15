@@ -6,10 +6,10 @@ namespace Galeas\Api\Common\Event\Exception;
 
 use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 
-class RepeatedEventIds extends InternalServerErrorException
+class NoTransformationMethodFound extends InternalServerErrorException
 {
     public static function getErrorIdentifier(): string
     {
-        return 'Common_Event_RepeatedEventIds';
+        return 'Common_Event_NoTransformationMethodFound';
     }
 }

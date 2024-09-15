@@ -8,10 +8,7 @@ use JsonSchema\Validator;
 
 class JsonSchemaValidator
 {
-    /**
-     * @var Validator
-     */
-    private $validator;
+    private Validator $validator;
 
     public function __construct(Validator $validator)
     {

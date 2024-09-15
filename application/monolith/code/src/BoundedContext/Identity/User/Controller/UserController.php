@@ -35,8 +35,6 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/identity/user/sign-up", name="V1_Identity_User_SignUp", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Identity_User_SignUp")
      * @ResponseSchema(name="V1_Identity_User_SignUp")
      */
@@ -55,8 +53,6 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/identity/user/verify-primary-email", name="V1_Identity_User_VerifyPrimaryEmail", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Identity_User_VerifyPrimaryEmail")
      * @ResponseSchema(name="V1_Identity_User_VerifyPrimaryEmail")
      */
@@ -75,8 +71,6 @@ class UserController extends BaseController
     }
 
     /**
-     * @Route("/identity/user/request-primary-email-change", name="V1_Identity_User_RequestPrimaryEmailChange", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Identity_User_RequestPrimaryEmailChange")
      * @ResponseSchema(name="V1_Identity_User_RequestPrimaryEmailChange")
      */

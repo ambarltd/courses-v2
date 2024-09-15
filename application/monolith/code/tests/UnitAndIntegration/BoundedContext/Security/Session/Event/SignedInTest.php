@@ -39,9 +39,9 @@ class SignedInTest extends UnitTestBase
         Assert::assertNotEquals($signedIn->aggregateId(), $signedIn->eventId());
         Assert::assertNotEquals($signedIn->aggregateId(), $signedIn->asUser());
         Assert::assertNotEquals($signedIn->asUser(), $signedIn->eventId());
-        Assert::assertEquals(null, $signedIn->sourceEventId());
+        Assert::assertEquals(null, $signedIn->causationId());
 
-        Assert::assertEquals($metadata, $signedIn->eventMetadata());
+        Assert::assertEquals($metadata, $signedIn->metadata());
         Assert::assertEquals($asUser, $signedIn->asUser());
         Assert::assertEquals($asUser, $signedIn->authorizerId());
         Assert::assertEquals($withUsername, $signedIn->withUsername());

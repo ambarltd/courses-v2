@@ -6,13 +6,13 @@ namespace Galeas\Api\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 
 class SignedIn implements EventCreatedSession
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
     /**
      * @var Id

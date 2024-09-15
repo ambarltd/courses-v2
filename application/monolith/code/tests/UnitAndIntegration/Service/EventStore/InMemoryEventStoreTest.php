@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\Service\EventStore;
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
@@ -15,10 +14,8 @@ use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransa
 use Galeas\Api\Service\EventStore\Exception\SavingEventRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\InMemoryEventStore;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidEmails;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidPasswords;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class InMemoryEventStoreTest extends UnitTestBase
 {
@@ -27,28 +24,16 @@ class InMemoryEventStoreTest extends UnitTestBase
         return new InMemoryEventStore();
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testPersistence(): void
     {
         $inMemoryEventStore = $this->createNewInMemoryEventStore();
 
-        $signedUp = SignedUp::fromProperties(
-            [],
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
+        $signedUp = SampleEvents::signedUp();
         $inMemoryEventStore->beginTransaction();
         $inMemoryEventStore->save($signedUp);
         $inMemoryEventStore->completeTransaction();
 
         $inMemoryEventStore->beginTransaction();
-
         $user = $inMemoryEventStore->find($signedUp->aggregateId()->id());
         $inMemoryEventStore->completeTransaction();
 
@@ -56,78 +41,30 @@ class InMemoryEventStoreTest extends UnitTestBase
             throw new \Exception();
         }
 
+        if ($user->id() !== $signedUp->aggregateId()) {
+            throw new \Exception();
+        }
+
         if (!($user->primaryEmailStatus() instanceof UnverifiedEmail)) {
             throw new \Exception();
         }
 
-        Assert::assertEquals(
-            ValidEmails::listValidEmails()[0],
-            $user->primaryEmailStatus()->email()->email()
-        );
-        Assert::assertInternalType(
-            'string',
-            $user->primaryEmailStatus()->verificationCode()->verificationCode()
-        );
-        Assert::assertTrue(
-            password_verify(
-                ValidPasswords::listValidPasswords()[0],
-                $user->hashedPassword()->hash()
-            )
-        );
-        Assert::assertEquals(
-            ValidUsernames::listValidUsernames()[0],
-            $user->accountDetails()->username()
-        );
-        Assert::assertEquals(
-            true,
-            $user->accountDetails()->termsOfUseAccepted()
-        );
-
-        $storedEvent = $inMemoryEventStore->storedEvents()[0];
-
-        if (!($storedEvent instanceof SignedUp)) {
+        if ($user->primaryEmailStatus()->email()->email() !== $signedUp->primaryEmail()) {
             throw new \Exception();
         }
+
+        Assert::assertCount(1, $inMemoryEventStore->storedEvents());
         Assert::assertEquals(
-            ValidEmails::listValidEmails()[0],
-            $storedEvent->primaryEmail()
-        );
-        Assert::assertInternalType(
-            'string',
-            $storedEvent->primaryEmailVerificationCode()
-        );
-        Assert::assertTrue(
-            password_verify(
-                ValidPasswords::listValidPasswords()[0],
-                $storedEvent->hashedPassword()
-            )
-        );
-        Assert::assertEquals(
-            ValidUsernames::listValidUsernames()[0],
-            $storedEvent->username()
-        );
-        Assert::assertEquals(
-            true,
-            $storedEvent->termsOfUseAccepted()
+            $signedUp,
+            $inMemoryEventStore->storedEvents()[0]
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testAggregateIsNotSavedUntilTransactionIsCompleted(): void
     {
         $inMemoryEventStore = $this->createNewInMemoryEventStore();
 
-        $signedUp = SignedUp::fromProperties(
-            [],
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
+        $signedUp = SampleEvents::signedUp();
         $inMemoryEventStore->beginTransaction();
         $inMemoryEventStore->save($signedUp);
         $inMemoryEventStore->cancelTransaction();
@@ -139,12 +76,10 @@ class InMemoryEventStoreTest extends UnitTestBase
             null,
             $user
         );
+        Assert::assertCount(0, $inMemoryEventStore->storedEvents());
         $inMemoryEventStore->completeTransaction();
     }
 
-    /**
-     * @test
-     */
     public function testCompletingTransactionRequiresActiveTransaction(): void
     {
         try {
@@ -162,9 +97,6 @@ class InMemoryEventStoreTest extends UnitTestBase
         Assert::fail('Did not have expected exception');
     }
 
-    /**
-     * @test
-     */
     public function testCancellingTransactionRequiresActiveTransaction(): void
     {
         try {
@@ -210,13 +142,7 @@ class InMemoryEventStoreTest extends UnitTestBase
         try {
             $inMemoryEventStore = $this->createNewInMemoryEventStore();
 
-            $signedUp = SignedUp::fromProperties(
-                [],
-                ValidEmails::listValidEmails()[0],
-                ValidPasswords::listValidPasswords()[0],
-                ValidUsernames::listValidUsernames()[0],
-                true
-            );
+            $signedUp = SampleEvents::signedUp();
             $inMemoryEventStore->save($signedUp);
         } catch (EventStoreCannotWrite $eventStoreCannotWrite) {
             Assert::assertInstanceOf(

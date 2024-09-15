@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SessionTokenValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidSessionTokens(): void
     {
         foreach (ValidSessionTokens::listValidSessionTokens() as $token) {
@@ -24,9 +21,6 @@ class SessionTokenValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidSessionTokens(): void
     {
         foreach (InvalidSessionTokens::listInvalidSessionTokens() as $token) {

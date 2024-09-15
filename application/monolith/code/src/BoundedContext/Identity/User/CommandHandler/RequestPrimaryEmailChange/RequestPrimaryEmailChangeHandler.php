@@ -49,7 +49,7 @@ class RequestPrimaryEmailChangeHandler
      *
      * @throws UserNotFound|EmailIsNotChanging|PasswordDoesNotMatch
      * @throws EmailIsTaken|InvalidEmail|InvalidId
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite|QueuingFailure
+     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
      */
     public function handle(RequestPrimaryEmailChange $command): void
     {

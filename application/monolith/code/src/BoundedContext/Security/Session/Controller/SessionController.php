@@ -35,8 +35,6 @@ class SessionController extends BaseController
     }
 
     /**
-     * @Route("/security/session/sign-in", name="V1_Security_Session_SignIn", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Security_Session_SignIn")
      * @ResponseSchema(name="V1_Security_Session_SignIn")
      */
@@ -55,8 +53,6 @@ class SessionController extends BaseController
     }
 
     /**
-     * @Route("/security/session/refresh-token", name="V1_Security_Session_RefreshToken", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Security_Session_RefreshToken")
      * @ResponseSchema(name="V1_Security_Session_RefreshToken")
      */
@@ -75,8 +71,6 @@ class SessionController extends BaseController
     }
 
     /**
-     * @Route("/security/session/sign-out", name="V1_Security_Session_SignOut", methods={"POST"})
-     *
      * @RequestSchema(name="V1_Security_Session_SignOut")
      * @ResponseSchema(name="V1_Security_Session_SignOut")
      */

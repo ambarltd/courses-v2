@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class JsonSchemaValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValid(): void
     {
         $validator = new Validator();
@@ -76,9 +73,6 @@ class JsonSchemaValidatorTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testInvalid(): void
     {
         $validator = new Validator();

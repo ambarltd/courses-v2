@@ -56,11 +56,11 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
         );
         Assert::assertEquals(
             null,
-            $primaryEmailVerified->sourceEventId()
+            $primaryEmailVerified->causationId()
         );
         Assert::assertEquals(
             [1, 2, 3],
-            $primaryEmailVerified->eventMetadata()
+            $primaryEmailVerified->metadata()
         );
         Assert::assertEquals(
             'code1234',

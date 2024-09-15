@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class PasswordValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValid(): void
     {
         foreach (ValidPasswords::listValidPasswords() as $password) {
@@ -24,9 +21,6 @@ class PasswordValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalid(): void
     {
         foreach (InvalidPasswords::listInvalidPasswords() as $password) {

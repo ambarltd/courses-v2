@@ -20,27 +20,15 @@ class BaseController extends AbstractController
     /**
      * @var object[]
      */
-    protected $services = [];
+    protected array $services = [];
 
-    /**
-     * @var JsonPostRequestMapper
-     */
-    private $jsonPostRequestMapper;
+    private JsonPostRequestMapper $jsonPostRequestMapper;
 
-    /**
-     * @var JsonSchemaFetcher
-     */
-    private $jsonSchemaFetcher;
+    private JsonSchemaFetcher $jsonSchemaFetcher;
 
-    /**
-     * @var JsonSchemaValidator
-     */
-    private $jsonSchemaValidator;
+    private JsonSchemaValidator $jsonSchemaValidator;
 
-    /**
-     * @var PhpOutLogger
-     */
-    private $phpOutLogger;
+    private PhpOutLogger $phpOutLogger;
 
     private bool $shouldValidateResponseSchemas = false;
 

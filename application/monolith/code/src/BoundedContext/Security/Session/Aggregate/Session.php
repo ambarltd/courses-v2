@@ -18,15 +18,9 @@ class Session implements Aggregate
 {
     use AggregateTrait;
 
-    /**
-     * @var SessionDetails
-     */
-    private $sessionDetails;
+    private SessionDetails $sessionDetails;
 
-    /**
-     * @var SessionIsSignedOut|null
-     */
-    private $sessionIsSignedOut;
+    private ?SessionIsSignedOut$sessionIsSignedOut;
 
     public function sessionDetails(): SessionDetails
     {
@@ -40,10 +34,11 @@ class Session implements Aggregate
 
     public static function fromProperties(
         Id $id,
+        int $aggregateVersion,
         SessionDetails $sessionDetails,
-        ?SessionIsSignedOut $sessionIsSignedOut
+        ?SessionIsSignedOut $sessionIsSignedOut,
     ): self {
-        $session = new self($id);
+        $session = new self($id, $aggregateVersion);
 
         $session->sessionDetails = $sessionDetails;
         $session->sessionIsSignedOut = $sessionIsSignedOut;

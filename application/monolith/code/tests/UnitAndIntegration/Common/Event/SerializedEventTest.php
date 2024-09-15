@@ -21,8 +21,8 @@ class SerializedEventTest extends UnitTestBase
            'eventId1',
            'aggregateId1',
            'authorizerId1',
-           'sourceEventId1',
-           'eventOccurredOn1',
+           'causationId1',
+           'recordedOn1',
            'eventName1',
            $this->jsonEncodeOrThrowException(['field_1' => 'test_1']),
            $this->jsonEncodeOrThrowException(['field_2' => 'test_2'])
@@ -44,13 +44,13 @@ class SerializedEventTest extends UnitTestBase
        );
 
         Assert::assertEquals(
-           'sourceEventId1',
-           $serializedEvent->sourceEventId()
+           'causationId1',
+           $serializedEvent->causationId()
        );
 
         Assert::assertEquals(
-           'eventOccurredOn1',
-           $serializedEvent->eventOccurredOn()
+           'recordedOn1',
+           $serializedEvent->recordedOn()
        );
 
         Assert::assertEquals(

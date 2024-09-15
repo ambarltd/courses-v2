@@ -11,23 +11,30 @@ abstract class IdCreator
      * The random_bytes function takes a number of bytes. So the number of bits must be a multiple of 6 and 8.
      * 42 bytes / 336 bits / approximately 10^101. Unlikely collisions, and safe from brute forcing for a while.
      *
-     * There is no '=' padding because of the chosen number of bytes. '+' and '/' are respectively
-     * substituted by '-' and '_', such that the id is url safe.
+     * There is no '=' padding because of the chosen number of bytes.
+     *
+     * '+' and '/' are respectively substituted by 'A' and 'B', such that the id is url safe and only uses
+     * alphanumeric characters, although unfortunately reducing the effective number of bytes.
      *
      * @see https://en.wikipedia.org/wiki/Base64
      */
     public static function create(): string
     {
         $base64String = base64_encode(random_bytes(42)); // 336 / 6 = 56 characters
-        $urlSafeString = str_replace('+', '-', $base64String);
-        $urlSafeString = str_replace('/', '_', $urlSafeString);
+        $urlSafeString = str_replace('+', 'A', $base64String);
+        $urlSafeString = str_replace('/', 'B', $urlSafeString);
 
         return $urlSafeString;
     }
-    public static function createFromString(string $string): string
+    public static function createByHashingString(string $string): string
     {
-        // TODO
+        $sha512 = hash('sha512', $string);
+        $truncatedHash = substr($sha512, 0, 42);
 
-        return "";
+        $base64String = base64_encode($truncatedHash);
+        $urlSafeString = str_replace('+', 'A', $base64String);
+        $urlSafeString = str_replace('/', 'B', $urlSafeString);
+
+        return $urlSafeString;
     }
 }

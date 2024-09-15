@@ -4,10 +4,10 @@
   "properties": {
     "type": {
       "type": "string",
-      "enum": ["galeas_id"]
+      "enum": ["payload_id"]
     },
     "id": {
-      "$ref": "Event/Shared/GaleasIdString.json"
+      "$ref": "Event/Shared/IdString.json"
     }
   },
   "required": [

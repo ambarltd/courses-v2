@@ -19,7 +19,7 @@ class SignedUpTest extends UnitTestBase
      */
     public function testCreate(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [1, 2, 3],
             'test@example.com',
             'my_password',
@@ -49,11 +49,11 @@ class SignedUpTest extends UnitTestBase
         );
         Assert::assertEquals(
             null,
-            $signedUp->sourceEventId()
+            $signedUp->causationId()
         );
         Assert::assertEquals(
             [1, 2, 3],
-            $signedUp->eventMetadata()
+            $signedUp->metadata()
         );
         Assert::assertEquals(
             'test@example.com',
@@ -93,7 +93,7 @@ class SignedUpTest extends UnitTestBase
      */
     public function testCreateAggregate(): void
     {
-        $user = SignedUp::fromProperties(
+        $user = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'test@example.com',
             'my_password',

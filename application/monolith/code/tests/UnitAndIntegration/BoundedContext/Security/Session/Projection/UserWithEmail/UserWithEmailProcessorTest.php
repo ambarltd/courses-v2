@@ -28,7 +28,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
         $userWithEmailProcessorService = $this->getContainer()
             ->get(UserWithEmailProcessor::class);
 
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',

@@ -8,26 +8,35 @@ use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 
 class PrimaryEmailVerified implements EventTransformedUser
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $verifiedWithCode;
+    private string $verifiedWithCode;
 
     public static function fromProperties(
         Id $aggregateId,
-        Id $authorizerId,
+        int $aggregateVersion,
         array $metadata,
         string $verifiedWithCode
     ): PrimaryEmailVerified {
-        $event = new self($aggregateId, $authorizerId, $metadata);
-
+        $eventId = Id::createNew();
+        $aggregateVersion = 1;
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $recordedOn = new \DateTimeImmutable("now");
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
         $event->verifiedWithCode = $verifiedWithCode;
 
         return $event;

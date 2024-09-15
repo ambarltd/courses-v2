@@ -6,28 +6,13 @@ namespace Galeas\Api\BoundedContext\Identity\User\Command;
 
 class SignUp
 {
-    /**
-     * @var string
-     */
-    public $primaryEmail;
+    public string $primaryEmail;
 
-    /**
-     * @var string
-     */
-    public $password;
+    public string $password;
 
-    /**
-     * @var string
-     */
-    public $username;
+    public string $username;
 
-    /**
-     * @var bool
-     */
-    public $termsOfUseAccepted;
+    public string $termsOfUseAccepted;
 
-    /**
-     * @var array
-     */
-    public $metadata;
+    public array $metadata;
 }

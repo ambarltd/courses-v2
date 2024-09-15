@@ -25,7 +25,7 @@ class TakenEmailProcessorTest extends KernelTestBase
         $takenEmailProcessorService = $this->getContainer()
             ->get(TakenEmailProcessor::class);
 
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',
@@ -57,14 +57,14 @@ class TakenEmailProcessorTest extends KernelTestBase
         $takenEmailProcessorService = $this->getContainer()
             ->get(TakenEmailProcessor::class);
 
-        $signedUp1 = SignedUp::fromProperties(
+        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',
             'username_test_1',
             false
         );
-        $signedUp2 = SignedUp::fromProperties(
+        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'Test2@example.com',
             'password_test_123',

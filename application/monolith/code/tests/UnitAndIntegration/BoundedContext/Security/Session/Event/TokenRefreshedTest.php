@@ -35,7 +35,7 @@ class TokenRefreshedTest extends UnitTestBase
 
         Assert::assertEquals($aggregateId, $tokenRefreshed->aggregateId());
         Assert::assertEquals($authorizerId, $tokenRefreshed->authorizerId());
-        Assert::assertEquals($metadata, $tokenRefreshed->eventMetadata());
+        Assert::assertEquals($metadata, $tokenRefreshed->metadata());
         Assert::assertEquals($withIp, $tokenRefreshed->withIp());
         Assert::assertEquals($withSessionToken, $tokenRefreshed->withExistingSessionToken());
         Assert::assertTrue(

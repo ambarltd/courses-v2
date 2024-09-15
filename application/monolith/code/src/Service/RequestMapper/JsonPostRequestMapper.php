@@ -14,16 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class JsonPostRequestMapper
 {
+    private UserIdFromSignedInSessionToken $userIdFromSignedInSessionToken;
 
-    /**
-     * @var UserIdFromSignedInSessionToken
-     */
-    private $userIdFromSignedInSessionToken;
-
-    /**
-     * @var int
-     */
-    private $sessionExpiresAfterSeconds;
+    private int $sessionExpiresAfterSeconds;
 
     /**
      * @throws \RuntimeException
@@ -37,6 +30,38 @@ class JsonPostRequestMapper
             throw new \RuntimeException('Invalid sessionExpiresAfterSeconds: '.$sessionExpiresAfterSeconds);
         }
         $this->sessionExpiresAfterSeconds = intval($sessionExpiresAfterSeconds);
+    }
+
+    /**
+     * @throws InvalidJson|InvalidContentType
+     */
+    public function jsonBodyFromRequest(Request $request): string
+    {
+        $requestArray = $this->requestJsonToRequestArray($request);
+
+        $return = json_encode($requestArray);
+
+        if (is_string($return)) {
+            return $return;
+        }
+
+        throw new InvalidJson();
+    }
+    
+    /**
+     * @throws InvalidContentType|InvalidJson
+     * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
+     */
+    public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
+    {
+        $requestArray = $this->requestJsonToRequestArray($request);
+        $overridenArray = $this->overrideSensitiveFieldsInRequestArrayAndRemoveMetadata($requestArray, $request, $commandOrQueryClass);
+        $validatedMetadata = $this->metadataToValidatedMetadata($requestArray["metadata"], $request);
+
+        $safeArray = $overridenArray;
+        $safeArray["metadata"] = $validatedMetadata;
+
+        return $this->safeArrayToCommandOrQuery($commandOrQueryClass, $safeArray);
     }
 
     /**
@@ -73,114 +98,20 @@ class JsonPostRequestMapper
 
         return $requestArray;
     }
-
-    /**
-     * @throws GeoDatabaseCrash
-     */
-    private function processRequestArrayComingFromEndUser(
-        array $requestArray,
-        string $ipAddress,
-        ?string $authorizerId,
-        ?string $sourceEventId,
-        ?string $userAgent,
-        ?string $referer,
-        ?string $withSessionToken
+    
+    private function overrideSensitiveFieldsInRequestArrayAndRemoveMetadata(
+        array $requestArray, 
+        Request $request, 
+        string $commandOrQueryClass
     ): array {
-        $requestArray['authorizerId'] = $authorizerId;
-        $requestArray['sourceEventId'] = $sourceEventId;
-        $requestArray['withSessionToken'] = $withSessionToken;
+        $requestArray["authorizerId"] = null;
+        $requestArray["withIp"] = null;
+        $requestArray["withSessionToken"] = null;
 
-        $receivedEnvironment = null;
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('environment', $requestArray['metadata']) &&
-            in_array($requestArray['metadata']['environment'], ['native', 'browser', 'other', 'unknown'], true)
-        ) {
-            $receivedEnvironment = $requestArray['metadata']['environment'];
-        }
-
-        $receivedDevicePlatform = null;
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('devicePlatform', $requestArray['metadata']) &&
-            in_array($requestArray['metadata']['devicePlatform'], ['ios', 'android', 'mac', 'windows', 'linux', 'other', 'unknown'], true)
-        ) {
-            $receivedDevicePlatform = $requestArray['metadata']['devicePlatform'];
-        }
-
-        $receivedDeviceModel = null;
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('deviceModel', $requestArray['metadata']) &&
-            is_string($requestArray['metadata']['deviceModel']) &&
-            '' !== $requestArray['metadata']['deviceModel']
-        ) {
-            $receivedDeviceModel = $requestArray['metadata']['deviceModel'];
-        }
-
-        $receivedDeviceOSVersion = null;
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('deviceOSVersion', $requestArray['metadata']) &&
-            is_string($requestArray['metadata']['deviceOSVersion']) &&
-            '' !== $requestArray['metadata']['deviceOSVersion']
-        ) {
-            $receivedDeviceOSVersion = $requestArray['metadata']['deviceOSVersion'];
-        }
-
-        $receivedDeviceOrientation = null;
-        if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('deviceOrientation', $requestArray['metadata']) &&
-            is_string($requestArray['metadata']['deviceOrientation']) &&
-            in_array($requestArray['metadata']['deviceOrientation'], ['portrait', 'landscape', 'does_not_apply', 'other', 'unknown'], true)
-        ) {
-            $receivedDeviceOrientation = $requestArray['metadata']['deviceOrientation'];
-        }
-
-        // Override metadata such that only whitelisted fields can be passed by the end user.
-        $requestArray['metadata'] = [
-            'environment' => $receivedEnvironment,
-            'devicePlatform' => $receivedDevicePlatform,
-            'deviceModel' => $receivedDeviceModel,
-            'deviceOSVersion' => $receivedDeviceOSVersion,
-            'deviceOrientation' => $receivedDeviceOrientation,
-            'ipAddress' => $ipAddress,
-            'userAgent' => array_key_exists('userAgent', $requestArray['metadata']) ? $requestArray['metadata']['userAgent'] : $userAgent,
-            'referer' => array_key_exists('referer', $requestArray['metadata']) ? $requestArray['metadata']['referer'] : $referer,
-            'withSessionToken' => $withSessionToken,
-        ];
-
-        return $requestArray;
-    }
-
-    private function requestArrayToCommandOrQuery(string $commandOrQueryClass, array $requestArray): object
-    {
-        $command = new $commandOrQueryClass();
-
-        foreach ($requestArray as $propertyName => $value) {
-            if (property_exists($commandOrQueryClass, $propertyName)) {
-                $command->$propertyName = $value;
-            }
-        }
-
-        return $command;
-    }
-
-    /**
-     * @throws InvalidContentType|InvalidJson
-     * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
-     */
-    public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
-    {
-        $requestArray = $this->requestJsonToRequestArray($request);
-
-        $authorizerId = null;
         $withSessionToken = $request->headers->get('X-With-Session-Token', null);
         if (is_array($withSessionToken)) {
             $withSessionToken = array_values($withSessionToken)[0];
         }
-
         if (
             array_key_exists('metadata', $requestArray) &&
             array_key_exists('withSessionToken', $requestArray['metadata']) &&
@@ -191,11 +122,12 @@ class JsonPostRequestMapper
 
         try {
             if (is_string($withSessionToken)) {
-                $authorizerId = $this->userIdFromSignedInSessionToken
+                $requestArray["authorizerId"] = $this->userIdFromSignedInSessionToken
                     ->userIdFromSignedInSessionToken(
                         $withSessionToken,
                         (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds')
                     );
+                $requestArray['withSessionToken'] = $withSessionToken;
             }
         } catch (ProjectionCannotRead $exception) {
             throw new CannotResolveAuthorizerFromSessionTokenDatabase();
@@ -203,7 +135,14 @@ class JsonPostRequestMapper
 
         if (
             property_exists(new $commandOrQueryClass(), 'authorizerId') &&
-            null === $authorizerId
+            null === $requestArray["authorizerId"]
+        ) {
+            throw new MissingExpectedSessionToken();
+        }
+
+        if (
+            property_exists(new $commandOrQueryClass(), 'withSessionToken') &&
+            null === $requestArray["withSessionToken"]
         ) {
             throw new MissingExpectedSessionToken();
         }
@@ -213,44 +152,133 @@ class JsonPostRequestMapper
         ) {
             $requestArray['withIp'] = $request->server->get('REMOTE_ADDR');
         }
-
-        $userAgent = $request->headers->get('User-Agent', null);
-        if (is_array($userAgent)) {
-            $userAgent = array_values($userAgent)[0];
-        }
-        $referer = $request->headers->get('Referer', null);
-
-        if (is_array($referer)) {
-            $referer = array_values($referer)[0];
-        }
-
-        $requestArray = $this->processRequestArrayComingFromEndUser(
-            $requestArray,
-            // instead of dealing with possible X-Forwarded-For tainting in $request->getClientIp()
-            $request->server->get('REMOTE_ADDR'),
-            $authorizerId,
-            null,
-            $userAgent,
-            $referer,
-            $withSessionToken
-        );
-
-        return $this->requestArrayToCommandOrQuery($commandOrQueryClass, $requestArray);
+        
+        unset($requestArray["metadata"]);
+        
+        return $requestArray;
     }
 
-    /**
-     * @throws InvalidJson|InvalidContentType
-     */
-    public function jsonBodyFromRequest(Request $request): string
-    {
-        $requestArray = $this->requestJsonToRequestArray($request);
+    private function metadataToValidatedMetadata(
+        array $metadata,
+        Request $request
+    ): array {
 
-        $return = json_encode($requestArray);
-
-        if (is_string($return)) {
-            return $return;
+        $receivedEnvironment = null;
+        if (
+            array_key_exists('environment', $metadata) &&
+            in_array($metadata['environment'], ['native', 'browser', 'other', 'unknown'], true)
+        ) {
+            $receivedEnvironment = $metadata['environment'];
         }
 
-        throw new InvalidJson();
+        $receivedDevicePlatform = null;
+        if (
+            array_key_exists('devicePlatform', $metadata) &&
+            in_array($metadata['devicePlatform'], ['ios', 'android', 'mac', 'windows', 'linux', 'other', 'unknown'], true)
+        ) {
+            $receivedDevicePlatform = $metadata['devicePlatform'];
+        }
+
+        $receivedDeviceModel = null;
+        if (
+            array_key_exists('deviceModel', $metadata) &&
+            is_string($metadata['deviceModel']) &&
+            '' !== $metadata['deviceModel']
+        ) {
+            $receivedDeviceModel = $metadata['deviceModel'];
+        }
+
+        $receivedDeviceOSVersion = null;
+        if (
+            array_key_exists('deviceOSVersion', $metadata) &&
+            is_string($metadata['deviceOSVersion']) &&
+            '' !== $metadata['deviceOSVersion']
+        ) {
+            $receivedDeviceOSVersion = $metadata['deviceOSVersion'];
+        }
+
+        $receivedDeviceOrientation = null;
+        if (
+            array_key_exists('deviceOrientation', $metadata) &&
+            is_string($metadata['deviceOrientation']) &&
+            in_array($metadata['deviceOrientation'], ['portrait', 'landscape', 'does_not_apply', 'other', 'unknown'], true)
+        ) {
+            $receivedDeviceOrientation = $metadata['deviceOrientation'];
+        }
+
+        $receivedUserAgent = $request->headers->get('User-Agent', null);
+        if (is_array($receivedUserAgent)) {
+            $receivedUserAgent = array_values($receivedUserAgent)[0];
+        }
+        if (
+            array_key_exists('userAgent', $metadata) &&
+            (is_string($metadata['userAgent']) || null == $metadata['userAgent'])
+        ) {
+            $receivedUserAgent = $metadata['userAgent'];
+        }
+
+        $receivedReferer = $request->headers->get('Referer', null);
+        if (is_array($receivedReferer)) {
+            $receivedReferer = array_values($receivedReferer)[0];
+        }
+        if (
+            array_key_exists('referer', $metadata) &&
+            (is_string($metadata['referer']) || null == $metadata['referer'])
+        ) {
+            $receivedReferer = $metadata['referer'];
+        }
+
+        $receivedSessionToken = null;
+        if (
+            array_key_exists('withSessionToken', $metadata) &&
+            is_string($metadata['withSessionToken']) &&
+            '' !== $metadata['withSessionToken']
+        ) {
+            $receivedSessionToken = $metadata['withSessionToken'];
+        }
+
+        $receivedLatitude = null;
+        if (
+            array_key_exists('latitude', $metadata) &&
+            (is_float($metadata['latitude']) || is_int($metadata['latitude']))
+        ) {
+            $receivedLatitude = $metadata['latitude'];
+        }
+
+        $receivedLongitude = null;
+        if (
+            array_key_exists('longitude', $metadata) &&
+            (is_float($metadata['longitude']) || is_int($metadata['longitude']))
+        ) {
+            $receivedLongitude = $metadata['longitude'];
+        }
+
+        // Override metadata such that only allow listed fields can be passed by the end user.
+        return [
+            'environment' => $receivedEnvironment,
+            'devicePlatform' => $receivedDevicePlatform,
+            'deviceModel' => $receivedDeviceModel,
+            'deviceOSVersion' => $receivedDeviceOSVersion,
+            'deviceOrientation' => $receivedDeviceOrientation,
+            'latitude' => $receivedLatitude,
+            'longitude' => $receivedLongitude,
+            'ipAddress' => $request->server->get('REMOTE_ADDR'),
+            'userAgent' => $receivedUserAgent,
+            'referer' => $receivedReferer,
+            'withSessionToken' => $receivedSessionToken,
+        ];
+    }
+
+    private function safeArrayToCommandOrQuery(string $commandOrQueryClass, array $safeArray): object
+    {
+        $command = new $commandOrQueryClass();
+
+        foreach ($safeArray as $propertyName => $value) {
+            if (property_exists($commandOrQueryClass, $propertyName)) {
+                $command->$propertyName = $value;
+            }
+        }
+
+        return $command;
     }
 }

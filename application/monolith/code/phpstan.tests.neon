@@ -7,7 +7,7 @@ parameters:
             message: '#PHPUnit\\Framework\\MockObject\\MockObject given\.#' #todo change this to phpunit extension
             path: '%currentWorkingDirectory%/tests/UnitAndIntegration/**HandlerTest.php'
         -
-            message: '#Parameter \#4 $sourceEventId of static method Galeas\\Api\\Common\\Event\\SerializedEvent::fromProperties() expects string|null, Galeas\\Api\\Common\\Id\\Id|null given. #'
+            message: '#Parameter \#4 $causationId of static method Galeas\\Api\\Common\\Event\\SerializedEvent::fromProperties() expects string|null, Galeas\\Api\\Common\\Id\\Id|null given. #'
             path: '%currentWorkingDirectory%/tests/UnitAndIntegration/Common/Event/EventMapperTest.php'
         -
             message: '#Cannot call method toArray\(\) on array\|int\|object\|null\.#'

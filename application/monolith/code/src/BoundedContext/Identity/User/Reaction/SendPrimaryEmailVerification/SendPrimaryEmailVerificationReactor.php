@@ -49,7 +49,7 @@ class SendPrimaryEmailVerificationReactor
         }
 
         $this->eventStore->beginTransaction();
-        $newEventId = Id::newDeterministicIdFromAnotherId(
+        $newEventId = Id::createNewByHashing(
             "Identity/User/PrimaryEmailVerificationSent:" . $event->eventId()->id()
         );
         $existingEvent = $this->eventStore->findEvent($newEventId->id());

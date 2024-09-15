@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\EventStore;
 
 use Galeas\Api\Common\Aggregate\Aggregate;
+use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\Event\EventMapper;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Service\EventStore\Exception\CancellingTransactionRequiresActiveTransaction;
@@ -27,17 +27,14 @@ class InMemoryEventStore implements EventStore
     /**
      * @var Event[]
      */
-    private $storedEvents = [];
+    private array $storedEvents = [];
 
     /**
      * @var Event[]
      */
-    private $uncommittedEvents = [];
+    private array $uncommittedEvents = [];
 
-    /**
-     * @var bool
-     */
-    private $isTransactionActive = false;
+    private bool $isTransactionActive = false;
 
     /**
      * {@inheritdoc}
@@ -57,9 +54,6 @@ class InMemoryEventStore implements EventStore
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function completeTransaction(): void
     {
         try {
@@ -82,9 +76,6 @@ class InMemoryEventStore implements EventStore
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function cancelTransaction(): void
     {
         try {
@@ -102,9 +93,6 @@ class InMemoryEventStore implements EventStore
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function find(string $aggregateId): ?Aggregate
     {
         try {
@@ -132,7 +120,7 @@ class InMemoryEventStore implements EventStore
                 return null;
             }
 
-            return EventMapper::aggregateFromEvents(
+            return AggregateFromEvents::aggregateFromEvents(
                 $creationEvent,
                 $transformationEvents
             );
@@ -143,13 +131,16 @@ class InMemoryEventStore implements EventStore
 
     public function findEvent(string $eventId): ?Event
     {
-        // TODO: Implement findEvent() method.
+        foreach ($this->storedEvents as $event) {
+            if ($event->eventId()->id() === $eventId) {
+                return $event;
+            }
+        }
+
+        return null;
     }
 
 
-    /**
-     * {@inheritdoc}
-     */
     public function save(Event $event): void
     {
         try {

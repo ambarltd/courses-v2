@@ -10,9 +10,9 @@ services:
         public: false
         bind:
             $eventStore: '@Galeas\Api\Service\EventStore\SQLEventStore'
-            $queue: '@Galeas\Api\Service\Queue\ImmediateAsynchronousQueue'
             $reactionDocumentManager: '@doctrine_mongodb.odm.reaction_document_manager'
             $projectionDocumentManager: '@doctrine_mongodb.odm.projection_document_manager'
+            $kernelEnvironment: '%kernel.environment%'
 
     # Make any class in src/BoundedContext, src/Service, src/JsonSchema, srv/Console which is depended on by the service container, a service.
     # https://symfony.com/doc/current/service_container/3.3-di-changes.html#services-are-loaded-automatically
@@ -37,6 +37,11 @@ services:
 
     JsonSchema\Validator:
         class: JsonSchema\Validator
+
+    Galeas\Api\JsonSchema\Controller\SchemaController:
+        class: Galeas\Api\JsonSchema\Controller\SchemaController
+        arguments:
+            $kernelEnvironment: '%kernel.environment%'
 
     ### EVENT STORE ####
 

@@ -4,7 +4,7 @@
   "additionalProperties": false,
   "properties": {
     "password": {
-      "$ref": "Request/Shared/1024String.json"
+      "$ref": "Request/Shared/StringMaxLength1024.json"
     },
     "newEmailRequested": {
       "$ref": "Request/Shared/ValidatedEmail.json"

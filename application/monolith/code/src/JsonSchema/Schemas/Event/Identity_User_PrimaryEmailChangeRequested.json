@@ -4,22 +4,25 @@
   "additionalProperties": false,
   "properties": {
     "eventId": {
-      "$ref": "Event/Shared/GaleasIdString.json"
+      "$ref": "Event/Shared/IdString.json"
     },
     "aggregateId": {
-      "$ref": "Event/Shared/GaleasIdString.json"
+      "$ref": "Event/Shared/IdString.json"
     },
     "authorizerId": {
-      "$ref": "Event/Shared/GaleasIdString.json"
+      "$ref": "Event/Shared/IdString.json"
     },
-    "sourceEventId": {
-      "$ref": "Event/Shared/GaleasIdNull.json"
+    "causationId": {
+      "$ref": "Event/Shared/IdString.json"
     },
-    "eventOccurredOn": {
-      "$ref": "Event/Shared/GaleasDateNoTimezoneString.json"
+    "correlationId": {
+      "$ref": "Event/Shared/IdString.json"
+    },
+    "recordedOn": {
+      "$ref": "Event/Shared/RecordedOnString.json"
     },
     "eventName": {
-      "$ref": "Event/Shared/GaleasEventNameString.json"
+      "$ref": "Event/Shared/EventNameString.json"
     },
     "payload": {
       "type": "object",
@@ -49,8 +52,9 @@
     "eventId",
     "aggregateId",
     "authorizerId",
-    "sourceEventId",
-    "eventOccurredOn",
+    "causationId",
+    "correlationId",
+    "recordedOn",
     "eventName",
     "payload",
     "metadata"

@@ -41,7 +41,7 @@ class SessionProcessor implements ProjectionEventProcessor
                         $event->asUser()->id(),
                         $event->sessionTokenCreated(),
                         false,
-                        $event->eventOccurredOn()
+                        $event->recordedOn()
                     );
                 } else {
                     $session = Session::fromProperties(
@@ -49,7 +49,7 @@ class SessionProcessor implements ProjectionEventProcessor
                         $event->asUser()->id(),
                         $event->sessionTokenCreated(),
                         false,
-                        $event->eventOccurredOn()
+                        $event->recordedOn()
                     );
                 }
 
@@ -64,7 +64,7 @@ class SessionProcessor implements ProjectionEventProcessor
                         $session->getUserId(),
                         $event->refreshedSessionToken(),
                         false,
-                        $event->eventOccurredOn()
+                        $event->recordedOn()
                     );
                 } else {
                     $session = Session::fromProperties(
@@ -72,7 +72,7 @@ class SessionProcessor implements ProjectionEventProcessor
                         null,
                         $event->refreshedSessionToken(),
                         false,
-                        $event->eventOccurredOn()
+                        $event->recordedOn()
                     );
                 }
 
@@ -93,7 +93,7 @@ class SessionProcessor implements ProjectionEventProcessor
                         null,
                         $event->withSessionToken(),
                         true,
-                        $event->eventOccurredOn()
+                        $event->recordedOn()
                     );
                 }
 

@@ -17,25 +17,13 @@ class User implements Aggregate
 {
     use AggregateTrait;
 
-    /**
-     * @var VerifiedEmail|UnverifiedEmail|RequestedNewEmail
-     */
-    private $primaryEmailStatus;
+    private VerifiedEmail|UnverifiedEmail|RequestedNewEmail $primaryEmailStatus;
 
-    /**
-     * @var HashedPassword
-     */
-    private $hashedPassword;
+    private HashedPassword $hashedPassword;
 
-    /**
-     * @var AccountDetails
-     */
-    private $accountDetails;
+    private AccountDetails $accountDetails;
 
-    /**
-     * @return VerifiedEmail|UnverifiedEmail|RequestedNewEmail
-     */
-    public function primaryEmailStatus()
+    public function primaryEmailStatus(): VerifiedEmail|UnverifiedEmail|RequestedNewEmail
     {
         return $this->primaryEmailStatus;
     }
@@ -50,16 +38,14 @@ class User implements Aggregate
         return $this->accountDetails;
     }
 
-    /**
-     * @param VerifiedEmail|UnverifiedEmail|RequestedNewEmail $primaryEmailStatus
-     */
     public static function fromProperties(
         Id $id,
-        $primaryEmailStatus,
+        int $aggregateVersion,
+        VerifiedEmail|UnverifiedEmail|RequestedNewEmail $primaryEmailStatus,
         HashedPassword $hashedPassword,
         AccountDetails $accountDetails
     ): User {
-        $user = new self($id);
+        $user = new self($id, $aggregateVersion);
 
         $user->primaryEmailStatus = $primaryEmailStatus;
         $user->hashedPassword = $hashedPassword;

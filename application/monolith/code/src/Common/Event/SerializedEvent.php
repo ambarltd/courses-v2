@@ -6,61 +6,41 @@ namespace Galeas\Api\Common\Event;
 
 class SerializedEvent
 {
-    /**
-     * @var string
-     */
-    private $eventId;
+    private string $eventId;
 
-    /**
-     * @var string
-     */
-    private $aggregateId;
+    private string $aggregateId;
 
-    /**
-     * @var string|null
-     */
-    private $authorizerId;
+    private int $aggregateVersion;
 
-    /**
-     * @var string|null
-     */
-    private $sourceEventId;
+    private string $causationId;
 
-    /**
-     * @var string
-     */
-    private $eventOccurredOn;
+    private string $correlationId;
 
-    /**
-     * @var string
-     */
-    private $eventName;
+    private string $recordedOn;
 
-    /**
-     * @var string
-     */
-    private $jsonPayload;
+    private string $eventName;
 
-    /**
-     * @var string
-     */
-    private $jsonMetadata;
+    private string $jsonPayload;
+
+    private string $jsonMetadata;
 
     private function __construct(
         string $eventId,
         string $aggregateId,
-        ?string $authorizerId,
-        ?string $sourceEventId,
-        string $eventOccurredOn,
+        int $aggregateVersion,
+        ?string $causationId,
+        ?string $correlationId,
+        string $recordedOn,
         string $eventName,
         string $jsonPayload,
         string $jsonMetadata
     ) {
         $this->eventId = $eventId;
         $this->aggregateId = $aggregateId;
-        $this->authorizerId = $authorizerId;
-        $this->sourceEventId = $sourceEventId;
-        $this->eventOccurredOn = $eventOccurredOn;
+        $this->aggregateVersion = $aggregateVersion;
+        $this->causationId = $causationId;
+        $this->correlationId = $correlationId;
+        $this->recordedOn = $recordedOn;
         $this->eventName = $eventName;
         $this->jsonPayload = $jsonPayload;
         $this->jsonMetadata = $jsonMetadata;
@@ -76,25 +56,24 @@ class SerializedEvent
         return $this->aggregateId;
     }
 
-    /**
-     * @return string
-     */
-    public function authorizerId(): ?string
+    public function aggregateVersion(): int
     {
-        return $this->authorizerId;
+        return $this->aggregateVersion;
     }
 
-    /**
-     * @return string
-     */
-    public function sourceEventId(): ?string
+    public function causationId(): string
     {
-        return $this->sourceEventId;
+        return $this->causationId;
     }
 
-    public function eventOccurredOn(): string
+    public function correlationId(): string
     {
-        return $this->eventOccurredOn;
+        return $this->correlationId;
+    }
+
+    public function recordedOn(): string
+    {
+        return $this->recordedOn;
     }
 
     public function eventName(): string
@@ -112,15 +91,13 @@ class SerializedEvent
         return $this->jsonMetadata;
     }
 
-    /**
-     * @return SerializedEvent
-     */
     public static function fromProperties(
         string $eventId,
         string $aggregateId,
-        ?string $authorizerId,
-        ?string $sourceEventId,
-        string $eventOccurredOn,
+        int $aggregateVersion,
+        string $causationId,
+        string $correlationId,
+        string $recordedOn,
         string $eventName,
         string $jsonPayload,
         string $jsonMetadata
@@ -128,9 +105,10 @@ class SerializedEvent
         return new self(
             $eventId,
             $aggregateId,
-            $authorizerId,
-            $sourceEventId,
-            $eventOccurredOn,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
             $eventName,
             $jsonPayload,
             $jsonMetadata

@@ -9,4 +9,6 @@ use Galeas\Api\Common\Id\Id;
 interface Aggregate
 {
     public function id(): Id;
+
+    public function aggregateVersion(): int;
 }

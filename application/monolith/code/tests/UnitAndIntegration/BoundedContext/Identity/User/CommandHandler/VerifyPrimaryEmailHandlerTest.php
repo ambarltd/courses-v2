@@ -27,7 +27,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testHandleUnverifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -90,7 +90,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
     }
 
@@ -99,7 +99,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testHandleRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -178,7 +178,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
     }
 
@@ -187,7 +187,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testNoUserFoundForCodeWhenUserIdIsNull(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -221,7 +221,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testNoUserFoundForCode(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -255,7 +255,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testEmailIsAlreadyVerified(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -296,7 +296,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testVerificationCodeDoesNotMatchForUnverifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -330,7 +330,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
      */
     public function testVerificationCodeDoesNotMatchForRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],

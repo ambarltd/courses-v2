@@ -6,52 +6,39 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Service\RequestMapper;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
+use Galeas\Api\BoundedContext\Security\Session\Command\RefreshToken;
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
-use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProcessor;
-use Galeas\Api\Common\Id\Id;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
+use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\JsonPostRequestMapper;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
-class JsonPostRequestMapperTest extends KernelTestBase
+class JsonPostRequestMapperTest extends UnitTestBase
 {
-    /**
-     * @var SignedIn
-     */
-    private $signedInEventForAuthorizerResolving;
+    private JsonPostRequestMapper $jsonPostRequestMapper;
 
     public function setUp(): void
     {
         parent::setUp();
-
-        $this->signedInEventForAuthorizerResolving = SignedIn::fromProperties(
-            [],
-            Id::createNew(),
-            'with_username',
-            'with_email',
-            'with_hashed_password',
-            'by_device_label',
-            '127.127.127.190'
+        $userIdFromSignedInSessionToken = $this->createMock(UserIdFromSignedInSessionToken::class);
+        $userIdFromSignedInSessionToken->method('userIdFromSignedInSessionToken')
+            ->with(
+                $this->equalTo('token_123'),
+                $this->anything()
+            )
+            ->willReturn('user_id_123');
+        $this->jsonPostRequestMapper = new JsonPostRequestMapper(
+            $userIdFromSignedInSessionToken,
+            "7200"
         );
-
-        $this->getContainer()
-            ->get(SessionProcessor::class)
-            ->process($this->signedInEventForAuthorizerResolving);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateCommand(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var VerifyPrimaryEmail $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -100,20 +87,75 @@ class JsonPostRequestMapperTest extends KernelTestBase
         Assert::assertEquals('Test_UserAgent', $command->metadata['userAgent']);
         Assert::assertEquals('example.com', $command->metadata['referer']);
         Assert::assertArrayNotHasKey('hack', $command->metadata);
-        Assert::assertObjectNotHasAttribute('hack', $command);
+        Assert::assertObjectNotHasProperty('hack', $command);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
+    public function testAuthorizerIdOnRefreshToken(): void
+    {
+        /** @var RefreshToken $command */
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
+            Request::create(
+                '',
+                'GET',
+                [],
+                [],
+                [],
+                [
+                    'CONTENT_TYPE' => 'application/json',
+                    'HTTP_USER_AGENT' => 'Test_UserAgent',
+                    'REMOTE_ADDR' => '77.96.237.178',
+                    'HTTP_REFERER' => 'example.com',
+                ],
+                $this->jsonEncodeOrThrowException([
+                    'authorizerId' => 'hackAuthorizerId',
+                    'withIp' => 'hackIpAddress',
+                    'withSessionToken' => 'hackWithSessionToken',
+                    'metadata' => [
+                        'withSessionToken' => 'token_123',
+                        'latitude' => 51.5074,
+                        'longitude' => 0.1278,
+                        'devicePlatform' => 'linux',
+                        'deviceModel' => 'Penguin 1.0',
+                        'deviceOSVersion' => 'Ubuntu 14.04',
+                        'deviceOrientation' => 'landscape',
+                        // overrides not allowed
+                        'city' => 'hack',
+                        'environment' => 'native',
+                        'ipAddress' => '50.50.50.50',
+                        'hack' => 'hack',
+                    ],
+                    // overrides not allowed
+                    'hack' => 'hack',
+                ])
+            ),
+            RefreshToken::class
+        );
+
+        Assert::assertInstanceOf(RefreshToken::class, $command);
+        Assert::assertEquals('user_id_123', $command->authorizerId);
+        Assert::assertEquals('77.96.237.178', $command->withIp);
+        Assert::assertEquals('token_123', $command->withSessionToken);
+        Assert::assertEquals(51.5074, $command->metadata['latitude']);
+        Assert::assertEquals(0.1278, $command->metadata['longitude']);
+        Assert::assertEquals('linux', $command->metadata['devicePlatform']);
+        Assert::assertEquals('Penguin 1.0', $command->metadata['deviceModel']);
+        Assert::assertEquals('Ubuntu 14.04', $command->metadata['deviceOSVersion']);
+        Assert::assertEquals('landscape', $command->metadata['deviceOrientation']);
+
+        // overrides not allowed
+        Assert::assertEquals('77.96.237.178', $command->metadata['ipAddress']);
+        Assert::assertEquals('Test_UserAgent', $command->metadata['userAgent']);
+        Assert::assertEquals('example.com', $command->metadata['referer']);
+        Assert::assertEquals('token_123', $command->metadata['withSessionToken']);
+        Assert::assertArrayNotHasKey('hack', $command->metadata);
+        Assert::assertObjectNotHasProperty('hack', $command);
+
+    }
+
     public function testCreateCommandOverrideReferer(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var VerifyPrimaryEmail $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -138,17 +180,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         Assert::assertEquals('www.example.com', $command->metadata['referer']);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateCommandOverrideRefererNull(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var VerifyPrimaryEmail $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -173,17 +208,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         Assert::assertEquals(null, $command->metadata['referer']);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateCommandOverrideUserAgent(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var VerifyPrimaryEmail $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -208,17 +236,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         Assert::assertEquals('Test_UserAgent_Override', $command->metadata['userAgent']);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateCommandOverrideUserAgentNull(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var VerifyPrimaryEmail $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -243,17 +264,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         Assert::assertEquals(null, $command->metadata['userAgent']);
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateCommand_ResolveWithIp(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
         /** @var SignIn $command */
-        $command = $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -291,18 +305,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @expectedException \Galeas\Api\Service\RequestMapper\Exception\InvalidContentType
-     *
-     * @throws \Exception
-     */
     public function testRejectsNonJsonContentType(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
-        $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $this->expectException(InvalidContentType::class);
+        $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -318,16 +324,10 @@ class JsonPostRequestMapperTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @expectedException \Galeas\Api\Service\RequestMapper\Exception\InvalidJson
-     */
     public function testRejectsInvalidJson(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
-        $requestMapper->createCommandOrQueryFromEndUserRequest(
+        $this->expectException(\Galeas\Api\Service\RequestMapper\Exception\InvalidJson::class);
+        $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
                 'GET',
@@ -343,16 +343,9 @@ class JsonPostRequestMapperTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testJsonFromRequest(): void
     {
-        $requestMapper = $this->getContainer()->get(JsonPostRequestMapper::class);
-
-        $json = $requestMapper->jsonBodyFromRequest(
+        $json = $this->jsonPostRequestMapper->jsonBodyFromRequest(
             Request::create(
                 '',
                 'GET',
@@ -391,9 +384,6 @@ class JsonPostRequestMapperTest extends KernelTestBase
         );
     }
 
-    /**
-     * @throws \Exception
-     */
     private function jsonEncodeOrThrowException(array $encodeThis): string
     {
         $encoded = json_encode($encodeThis);

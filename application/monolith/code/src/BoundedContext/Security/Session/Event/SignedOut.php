@@ -6,12 +6,12 @@ namespace Galeas\Api\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 
 class SignedOut implements EventTransformedSession
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
     /**
      * @var string

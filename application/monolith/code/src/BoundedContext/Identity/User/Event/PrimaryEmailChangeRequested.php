@@ -10,13 +10,13 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 
 class PrimaryEmailChangeRequested implements EventTransformedUser
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
     /**
      * @var string

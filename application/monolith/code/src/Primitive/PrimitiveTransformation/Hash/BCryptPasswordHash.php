@@ -6,9 +6,6 @@ namespace Galeas\Api\Primitive\PrimitiveTransformation\Hash;
 
 abstract class BCryptPasswordHash
 {
-    /**
-     * Returns null when hash cannot be created.
-     */
     public static function hash(
         string $password,
         int $bCryptCost

@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class EmailValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidEmails(): void
     {
         foreach (ValidEmails::listValidEmails() as $email) {
@@ -24,9 +21,6 @@ class EmailValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidEmails(): void
     {
         foreach (InvalidEmails::listInvalidEmails() as $email) {

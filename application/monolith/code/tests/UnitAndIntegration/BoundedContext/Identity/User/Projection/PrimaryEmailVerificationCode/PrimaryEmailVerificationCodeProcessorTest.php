@@ -25,7 +25,7 @@ class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
         $processorService = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProcessor::class);
 
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',
@@ -89,7 +89,7 @@ class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
         $processorService = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProcessor::class);
 
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',

@@ -13,7 +13,7 @@ abstract class IdValidator
             return false;
         }
 
-        if (1 === preg_match('/^[0-9a-zA-Z\-_]+$/', $verificationCode)) {
+        if (1 === preg_match('/^[0-9a-zA-Z]+$/', $verificationCode)) {
             return true;
         }
 

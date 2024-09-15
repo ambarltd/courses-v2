@@ -10,12 +10,10 @@ use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class RefreshTokenHandler
 {
@@ -39,7 +37,7 @@ class RefreshTokenHandler
 
     /**
      * @throws NoSessionFound|SessionUserDoesNotMatch|SessionTokenDoesNotMatch|InvalidIp|InvalidId
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|QueuingFailure|ProjectionCannotRead
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(RefreshToken $command): array
     {

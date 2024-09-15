@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class EmailVerificationCodeValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidVerificationCodes(): void
     {
         foreach (ValidVerificationCodes::listValidVerificationCodes() as $code) {
@@ -24,9 +21,6 @@ class EmailVerificationCodeValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidVerificationCodes(): void
     {
         foreach (InvalidVerificationCodes::listInvalidVerificationCodes() as $code) {

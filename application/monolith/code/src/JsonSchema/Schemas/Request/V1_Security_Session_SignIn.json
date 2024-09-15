@@ -4,10 +4,10 @@
   "additionalProperties": false,
   "properties": {
     "withUsernameOrEmail": {
-      "$ref": "Request/Shared/1024String.json"
+      "$ref": "Request/Shared/StringMaxLength1024.json"
     },
     "withPassword": {
-      "$ref": "Request/Shared/1024String.json"
+      "$ref": "Request/Shared/StringMaxLength1024.json"
     },
     "byDeviceLabel": {
       "$ref": "Request/Shared/ValidatedDeviceLabel.json"

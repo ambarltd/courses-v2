@@ -64,11 +64,13 @@ class SessionTokenCreatorTest extends UnitTestBase
 
         $errorMessage = 'Testing randomness failed. Unless you are extremely unlucky, this should only fail when you did something wrong.';
 
-        if ($firstThreeCharactersCollisions < 16000 || $firstThreeCharactersCollisions > 18000) {
+
+
+        if ($firstThreeCharactersCollisions < 18000 || $firstThreeCharactersCollisions > 20000) {
             Assert::fail($errorMessage);
         }
 
-        if ($lastThreeCharactersCollisions < 16000 || $lastThreeCharactersCollisions > 18000) {
+        if ($lastThreeCharactersCollisions < 18000 || $lastThreeCharactersCollisions > 20000) {
             Assert::fail($errorMessage);
         }
 

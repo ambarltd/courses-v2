@@ -48,7 +48,7 @@ class VerifyPrimaryEmailHandler
      * @see RequestPrimaryEmailChangeHandler
      *
      * @throws NoUserFoundForCode|EmailIsAlreadyVerified|VerificationCodeDoesNotMatch|InvalidId
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite|QueuingFailure
+     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
      */
     public function handle(VerifyPrimaryEmail $command): void
     {

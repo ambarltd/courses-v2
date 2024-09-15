@@ -14,9 +14,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class IdTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testWithValidIds(): void
     {
         foreach (ValidIds::listValidIds() as $idString) {
@@ -34,9 +31,6 @@ class IdTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidIds(): void
     {
         foreach (InvalidIds::listInvalidIds() as $id) {
@@ -52,13 +46,23 @@ class IdTest extends UnitTestBase
         Assert::assertTrue(true); //prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         for ($i = 0; $i < 100; ++$i) {
             $id = Id::createNew();
+            if (false === IdValidator::isValid($id->id())) {
+                // validator test must be passing for this to be relevant
+                Assert::fail($id->id().' should be valid');
+            }
+        }
+
+        Assert::assertTrue(true); //prevents flagging as risky test
+    }
+
+    public function testCreateNewByHashing(): void
+    {
+        for ($i = 0; $i < 100; ++$i) {
+            $id = Id::createNewByHashing(strval($i));
             if (false === IdValidator::isValid($id->id())) {
                 // validator test must be passing for this to be relevant
                 Assert::fail($id->id().' should be valid');

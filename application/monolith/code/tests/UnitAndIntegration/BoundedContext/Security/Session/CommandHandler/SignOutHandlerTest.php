@@ -72,7 +72,7 @@ class SignOutHandlerTest extends HandlerTestBase
         $this->assertEquals($storedEvent, $queuedEvent);
         $this->assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
         $this->assertEquals(
             $command->authorizerId,

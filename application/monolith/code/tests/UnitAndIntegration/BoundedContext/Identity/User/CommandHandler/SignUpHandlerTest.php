@@ -90,7 +90,7 @@ class SignUpHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
         Assert::assertEquals(
             [

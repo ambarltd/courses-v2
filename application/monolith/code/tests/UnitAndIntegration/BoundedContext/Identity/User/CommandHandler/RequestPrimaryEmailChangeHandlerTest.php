@@ -27,7 +27,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testHandleForVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -99,7 +99,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
     }
 
@@ -108,7 +108,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testHandleForRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -188,7 +188,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
     }
 
@@ -197,7 +197,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testUserNotFound(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -240,7 +240,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testEmailIsNotChangingForUnverifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -277,7 +277,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testEmailIsNotChangingForVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -320,7 +320,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testEmailIsNotChangingForRequestedEmailWithPreviouslyVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -371,7 +371,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testEmailIsNotChangingForRequestedEmailWithPreviouslyRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -422,7 +422,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testPasswordDoesNotMatch(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -465,7 +465,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testInvalidEmail(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],
@@ -509,7 +509,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
      */
     public function testEmailIsTaken(): void
     {
-        $signedUp = SignedUp::fromProperties(
+        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             $this->mockMetadata(),
             ValidEmails::listValidEmails()[0],
             ValidPasswords::listValidPasswords()[0],

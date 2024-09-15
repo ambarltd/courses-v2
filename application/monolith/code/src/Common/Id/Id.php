@@ -42,19 +42,11 @@ class Id
         return new self($id);
     }
 
-    /**
-     * Factory method.
-     * Should create a new deterministic Id by being passed a string of another Id.
-     */
-    public static function newDeterministicIdFromAnotherId(string $anotherId): Id
+    public static function createNewByHashing(string $stringToHash): Id
     {
-        return new self(IdCreator::createFromString($anotherId));
+        return new self(IdCreator::createByHashingString($stringToHash));
     }
 
-    /**
-     * Factory method.
-     * Should create a new Id.
-     */
     public static function createNew(): Id
     {
         return new self(IdCreator::create());

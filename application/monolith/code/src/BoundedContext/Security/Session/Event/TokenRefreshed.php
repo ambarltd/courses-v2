@@ -6,13 +6,13 @@ namespace Galeas\Api\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
-use Galeas\Api\Common\Event\EventWithAuthorizerAndNoSourceTrait;
+use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 
 class TokenRefreshed implements EventTransformedSession
 {
-    use EventWithAuthorizerAndNoSourceTrait;
+    use EventTrait;
 
     /**
      * @var string

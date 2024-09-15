@@ -8,13 +8,11 @@ use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\DeviceLabelValidator;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class SignInHandler
 {
@@ -52,7 +50,7 @@ class SignInHandler
 
     /**
      * @throws UserNotFound|NoPasswordFound|InvalidPassword|InvalidDeviceLabel
-     * @throws InvalidIp|InvalidId|EventStoreCannotWrite|QueuingFailure|ProjectionCannotRead
+     * @throws InvalidIp|InvalidId|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(SignIn $command): array
     {

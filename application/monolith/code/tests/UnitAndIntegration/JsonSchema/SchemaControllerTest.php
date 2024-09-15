@@ -5,42 +5,74 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HttpWithKernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\RequestTest;
 
-class SchemaControllerTest extends HttpWithKernelTestBase
+class SchemaControllerTest extends RequestTest
 {
-    /**
-     * @test
-     */
     public function testSchemaList(): void
     {
-        $response = $this->getApiUrl('/schema/list');
-
-        Assert::assertEquals(200, $response->getStatusCode(), 'Could not get /schema/list');
-
-        $content = $response->getBody()->getContents();
-
-        $jsonToArrayContent = json_decode($content);
+        $response = $this->requestGet('/schema/list', []);
+        Assert::assertEquals(200, $response["statusCode"]);
+        $jsonToArrayContent = json_decode($response["content"]);
 
         foreach ($jsonToArrayContent as $routeData) {
-            $requestSchema = $routeData->schema->request;
+            $requestSchemaPath = str_replace("http://localhost", "", $routeData->schema->request);
+            $pathAndParameterString = explode("?", $requestSchemaPath);
+            $response = $this->requestGet(
+                $pathAndParameterString[0],
+                [
+                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                ]
+            );
             Assert::assertEquals(
                 200,
-                $this->getUrl($requestSchema)->getStatusCode(),
-                'Could not find request schema '.$requestSchema);
+                $response["statusCode"],
+                sprintf(
+                    "Could not find request schema %s with contents: %s",
+                    $requestSchemaPath,
+                    $response["contents"]
+                )
+            );
 
-            $responseSchema = $routeData->schema->response;
+            $responseSchemaPath = str_replace("http://localhost", "", $routeData->schema->response);
+            $pathAndParameterString = explode("?", $responseSchemaPath);
+            $response = $this->requestGet(
+                $pathAndParameterString[0],
+                [
+                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                ]
+            );
             Assert::assertEquals(
                 200,
-                $this->getUrl($responseSchema)->getStatusCode(),
-                'Could not find response schema '.$responseSchema);
+                $response["statusCode"],
+                sprintf(
+                    "Could not find request schema %s with contents: %s",
+                    $responseSchemaPath,
+                    $response["contents"]
+                )
+            );
 
-            $errorSchema = $routeData->schema->error;
-
+            $errorSchemaPath = str_replace("http://localhost", "", $routeData->schema->error);
+            $pathAndParameterString = explode("?", $errorSchemaPath);
+            $response = $this->requestGet(
+                $pathAndParameterString[0],
+                [
+                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                ]
+            );
+            if (200 !== $response["statusCode"]) {
+                var_dump($response);
+                die();
+            }
             Assert::assertEquals(
                 200,
-                $this->getUrl($errorSchema)->getStatusCode(),
-                'Could not find error schema '.$errorSchema);
+                $response["statusCode"],
+                sprintf(
+                    "Could not find request schema %s with contents: %s",
+                    $errorSchemaPath,
+                    $response["contents"]
+                )
+            );
         }
     }
 }

@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class IdValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidIds(): void
     {
         foreach (ValidIds::listValidIds() as $id) {
@@ -24,9 +21,6 @@ class IdValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidIds(): void
     {
         foreach (InvalidIds::listInvalidIds() as $id) {

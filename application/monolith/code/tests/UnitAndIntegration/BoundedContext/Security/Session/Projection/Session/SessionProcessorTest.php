@@ -68,7 +68,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedIn->eventOccurredOn(),
+            $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
 
@@ -104,7 +104,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedIn->eventOccurredOn(),
+            $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
     }
@@ -160,7 +160,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $tokenRefreshed->eventOccurredOn(),
+            $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
 
@@ -196,7 +196,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $tokenRefreshed->eventOccurredOn(),
+            $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
     }
@@ -258,7 +258,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $tokenRefreshed->eventOccurredOn(),
+            $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
 
@@ -294,7 +294,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $tokenRefreshed->eventOccurredOn(),
+            $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
     }
@@ -350,7 +350,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedOut->eventOccurredOn(),
+            $signedOut->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
 
@@ -386,7 +386,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedOut->eventOccurredOn(),
+            $signedOut->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
     }
@@ -448,7 +448,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedIn->eventOccurredOn(),
+            $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
 
@@ -484,7 +484,7 @@ class SessionProcessorTest extends KernelTestBase
             $sessions[0]->isSignedOut()
         );
         $this->assertEquals(
-            $signedIn->eventOccurredOn(),
+            $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
     }

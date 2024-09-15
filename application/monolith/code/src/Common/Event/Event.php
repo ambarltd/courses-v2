@@ -12,31 +12,13 @@ interface Event
 
     public function aggregateId(): Id;
 
-    /**
-     * The @see Id of the user, who issued the corresponding command,
-     * that generated this event. @see \Galeas\Api\BoundedContext\Identity\User\Aggregate\User.
-     *
-     * In reactions this should be null (normalization).
-     *
-     * PHP7 allows for a return type of Id only, but not for one of null only.
-     * Hence this will not be type-hinted at the language level.
-     *
-     * @return Id|null
-     */
-    public function authorizerId();
+    public function aggregateVersion(): int;
 
-    /**
-     * In reactions, the event that caused this event to happen.
-     * This is the many side, of a ManyToOne relationship.
-     *
-     * PHP7 allows for a return type of Id only, but not for one of null only.
-     * Hence this will not be type-hinted at the language level.
-     *
-     * @return Id|null
-     */
-    public function sourceEventId();
+    public function causationId(): Id;
 
-    public function eventOccurredOn(): \DateTimeImmutable;
+    public function correlationId(): Id;
 
-    public function eventMetadata(): array;
+    public function recordedOn(): \DateTimeImmutable;
+
+    public function metadata(): array;
 }

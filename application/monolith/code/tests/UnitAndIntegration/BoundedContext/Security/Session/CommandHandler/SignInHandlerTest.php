@@ -91,7 +91,7 @@ class SignInHandlerTest extends HandlerTestBase
         );
         $this->assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
         $this->assertTrue(
             password_verify(
@@ -186,7 +186,7 @@ class SignInHandlerTest extends HandlerTestBase
         );
         $this->assertEquals(
             $command->metadata,
-            $storedEvent->eventMetadata()
+            $storedEvent->metadata()
         );
         $this->assertTrue(
             password_verify(

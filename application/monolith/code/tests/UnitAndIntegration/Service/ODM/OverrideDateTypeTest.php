@@ -11,14 +11,8 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class OverrideDateTypeTest extends UnitTestBase
 {
-    /**
-     * @var OverrideDateType
-     */
-    private $overrideDateType;
+    private OverrideDateType $overrideDateType;
 
-    /**
-     * @throws \Exception
-     */
     public function setUp(): void
     {
         parent::setUp();
@@ -32,9 +26,6 @@ class OverrideDateTypeTest extends UnitTestBase
         $this->overrideDateType = $overrideDateType;
     }
 
-    /**
-     * @test
-     */
     public function testGetDateTimeImmutable(): void
     {
         $value = '2018-06-21T14:36:34.887181+00:00';
@@ -54,11 +45,6 @@ class OverrideDateTypeTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testConvertToDatabaseValue(): void
     {
         $dateTimeImmutable = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.uP', '2018-06-21T14:36:34.887181+00:00');
@@ -82,9 +68,6 @@ class OverrideDateTypeTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testConvertToPHPValue(): void
     {
         $value = '2018-06-21T14:36:34.887181+00:00';
@@ -104,9 +87,6 @@ class OverrideDateTypeTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testClosureToMongo(): void
     {
         // a bit of a redundant test, but let's make sure that things can't be modified without this test failing.
@@ -116,9 +96,6 @@ class OverrideDateTypeTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testClosureToPHP(): void
     {
         // a bit of a redundant test, but let's make sure that things can't be modified without this test failing.

@@ -22,14 +22,14 @@ class TakenUsernameProcessorTest extends KernelTestBase
         $takenUsernameProcessorService = $this->getContainer()
             ->get(TakenUsernameProcessor::class);
 
-        $signedUp1 = SignedUp::fromProperties(
+        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',
             'uSername_test',
             false
         );
-        $signedUp2 = SignedUp::fromProperties(
+        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
             'tEst1@example.com',
             'password_test_123',

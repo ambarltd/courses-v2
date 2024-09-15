@@ -6,10 +6,10 @@ namespace Galeas\Api\Common\Event\Exception;
 
 use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 
-class ConflictingAggregateIds extends InternalServerErrorException
+class NoCreationMethodFound extends InternalServerErrorException
 {
     public static function getErrorIdentifier(): string
     {
-        return 'Common_Event_ConflictingAggregateIds';
+        return 'Common_Event_NoCreationMethodFound';
     }
 }

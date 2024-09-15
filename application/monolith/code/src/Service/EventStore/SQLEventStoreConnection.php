@@ -12,10 +12,7 @@ use Doctrine\DBAL\TransactionIsolationLevel;
 
 class SQLEventStoreConnection
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
+    private Connection $connection;
 
     /**
      * To prevent race conditions, whenever we read from an aggregate, we block any other reads,

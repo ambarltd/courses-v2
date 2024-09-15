@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class PrivateAndReservedIpV4AndV6ValidatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testValidIps(): void
     {
         foreach (ValidPrivateAndReservedIpsV4AndV6::listValidIps() as $ip) {
@@ -24,9 +21,6 @@ class PrivateAndReservedIpV4AndV6ValidatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testInvalidIps(): void
     {
         foreach (InvalidPrivateAndReservedIpsV4AndV6::listInvalidIps() as $ip) {
