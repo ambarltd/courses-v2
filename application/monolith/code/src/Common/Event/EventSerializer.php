@@ -10,7 +10,7 @@ use Galeas\Api\Common\Event\Exception\JsonEventEncodingError;
 use Galeas\Api\Common\Event\Exception\PropertyIsOfInvalidType;
 use Galeas\Api\Common\Id\Id;
 
-abstract class EventSerializer extends EventReflectionTrait {
+abstract class EventSerializer extends EventReflectionBaseClass {
 
     /**
      * @param Event[] $events
@@ -55,7 +55,7 @@ abstract class EventSerializer extends EventReflectionTrait {
             $event->aggregateVersion(),
             is_null($event->causationId()) ? null : $event->causationId()->id(),
             is_null($event->correlationId()) ? null : $event->correlationId()->id(),
-            $recordedOn->format('Y-m-d H:i:s.u'),
+            $recordedOn->format('Y-m-d H:i:s.u e'),
             self::eventClassToEventName(get_class($event)),
             self::arrayPayloadToJsonPayload(
                 self::arrayPayloadFromEvent($event),
@@ -101,6 +101,7 @@ abstract class EventSerializer extends EventReflectionTrait {
             'eventId',
             'aggregateId',
             'causationId',
+            'aggregateVersion',
             'eventVersion',
             'correlationId',
             'recordedOn',

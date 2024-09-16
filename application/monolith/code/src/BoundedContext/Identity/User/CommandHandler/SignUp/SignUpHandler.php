@@ -10,6 +10,8 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
+use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use Galeas\Api\Primitive\PrimitiveValidation\Security\PasswordValidator;
 use Galeas\Api\Primitive\PrimitiveValidation\Username\UsernameValidator;
@@ -65,16 +67,22 @@ class SignUpHandler
         }
 
         $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $hashedPassword = BCryptPasswordHash::hash($command->password, 10);
+        if (null === $hashedPassword) {
+            throw new CouldNotHashWithBCrypt();
+        }
         $event = SignedUp::new(
-            Id::createNew(),
-            Id::createNew(),
+            $eventId,
+            $aggregateId,
             1,
             $eventId,
             $eventId,
             new \DateTimeImmutable("now"),
             $command->metadata,
             $command->primaryEmail,
-            $command->password,
+            EmailVerificationCodeCreator::create(),
+            $hashedPassword,
             $command->username,
             $command->termsOfUseAccepted
         );

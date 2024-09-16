@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Common\Event;
 
+use Galeas\Api\Common\Event\Exception\FoundBadJsonForSerializedEvent;
+
 class SerializedEvent
 {
     private string $eventId;
@@ -28,8 +30,8 @@ class SerializedEvent
         string $eventId,
         string $aggregateId,
         int $aggregateVersion,
-        ?string $causationId,
-        ?string $correlationId,
+        string $causationId,
+        string $correlationId,
         string $recordedOn,
         string $eventName,
         string $jsonPayload,
@@ -113,5 +115,58 @@ class SerializedEvent
             $jsonPayload,
             $jsonMetadata
         );
+    }
+
+    public function toJson(): string {
+        return json_encode([
+            "eventId" => $this->eventId,
+            "aggregateId" => $this->aggregateId,
+            "aggregateVersion" => $this->aggregateVersion,
+            "causationId" => $this->causationId,
+            "correlationId" => $this->correlationId,
+            "recordedOn" => $this->recordedOn,
+            "eventName" => $this->eventName,
+            "jsonPayload" => json_decode($this->jsonPayload, true),
+            "jsonMetadata" => json_decode($this->jsonMetadata, true),
+        ]);
+    }
+
+    public static function fromJson(string $json): self {
+        $json = json_decode($json, true);
+
+        if (
+            array_key_exists("eventId", $json) &&
+            array_key_exists("aggregateId", $json) &&
+            array_key_exists("aggregateVersion", $json) &&
+            array_key_exists("causationId", $json) &&
+            array_key_exists("correlationId", $json) &&
+            array_key_exists("recordedOn", $json) &&
+            array_key_exists("eventName", $json) &&
+            array_key_exists("jsonPayload", $json) &&
+            array_key_exists("jsonMetadata", $json) &&
+            is_string($json["eventId"]) &&
+            is_string($json["aggregateId"]) &&
+            is_int($json["aggregateVersion"]) &&
+            is_string($json["causationId"]) &&
+            is_string($json["correlationId"]) &&
+            is_string($json["recordedOn"]) &&
+            is_string($json["eventName"]) &&
+            is_array($json["jsonPayload"]) &&
+            is_array($json["jsonMetadata"])
+        ) {
+            return new self(
+                $json["eventId"],
+                $json["aggregateId"],
+                $json["aggregateVersion"],
+                $json["causationId"],
+                $json["correlationId"],
+                $json["recordedOn"],
+                $json["eventName"],
+                json_encode($json["jsonPayload"]),
+                json_encode($json["jsonMetadata"]),
+            );
+        }
+
+        throw new FoundBadJsonForSerializedEvent();
     }
 }

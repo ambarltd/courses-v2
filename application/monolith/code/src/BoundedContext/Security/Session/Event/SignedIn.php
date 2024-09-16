@@ -8,46 +8,24 @@ use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 
 class SignedIn implements EventCreatedSession
 {
     use EventTrait;
 
-    /**
-     * @var Id
-     */
-    private $asUser;
+    private Id $asUser;
 
-    /**
-     * @var string|null
-     */
-    private $withUsername;
+    private string|null $withUsername;
 
-    /**
-     * @var string|null
-     */
-    private $withEmail;
+    private string|null $withEmail;
 
-    /**
-     * @var string
-     */
-    private $withHashedPassword;
+    private string $withHashedPassword;
 
-    /**
-     * @var string
-     */
-    private $byDeviceLabel;
+    private string $byDeviceLabel;
 
-    /**
-     * @var string
-     */
-    private $withIp;
+    private string $withIp;
 
-    /**
-     * @var string
-     */
-    private $sessionTokenCreated;
+    private string $sessionTokenCreated;
 
     public function asUser(): Id
     {
@@ -64,10 +42,7 @@ class SignedIn implements EventCreatedSession
         return $this->withEmail;
     }
 
-    /**
-     * @return mixed
-     */
-    public function withHashedPassword()
+    public function withHashedPassword(): string
     {
         return $this->withHashedPassword;
     }
@@ -87,20 +62,31 @@ class SignedIn implements EventCreatedSession
         return $this->sessionTokenCreated;
     }
 
-    /**
-     * @return SignedIn
-     */
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         Id $asUser,
         ?string $withUsername,
         ?string $withEmail,
         string $withHashedPassword,
         string $byDeviceLabel,
-        string $withIp
-    ): self {
-        $aggregateId = Id::createNew();
-        $event = new self($aggregateId, $asUser, $metadata);
+        string $withIp,
+        string $sessionTokenCreated
+    ): SignedIn {
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
 
         $event->asUser = $asUser;
         $event->withUsername = $withUsername;
@@ -108,18 +94,16 @@ class SignedIn implements EventCreatedSession
         $event->withHashedPassword = $withHashedPassword;
         $event->byDeviceLabel = $byDeviceLabel;
         $event->withIp = $withIp;
-        $event->sessionTokenCreated = SessionTokenCreator::create();
+        $event->sessionTokenCreated = $sessionTokenCreated;
 
         return $event;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function createSession(): Session
     {
         return Session::fromProperties(
             $this->aggregateId(),
+            1,
             SessionDetails::fromProperties(
                 $this->asUser,
                 $this->withUsername,

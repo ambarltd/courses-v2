@@ -17,17 +17,16 @@ class PrimaryEmailVerified implements EventTransformedUser
 
     private string $verifiedWithCode;
 
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
         Id $aggregateId,
         int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         string $verifiedWithCode
     ): PrimaryEmailVerified {
-        $eventId = Id::createNew();
-        $aggregateVersion = 1;
-        $causationId = $eventId;
-        $correlationId = $eventId;
-        $recordedOn = new \DateTimeImmutable("now");
         $event = new self(
             $eventId,
             $aggregateId,
@@ -47,14 +46,12 @@ class PrimaryEmailVerified implements EventTransformedUser
         return $this->verifiedWithCode;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transformUser(User $user): User
     {
         if ($user->primaryEmailStatus() instanceof UnverifiedEmail) {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(
                         $user->primaryEmailStatus()
@@ -68,6 +65,7 @@ class PrimaryEmailVerified implements EventTransformedUser
         } elseif ($user->primaryEmailStatus() instanceof VerifiedEmail) {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(
                         $user->primaryEmailStatus()
@@ -81,6 +79,7 @@ class PrimaryEmailVerified implements EventTransformedUser
         } else {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(
                         $user->primaryEmailStatus()

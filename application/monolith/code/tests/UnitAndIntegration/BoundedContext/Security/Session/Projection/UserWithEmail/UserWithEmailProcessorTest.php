@@ -73,7 +73,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $userId,
             $userId,
             [],
@@ -116,7 +116,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $userId,
             $userId,
             [],

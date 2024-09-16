@@ -96,7 +96,7 @@ class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
             'uSername_test',
             false
         );
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $signedUp->aggregateId(),
             $signedUp->aggregateId(),
             [],

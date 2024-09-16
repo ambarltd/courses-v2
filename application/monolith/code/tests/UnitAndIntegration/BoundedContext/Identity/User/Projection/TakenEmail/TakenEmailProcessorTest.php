@@ -116,7 +116,7 @@ class TakenEmailProcessorTest extends KernelTestBase
         $this->getProjectionDocumentManager()->persist($takenEmail);
         $this->getProjectionDocumentManager()->flush();
 
-        $signedUp = PrimaryEmailVerified::fromProperties(
+        $signedUp = PrimaryEmailVerified::new(
             Id::fromId($takenEmail->getUserId()),
             Id::fromId($takenEmail->getUserId()),
             [],

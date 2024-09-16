@@ -10,18 +10,14 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SerializedEventTest extends UnitTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreate(): void
     {
         $serializedEvent = SerializedEvent::fromProperties(
            'eventId1',
            'aggregateId1',
-           'authorizerId1',
+           23,
            'causationId1',
+           'correlationId1',
            'recordedOn1',
            'eventName1',
            $this->jsonEncodeOrThrowException(['field_1' => 'test_1']),
@@ -39,13 +35,13 @@ class SerializedEventTest extends UnitTestBase
        );
 
         Assert::assertEquals(
-           'authorizerId1',
-           $serializedEvent->authorizerId()
+           'causationId1',
+           $serializedEvent->causationId()
        );
 
         Assert::assertEquals(
-           'causationId1',
-           $serializedEvent->causationId()
+           'correlationId1',
+           $serializedEvent->correlationId()
        );
 
         Assert::assertEquals(
@@ -69,9 +65,25 @@ class SerializedEventTest extends UnitTestBase
        );
     }
 
-    /**
-     * @throws \Exception
-     */
+    public function testToJsonFromJson(): void {
+
+        $serializedEvent = SerializedEvent::fromProperties(
+            'eventId1',
+            'aggregateId1',
+            23,
+            'causationId1',
+            'correlationId1',
+            'recordedOn1',
+            'eventName1',
+            $this->jsonEncodeOrThrowException(['field_1' => 'test_1']),
+            $this->jsonEncodeOrThrowException(['field_2' => 'test_2'])
+        );
+        Assert::assertEquals(
+            $serializedEvent,
+            SerializedEvent::fromJson($serializedEvent->toJson())
+        );
+    }
+
     private function jsonEncodeOrThrowException(array $encodeThis): string
     {
         $encoded = json_encode($encodeThis);

@@ -27,7 +27,7 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
         $aggregateId = Id::createNew();
         $authorizerId = Id::createNew();
 
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $aggregateId,
             $authorizerId,
             [1, 2, 3],
@@ -97,7 +97,7 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
             )
         );
 
-        $transformedUser = PrimaryEmailVerified::fromProperties(
+        $transformedUser = PrimaryEmailVerified::new(
             $aggregateId,
             $authorizerId,
             [],
@@ -156,7 +156,7 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
             )
         );
 
-        $transformedUser = PrimaryEmailVerified::fromProperties(
+        $transformedUser = PrimaryEmailVerified::new(
             $aggregateId,
             $authorizerId,
             [],
@@ -221,7 +221,7 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
             )
         );
 
-        $transformedUser = PrimaryEmailVerified::fromProperties(
+        $transformedUser = PrimaryEmailVerified::new(
             $aggregateId,
             $authorizerId,
             [],

@@ -6,23 +6,11 @@ namespace Galeas\Api\BoundedContext\Identity\User\Command;
 
 class RequestPrimaryEmailChange
 {
-    /**
-     * @var string
-     */
-    public $authorizerId;
+    public string $authorizerId;
 
-    /**
-     * @var string
-     */
-    public $password;
+    public string $password;
 
-    /**
-     * @var string
-     */
-    public $newEmailRequested;
+    public string $newEmailRequested;
 
-    /**
-     * @var array
-     */
-    public $metadata;
+    public array $metadata;
 }

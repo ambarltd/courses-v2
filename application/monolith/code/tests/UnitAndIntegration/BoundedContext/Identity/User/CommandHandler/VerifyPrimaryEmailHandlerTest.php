@@ -106,7 +106,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
             ValidUsernames::listValidUsernames()[0],
             true
         );
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $signedUp->aggregateId(),
             $signedUp->aggregateId(),
             $this->mockMetadata(),
@@ -262,7 +262,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
             ValidUsernames::listValidUsernames()[0],
             true
         );
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $signedUp->aggregateId(),
             $signedUp->aggregateId(),
             $this->mockMetadata(),
@@ -337,7 +337,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
             ValidUsernames::listValidUsernames()[0],
             true
         );
-        $primaryEmailVerified = PrimaryEmailVerified::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
             $signedUp->aggregateId(),
             $signedUp->aggregateId(),
             $this->mockMetadata(),

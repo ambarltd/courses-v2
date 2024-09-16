@@ -8,26 +8,16 @@ use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 
 class TokenRefreshed implements EventTransformedSession
 {
     use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $withIp;
+    private string $withIp;
 
-    /**
-     * @var string
-     */
-    private $withExistingSessionToken;
+    private string $withExistingSessionToken;
 
-    /**
-     * @var string
-     */
-    private $refreshedSessionToken;
+    private string $refreshedSessionToken;
 
     public function withIp(): string
     {
@@ -44,21 +34,30 @@ class TokenRefreshed implements EventTransformedSession
         return $this->refreshedSessionToken;
     }
 
-    /**
-     * @return TokenRefreshed
-     */
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
         Id $aggregateId,
-        Id $authorizerId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         string $withIp,
-        string $withExistingSessionToken
-    ): self {
-        $event = new self($aggregateId, $authorizerId, $metadata);
-
+        string $withExistingSessionToken,
+        string $refreshedSessionToken,
+    ): TokenRefreshed {
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
         $event->withIp = $withIp;
         $event->withExistingSessionToken = $withExistingSessionToken;
-        $event->refreshedSessionToken = SessionTokenCreator::create();
+        $event->refreshedSessionToken = $refreshedSessionToken;
 
         return $event;
     }
@@ -70,6 +69,7 @@ class TokenRefreshed implements EventTransformedSession
     {
         return Session::fromProperties(
             $session->id(),
+            $this->aggregateVersion,
             SessionDetails::fromProperties(
                 $session->sessionDetails()->asUser(),
                 $session->sessionDetails()->withUsername(),

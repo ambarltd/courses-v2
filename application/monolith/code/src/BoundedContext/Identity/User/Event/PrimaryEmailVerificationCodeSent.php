@@ -5,9 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\Event;
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 
@@ -15,35 +12,43 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
 {
     use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $verifiedWithCode;
+    private string $verificationCodeSent;
 
-    /**
-     * @var string
-     */
-    private $sentToEmailAddress;
+    private string $sentToEmailAddress;
 
-    /**
-     * @var string
-     */
-    private $emailContents;
+    private string $emailContents;
 
-    public static function fromProperties(
+    public static function new(
         Id $eventId,
         Id $aggregateId,
+        int $aggregateVersion,
         Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
+        string $verificationCodeSent,
         string $sentToEmailAddress,
         string $emailContents
     ): PrimaryEmailVerificationCodeSent {
-        $event = new self($eventId, $aggregateId, $causationId, $metadata);
-
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
+        $event->verificationCodeSent = $verificationCodeSent;
         $event->sentToEmailAddress = $sentToEmailAddress;
         $event->emailContents = $emailContents;
 
         return $event;
+    }
+
+    public function verificationCodeSent(): string
+    {
+        return $this->verificationCodeSent;
     }
 
     public function sentToEmailAddress(): string
@@ -56,9 +61,6 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
         return $this->emailContents;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transformUser(User $user): User
     {
         return $user;

@@ -86,7 +86,7 @@ class VerifyPrimaryEmailHandler
             throw new VerificationCodeDoesNotMatch();
         }
 
-        $event = PrimaryEmailVerified::fromProperties(
+        $event = PrimaryEmailVerified::new(
             Id::fromId($userId),
             Id::fromId($authorizerId),
             $command->metadata,

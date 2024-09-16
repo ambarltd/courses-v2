@@ -9,8 +9,8 @@
     "aggregateId": {
       "$ref": "Event/Shared/IdString.json"
     },
-    "authorizerId": {
-      "$ref": "Event/Shared/IdString.json"
+    "aggregateVersion": {
+      "$ref": "Event/Shared/AggregateVersionInteger.json"
     },
     "causationId": {
       "$ref": "Event/Shared/IdString.json"
@@ -24,12 +24,12 @@
     "eventName": {
       "$ref": "Event/Shared/EventNameString.json"
     },
-    "payload": {
+    "jsonPayload": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
         "asUser": {
-          "$ref": "Event/Shared/PayloadIdObject.json"
+          "$ref": "Event/Shared/jsonPayloadIdObject.json"
         },
         "withUsername": {
           "type": ["string", "null"]
@@ -60,19 +60,19 @@
         "sessionTokenCreated"
       ]
     },
-    "metadata": {
+    "jsonMetadata": {
       "type": "object"
     }
   },
   "required": [
     "eventId",
     "aggregateId",
-    "authorizerId",
+    "aggregateVersion",
     "causationId",
     "correlationId",
     "recordedOn",
     "eventName",
-    "payload",
-    "metadata"
+    "jsonPayload",
+    "jsonMetadata"
   ]
 }

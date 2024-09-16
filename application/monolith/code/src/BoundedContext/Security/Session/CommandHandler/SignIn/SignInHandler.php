@@ -10,6 +10,7 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
+use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\DeviceLabelValidator;
 use Galeas\Api\Service\EventStore\EventStore;
@@ -90,14 +91,23 @@ class SignInHandler
             throw new InvalidIp();
         }
 
-        $event = SignedIn::fromProperties(
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $event = SignedIn::new(
+            $eventId,
+            $aggregateId,
+            1,
+            $eventId,
+            $eventId,
+            new \DateTimeImmutable("now"),
             $command->metadata,
             Id::fromId($userId),
             $withUsername,
             $withEmail,
             $hashedPasswordFromUserId,
             $command->byDeviceLabel,
-            $command->withIp
+            $command->withIp,
+            SessionTokenCreator::create()
         );
 
         $this->eventStore->beginTransaction();

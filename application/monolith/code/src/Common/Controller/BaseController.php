@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\Common\Controller;
 
 use Galeas\Api\Common\ExceptionBase\BaseException;
-use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use Galeas\Api\JsonSchema\JsonSchemaValidator;
 use Galeas\Api\Service\Logger\PhpOutLogger;

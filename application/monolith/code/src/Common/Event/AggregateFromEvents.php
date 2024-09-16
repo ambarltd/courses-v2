@@ -9,7 +9,7 @@ use Galeas\Api\BoundedContext\Security\Session;
 use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\Exception as EventException;
 
-abstract class AggregateFromEvents extends EventReflectionTrait
+abstract class AggregateFromEvents extends EventReflectionBaseClass
 {
     /**
      * @param Event[] $transformationEvents
@@ -26,7 +26,7 @@ abstract class AggregateFromEvents extends EventReflectionTrait
 
         foreach ($transformationEvents as $transformationEvent) {
             $transformationMethod = self::eventClassToTransformationMethodName(get_class($transformationEvent));
-            $transformationEvent->$transformationMethod($aggregate);
+            $aggregate = $transformationEvent->$transformationMethod($aggregate);
         }
 
         return $aggregate;

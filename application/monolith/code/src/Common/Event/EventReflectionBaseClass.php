@@ -8,12 +8,13 @@ use Galeas\Api\BoundedContext\Identity\User;
 use Galeas\Api\BoundedContext\Security\Session;
 use Galeas\Api\Common\Event\Exception as EventException;
 
-abstract class EventReflectionTrait {
+abstract class EventReflectionBaseClass {
     /**
      * @var array<string, string>
      */
     private static array $eventNamesToEventClasses = [
         'Identity_User_SignedUp' => User\Event\SignedUp::class,
+        'Identity_User_PrimaryEmailVerificationCodeSent' => User\Event\PrimaryEmailVerificationCodeSent::class,
         'Identity_User_PrimaryEmailVerified' => User\Event\PrimaryEmailVerified::class,
         'Identity_User_PrimaryEmailChangeRequested' => User\Event\PrimaryEmailChangeRequested::class,
         'Security_Session_SignedIn' => Session\Event\SignedIn::class,
@@ -41,7 +42,9 @@ abstract class EventReflectionTrait {
      */
     private static array $eventNamesToReflectionConstructorMethodsCache = [];
 
-
+    public static function allEventClasses(): array {
+        return array_values(self::$eventNamesToEventClasses);
+    }
     /**
      * @throws EventException\NoEventClassMappingFound
      * @throws EventException\EventMappingReflectionError

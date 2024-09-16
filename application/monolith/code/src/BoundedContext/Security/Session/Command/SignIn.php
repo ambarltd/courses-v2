@@ -6,28 +6,13 @@ namespace Galeas\Api\BoundedContext\Security\Session\Command;
 
 class SignIn
 {
-    /**
-     * @var string
-     */
-    public $withUsernameOrEmail;
+    public string $withUsernameOrEmail;
 
-    /**
-     * @var string
-     */
-    public $withPassword;
+    public string $withPassword;
 
-    /**
-     * @var string
-     */
-    public $byDeviceLabel;
+    public string $byDeviceLabel;
 
-    /**
-     * @var string
-     */
-    public $withIp;
+    public string $withIp;
 
-    /**
-     * @var array
-     */
-    public $metadata;
+    public array $metadata;
 }

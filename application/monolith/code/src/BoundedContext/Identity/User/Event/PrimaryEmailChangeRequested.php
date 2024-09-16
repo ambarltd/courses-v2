@@ -12,26 +12,16 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 
 class PrimaryEmailChangeRequested implements EventTransformedUser
 {
     use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $newEmailRequested;
+    private string $newEmailRequested;
 
-    /**
-     * @var string
-     */
-    private $newVerificationCode;
+    private string $newVerificationCode;
 
-    /**
-     * @var string
-     */
-    private $requestedWithHashedPassword;
+    private string $requestedWithHashedPassword;
 
     public function newEmailRequested(): string
     {
@@ -48,17 +38,30 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         return $this->requestedWithHashedPassword;
     }
 
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
         Id $aggregateId,
-        Id $authorizerId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         string $newEmailRequested,
+        string $newVerificationCode,
         string $requestedWithHashedPassword
     ): PrimaryEmailChangeRequested {
-        $event = new self($aggregateId, $authorizerId, $metadata);
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
 
         $event->newEmailRequested = $newEmailRequested;
-        $event->newVerificationCode = EmailVerificationCodeCreator::create();
+        $event->newVerificationCode = $newVerificationCode;
         $event->requestedWithHashedPassword = $requestedWithHashedPassword;
 
         return $event;
@@ -74,6 +77,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         if ($previousEmailStatus instanceof UnverifiedEmail) {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 UnverifiedEmail::fromEmailAndVerificationCode(
                     Email::fromEmail(
                         $this->newEmailRequested
@@ -88,6 +92,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         } elseif ($previousEmailStatus instanceof VerifiedEmail) {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 RequestedNewEmail::fromEmailsAndVerificationCode(
                     Email::fromEmail(
                         $previousEmailStatus->email()->email()
@@ -105,6 +110,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         } else {
             return User::fromProperties(
                 $user->id(),
+                $this->aggregateVersion,
                 RequestedNewEmail::fromEmailsAndVerificationCode(
                     Email::fromEmail(
                         $previousEmailStatus->verifiedEmail()->email()

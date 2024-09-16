@@ -13,15 +13,9 @@ class SignedOut implements EventTransformedSession
 {
     use EventTrait;
 
-    /**
-     * @var string
-     */
-    private $withIp;
+    private string $withIp;
 
-    /**
-     * @var string
-     */
-    private $withSessionToken;
+    private string $withSessionToken;
 
     public function withIp(): string
     {
@@ -33,18 +27,26 @@ class SignedOut implements EventTransformedSession
         return $this->withSessionToken;
     }
 
-    /**
-     * @return SignedOut
-     */
-    public static function fromProperties(
+    public static function new(
+        Id $eventId,
         Id $aggregateId,
-        Id $authorizerId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
         array $metadata,
         string $withIp,
         string $withSessionToken
     ): self {
-        $event = new self($aggregateId, $authorizerId, $metadata);
-
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
         $event->withIp = $withIp;
         $event->withSessionToken = $withSessionToken;
 
@@ -58,6 +60,7 @@ class SignedOut implements EventTransformedSession
     {
         return Session::fromProperties(
             $session->id(),
+            $this->aggregateVersion,
             $session->sessionDetails(),
             SessionIsSignedOut::fromProperties(
                 $this->withSessionToken,

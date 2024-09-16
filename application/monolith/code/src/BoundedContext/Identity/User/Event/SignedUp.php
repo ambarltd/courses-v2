@@ -12,7 +12,6 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 
 class SignedUp implements EventCreatedUser
@@ -54,9 +53,6 @@ class SignedUp implements EventCreatedUser
         return $this->termsOfUseAccepted;
     }
 
-    /**
-     * @throws CouldNotHashWithBCrypt
-     */
     public static function new(
         Id $eventId,
         Id $aggregateId,
@@ -66,7 +62,8 @@ class SignedUp implements EventCreatedUser
         \DateTimeImmutable $recordedOn,
         array $metadata,
         string $primaryEmail,
-        string $password,
+        string $primaryEmailVerificationCode,
+        string $hashedPassword,
         string $username,
         bool $termsOfUseAccepted
     ): SignedUp {
@@ -81,12 +78,8 @@ class SignedUp implements EventCreatedUser
         );
 
         $event->primaryEmail = $primaryEmail;
-        $event->primaryEmailVerificationCode = EmailVerificationCodeCreator::create();
-        $hash = BCryptPasswordHash::hash($password, 10);
-        if (null === $hash) {
-            throw new CouldNotHashWithBCrypt();
-        }
-        $event->hashedPassword = $hash;
+        $event->primaryEmailVerificationCode = $primaryEmailVerificationCode;
+        $event->hashedPassword = $hashedPassword;
         $event->username = $username;
         $event->termsOfUseAccepted = $termsOfUseAccepted;
 

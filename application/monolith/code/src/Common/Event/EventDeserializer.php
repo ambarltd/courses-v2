@@ -8,7 +8,7 @@ use Galeas\Api\Common\Event\Exception as EventException;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 
-abstract class EventDeserializer extends EventReflectionTrait{
+abstract class EventDeserializer extends EventReflectionBaseClass{
     /**
      * @param SerializedEvent[] $serializedEvents
      *
@@ -44,6 +44,7 @@ abstract class EventDeserializer extends EventReflectionTrait{
             $serializedEvent->aggregateVersion(),
             Id::fromId($serializedEvent->causationId()),
             Id::fromId($serializedEvent->correlationId()),
+            \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.u e', $serializedEvent->recordedOn()),
             self::jsonPayloadToArrayPayload($serializedEvent->jsonMetadata()),
             self::jsonPayloadToArrayPayload($serializedEvent->jsonPayload())
         );
