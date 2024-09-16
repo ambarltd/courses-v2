@@ -17,9 +17,22 @@ module "production_monolith" {
   }
 }
 
+module "production_frontend" {
+  source = "./templates/frontend-service"
+  application_directory_name = "frontend"
+  environment_uuid           = "a${random_id.production_uuid.hex}-pro"
+  git_commit_hash = var.git_commit_hash
+  service_name = "fro"
+
+  providers = {
+    google = google.production
+  }
+}
+
 output "production_connection_outputs" {
   value = {
     "monolith" = module.production_monolith.connection_outputs
+    "frontend" = module.production_frontend.connection_outputs
   }
   sensitive = true
 }
