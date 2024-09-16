@@ -56,7 +56,7 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $command = new SignOut();
         $command->metadata = $this->mockMetadata();
-        $command->authorizerId = $signedIn->authorizerId()->id();
+        $command->authenticatedUserId = $signedIn->authenticatedUserId()->id();
         $command->withSessionToken = $signedIn->sessionTokenCreated();
         $command->withIp = ValidIpsV4AndV6::listValidIps()[1];
 
@@ -75,8 +75,8 @@ class SignOutHandlerTest extends HandlerTestBase
             $storedEvent->metadata()
         );
         $this->assertEquals(
-            $command->authorizerId,
-            $storedEvent->authorizerId()->id()
+            $command->authenticatedUserId,
+            $storedEvent->authenticatedUserId()->id()
         );
         $this->assertEquals(
             $command->withSessionToken,
@@ -122,7 +122,7 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $command = new SignOut();
         $command->metadata = $this->mockMetadata();
-        $command->authorizerId = $signedIn->authorizerId()->id();
+        $command->authenticatedUserId = $signedIn->authenticatedUserId()->id();
         $command->withSessionToken = $signedIn->sessionTokenCreated();
         $command->withIp = ValidIpsV4AndV6::listValidIps()[1];
 
@@ -159,7 +159,7 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $command = new SignOut();
         $command->metadata = $this->mockMetadata();
-        $command->authorizerId = $signedIn->authorizerId()->id();
+        $command->authenticatedUserId = $signedIn->authenticatedUserId()->id();
         $command->withSessionToken = $signedIn->sessionTokenCreated().'extra_characters';
         $command->withIp = ValidIpsV4AndV6::listValidIps()[1];
 
@@ -196,7 +196,7 @@ class SignOutHandlerTest extends HandlerTestBase
 
         $command = new SignOut();
         $command->metadata = $this->mockMetadata();
-        $command->authorizerId = $signedIn->authorizerId()->id().'extra_characters';
+        $command->authenticatedUserId = $signedIn->authenticatedUserId()->id().'extra_characters';
         $command->withSessionToken = $signedIn->sessionTokenCreated();
         $command->withIp = ValidIpsV4AndV6::listValidIps()[1];
 

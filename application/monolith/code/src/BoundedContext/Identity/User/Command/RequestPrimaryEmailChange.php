@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Command;
 
 class RequestPrimaryEmailChange
 {
-    public string $authorizerId;
+    public string $authenticatedUserId;
 
     public string $password;
 

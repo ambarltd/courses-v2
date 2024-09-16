@@ -58,7 +58,7 @@ class VerifyPrimaryEmailHandler
             throw new NoUserFoundForCode();
         }
 
-        $authorizerId = $userId;
+        $authenticatedUserId = $userId;
 
         $this->eventStore->beginTransaction();
 
@@ -88,7 +88,7 @@ class VerifyPrimaryEmailHandler
 
         $event = PrimaryEmailVerified::new(
             Id::fromId($userId),
-            Id::fromId($authorizerId),
+            Id::fromId($authenticatedUserId),
             $command->metadata,
             $command->verificationCode
         );

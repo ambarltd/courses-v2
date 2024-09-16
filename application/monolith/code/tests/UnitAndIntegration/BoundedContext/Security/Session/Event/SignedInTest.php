@@ -43,7 +43,7 @@ class SignedInTest extends UnitTestBase
 
         Assert::assertEquals($metadata, $signedIn->metadata());
         Assert::assertEquals($asUser, $signedIn->asUser());
-        Assert::assertEquals($asUser, $signedIn->authorizerId());
+        Assert::assertEquals($asUser, $signedIn->authenticatedUserId());
         Assert::assertEquals($withUsername, $signedIn->withUsername());
         Assert::assertEquals($withEmail, $signedIn->withEmail());
         Assert::assertEquals($withHashedPassword, $signedIn->withHashedPassword());

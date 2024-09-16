@@ -20,21 +20,21 @@ class SignedOutTest extends UnitTestBase
     public function testCreate(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
+        $authenticatedUserId = Id::createNew();
         $metadata = [1, 2, 3];
         $withIp = '127.0.0.1';
         $withSessionToken = 'session_token';
 
         $signedOut = SignedOut::fromProperties(
             $aggregateId,
-            $authorizerId,
+            $authenticatedUserId,
             $metadata,
             $withIp,
             $withSessionToken
         );
 
         Assert::assertEquals($aggregateId, $signedOut->aggregateId());
-        Assert::assertEquals($authorizerId, $signedOut->authorizerId());
+        Assert::assertEquals($authenticatedUserId, $signedOut->authenticatedUserId());
         Assert::assertEquals($metadata, $signedOut->metadata());
         Assert::assertEquals($withIp, $signedOut->withIp());
         Assert::assertEquals($withSessionToken, $signedOut->withSessionToken());

@@ -55,7 +55,7 @@ class RequestPrimaryEmailChangeHandler
     {
         $this->eventStore->beginTransaction();
 
-        $user = $this->eventStore->find($command->authorizerId);
+        $user = $this->eventStore->find($command->authenticatedUserId);
 
         if (!($user instanceof User)) {
             throw new UserNotFound();
@@ -114,8 +114,8 @@ class RequestPrimaryEmailChangeHandler
         }
 
         $event = PrimaryEmailChangeRequested::fromProperties(
-            Id::fromId($command->authorizerId),
-            Id::fromId($command->authorizerId),
+            Id::fromId($command->authenticatedUserId),
+            Id::fromId($command->authenticatedUserId),
             $command->metadata,
             $command->newEmailRequested,
             $user->hashedPassword()->hash()

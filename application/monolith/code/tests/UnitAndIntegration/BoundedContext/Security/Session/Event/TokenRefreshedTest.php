@@ -20,21 +20,21 @@ class TokenRefreshedTest extends UnitTestBase
     public function testCreate(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
+        $authenticatedUserId = Id::createNew();
         $metadata = [1, 2, 3];
         $withIp = '127.0.0.1';
         $withSessionToken = 'session_token';
 
         $tokenRefreshed = TokenRefreshed::fromProperties(
             $aggregateId,
-            $authorizerId,
+            $authenticatedUserId,
             $metadata,
             $withIp,
             $withSessionToken
         );
 
         Assert::assertEquals($aggregateId, $tokenRefreshed->aggregateId());
-        Assert::assertEquals($authorizerId, $tokenRefreshed->authorizerId());
+        Assert::assertEquals($authenticatedUserId, $tokenRefreshed->authenticatedUserId());
         Assert::assertEquals($metadata, $tokenRefreshed->metadata());
         Assert::assertEquals($withIp, $tokenRefreshed->withIp());
         Assert::assertEquals($withSessionToken, $tokenRefreshed->withExistingSessionToken());

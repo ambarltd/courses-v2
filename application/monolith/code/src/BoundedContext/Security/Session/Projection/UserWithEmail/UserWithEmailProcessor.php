@@ -93,7 +93,7 @@ class UserWithEmailProcessor implements ProjectionEventProcessor
                     );
                 }
             } else {
-                throw new \Exception(sprintf('Could not process serialized event %s of class %s where UserWithEmail for userId %s was found', $event->eventId()->id(), get_class($event), $event->authorizerId()->id()));
+                throw new \Exception(sprintf('Could not process serialized event %s of class %s where UserWithEmail for userId %s was found', $event->eventId()->id(), get_class($event), $event->authenticatedUserId()->id()));
             }
 
             $this->projectionDocumentManager->persist($userWithEmail);

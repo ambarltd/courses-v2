@@ -9,7 +9,7 @@ class RefreshToken
     /**
      * @var string
      */
-    public $authorizerId;
+    public $authenticatedUserId;
 
     /**
      * @var string

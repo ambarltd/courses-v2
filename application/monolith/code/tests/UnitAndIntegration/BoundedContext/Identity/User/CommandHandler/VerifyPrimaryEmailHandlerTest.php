@@ -65,7 +65,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
         if (
-            null === $storedEvent->authorizerId() ||
+            null === $storedEvent->authenticatedUserId() ||
             (!($storedEvent instanceof PrimaryEmailVerified)) ||
             (!($queuedEvent instanceof PrimaryEmailVerified))
         ) {
@@ -82,7 +82,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
-            $storedEvent->authorizerId()->id()
+            $storedEvent->authenticatedUserId()->id()
         );
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
@@ -153,7 +153,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
         if (
-            null === $storedEvent->authorizerId() ||
+            null === $storedEvent->authenticatedUserId() ||
             (!($storedEvent instanceof PrimaryEmailVerified)) ||
             (!($queuedEvent instanceof PrimaryEmailVerified))
         ) {
@@ -170,7 +170,7 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         );
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
-            $storedEvent->authorizerId()->id()
+            $storedEvent->authenticatedUserId()->id()
         );
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),

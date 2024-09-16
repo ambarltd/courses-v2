@@ -9,7 +9,7 @@ class SignOut
     /**
      * @var string
      */
-    public $authorizerId;
+    public $authenticatedUserId;
 
     /**
      * @var string

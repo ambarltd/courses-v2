@@ -57,7 +57,7 @@ class RefreshTokenHandler
             throw new NoSessionFound();
         }
 
-        if ($command->authorizerId !== $session->sessionDetails()->asUser()->id()) {
+        if ($command->authenticatedUserId !== $session->sessionDetails()->asUser()->id()) {
             throw new SessionUserDoesNotMatch();
         }
 
@@ -71,7 +71,7 @@ class RefreshTokenHandler
 
         $event = TokenRefreshed::fromProperties(
             $session->aggregateId(),
-            Id::fromId($command->authorizerId),
+            Id::fromId($command->authenticatedUserId),
             $command->metadata,
             $command->withIp,
             $command->withSessionToken

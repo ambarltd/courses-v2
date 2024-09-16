@@ -49,6 +49,12 @@ class JsonPostRequestMapper
     }
     
     /**
+     * In Commands, the End User Requester can never set properties named "authenticatedUserId" or "withIp".
+     *
+     * Instead:
+     * - authenticatedUserId: JsonPostRequestMapper sets the value, by transforming a session token.
+     * - withIp: JsonPostRequestMapper sets the value, by looking at the remote address.
+     *
      * @throws InvalidContentType|InvalidJson
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
      */
@@ -104,7 +110,7 @@ class JsonPostRequestMapper
         Request $request, 
         string $commandOrQueryClass
     ): array {
-        $requestArray["authorizerId"] = null;
+        $requestArray["authenticatedUserId"] = null;
         $requestArray["withIp"] = null;
         $requestArray["withSessionToken"] = null;
 
@@ -122,7 +128,7 @@ class JsonPostRequestMapper
 
         try {
             if (is_string($withSessionToken)) {
-                $requestArray["authorizerId"] = $this->userIdFromSignedInSessionToken
+                $requestArray["authenticatedUserId"] = $this->userIdFromSignedInSessionToken
                     ->userIdFromSignedInSessionToken(
                         $withSessionToken,
                         (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds')
@@ -134,8 +140,8 @@ class JsonPostRequestMapper
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'authorizerId') &&
-            null === $requestArray["authorizerId"]
+            property_exists(new $commandOrQueryClass(), 'authenticatedUserId') &&
+            null === $requestArray["authenticatedUserId"]
         ) {
             throw new MissingExpectedSessionToken();
         }

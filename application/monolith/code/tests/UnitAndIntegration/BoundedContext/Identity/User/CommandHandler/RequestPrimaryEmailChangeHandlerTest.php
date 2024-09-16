@@ -63,7 +63,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = ValidEmails::listValidEmails()[1];
         $command->metadata = $this->mockMetadata();
@@ -86,11 +86,11 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
             $storedEvent->newEmailRequested()
         );
         Assert::assertEquals(
-            $command->authorizerId,
-            $storedEvent->authorizerId()->id()
+            $command->authenticatedUserId,
+            $storedEvent->authenticatedUserId()->id()
         );
         Assert::assertEquals(
-            $command->authorizerId,
+            $command->authenticatedUserId,
             $storedEvent->aggregateId()->id()
         );
         Assert::assertInternalType(
@@ -152,7 +152,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = ValidEmails::listValidEmails()[2];
         $command->metadata = $this->mockMetadata();
@@ -175,11 +175,11 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
             $storedEvent->newEmailRequested()
         );
         Assert::assertEquals(
-            $command->authorizerId,
-            $storedEvent->authorizerId()->id()
+            $command->authenticatedUserId,
+            $storedEvent->authenticatedUserId()->id()
         );
         Assert::assertEquals(
-            $command->authorizerId,
+            $command->authenticatedUserId,
             $storedEvent->aggregateId()->id()
         );
         Assert::assertInternalType(
@@ -227,7 +227,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = ValidIds::listValidIds()[0];
+        $command->authenticatedUserId = ValidIds::listValidIds()[0];
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = ValidEmails::listValidEmails()[1];
         $command->metadata = $this->mockMetadata();
@@ -264,7 +264,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = $signedUp->primaryEmail();
         $command->metadata = $this->mockMetadata();
@@ -307,7 +307,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = $signedUp->primaryEmail();
         $command->metadata = $this->mockMetadata();
@@ -358,7 +358,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = $signedUp->primaryEmail();
         $command->metadata = $this->mockMetadata();
@@ -409,7 +409,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = $primaryEmailChangeRequested->newEmailRequested();
         $command->metadata = $this->mockMetadata();
@@ -452,7 +452,7 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[1];
         $command->newEmailRequested = ValidEmails::listValidEmails()[1];
         $command->metadata = $this->mockMetadata();
@@ -495,8 +495,8 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = InvalidEmails::listInvalidEmails()[0];
         $command->metadata = $this->mockMetadata();
@@ -539,8 +539,8 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
 
         $command = new RequestPrimaryEmailChange();
-        $command->authorizerId = $signedUp->aggregateId()->id();
-        $command->authorizerId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
+        $command->authenticatedUserId = $signedUp->aggregateId()->id();
         $command->password = ValidPasswords::listValidPasswords()[0];
         $command->newEmailRequested = ValidEmails::listValidEmails()[1];
         $command->metadata = $this->mockMetadata();

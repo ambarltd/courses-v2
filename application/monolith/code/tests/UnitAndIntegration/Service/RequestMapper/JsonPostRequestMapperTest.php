@@ -90,7 +90,7 @@ class JsonPostRequestMapperTest extends UnitTestBase
         Assert::assertObjectNotHasProperty('hack', $command);
     }
 
-    public function testAuthorizerIdOnRefreshToken(): void
+    public function testAuthenticatedUserIdOnRefreshToken(): void
     {
         /** @var RefreshToken $command */
         $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
@@ -107,7 +107,7 @@ class JsonPostRequestMapperTest extends UnitTestBase
                     'HTTP_REFERER' => 'example.com',
                 ],
                 $this->jsonEncodeOrThrowException([
-                    'authorizerId' => 'hackAuthorizerId',
+                    'authenticatedUserId' => 'hackAuthenticatedUserId',
                     'withIp' => 'hackIpAddress',
                     'withSessionToken' => 'hackWithSessionToken',
                     'metadata' => [
@@ -132,7 +132,7 @@ class JsonPostRequestMapperTest extends UnitTestBase
         );
 
         Assert::assertInstanceOf(RefreshToken::class, $command);
-        Assert::assertEquals('user_id_123', $command->authorizerId);
+        Assert::assertEquals('user_id_123', $command->authenticatedUserId);
         Assert::assertEquals('77.96.237.178', $command->withIp);
         Assert::assertEquals('token_123', $command->withSessionToken);
         Assert::assertEquals(51.5074, $command->metadata['latitude']);
