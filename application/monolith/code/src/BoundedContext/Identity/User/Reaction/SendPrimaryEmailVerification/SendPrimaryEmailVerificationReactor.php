@@ -13,23 +13,18 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Service\Email\Emailer;
 use Galeas\Api\Service\EventStore\EventStore;
 
 class SendPrimaryEmailVerificationReactor
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var EmailService
-     * Todo
-     */
-    private $emailService;
+    private Emailer $emailer;
 
-    public function __construct(EventStore $eventStore) {
+    public function __construct(EventStore $eventStore, Emailer $emailer) {
         $this->eventStore = $eventStore;
+        $this->emailer = $emailer;
     }
 
     /**
@@ -58,7 +53,7 @@ class SendPrimaryEmailVerificationReactor
             throw new PrimaryEmailVerificationAlreadySent();
         }
 
-        $this->emailService->sendEmail(
+        $this->emailer->send(
             "email@example.com",
             "https://domain.example/frontend/verifyEmail?verificationCode=verificationCode",
             "text"

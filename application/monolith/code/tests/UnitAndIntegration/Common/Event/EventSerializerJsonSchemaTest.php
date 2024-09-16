@@ -27,13 +27,17 @@ class EventSerializerJsonSchemaTest extends UnitTestBase
         $schemaFetcher = new JsonSchemaFetcher();
 
         foreach ($events as $event) {
-            $serializedEvent = EventSerializer::eventsToSerializedEvents($events)[0];
+            $serializedEvent = EventSerializer::eventsToSerializedEvents([$event])[0];
             $jsonEvent = $serializedEvent->toJson();
 
             try {
                 $schema = $schemaFetcher->fetch('Event/'.$serializedEvent->eventName().'.json');
             } catch (\Throwable $exception) {
-                Assert::fail('Cannot load a schema for '.$serializedEvent->eventName());
+                Assert::fail(sprintf(
+                    'Cannot load a schema for %s. Exception :%s.',
+                    $serializedEvent->eventName(),
+                    $exception->getMessage()
+                ));
             }
 
             $errors = $schemaValidator->validate($jsonEvent, $schema);

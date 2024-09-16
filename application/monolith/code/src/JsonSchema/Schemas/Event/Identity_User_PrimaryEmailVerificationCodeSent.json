@@ -28,36 +28,28 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "asUser": {
-          "$ref": "Event/Shared/PayloadIdObject.json"
-        },
-        "withUsername": {
-          "type": ["string", "null"]
-        },
-        "withEmail": {
-          "type": ["string", "null"]
-        },
-        "withHashedPassword": {
+        "verificationCodeSent": {
           "type": "string"
         },
-        "byDeviceLabel": {
+        "toEmailAddress": {
           "type": "string"
         },
-        "withIp": {
+        "emailContents": {
           "type": "string"
         },
-        "sessionTokenCreated": {
+        "fromEmailAddress": {
+          "type": "string"
+        },
+        "subjectLine": {
           "type": "string"
         }
       },
       "required": [
-        "asUser",
-        "withUsername",
-        "withEmail",
-        "withHashedPassword",
-        "byDeviceLabel",
-        "withIp",
-        "sessionTokenCreated"
+        "verificationCodeSent",
+        "toEmailAddress",
+        "emailContents",
+        "fromEmailAddress",
+        "subjectLine"
       ]
     },
     "jsonMetadata": {

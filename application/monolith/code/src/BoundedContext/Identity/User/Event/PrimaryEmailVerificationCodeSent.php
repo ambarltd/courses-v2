@@ -14,9 +14,13 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
 
     private string $verificationCodeSent;
 
-    private string $sentToEmailAddress;
+    private string $toEmailAddress;
 
     private string $emailContents;
+
+    private string $fromEmailAddress;
+
+    private string $subjectLine;
 
     public static function new(
         Id $eventId,
@@ -27,8 +31,10 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
         \DateTimeImmutable $recordedOn,
         array $metadata,
         string $verificationCodeSent,
-        string $sentToEmailAddress,
-        string $emailContents
+        string $toEmailAddress,
+        string $emailContents,
+        string $fromEmailAddress,
+        string $subjectLine
     ): PrimaryEmailVerificationCodeSent {
         $event = new self(
             $eventId,
@@ -40,8 +46,10 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
             $metadata
         );
         $event->verificationCodeSent = $verificationCodeSent;
-        $event->sentToEmailAddress = $sentToEmailAddress;
+        $event->toEmailAddress = $toEmailAddress;
         $event->emailContents = $emailContents;
+        $event->fromEmailAddress = $fromEmailAddress;
+        $event->subjectLine = $subjectLine;
 
         return $event;
     }
@@ -51,14 +59,24 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
         return $this->verificationCodeSent;
     }
 
-    public function sentToEmailAddress(): string
+    public function toEmailAddress(): string
     {
-        return $this->sentToEmailAddress;
+        return $this->toEmailAddress;
     }
 
     public function emailContents(): string
     {
         return $this->emailContents;
+    }
+
+    public function fromEmailAddress(): string
+    {
+        return $this->fromEmailAddress;
+    }
+
+    public function subjectLine(): string
+    {
+        return $this->subjectLine;
     }
 
     public function transformUser(User $user): User

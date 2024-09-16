@@ -7,7 +7,6 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Ev
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
@@ -18,41 +17,30 @@ class SignedInTest extends UnitTestBase
      */
     public function testCreate(): void
     {
-        $metadata = [1, 2, 3];
-        $asUser = Id::createNew();
-        $withUsername = 'test_username';
-        $withEmail = 'test_email';
-        $withHashedPassword = 'test_hashed_password';
-        $byDeviceLabel = 'by_device_label';
-        $withIp = '127.0.0.1';
-
-        $signedIn = SignedIn::fromProperties(
-            $metadata,
-            $asUser,
-            $withUsername,
-            $withEmail,
-            $withHashedPassword,
-            $byDeviceLabel,
-            $withIp
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $userId = Id::createNew();
+        $signedIn = SignedIn::new(
+            $eventId,
+            $aggregateId,
+            1432,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            $userId,
+            'UserNameBob',
+            null,
+            'HashedPassword819',
+            'DeviceIphoneFrom2023',
+            "201.201.20.201",
+            "SessionTokenCreatedForSessionblablabla909090"
         );
 
-        Assert::assertNotEquals($signedIn->aggregateId(), $signedIn->eventId());
-        Assert::assertNotEquals($signedIn->aggregateId(), $signedIn->asUser());
-        Assert::assertNotEquals($signedIn->asUser(), $signedIn->eventId());
-        Assert::assertEquals(null, $signedIn->causationId());
-
-        Assert::assertEquals($metadata, $signedIn->metadata());
-        Assert::assertEquals($asUser, $signedIn->asUser());
-        Assert::assertEquals($asUser, $signedIn->authenticatedUserId());
-        Assert::assertEquals($withUsername, $signedIn->withUsername());
-        Assert::assertEquals($withEmail, $signedIn->withEmail());
-        Assert::assertEquals($withHashedPassword, $signedIn->withHashedPassword());
-        Assert::assertEquals($byDeviceLabel, $signedIn->byDeviceLabel());
-        Assert::assertEquals($withIp, $signedIn->withIp());
-        Assert::assertTrue(
-            SessionTokenValidator::isValid(
-                $signedIn->sessionTokenCreated()
-            )
+        Assert::assertEquals(
+            
         );
     }
 

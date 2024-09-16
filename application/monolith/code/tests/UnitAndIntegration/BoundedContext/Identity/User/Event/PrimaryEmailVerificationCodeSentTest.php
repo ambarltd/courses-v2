@@ -34,6 +34,8 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTestBase
             'verificationCode91230',
             'sentTo@example.com',
             'YourCode:verificationCode91230',
+            'sentFrom@example.com',
+            "Verify Yourself"
         );
 
         Assert::assertEquals(
@@ -48,6 +50,8 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTestBase
                 'verificationCode91230',
                 'sentTo@example.com',
                 'YourCode:verificationCode91230',
+                'sentFrom@example.com',
+                "Verify Yourself"
             ],
             [
                 $primaryEmailChangeRequested->eventId(),
@@ -58,8 +62,10 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTestBase
                 $primaryEmailChangeRequested->recordedOn(),
                 $primaryEmailChangeRequested->metadata(),
                 $primaryEmailChangeRequested->verificationCodeSent(),
-                $primaryEmailChangeRequested->sentToEmailAddress(),
+                $primaryEmailChangeRequested->toEmailAddress(),
                 $primaryEmailChangeRequested->emailContents(),
+                $primaryEmailChangeRequested->fromEmailAddress(),
+                $primaryEmailChangeRequested->subjectLine(),
             ]
         );
     }
@@ -78,6 +84,9 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTestBase
             'verificationCode91230',
             'sentTo@example.com',
             'YourCode:verificationCode91230',
+            'sentFrom@example.com',
+            "Verify Yourself"
+
         );
         $user = User::fromProperties(
             $aggregateId,

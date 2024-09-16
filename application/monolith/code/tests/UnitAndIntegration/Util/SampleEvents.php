@@ -75,7 +75,9 @@ abstract class SampleEvents {
             self::sampleMetadata(null),
             self::sampleVerificationCode(),
             self::sampleEmail(),
-            "Your code is: " . self::sampleVerificationCode()
+            "Your code is: " . self::sampleVerificationCode(),
+            self::systemEmailFrom(),
+            "Verify Yourself"
         );
     }
 
@@ -226,6 +228,10 @@ abstract class SampleEvents {
 
     private static function anotherSampleEmail(): string {
         return "proof@galeas2.net";
+    }
+
+    private static function systemEmailFrom(): string {
+        return "from@system.example.com";
     }
 
     private static function sampleHashedPassword(): string {
