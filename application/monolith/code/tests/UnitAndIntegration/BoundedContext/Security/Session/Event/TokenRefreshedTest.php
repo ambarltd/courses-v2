@@ -77,7 +77,7 @@ class TokenRefreshedTest extends UnitTestBase
         $transformedSession = $signedOut->transformSession($session);
 
         Assert::assertEquals(
-            $session->id(),
+            $session->aggregateId(),
             $transformedSession->id()
         );
         Assert::assertEquals(

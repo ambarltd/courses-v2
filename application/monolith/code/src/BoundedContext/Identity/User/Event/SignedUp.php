@@ -12,7 +12,6 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 
 class SignedUp implements EventCreatedUser
 {

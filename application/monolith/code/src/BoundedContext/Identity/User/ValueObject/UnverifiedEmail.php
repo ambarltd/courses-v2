@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
 class UnverifiedEmail
 {
-    /**
-     * @var Email
-     */
-    private $email;
+    private Email $email;
 
-    /**
-     * @var VerificationCode
-     */
-    private $verificationCode;
+    private VerificationCode $verificationCode;
 
     private function __construct(
         Email $email,

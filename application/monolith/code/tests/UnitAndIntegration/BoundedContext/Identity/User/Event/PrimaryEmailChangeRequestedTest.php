@@ -9,312 +9,197 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
-use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailVerificationCodeValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class PrimaryEmailChangeRequestedTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
+        $eventId = Id::createNew();
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
+            $eventId,
             $aggregateId,
-            $authorizerId,
-            [1, 2, 3],
-            'new@example.com',
-        'hashedPassword'
+            1432,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            'newEmailRequested@example.com',
+            'newVerificationCode123',
+            'hashedPassword123123',
         );
 
-        Assert::assertInstanceOf(
-            Id::class,
-            $primaryEmailChangeRequested->eventId()
-        );
-        Assert::assertNotContains(
-            $primaryEmailChangeRequested->eventId(),
+        Assert::assertEquals(
             [
+                $eventId,
+                $aggregateId,
+                1432,
+                $causationId,
+                $correlationId,
+                new \DateTimeImmutable("2024-01-03 10:35:23"),
+                ["metadataField" => "hello world 123"],
+                'newEmailRequested@example.com',
+                'newVerificationCode123',
+                'hashedPassword123123'
+            ],
+            [
+                $primaryEmailChangeRequested->eventId(),
                 $primaryEmailChangeRequested->aggregateId(),
-                $primaryEmailChangeRequested->authorizerId(),
+                $primaryEmailChangeRequested->aggregateVersion(),
+                $primaryEmailChangeRequested->causationId(),
+                $primaryEmailChangeRequested->correlationId(),
+                $primaryEmailChangeRequested->recordedOn(),
+                $primaryEmailChangeRequested->metadata(),
+                $primaryEmailChangeRequested->newEmailRequested(),
+                $primaryEmailChangeRequested->newVerificationCode(),
+                $primaryEmailChangeRequested->requestedWithHashedPassword(),
             ]
-        );
-        Assert::assertEquals(
-            $aggregateId,
-            $primaryEmailChangeRequested->aggregateId()
-        );
-        Assert::assertEquals(
-            $authorizerId,
-            $primaryEmailChangeRequested->authorizerId()
-        );
-        Assert::assertEquals(
-            null,
-            $primaryEmailChangeRequested->causationId()
-        );
-        Assert::assertEquals(
-            [1, 2, 3],
-            $primaryEmailChangeRequested->metadata()
-        );
-        Assert::assertEquals(
-            'new@example.com',
-            $primaryEmailChangeRequested->newEmailRequested()
-        );
-        Assert::assertEquals(
-            'hashedPassword',
-            $primaryEmailChangeRequested->requestedWithHashedPassword()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid(
-                $primaryEmailChangeRequested->newVerificationCode()
-            ),
-            'Verification code is not valid.'
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformVerified(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
+        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
+            Id::createNew(),
+            $aggregateId,
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'newEmailRequested@example.com',
+            'newVerificationCode123',
+            'hashedPassword123123',
+        );
         $user = User::fromProperties(
             $aggregateId,
+            27,
             VerifiedEmail::fromEmail(
-                Email::fromEmail(
-                    'verified@example.com'
-                )
+                Email::fromEmail('verified@example.com'),
             ),
-            HashedPassword::fromHash(
-                'abcdef1234560'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
-                'username_1',
+                'username',
                 true
             )
         );
-
-        $transformedUser = PrimaryEmailChangeRequested::fromProperties(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'new@example.com',
-            'some_hashed_password'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof RequestedNewEmail)) {
-            throw new \Exception();
-        }
+        $transformedUser = $primaryEmailChangeRequested->transformUser($user);
 
         Assert::assertEquals(
-            'verified@example.com',
-            $transformedUser
-                ->primaryEmailStatus()
-                ->verifiedEmail()
-                ->email()
-        );
-        Assert::assertEquals(
-            'new@example.com',
-            $transformedUser
-                ->primaryEmailStatus()
-                ->requestedEmail()
-                ->email()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid(
-                $transformedUser
-                    ->primaryEmailStatus()
-                    ->verificationCode()
-                    ->verificationCode()
+            User::fromProperties(
+                $user->aggregateId(),
+                28,
+                VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
+                    Email::fromEmail('verified@example.com'),
+                    Email::fromEmail('newEmailRequested@example.com'),
+                    VerificationCode::fromVerificationCode('newVerificationCode123')
+                ),
+                $user->hashedPassword(),
+                $user->accountDetails()
             ),
-            'Verification code is not valid.'
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
+            $transformedUser
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformChangeRequested(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
+        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
+            Id::createNew(),
+            $aggregateId,
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'newEmailRequested@example.com',
+            'newVerificationCode123',
+            'hashedPassword123123',
+        );
         $user = User::fromProperties(
             $aggregateId,
-            RequestedNewEmail::fromEmailsAndVerificationCode(
-                Email::fromEmail(
-                    'verified@example.com'
-                ),
-                Email::fromEmail(
-                    'previous_new@example.com'
-                ),
-                VerificationCode::fromVerificationCode(
-                    'verification_code'
-                )
+            27,
+            VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
+                Email::fromEmail('verified@example.com'),
+                Email::fromEmail('requested@example.com'),
+                VerificationCode::fromVerificationCode('some_verification_code')
             ),
-            HashedPassword::fromHash(
-                'abcdef1234560'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
-                'username_1',
+                'username',
                 true
             )
         );
-
-        $transformedUser = PrimaryEmailChangeRequested::fromProperties(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'new@example.com',
-            'some_hashed_password'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof RequestedNewEmail)) {
-            throw new \Exception();
-        }
+        $transformedUser = $primaryEmailChangeRequested->transformUser($user);
 
         Assert::assertEquals(
-            'verified@example.com',
-            $transformedUser
-                ->primaryEmailStatus()
-                ->verifiedEmail()
-                ->email()
-        );
-        Assert::assertEquals(
-            'new@example.com',
-            $transformedUser
-                ->primaryEmailStatus()
-                ->requestedEmail()
-                ->email()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid(
-                $transformedUser
-                    ->primaryEmailStatus()
-                    ->verificationCode()
-                    ->verificationCode()
+            User::fromProperties(
+                $user->aggregateId(),
+                28,
+                VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
+                    Email::fromEmail('verified@example.com'),
+                    Email::fromEmail('newEmailRequested@example.com'),
+                    VerificationCode::fromVerificationCode('newVerificationCode123')
+                ),
+                $user->hashedPassword(),
+                $user->accountDetails()
             ),
-            'Verification code is not valid.'
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
+            $transformedUser
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformUnverified(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-        $oldVerificationCode = EmailVerificationCodeCreator::create();
-
+        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
+            Id::createNew(),
+            $aggregateId,
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'newEmailRequested@example.com',
+            'newVerificationCode123',
+            'hashedPassword123123',
+        );
         $user = User::fromProperties(
             $aggregateId,
+            27,
             UnverifiedEmail::fromEmailAndVerificationCode(
-                Email::fromEmail(
-                    'unverified@example.com'
-                ),
-                VerificationCode::fromVerificationCode(
-                    EmailVerificationCodeCreator::create()
-                )
+                Email::fromEmail('test@example.com'),
+                VerificationCode::fromVerificationCode('some_verification_code')
             ),
-            HashedPassword::fromHash(
-                'abcdef1234560'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
-                'username_1',
+                'username',
                 true
             )
         );
-
-        $transformedUser = PrimaryEmailChangeRequested::fromProperties(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'new@example.com',
-            'some_hashed_password'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof UnverifiedEmail)) {
-            throw new \Exception();
-        }
+        $transformedUser = $primaryEmailChangeRequested->transformUser($user);
 
         Assert::assertEquals(
-            'new@example.com',
-            $transformedUser
-                ->primaryEmailStatus()
-                ->email()
-                ->email()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid(
-                $transformedUser
-                    ->primaryEmailStatus()
-                    ->verificationCode()
-                    ->verificationCode()
+            User::fromProperties(
+                $user->aggregateId(),
+                28,
+                UnverifiedEmail::fromEmailAndVerificationCode(
+                    Email::fromEmail('newEmailRequested@example.com'),
+                    VerificationCode::fromVerificationCode('newVerificationCode123')
+                ),
+                $user->hashedPassword(),
+                $user->accountDetails()
             ),
-            'Verification code is not valid.'
-        );
-        Assert::assertNotEquals(
-            $oldVerificationCode,
             $transformedUser
-                ->primaryEmailStatus()
-                ->verificationCode()
-                ->verificationCode()
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
         );
     }
 }

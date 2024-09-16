@@ -6,18 +6,14 @@ namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
 class AccountDetails
 {
-    /**
-     * @var string
-     */
-    private $username;
+    private string $username;
 
     /**
      * This denotes if the user has accepted the terms of use.
      * It's not always true; sometimes a user may have not created his/her own account.
-     *
-     * @var bool
+     * I.e., what if we had admins creating an account?
      */
-    private $termsOfUseAccepted;
+    private bool $termsOfUseAccepted;
 
     private function __construct(
         string $username,

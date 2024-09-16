@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Aggregate;
 
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Aggregate\Aggregate;
@@ -17,13 +17,13 @@ class User implements Aggregate
 {
     use AggregateTrait;
 
-    private VerifiedEmail|UnverifiedEmail|RequestedNewEmail $primaryEmailStatus;
+    private VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail $primaryEmailStatus;
 
     private HashedPassword $hashedPassword;
 
     private AccountDetails $accountDetails;
 
-    public function primaryEmailStatus(): VerifiedEmail|UnverifiedEmail|RequestedNewEmail
+    public function primaryEmailStatus(): VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail
     {
         return $this->primaryEmailStatus;
     }
@@ -39,11 +39,11 @@ class User implements Aggregate
     }
 
     public static function fromProperties(
-        Id $id,
-        int $aggregateVersion,
-        VerifiedEmail|UnverifiedEmail|RequestedNewEmail $primaryEmailStatus,
-        HashedPassword $hashedPassword,
-        AccountDetails $accountDetails
+        Id                                                         $id,
+        int                                                        $aggregateVersion,
+        VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail $primaryEmailStatus,
+        HashedPassword                                             $hashedPassword,
+        AccountDetails                                             $accountDetails
     ): User {
         $user = new self($id, $aggregateVersion);
 

@@ -4,22 +4,13 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
-class RequestedNewEmail
+class VerifiedButRequestedNewEmail
 {
-    /**
-     * @var Email
-     */
-    private $verifiedEmail;
+    private Email $verifiedEmail;
 
-    /**
-     * @var Email
-     */
-    private $requestedEmail;
+    private Email $requestedEmail;
 
-    /**
-     * @var VerificationCode
-     */
-    private $verificationCode;
+    private VerificationCode $verificationCode;
 
     private function __construct(
         Email $verifiedEmail,
@@ -50,7 +41,7 @@ class RequestedNewEmail
         Email $verifiedEmail,
         Email $requestedEmail,
         VerificationCode $verificationCode
-    ): RequestedNewEmail {
+    ): VerifiedButRequestedNewEmail {
         return new self(
             $verifiedEmail,
             $requestedEmail,

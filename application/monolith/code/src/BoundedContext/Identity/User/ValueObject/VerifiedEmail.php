@@ -6,10 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
 class VerifiedEmail
 {
-    /**
-     * @var Email
-     */
-    private $email;
+    private Email $email;
 
     private function __construct(Email $email)
     {

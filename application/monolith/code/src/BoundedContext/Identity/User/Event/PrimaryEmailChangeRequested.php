@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Event;
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
@@ -76,7 +76,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
 
         if ($previousEmailStatus instanceof UnverifiedEmail) {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
                 UnverifiedEmail::fromEmailAndVerificationCode(
                     Email::fromEmail(
@@ -91,9 +91,9 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
             );
         } elseif ($previousEmailStatus instanceof VerifiedEmail) {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
-                RequestedNewEmail::fromEmailsAndVerificationCode(
+                VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
                     Email::fromEmail(
                         $previousEmailStatus->email()->email()
                     ),
@@ -109,9 +109,9 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
             );
         } else {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
-                RequestedNewEmail::fromEmailsAndVerificationCode(
+                VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
                     Email::fromEmail(
                         $previousEmailStatus->verifiedEmail()->email()
                     ),

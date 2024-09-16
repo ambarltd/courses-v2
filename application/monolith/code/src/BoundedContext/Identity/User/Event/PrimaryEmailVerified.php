@@ -50,7 +50,7 @@ class PrimaryEmailVerified implements EventTransformedUser
     {
         if ($user->primaryEmailStatus() instanceof UnverifiedEmail) {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(
@@ -64,7 +64,7 @@ class PrimaryEmailVerified implements EventTransformedUser
             );
         } elseif ($user->primaryEmailStatus() instanceof VerifiedEmail) {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(
@@ -78,7 +78,7 @@ class PrimaryEmailVerified implements EventTransformedUser
             );
         } else {
             return User::fromProperties(
-                $user->id(),
+                $user->aggregateId(),
                 $this->aggregateVersion,
                 VerifiedEmail::fromEmail(
                     Email::fromEmail(

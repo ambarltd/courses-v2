@@ -39,12 +39,14 @@ class UserTest extends UnitTestBase
         );
         $user = User::fromProperties(
             $userId,
+            55,
             $unverifiedEmail,
             $hashedPassword,
             $accountDetails
         );
 
-        Assert::assertEquals($userId, $user->id());
+        Assert::assertEquals($userId, $user->aggregateId());
+        Assert::assertEquals(55, $user->aggregateVersion());
         Assert::assertEquals($unverifiedEmail, $user->primaryEmailStatus());
         Assert::assertEquals($hashedPassword, $user->hashedPassword());
         Assert::assertEquals($accountDetails, $user->accountDetails());

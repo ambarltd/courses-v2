@@ -4,148 +4,109 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Event;
 
+use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailVerificationCodeValidator;
-use Galeas\Api\Primitive\PrimitiveValidation\Security\BCryptHashValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SignedUpTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            [1, 2, 3],
-            'test@example.com',
-            'my_password',
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $signedUp = SignedUp::new(
+            $eventId,
+            $aggregateId,
+            1432,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            'primaryEmail@example.com',
+            'primaryEmailVerificationCode',
+            'hashedPassword',
             'username',
             true
         );
 
-        Assert::assertInstanceOf(
-            Id::class,
-            $signedUp->eventId()
-        );
-        Assert::assertInstanceOf(
-            Id::class,
-            $signedUp->aggregateId()
-        );
-        Assert::assertNotEquals(
-            $signedUp->eventId(),
-            $signedUp->aggregateId()
-        );
-        Assert::assertInstanceOf(
-            Id::class,
-            $signedUp->authorizerId()
-        );
         Assert::assertEquals(
-            $signedUp->aggregateId(),
-            $signedUp->authorizerId()
-        );
-        Assert::assertEquals(
-            null,
-            $signedUp->causationId()
-        );
-        Assert::assertEquals(
-            [1, 2, 3],
-            $signedUp->metadata()
-        );
-        Assert::assertEquals(
-            'test@example.com',
-            $signedUp->primaryEmail()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid($signedUp->primaryEmailVerificationCode()),
-            'Verification code is not valid'
-        );
-        Assert::assertEquals(
-            'username',
-            $signedUp->username()
-        );
-        Assert::assertEquals(
-            true,
-            $signedUp->termsOfUseAccepted()
-        );
-        Assert::assertTrue(
-            BCryptHashValidator::isValid(
-                $signedUp->hashedPassword()
-            ),
-            'Invalid bcrypt hash '.$signedUp->hashedPassword()
-        );
-        Assert::assertTrue(
-            password_verify(
-                'my_password',
-                $signedUp->hashedPassword()
-            ),
-            'Password hash does not match'
+            [
+                $eventId,
+                $aggregateId,
+                1432,
+                $causationId,
+                $correlationId,
+                new \DateTimeImmutable("2024-01-03 10:35:23"),
+                ["metadataField" => "hello world 123"],
+                'primaryEmail@example.com',
+                'primaryEmailVerificationCode',
+                'hashedPassword',
+                'username',
+                true
+            ],
+            [
+                $signedUp->eventId(),
+                $signedUp->aggregateId(),
+                $signedUp->aggregateVersion(),
+                $signedUp->causationId(),
+                $signedUp->correlationId(),
+                $signedUp->recordedOn(),
+                $signedUp->metadata(),
+                $signedUp->primaryEmail(),
+                $signedUp->primaryEmailVerificationCode(),
+                $signedUp->hashedPassword(),
+                $signedUp->username(),
+                $signedUp->termsOfUseAccepted(),
+            ]
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testCreateAggregate(): void
     {
-        $user = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'test@example.com',
-            'my_password',
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $signedUp = SignedUp::new(
+            $eventId,
+            $aggregateId,
+            1432,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            'primaryEmail@example.com',
+            'primaryEmailVerificationCode',
+            'hashedPassword',
             'username',
-            true
-        )->createUser();
-
-        Assert::assertInstanceOf(
-            Id::class,
-            $user->id()
+            false
         );
-
-        if (!($user->primaryEmailStatus() instanceof UnverifiedEmail)) {
-            throw new \Exception();
-        }
+        $user = $signedUp->createUser();
 
         Assert::assertEquals(
-            'test@example.com',
-            $user
-                ->primaryEmailStatus()
-                ->email()
-                ->email()
-        );
-        Assert::assertTrue(
-            EmailVerificationCodeValidator::isValid(
-                $user
-                    ->primaryEmailStatus()
-                    ->verificationCode()
-                    ->verificationCode()
+            User::fromProperties(
+                $signedUp->aggregateId(),
+                $signedUp->aggregateVersion(),
+                UnverifiedEmail::fromEmailAndVerificationCode(
+                    Email::fromEmail($signedUp->primaryEmail()),
+                    VerificationCode::fromVerificationCode($signedUp->primaryEmailVerificationCode())
+                ),
+                HashedPassword::fromHash($signedUp->hashedPassword()),
+                AccountDetails::fromDetails(
+                    $signedUp->username(),
+                    $signedUp->termsOfUseAccepted()
+                )
             ),
-            'Verification code is not valid.'
-        );
-        Assert::assertEquals(
-            'username',
             $user
-                ->accountDetails()
-                ->username()
-        );
-        Assert::assertEquals(
-            true,
-            $user
-                ->accountDetails()
-                ->termsOfUseAccepted()
-        );
-        Assert::assertTrue(
-            password_verify(
-                'my_password',
-                $user
-                    ->hashedPassword()
-                    ->hash()
-            ),
-            'Password hash does not match'
         );
     }
 }

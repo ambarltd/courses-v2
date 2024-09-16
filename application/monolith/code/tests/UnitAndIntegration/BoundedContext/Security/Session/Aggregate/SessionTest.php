@@ -13,9 +13,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SessionTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $sessionDetails = SessionDetails::fromProperties(
@@ -32,14 +29,16 @@ class SessionTest extends UnitTestBase
             '127.0.0.1'
         );
 
-        $id = Id::createNew();
+        $aggregateId = Id::createNew();
         $session = Session::fromProperties(
-            $id,
+            $aggregateId,
+            33,
             $sessionDetails,
             $sessionIsSignedOut
         );
 
-        Assert::assertEquals($id, $session->id());
+        Assert::assertEquals($aggregateId, $session->aggregateId());
+        Assert::assertEquals(33, $session->aggregateVersion());
         Assert::assertEquals($sessionDetails, $session->sessionDetails());
         Assert::assertEquals($sessionIsSignedOut, $session->sessionIsSignedOut());
     }

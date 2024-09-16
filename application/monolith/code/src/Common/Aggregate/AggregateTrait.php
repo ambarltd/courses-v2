@@ -8,20 +8,20 @@ use Galeas\Api\Common\Id\Id;
 
 trait AggregateTrait
 {
-    private Id $id;
+    private Id $aggregateId;
 
     private int $aggregateVersion;
 
 
-    private function __construct(Id $id, int $aggregateVersion)
+    private function __construct(Id $aggregateId, int $aggregateVersion)
     {
-        $this->id = $id;
+        $this->aggregateId = $aggregateId;
         $this->aggregateVersion = $aggregateVersion;
     }
 
-    public function id(): Id
+    public function aggregateId(): Id
     {
-        return $this->id;
+        return $this->aggregateId;
     }
 
     public function aggregateVersion(): int

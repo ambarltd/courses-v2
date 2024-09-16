@@ -67,7 +67,7 @@ class SignOutHandler
         }
 
         $event = SignedOut::fromProperties(
-            $session->id(),
+            $session->aggregateId(),
             Id::fromId($command->authorizerId),
             $command->metadata,
             $command->withIp,

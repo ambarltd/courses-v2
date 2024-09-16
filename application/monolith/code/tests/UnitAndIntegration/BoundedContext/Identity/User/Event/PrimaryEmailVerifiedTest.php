@@ -9,7 +9,7 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
@@ -19,189 +19,151 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class PrimaryEmailVerifiedTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
+        $eventId = Id::createNew();
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
+        $causationId = $eventId;
+        $correlationId = $eventId;
         $primaryEmailVerified = PrimaryEmailVerified::new(
+            $eventId,
             $aggregateId,
-            $authorizerId,
-            [1, 2, 3],
-            'code1234'
+            1432,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            'verifiedWithCode',
         );
 
-        Assert::assertInstanceOf(
-            Id::class,
-            $primaryEmailVerified->eventId()
-        );
-        Assert::assertNotEquals(
-            $primaryEmailVerified->eventId(),
-            $primaryEmailVerified->aggregateId()
-        );
-        Assert::assertNotEquals(
-            $primaryEmailVerified->eventId(),
-            $primaryEmailVerified->authorizerId()
-        );
         Assert::assertEquals(
-            $aggregateId,
-            $primaryEmailVerified->aggregateId()
-        );
-        Assert::assertEquals(
-            $authorizerId,
-            $primaryEmailVerified->authorizerId()
-        );
-        Assert::assertEquals(
-            null,
-            $primaryEmailVerified->causationId()
-        );
-        Assert::assertEquals(
-            [1, 2, 3],
-            $primaryEmailVerified->metadata()
-        );
-        Assert::assertEquals(
-            'code1234',
-            $primaryEmailVerified->verifiedWithCode()
+            [
+                $eventId,
+                $aggregateId,
+                1432,
+                $causationId,
+                $correlationId,
+                new \DateTimeImmutable("2024-01-03 10:35:23"),
+                ["metadataField" => "hello world 123"],
+                'verifiedWithCode'
+            ],
+            [
+                $primaryEmailVerified->eventId(),
+                $primaryEmailVerified->aggregateId(),
+                $primaryEmailVerified->aggregateVersion(),
+                $primaryEmailVerified->causationId(),
+                $primaryEmailVerified->correlationId(),
+                $primaryEmailVerified->recordedOn(),
+                $primaryEmailVerified->metadata(),
+                $primaryEmailVerified->verifiedWithCode(),
+            ]
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformUnverified(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
-        $user = User::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
+            Id::createNew(),
             $aggregateId,
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'changed_code_1234'
+        );
+        $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
+            $aggregateId,
+            27,
             UnverifiedEmail::fromEmailAndVerificationCode(
-                Email::fromEmail(
-                    'test@example.com'
-                ),
-                VerificationCode::fromVerificationCode(
-                    'some_verification_code'
-                )
+                Email::fromEmail('test@example.com'),
+                VerificationCode::fromVerificationCode('some_verification_code')
             ),
-            HashedPassword::fromHash(
-                '1234abcdef'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
                 'username',
                 true
             )
-        );
-
-        $transformedUser = PrimaryEmailVerified::new(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'changed_code_1234'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof VerifiedEmail)) {
-            throw new \Exception();
-        }
+        ));
 
         Assert::assertEquals(
-            'test@example.com',
+            User::fromProperties(
+                $aggregateId,
+                28,
+                VerifiedEmail::fromEmail(
+                    Email::fromEmail("test@example.com"),
+                ),
+                HashedPassword::fromHash("1234abcdef"),
+                AccountDetails::fromDetails(
+                    "username",
+                    true
+                )
+            ),
             $transformedUser
-                ->primaryEmailStatus()
-                ->email()
-                ->email()
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformVerified(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
-        $user = User::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
+            Id::createNew(),
             $aggregateId,
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'changed_code_1234'
+        );
+        $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
+            $aggregateId,
+            27,
             VerifiedEmail::fromEmail(
-                Email::fromEmail(
-                    'test@example.com'
-                )
+                Email::fromEmail("previous@example.com"),
             ),
-            HashedPassword::fromHash(
-                '1234abcdef'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
                 'username',
                 true
             )
-        );
-
-        $transformedUser = PrimaryEmailVerified::new(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'changed_code_1234'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof VerifiedEmail)) {
-            throw new \Exception();
-        }
+        ));
 
         Assert::assertEquals(
-            'test@example.com',
+            User::fromProperties(
+                $aggregateId,
+                28,
+                VerifiedEmail::fromEmail(
+                    Email::fromEmail("previous@example.com"),
+                ),
+                HashedPassword::fromHash("1234abcdef"),
+                AccountDetails::fromDetails(
+                    "username",
+                    true
+                )
+            ),
             $transformedUser
-                ->primaryEmailStatus()
-                ->email()
-                ->email()
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testTransformRequestedChange(): void
     {
         $aggregateId = Id::createNew();
-        $authorizerId = Id::createNew();
-
-        $user = User::fromProperties(
+        $primaryEmailVerified = PrimaryEmailVerified::new(
+            Id::createNew(),
             $aggregateId,
-            RequestedNewEmail::fromEmailsAndVerificationCode(
+            28,
+            Id::createNew(),
+            Id::createNew(),
+            new \DateTimeImmutable(),
+            ["metadataKey" => "123"],
+            'changed_code_1234'
+        );
+        $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
+            $aggregateId,
+            27,
+            VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
                 Email::fromEmail(
                     'test@example.com'
                 ),
@@ -209,48 +171,30 @@ class PrimaryEmailVerifiedTest extends UnitTestBase
                     'requested@example.com'
                 ),
                 VerificationCode::fromVerificationCode(
-                    'test@example.com'
+                    'codeFortest@example.com'
                 )
             ),
-            HashedPassword::fromHash(
-                '1234abcdef'
-            ),
+            HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
                 'username',
                 true
             )
-        );
-
-        $transformedUser = PrimaryEmailVerified::new(
-            $aggregateId,
-            $authorizerId,
-            [],
-            'changed_code_1234'
-        )->transformUser($user);
-
-        if (!($transformedUser->primaryEmailStatus() instanceof VerifiedEmail)) {
-            throw new \Exception();
-        }
+        ));
 
         Assert::assertEquals(
-            'requested@example.com',
+            User::fromProperties(
+                $aggregateId,
+                28,
+                VerifiedEmail::fromEmail(
+                    Email::fromEmail("requested@example.com"),
+                ),
+                HashedPassword::fromHash("1234abcdef"),
+                AccountDetails::fromDetails(
+                    "username",
+                    true
+                )
+            ),
             $transformedUser
-                ->primaryEmailStatus()
-                ->email()
-                ->email()
-        );
-
-        Assert::assertEquals(
-            $user->id(),
-            $transformedUser->id()
-        );
-        Assert::assertEquals(
-            $user->hashedPassword(),
-            $transformedUser->hashedPassword()
-        );
-        Assert::assertEquals(
-            $user->accountDetails(),
-            $transformedUser->accountDetails()
         );
     }
 }

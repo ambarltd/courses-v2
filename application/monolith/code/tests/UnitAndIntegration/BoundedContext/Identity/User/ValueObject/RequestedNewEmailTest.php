@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\ValueObject;
 
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
@@ -20,7 +20,7 @@ class RequestedNewEmailTest extends UnitTestBase
         $verifiedEmail = Email::fromEmail('test@example.com');
         $requestedEmail = Email::fromEmail('test2@example.com');
         $verificationCode = VerificationCode::fromVerificationCode('1234567890');
-        $requestedNewEmail = RequestedNewEmail::fromEmailsAndVerificationCode(
+        $requestedNewEmail = VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
             $verifiedEmail,
             $requestedEmail,
             $verificationCode

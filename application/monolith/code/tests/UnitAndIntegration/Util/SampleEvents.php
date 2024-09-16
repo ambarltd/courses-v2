@@ -39,7 +39,7 @@ abstract class SampleEvents {
         return [$event1, $event2, $event3, $event4];
     }
     
-    private static function signedUp(): SignedUp {
+    public static function signedUp(): SignedUp {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
         return SignedUp::new(

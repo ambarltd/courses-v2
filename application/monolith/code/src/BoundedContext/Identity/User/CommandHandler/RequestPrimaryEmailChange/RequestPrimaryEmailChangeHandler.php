@@ -8,7 +8,7 @@ use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
@@ -82,7 +82,7 @@ class RequestPrimaryEmailChangeHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof RequestedNewEmail &&
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
             AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->verifiedEmail()->email(),
                 $command->newEmailRequested
@@ -92,7 +92,7 @@ class RequestPrimaryEmailChangeHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof RequestedNewEmail &&
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
             AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->requestedEmail()->email(),
                 $command->newEmailRequested

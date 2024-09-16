@@ -6,10 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
 class HashedPassword
 {
-    /**
-     * @var string
-     */
-    private $hash;
+    private string $hash;
 
     private function __construct(string $hash)
     {

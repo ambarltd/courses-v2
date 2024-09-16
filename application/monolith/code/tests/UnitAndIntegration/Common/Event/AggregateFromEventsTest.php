@@ -11,7 +11,7 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;

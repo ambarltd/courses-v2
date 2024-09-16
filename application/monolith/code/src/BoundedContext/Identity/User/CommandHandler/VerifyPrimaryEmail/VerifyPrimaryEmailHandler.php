@@ -9,7 +9,7 @@ use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\RequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
@@ -80,7 +80,7 @@ class VerifyPrimaryEmailHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof RequestedNewEmail &&
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
             $command->verificationCode !== $user->primaryEmailStatus()->verificationCode()->verificationCode()
         ) {
             throw new VerificationCodeDoesNotMatch();

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
-use Galeas\Api\BoundedContext\Identity\User\Event\CouldNotHashWithBCrypt;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;

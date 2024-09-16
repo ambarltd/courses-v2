@@ -41,7 +41,7 @@ class InMemoryEventStoreTest extends UnitTestBase
             throw new \Exception();
         }
 
-        if ($user->id() !== $signedUp->aggregateId()) {
+        if ($user->aggregateId() !== $signedUp->aggregateId()) {
             throw new \Exception();
         }
 
@@ -114,9 +114,6 @@ class InMemoryEventStoreTest extends UnitTestBase
         Assert::fail('Did not have expected exception');
     }
 
-    /**
-     * @test
-     */
     public function testFindingAggregateRequiresActiveTransaction(): void
     {
         try {
@@ -134,9 +131,6 @@ class InMemoryEventStoreTest extends UnitTestBase
         Assert::fail('Did not have expected exception');
     }
 
-    /**
-     * @test
-     */
     public function testSavingEventRequiresActiveTransaction(): void
     {
         try {

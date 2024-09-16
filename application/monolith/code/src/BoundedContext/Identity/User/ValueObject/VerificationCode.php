@@ -6,10 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\ValueObject;
 
 class VerificationCode
 {
-    /**
-     * @var string
-     */
-    private $verificationCode;
+    private string $verificationCode;
 
     private function __construct(string $verificationCode)
     {

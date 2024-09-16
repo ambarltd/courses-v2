@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Event;
+namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 
 use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 

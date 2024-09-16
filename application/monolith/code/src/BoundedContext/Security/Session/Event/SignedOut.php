@@ -59,7 +59,7 @@ class SignedOut implements EventTransformedSession
     public function transformSession(Session $session): Session
     {
         return Session::fromProperties(
-            $session->id(),
+            $session->aggregateId(),
             $this->aggregateVersion,
             $session->sessionDetails(),
             SessionIsSignedOut::fromProperties(

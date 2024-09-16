@@ -70,7 +70,7 @@ class RefreshTokenHandler
         }
 
         $event = TokenRefreshed::fromProperties(
-            $session->id(),
+            $session->aggregateId(),
             Id::fromId($command->authorizerId),
             $command->metadata,
             $command->withIp,
