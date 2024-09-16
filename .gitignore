@@ -1,5 +1,6 @@
 .idea
 .env
+.prod.env
 .terraform
 .terraform.lock.hcl
 errored.tfstate
