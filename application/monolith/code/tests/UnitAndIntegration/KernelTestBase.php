@@ -4,19 +4,24 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Kernel;
+use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 abstract class KernelTestBase extends TestCase
 {
-    private $kernel;
+    private ?Kernel $kernel;
 
-    private $container;
+    private ?Container $container;
 
     public function setUp(): void
     {
-        if (null !== $this->kernel) {
+        if (null !== $this->kernel && null !== $this->container) {
             $this->kernel->boot();
             $this->container = $this->containerFromKernel($this->kernel);
 
@@ -34,8 +39,39 @@ abstract class KernelTestBase extends TestCase
         $this->container = $this->containerFromKernel($this->kernel);
     }
 
-    protected function getKernel(): Kernel {
-        return $this->kernel;
+    public function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->deleteDatabasesAndCloseConnections();
+        $this->kernel->shutdown();
+
+        $this->container->reset();
+    }
+
+    protected function kernelHandleRequest(Request $request): Response
+    {
+        return $this->kernel->handle($request);
+    }
+
+    protected function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    protected function getProjectionDocumentManager(): DocumentManager
+    {
+        return $this->container->get('doctrine_mongodb.odm.projection_document_manager');
+    }
+
+    protected function getReactionDocumentManager(): DocumentManager
+    {
+        return $this->container->get('doctrine_mongodb.odm.reaction_document_manager');
+    }
+
+    protected function getEventStoreConnection(): Connection
+    {
+        return $this->container->get(SQLEventStoreConnection::class)->getConnection();
     }
 
     private function containerFromKernel(Kernel $kernel): Container
@@ -48,12 +84,36 @@ abstract class KernelTestBase extends TestCase
         throw new \RuntimeException();
     }
 
-    public function tearDown(): void
+    private function deleteDatabasesAndCloseConnections(): void
     {
-        parent::tearDown();
+        $projectionDocumentManager = self::getProjectionDocumentManager();
+        $projectionDocumentManager->clear();
+        $projectionDatabase = $projectionDocumentManager->getClient()
+            ->selectDatabase(
+                $this->container->getParameter('mongodb_projection_database_name')
+            );
+        foreach ($projectionDatabase->listCollections() as $collection) {
+            $projectionDatabase->selectCollection(
+                $collection->getName()
+            )->deleteMany([]);
+        }
 
-        $this->kernel->shutdown();
+        $reactionDocumentManager = self::getReactionDocumentManager();
+        $reactionDocumentManager->clear();
+        $reactionDatabase = $reactionDocumentManager->getClient()
+            ->selectDatabase(
+                $this->container->getParameter('mongodb_reaction_database_name')
+            );
+        foreach ($reactionDatabase->listCollections() as $collection) {
+            $reactionDatabase->selectCollection(
+                $collection->getName()
+            )->deleteMany([]);
+        }
 
-        $this->container->reset();
+        $eventStoreConnection = $this->getEventStoreConnection(); // connects to the test database
+        $eventStoreConnection->beginTransaction();
+        $eventStoreConnection->executeStatement('TRUNCATE TABLE event');
+        $eventStoreConnection->commit();
+        $eventStoreConnection->close();
     }
 }

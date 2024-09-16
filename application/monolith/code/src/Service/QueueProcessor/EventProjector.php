@@ -7,10 +7,10 @@ namespace Galeas\Api\Service\QueueProcessor;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
 
-interface ProjectionEventProcessor
+interface EventProjector
 {
     /**
      * @throws ProjectionCannotProcess
      */
-    public function process(Event $event): void;
+    public function project(Event $event): void;
 }

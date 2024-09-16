@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SessionIsSignedOutTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $withSessionToken = 'with_session_token';

@@ -16,9 +16,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class UserTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $userId = Id::createNew();

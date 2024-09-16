@@ -6,18 +6,15 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
-use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProcessor;
+use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class UserWithUsernameProcessorTest extends KernelTestBase
+class UserWithUsernameProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
-    public function testSessionProcessor(): void
+    public function testSessionProjector(): void
     {
-        $userWithUsernameProcessor = $this->getContainer()
-            ->get(UserWithUsernameProcessor::class);
+        $UserWithUsernameProjector = $this->getContainer()
+            ->get(UserWithUsernameProjector::class);
 
         $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -53,8 +50,8 @@ class UserWithUsernameProcessorTest extends KernelTestBase
 
         // SignedUp 1
 
-        $userWithUsernameProcessor->process($signedUp1);
-        $userWithUsernameProcessor->process($signedUp1); // test idempotency
+        $UserWithUsernameProjector->process($signedUp1);
+        $UserWithUsernameProjector->process($signedUp1); // test idempotency
 
         $userWithUsernameArray1 = $this->findUsersById(
             $signedUp1->aggregateId()->id()
@@ -81,8 +78,8 @@ class UserWithUsernameProcessorTest extends KernelTestBase
 
         // SignedUp 2
 
-        $userWithUsernameProcessor->process($signedUp2);
-        $userWithUsernameProcessor->process($signedUp2); // test idempotency
+        $UserWithUsernameProjector->process($signedUp2);
+        $UserWithUsernameProjector->process($signedUp2); // test idempotency
 
         $userWithUsernameArray1 = $this->findUsersById(
             $signedUp1->aggregateId()->id()

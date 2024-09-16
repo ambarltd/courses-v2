@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class UserWithUsernameTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testUserWithUsername(): void
     {
         $userWithUsername = UserWithUsername::fromProperties(

@@ -7,6 +7,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryE
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
@@ -18,21 +19,16 @@ use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
+use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use Galeas\Api\Service\EventStore\EventStore;
 use Galeas\Api\Service\Queue\Queue;
 
 class RequestPrimaryEmailChangeHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var IsEmailTaken
-     */
-    private $isEmailTaken;
+    private IsEmailTaken $isEmailTaken;
 
     public function __construct(
         EventStore $eventStore,
@@ -55,10 +51,14 @@ class RequestPrimaryEmailChangeHandler
     {
         $this->eventStore->beginTransaction();
 
-        $user = $this->eventStore->find($command->authenticatedUserId);
+        $aggregateAndEventIds = $this->eventStore->find($command->authenticatedUserId);
+        if (null === $aggregateAndEventIds) {
+            throw new NoUserFoundForCode();
+        }
 
+        $user = $aggregateAndEventIds->aggregate();
         if (!($user instanceof User)) {
-            throw new UserNotFound();
+            throw new NoUserFoundForCode();
         }
 
         if (
@@ -113,11 +113,16 @@ class RequestPrimaryEmailChangeHandler
             throw new InvalidEmail();
         }
 
-        $event = PrimaryEmailChangeRequested::fromProperties(
-            Id::fromId($command->authenticatedUserId),
-            Id::fromId($command->authenticatedUserId),
+        $event = PrimaryEmailChangeRequested::new(
+            Id::createNew(),
+            $user->aggregateId(),
+            $user->aggregateVersion() + 1,
+            $aggregateAndEventIds->lastEventId(),
+            $aggregateAndEventIds->firstEventId(),
+            new \DateTimeImmutable("now"),
             $command->metadata,
             $command->newEmailRequested,
+            EmailVerificationCodeCreator::create(),
             $user->hashedPassword()->hash()
         );
 

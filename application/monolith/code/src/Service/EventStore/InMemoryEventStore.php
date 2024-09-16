@@ -93,7 +93,7 @@ class InMemoryEventStore implements EventStore
         }
     }
 
-    public function find(string $aggregateId): ?Aggregate
+    public function find(string $aggregateId): ?AggregateAndEventIds
     {
         try {
             if (false === $this->isTransactionActive) {
@@ -120,9 +120,14 @@ class InMemoryEventStore implements EventStore
                 return null;
             }
 
-            return AggregateFromEvents::aggregateFromEvents(
-                $creationEvent,
-                $transformationEvents
+            $count = count($transformationEvents);
+            return AggregateAndEventIds::fromProperties(
+                AggregateFromEvents::aggregateFromEvents(
+                    $creationEvent,
+                    $transformationEvents
+                ),
+                $creationEvent->eventId(),
+                $count > 0 ? $transformationEvents[$count - 1] : $creationEvent->eventId()
             );
         } catch (\Throwable $exception) {
             throw new EventStoreCannotRead($exception);

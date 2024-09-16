@@ -8,19 +8,16 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProcessor;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\Common\Id\Id;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class SessionProcessorTest extends KernelTestBase
+class SessionProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
     public function testProcessSignedIn(): void
     {
-        $sessionProcessor = $this->getContainer()
-            ->get(SessionProcessor::class);
+        $SessionProjector = $this->getContainer()
+            ->get(SessionProjector::class);
 
         $signedIn = SignedIn::fromProperties(
             [],
@@ -32,7 +29,7 @@ class SessionProcessorTest extends KernelTestBase
             '127.128.129.130'
         );
 
-        $sessionProcessor->process($signedIn);
+        $SessionProjector->process($signedIn);
         // This make sure mongo is restoring DateTimeImmutable correctly.
         // The Session object with DateTimeImmutable gets recreated and rehydrated.
         // It's not necessary in every test, but having it here makes sure that
@@ -73,7 +70,7 @@ class SessionProcessorTest extends KernelTestBase
         );
 
         // test idempotency
-        $sessionProcessor->process($signedIn);
+        $SessionProjector->process($signedIn);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -109,13 +106,10 @@ class SessionProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testProcessTokenRefreshed(): void
     {
-        $sessionProcessor = $this->getContainer()
-            ->get(SessionProcessor::class);
+        $SessionProjector = $this->getContainer()
+            ->get(SessionProjector::class);
 
         $sessionId = Id::createNew();
         $asUser = Id::createNew();
@@ -129,7 +123,7 @@ class SessionProcessorTest extends KernelTestBase
             $existingSessionToken
         );
 
-        $sessionProcessor->process($tokenRefreshed);
+        $SessionProjector->process($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -165,7 +159,7 @@ class SessionProcessorTest extends KernelTestBase
         );
 
         // test idempotency
-        $sessionProcessor->process($tokenRefreshed);
+        $SessionProjector->process($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -201,13 +195,10 @@ class SessionProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testProcessSignedInThenTokenRefreshed(): void
     {
-        $sessionProcessor = $this->getContainer()
-            ->get(SessionProcessor::class);
+        $SessionProjector = $this->getContainer()
+            ->get(SessionProjector::class);
 
         $signedIn = SignedIn::fromProperties(
             [],
@@ -226,8 +217,8 @@ class SessionProcessorTest extends KernelTestBase
             $signedIn->sessionTokenCreated()
         );
 
-        $sessionProcessor->process($signedIn);
-        $sessionProcessor->process($tokenRefreshed);
+        $SessionProjector->process($signedIn);
+        $SessionProjector->process($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -263,7 +254,7 @@ class SessionProcessorTest extends KernelTestBase
         );
 
         // test idempotency
-        $sessionProcessor->process($tokenRefreshed);
+        $SessionProjector->process($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -299,13 +290,10 @@ class SessionProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testProcessSignedOut(): void
     {
-        $sessionProcessor = $this->getContainer()
-            ->get(SessionProcessor::class);
+        $SessionProjector = $this->getContainer()
+            ->get(SessionProjector::class);
 
         $sessionId = Id::createNew();
         $asUser = Id::createNew();
@@ -319,7 +307,7 @@ class SessionProcessorTest extends KernelTestBase
             $existingSessionToken
         );
 
-        $sessionProcessor->process($signedOut);
+        $SessionProjector->process($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -355,7 +343,7 @@ class SessionProcessorTest extends KernelTestBase
         );
 
         // test idempotency
-        $sessionProcessor->process($signedOut);
+        $SessionProjector->process($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -391,13 +379,10 @@ class SessionProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testProcessSignedInThenSignedOut(): void
     {
-        $sessionProcessor = $this->getContainer()
-            ->get(SessionProcessor::class);
+        $SessionProjector = $this->getContainer()
+            ->get(SessionProjector::class);
 
         $signedIn = SignedIn::fromProperties(
             [],
@@ -416,8 +401,8 @@ class SessionProcessorTest extends KernelTestBase
             $signedIn->sessionTokenCreated()
         );
 
-        $sessionProcessor->process($signedIn);
-        $sessionProcessor->process($signedOut);
+        $SessionProjector->process($signedIn);
+        $SessionProjector->process($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -453,7 +438,7 @@ class SessionProcessorTest extends KernelTestBase
         );
 
         // test idempotency
-        $sessionProcessor->process($signedOut);
+        $SessionProjector->process($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(

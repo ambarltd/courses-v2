@@ -58,7 +58,7 @@ abstract class SampleEvents {
         );
     }
 
-    private static function primaryEmailVerificationCodeSent(
+    public static function primaryEmailVerificationCodeSent(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -81,7 +81,7 @@ abstract class SampleEvents {
         );
     }
 
-    private static function primaryEmailVerified(
+    public static function primaryEmailVerified(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -100,7 +100,7 @@ abstract class SampleEvents {
         );
     }
 
-    private static function primaryEmailChangeRequested(
+    public static function primaryEmailChangeRequested(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -140,7 +140,7 @@ abstract class SampleEvents {
         return [$event1, $event2, $event3];
     }
 
-    private static function signedIn(): SignedIn {
+    public static function signedIn(): SignedIn {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
         $asUser = Id::createNew();
@@ -162,7 +162,7 @@ abstract class SampleEvents {
         );
     }
 
-    private static function tokenRefreshed(
+    public static function tokenRefreshed(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -184,7 +184,7 @@ abstract class SampleEvents {
         );
     }
 
-    private static function signedOut(
+    public static function signedOut(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,

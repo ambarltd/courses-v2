@@ -11,11 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class UserIdFromPrimaryEmailVerificationCodeTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testUserIdFromPrimaryEmailVerificationCode(): void
     {
         $userIdService = $this->getContainer()

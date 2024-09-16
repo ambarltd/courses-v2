@@ -8,22 +8,17 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProcessor;
+use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class TakenEmailProcessorTest extends KernelTestBase
+class TakenEmailProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessSignedUp(): void
     {
-        $takenEmailProcessorService = $this->getContainer()
-            ->get(TakenEmailProcessor::class);
+        $TakenEmailProjectorService = $this->getContainer()
+            ->get(TakenEmailProjector::class);
 
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -33,7 +28,7 @@ class TakenEmailProcessorTest extends KernelTestBase
             false
         );
         $userId = $signedUp->aggregateId()->id();
-        $takenEmailProcessorService->process($signedUp);
+        $TakenEmailProjectorService->process($signedUp);
 
         Assert::assertEquals(
             [
@@ -47,15 +42,10 @@ class TakenEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessSignedUpForTwoUsers(): void
     {
-        $takenEmailProcessorService = $this->getContainer()
-            ->get(TakenEmailProcessor::class);
+        $TakenEmailProjectorService = $this->getContainer()
+            ->get(TakenEmailProjector::class);
 
         $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -73,8 +63,8 @@ class TakenEmailProcessorTest extends KernelTestBase
         );
         $userId1 = $signedUp1->aggregateId()->id();
         $userId2 = $signedUp2->aggregateId()->id();
-        $takenEmailProcessorService->process($signedUp1);
-        $takenEmailProcessorService->process($signedUp2);
+        $TakenEmailProjectorService->process($signedUp1);
+        $TakenEmailProjectorService->process($signedUp2);
 
         Assert::assertEquals(
             [
@@ -98,15 +88,10 @@ class TakenEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailVerified(): void
     {
-        $takenEmailProcessorService = $this->getContainer()
-            ->get(TakenEmailProcessor::class);
+        $TakenEmailProjectorService = $this->getContainer()
+            ->get(TakenEmailProjector::class);
 
         $takenEmail = TakenEmail::fromUserIdAndEmails(
             Id::createNew()->id(),
@@ -123,7 +108,7 @@ class TakenEmailProcessorTest extends KernelTestBase
             'code'
         );
         $userId = $signedUp->aggregateId()->id();
-        $takenEmailProcessorService->process($signedUp);
+        $TakenEmailProjectorService->process($signedUp);
 
         Assert::assertEquals(
             [
@@ -137,15 +122,10 @@ class TakenEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailChangeRequested(): void
     {
-        $takenEmailProcessorService = $this->getContainer()
-            ->get(TakenEmailProcessor::class);
+        $TakenEmailProjectorService = $this->getContainer()
+            ->get(TakenEmailProjector::class);
 
         $takenEmail = TakenEmail::fromUserIdAndEmails(
             Id::createNew()->id(),
@@ -163,7 +143,7 @@ class TakenEmailProcessorTest extends KernelTestBase
             'fake_hashed_password'
         );
         $userId = $signedUp->aggregateId()->id();
-        $takenEmailProcessorService->process($signedUp);
+        $TakenEmailProjectorService->process($signedUp);
 
         Assert::assertEquals(
             [

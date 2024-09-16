@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class AccountDetailsTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $accountDetails = AccountDetails::fromDetails(

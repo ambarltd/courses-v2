@@ -6,21 +6,16 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
-use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProcessor;
+use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class TakenUsernameProcessorTest extends KernelTestBase
+class TakenUsernameProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessSignedUpWithTwoUsers(): void
     {
-        $takenUsernameProcessorService = $this->getContainer()
-            ->get(TakenUsernameProcessor::class);
+        $TakenUsernameProjectorService = $this->getContainer()
+            ->get(TakenUsernameProjector::class);
 
         $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -39,8 +34,8 @@ class TakenUsernameProcessorTest extends KernelTestBase
 
         $userId1 = $signedUp1->aggregateId()->id();
         $userId2 = $signedUp2->aggregateId()->id();
-        $takenUsernameProcessorService->process($signedUp1);
-        $takenUsernameProcessorService->process($signedUp2);
+        $TakenUsernameProjectorService->process($signedUp1);
+        $TakenUsernameProjectorService->process($signedUp2);
 
         $takenUsernames = $this->findTakenUsernames($userId1);
         Assert::assertEquals(

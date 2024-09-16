@@ -18,11 +18,6 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\V
 
 class SignOutHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHandle(): void
     {
         $signedIn = SignedIn::fromProperties(

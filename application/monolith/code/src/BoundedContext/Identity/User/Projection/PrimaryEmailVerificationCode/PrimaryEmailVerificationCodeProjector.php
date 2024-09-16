@@ -10,24 +10,18 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
-use Galeas\Api\Service\QueueProcessor\ProjectionEventProcessor;
+use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class PrimaryEmailVerificationCodeProcessor implements ProjectionEventProcessor
+class PrimaryEmailVerificationCodeProjector implements EventProjector
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function process(Event $event): void
+    public function project(Event $event): void
     {
         try {
             if ($event instanceof SignedUp) {

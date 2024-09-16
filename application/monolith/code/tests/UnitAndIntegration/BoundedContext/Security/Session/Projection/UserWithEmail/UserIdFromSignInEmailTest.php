@@ -14,11 +14,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class UserIdFromSignInEmailTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testUnverified(): void
     {
         $userIdFromEmailService = $this->getContainer()
@@ -61,11 +56,6 @@ class UserIdFromSignInEmailTest extends KernelTestBase
         Assert::assertEquals('user_id_2', $userIdFromEmailService->userIdFromSignInEmail('xyZ@galeas.com'));
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testVerified(): void
     {
         $userIdFromEmailService = $this->getContainer()
@@ -108,11 +98,6 @@ class UserIdFromSignInEmailTest extends KernelTestBase
         Assert::assertEquals(null, $userIdFromEmailService->userIdFromSignInEmail('xYz@galeas.com'));
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testRequestedChange(): void
     {
         $userIdFromEmailService = $this->getContainer()

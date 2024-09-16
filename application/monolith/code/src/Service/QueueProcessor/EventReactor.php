@@ -7,10 +7,10 @@ namespace Galeas\Api\Service\QueueProcessor;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\ReactionCannotProcess;
 
-interface ReactionEventProcessor
+interface EventReactor
 {
     /**
      * @throws ReactionCannotProcess
      */
-    public function process(Event $event): void;
+    public function react(Event $event): void;
 }

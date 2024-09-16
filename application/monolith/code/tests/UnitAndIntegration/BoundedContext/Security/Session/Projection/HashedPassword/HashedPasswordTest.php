@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class HashedPasswordTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testHashedPassword(): void
     {
         $hashedPassword = HashedPassword::fromUserIdAndHashedPassword(

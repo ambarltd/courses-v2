@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
+use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Id\Id;
@@ -14,46 +15,58 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class TokenRefreshedTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
+        $eventId = Id::createNew();
         $aggregateId = Id::createNew();
-        $authenticatedUserId = Id::createNew();
-        $metadata = [1, 2, 3];
-        $withIp = '127.0.0.1';
-        $withSessionToken = 'session_token';
-
-        $tokenRefreshed = TokenRefreshed::fromProperties(
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $tokenRefreshed = TokenRefreshed::new(
+            $eventId,
             $aggregateId,
-            $authenticatedUserId,
-            $metadata,
-            $withIp,
-            $withSessionToken
+            1,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            "201.201.20.201",
+            'existingSessionToken',
+            'refreshedSessionToken',
         );
-
-        Assert::assertEquals($aggregateId, $tokenRefreshed->aggregateId());
-        Assert::assertEquals($authenticatedUserId, $tokenRefreshed->authenticatedUserId());
-        Assert::assertEquals($metadata, $tokenRefreshed->metadata());
-        Assert::assertEquals($withIp, $tokenRefreshed->withIp());
-        Assert::assertEquals($withSessionToken, $tokenRefreshed->withExistingSessionToken());
-        Assert::assertTrue(
-            SessionTokenValidator::isValid(
-                $tokenRefreshed->refreshedSessionToken()
-            )
+        
+        Assert::assertEquals(
+            [
+                $eventId,
+                $aggregateId,
+                1,
+                $causationId,
+                $correlationId,
+                new \DateTimeImmutable("2024-01-03 10:35:23"),
+                ["metadataField" => "hello world 123"],
+                "201.201.20.201",
+                'existingSessionToken',
+                'refreshedSessionToken',
+            ],
+            [
+                $tokenRefreshed->eventId(),
+                $tokenRefreshed->aggregateId(),
+                $tokenRefreshed->aggregateVersion(),
+                $tokenRefreshed->causationId(),
+                $tokenRefreshed->correlationId(),
+                $tokenRefreshed->recordedOn(),
+                $tokenRefreshed->metadata(),
+                $tokenRefreshed->withIp(),
+                $tokenRefreshed->withExistingSessionToken(),
+                $tokenRefreshed->refreshedSessionToken(),
+            ]
         );
-        Assert::assertNotEquals(
-            $tokenRefreshed->withExistingSessionToken(), $tokenRefreshed->refreshedSessionToken());
     }
 
-    /**
-     * @test
-     */
     public function testTransformAggregate(): void
     {
         $session = Session::fromProperties(
             Id::createNew(),
+            1,
             SessionDetails::fromProperties(
                 Id::createNew(),
                 'test_username',
@@ -66,35 +79,41 @@ class TokenRefreshedTest extends UnitTestBase
             null
         );
 
-        $signedOut = TokenRefreshed::fromProperties(
-            Id::createNew(),
-            Id::createNew(),
-            [1, 2, 3],
-            '127.0.0.2',
-            'new_session_token'
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $tokenRefreshed = TokenRefreshed::new(
+            $eventId,
+            $aggregateId,
+            2,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            "201.201.20.201",
+            'existingSessionToken',
+            'refreshedSessionToken',
         );
 
-        $transformedSession = $signedOut->transformSession($session);
+        $transformedSession = $tokenRefreshed->transformSession($session);
 
         Assert::assertEquals(
-            $session->aggregateId(),
-            $transformedSession->id()
-        );
-        Assert::assertEquals(
-            SessionDetails::fromProperties(
-                $session->sessionDetails()->asUser(),
-                $session->sessionDetails()->withUsername(),
-                $session->sessionDetails()->withEmail(),
-                $session->sessionDetails()->withHashedPassword(),
-                $session->sessionDetails()->byDeviceLabel(),
-                $signedOut->withIp(),
-                $signedOut->refreshedSessionToken()
+            Session::fromProperties(
+                $session->aggregateId(),
+                2,
+                SessionDetails::fromProperties(
+                    $session->sessionDetails()->asUser(),
+                    $session->sessionDetails()->withUsername(),
+                    $session->sessionDetails()->withEmail(),
+                    $session->sessionDetails()->withHashedPassword(),
+                    $session->sessionDetails()->byDeviceLabel(),
+                    $tokenRefreshed->withIp(),
+                    $tokenRefreshed->refreshedSessionToken()
+                ),
+                $session->sessionIsSignedOut()
             ),
-            $transformedSession->sessionDetails()
-        );
-        Assert::assertEquals(
-            $session->sessionIsSignedOut(),
-            $transformedSession->sessionIsSignedOut()
+            $transformedSession
         );
     }
 }

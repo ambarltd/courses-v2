@@ -10,11 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class BCryptPasswordHashTest extends UnitTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHash(): void
     {
         $hash = BCryptPasswordHash::hash('HelloWorld22AHHH!', 11);

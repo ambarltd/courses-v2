@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\CommandHandler;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\EmailIsTaken;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidEmail;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidPassword;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidUsername;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\IsEmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\IsUsernameTaken;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\TermsAreNotAgreedTo;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\UsernameIsTaken;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
@@ -20,14 +26,10 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\V
 
 class SignUpHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     */
     public function testHandle(): void
     {
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -63,12 +65,6 @@ class SignUpHandlerTest extends HandlerTestBase
 
         /** @var SignedUp $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
-
-        Assert::assertEquals(
-            $storedEvent,
-            $queuedEvent
-        );
 
         Assert::assertEquals(
             $command->primaryEmail,
@@ -93,6 +89,14 @@ class SignUpHandlerTest extends HandlerTestBase
             $storedEvent->metadata()
         );
         Assert::assertEquals(
+            $storedEvent->eventId(),
+            $storedEvent->correlationId()
+        );
+        Assert::assertEquals(
+            $storedEvent->eventId(),
+            $storedEvent->causationId()
+        );
+        Assert::assertEquals(
             [
                 'userId' => $storedEvent->aggregateId()->id(),
             ],
@@ -100,14 +104,11 @@ class SignUpHandlerTest extends HandlerTestBase
         );
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidEmail
-     */
     public function testInvalidEmail(): void
     {
+        $this->expectException(InvalidEmail::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -130,14 +131,11 @@ class SignUpHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidPassword
-     */
     public function testInvalidPassword(): void
     {
+        $this->expectException(InvalidPassword::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -160,14 +158,11 @@ class SignUpHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\InvalidUsername
-     */
     public function testInvalidUsername(): void
     {
+        $this->expectException(InvalidUsername::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -190,14 +185,11 @@ class SignUpHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\TermsAreNotAgreedTo
-     */
     public function testTermsAreNotAgreedTo(): void
     {
+        $this->expectException(TermsAreNotAgreedTo::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -220,14 +212,11 @@ class SignUpHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\EmailIsTaken
-     */
     public function testEmailIsTaken(): void
     {
+        $this->expectException(EmailIsTaken::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -250,14 +239,11 @@ class SignUpHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\UsernameIsTaken
-     */
     public function testUsernameIsTaken(): void
     {
+        $this->expectException(UsernameIsTaken::class);
         $handler = new SignUpHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',

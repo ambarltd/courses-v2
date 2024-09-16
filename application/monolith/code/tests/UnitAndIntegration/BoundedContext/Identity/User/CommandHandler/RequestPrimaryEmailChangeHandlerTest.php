@@ -20,11 +20,6 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\V
 
 class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHandleForVerifiedEmail(): void
     {
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
@@ -103,9 +98,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testHandleForRequestedEmail(): void
     {
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(

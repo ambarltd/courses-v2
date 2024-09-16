@@ -11,11 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class IsUsernameTakenTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testIsUsernameTaken(): void
     {
         $isUsernameTakenService = $this->getContainer()

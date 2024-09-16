@@ -22,11 +22,6 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\V
 
 class SignInHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHandleWithUsername(): void
     {
         $userIdFromSignInUsername = Id::createNew();
@@ -117,11 +112,6 @@ class SignInHandlerTest extends HandlerTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHandleWithEmail(): void
     {
         $userIdFromSignInEmail = Id::createNew();

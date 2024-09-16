@@ -18,24 +18,12 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class HandlerTestBase extends TestCase
 {
-    /**
-     * @var InMemoryEventStore
-     */
-    private $inMemoryEventStore;
+    private InMemoryEventStore $inMemoryEventStore;
 
-    /**
-     * @var InMemoryQueue
-     */
-    private $inMemoryQueue;
 
     protected function getInMemoryEventStore(): InMemoryEventStore
     {
         return $this->inMemoryEventStore;
-    }
-
-    protected function getInMemoryQueue(): InMemoryQueue
-    {
-        return $this->inMemoryQueue;
     }
 
     /**
@@ -70,23 +58,22 @@ abstract class HandlerTestBase extends TestCase
         return [];
     }
 
-    private function clearStoreAndQueue(): void
+    private function clearEventStore(): void
     {
         $this->inMemoryEventStore = new InMemoryEventStore();
-        $this->inMemoryQueue = new InMemoryQueue();
     }
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->clearStoreAndQueue();
+        $this->clearEventStore();
     }
 
     public function tearDown(): void
     {
         parent::tearDown();
 
-        $this->clearStoreAndQueue();
+        $this->clearEventStore();
     }
 }

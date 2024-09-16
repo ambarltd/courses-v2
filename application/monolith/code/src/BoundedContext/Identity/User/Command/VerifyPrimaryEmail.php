@@ -6,13 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Command;
 
 class VerifyPrimaryEmail
 {
-    /**
-     * @var array
-     */
-    public $metadata;
+    public array $metadata;
 
-    /**
-     * @var string
-     */
-    public $verificationCode;
+    public string $verificationCode;
 }

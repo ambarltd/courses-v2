@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class AreEmailsEquivalentTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testEquivalentEmails(): void
     {
         foreach (EquivalentEmails::validEmailPairsWhichAreTheSameAddress() as $pair) {
@@ -28,9 +25,6 @@ class AreEmailsEquivalentTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testNonEquivalentEmails(): void
     {
         foreach (NonEquivalentEmails::validEmailPairsWhichAreNotTheSameAddress() as $pair) {

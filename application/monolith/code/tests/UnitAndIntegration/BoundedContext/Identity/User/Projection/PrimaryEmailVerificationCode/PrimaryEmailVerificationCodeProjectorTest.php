@@ -8,22 +8,17 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCode;
-use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProcessor;
+use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
+class PrimaryEmailVerificationCodeProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessSignedUp(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProcessor::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class);
 
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -47,15 +42,10 @@ class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailChangeRequested(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProcessor::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class);
 
         $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
             Id::createNew(),
@@ -79,15 +69,10 @@ class PrimaryEmailVerificationCodeProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailVerifiedAfterSignedUp(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProcessor::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class);
 
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],

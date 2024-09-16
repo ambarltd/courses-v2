@@ -33,12 +33,12 @@ class Session implements Aggregate
     }
 
     public static function fromProperties(
-        Id $id,
-        int $aggregateVersion,
-        SessionDetails $sessionDetails,
+        Id                  $aggregateId,
+        int                 $aggregateVersion,
+        SessionDetails      $sessionDetails,
         ?SessionIsSignedOut $sessionIsSignedOut,
     ): self {
-        $session = new self($id, $aggregateVersion);
+        $session = new self($aggregateId, $aggregateVersion);
 
         $session->sessionDetails = $sessionDetails;
         $session->sessionIsSignedOut = $sessionIsSignedOut;

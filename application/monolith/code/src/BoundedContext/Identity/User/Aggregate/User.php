@@ -39,13 +39,13 @@ class User implements Aggregate
     }
 
     public static function fromProperties(
-        Id                                                         $id,
+        Id                                                         $aggregateId,
         int                                                        $aggregateVersion,
         VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail $primaryEmailStatus,
         HashedPassword                                             $hashedPassword,
         AccountDetails                                             $accountDetails
     ): User {
-        $user = new self($id, $aggregateVersion);
+        $user = new self($aggregateId, $aggregateVersion);
 
         $user->primaryEmailStatus = $primaryEmailStatus;
         $user->hashedPassword = $hashedPassword;

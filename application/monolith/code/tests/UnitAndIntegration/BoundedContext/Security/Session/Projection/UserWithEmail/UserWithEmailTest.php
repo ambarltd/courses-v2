@@ -12,9 +12,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class UserWithEmailTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testUserWithEmail(): void
     {
         $userWithEmail = UserWithEmail::fromUserIdAndEmails(

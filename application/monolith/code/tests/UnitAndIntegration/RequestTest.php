@@ -18,7 +18,7 @@ abstract class RequestTest extends KernelTestBase
             ['CONTENT_TYPE' => 'application/json'],
             null
         );
-        $response = $this->getKernel()->handle($request);
+        $response = $this->kernelHandleRequest($request);
 
         return [
             "content" => $response->getContent(),

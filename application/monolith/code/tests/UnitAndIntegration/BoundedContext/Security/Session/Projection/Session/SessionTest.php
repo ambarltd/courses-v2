@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SessionTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $lastRefreshedAt = new \DateTimeImmutable();
@@ -76,9 +73,6 @@ class SessionTest extends UnitTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testChangeProperties(): void
     {
         $lastRefreshedAt = new \DateTimeImmutable();

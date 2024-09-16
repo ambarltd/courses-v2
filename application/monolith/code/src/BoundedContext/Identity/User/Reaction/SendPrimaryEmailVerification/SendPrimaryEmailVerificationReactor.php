@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification;
 
+use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerificationCodeSent;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
@@ -11,12 +13,12 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Service\Email\Emailer;
 use Galeas\Api\Service\EventStore\EventStore;
+use Galeas\Api\Service\QueueProcessor\EventReactor;
 
-class SendPrimaryEmailVerificationReactor
+class SendPrimaryEmailVerificationReactor implements EventReactor
 {
     private EventStore $eventStore;
 
@@ -29,7 +31,7 @@ class SendPrimaryEmailVerificationReactor
 
     /**
      * @throws PrimaryEmailVerificationAlreadySent
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite|QueuingFailure
+     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
      */
     public function react(Event $event): void
     {
@@ -47,32 +49,47 @@ class SendPrimaryEmailVerificationReactor
         $newEventId = Id::createNewByHashing(
             "Identity/User/PrimaryEmailVerificationSent:" . $event->eventId()->id()
         );
-        $existingEvent = $this->eventStore->findEvent($newEventId->id());
-
-        if ($existingEvent instanceof Event) {
+        $existingReaction = $this->eventStore->findEvent($newEventId->id());
+        if ($existingReaction instanceof Event) {
             throw new PrimaryEmailVerificationAlreadySent();
         }
 
+        $fromEmailAddress = "system.development-application.example.com";
+        $subjectLine = "Your Verification Code";
+        $emailContents = "This is your verification code: https://example.com/page/?verificationCode=" . $verificationCode;
         $this->emailer->send(
-            "email@example.com",
-            "https://domain.example/frontend/verifyEmail?verificationCode=verificationCode",
-            "text"
-        );
-
-        $event = PrimaryEmailVerificationCodeSent::fromProperties(
-            $newEventId,
-            $event->aggregateId(),
-            $event->eventId(),
-            [],
             $sendToEmailAddress,
-            "This is your verification code: https://example.com/page/?verificationCodeode=" . $verificationCode
+            $subjectLine,
+            $emailContents,
+            $fromEmailAddress
         );
 
-        $this->eventStore->save($event);
-        try {
-            $this->eventStore->completeTransaction();
-        } catch (\Exception $e) {
-            // todo , duplicates -> return success
+        $aggregateAndEventIds = $this->eventStore->find($existingReaction->aggregateId()->id());
+        if (null === $aggregateAndEventIds) {
+            throw new NoUserFoundForCode();
         }
+
+        $user = $aggregateAndEventIds->aggregate();
+        if (!($user instanceof User)) {
+            throw new NoUserFoundForCode();
+        }
+
+        $newEvent = PrimaryEmailVerificationCodeSent::new(
+            Id::createNew(),
+            $user->aggregateId(),
+            $user->aggregateVersion() + 1,
+            $aggregateAndEventIds->lastEventId(),
+            $aggregateAndEventIds->firstEventId(),
+            new \DateTimeImmutable("now"),
+            [],
+            $verificationCode,
+            $sendToEmailAddress,
+            $emailContents,
+            $fromEmailAddress,
+            $subjectLine
+        );
+
+        $this->eventStore->save($newEvent);
+        $this->eventStore->completeTransaction();
     }
 }

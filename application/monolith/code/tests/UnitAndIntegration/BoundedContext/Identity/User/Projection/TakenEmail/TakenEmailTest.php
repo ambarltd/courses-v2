@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class TakenEmailTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testTakenEmail(): void
     {
         $takenEmail = TakenEmail::fromUserIdAndEmails(

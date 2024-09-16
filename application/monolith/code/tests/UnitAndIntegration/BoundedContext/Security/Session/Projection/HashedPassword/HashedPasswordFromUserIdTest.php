@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class HashedPasswordFromUserIdTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
     public function testHashedPasswordFromUserId(): void
     {
         $hashedPasswordFromUserIdService = $this->getContainer()

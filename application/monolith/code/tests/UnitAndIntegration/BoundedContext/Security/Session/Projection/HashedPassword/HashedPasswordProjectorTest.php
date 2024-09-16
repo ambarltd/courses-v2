@@ -6,19 +6,16 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPassword;
-use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProcessor;
+use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProjector;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class HashedPasswordProcessorTest extends KernelTestBase
+class HashedPasswordProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
-    public function testHashedPasswordProcessor(): void
+    public function testHashedPasswordProjector(): void
     {
-        $hashedPasswordProcessor = $this->getContainer()
-            ->get(HashedPasswordProcessor::class);
+        $HashedPasswordProjector = $this->getContainer()
+            ->get(HashedPasswordProjector::class);
 
         $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -48,8 +45,8 @@ class HashedPasswordProcessorTest extends KernelTestBase
             )
         );
 
-        $hashedPasswordProcessor->process($signedUp1);
-        $hashedPasswordProcessor->process($signedUp1); // test idempotency
+        $HashedPasswordProjector->process($signedUp1);
+        $HashedPasswordProjector->process($signedUp1); // test idempotency
         Assert::assertCount(
             1,
             $this->findHashedPasswordsByUserId(
@@ -75,7 +72,7 @@ class HashedPasswordProcessorTest extends KernelTestBase
             )
         );
 
-        $hashedPasswordProcessor->process($signedUp2);
+        $HashedPasswordProjector->process($signedUp2);
         Assert::assertCount(
             1,
             $this->findHashedPasswordsByUserId(

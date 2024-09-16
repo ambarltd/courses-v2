@@ -67,7 +67,7 @@ class SQLEventStore implements EventStore
         }
     }
 
-    public function find(string $aggregateId): ?Aggregate
+    public function find(string $aggregateId): ?AggregateAndEventIds
     {
         try {
             if (false === $this->connection->isTransactionActive()) {
@@ -97,11 +97,17 @@ class SQLEventStore implements EventStore
             }, $eventArrays);
 
             $creationEvent = array_shift($aggregateEvents);
-            $transformationEvents = $aggregateEvents;
+            $creationEvent = EventDeserializer::serializedEventsToEvents([$creationEvent])[0];
+            $transformationEvents = EventDeserializer::serializedEventsToEvents($aggregateEvents);
 
-            return AggregateFromEvents::aggregateFromEvents(
-                EventDeserializer::serializedEventsToEvents([$creationEvent])[0],
-                EventDeserializer::serializedEventsToEvents($transformationEvents)
+            $count = count($transformationEvents);
+            return AggregateAndEventIds::fromProperties(
+                AggregateFromEvents::aggregateFromEvents(
+                    $creationEvent,
+                    $transformationEvents
+                ),
+                $creationEvent->eventId(),
+                $count > 0 ? $transformationEvents[$count - 1] : $creationEvent->eventId()
             );
         } catch (\Throwable $exception) {
             throw new EventStoreCannotRead($exception);

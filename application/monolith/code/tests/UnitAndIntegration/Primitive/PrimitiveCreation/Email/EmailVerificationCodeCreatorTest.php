@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class EmailVerificationCodeCreatorTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         for ($i = 0; $i < 20000; ++$i) {
@@ -41,9 +38,6 @@ class EmailVerificationCodeCreatorTest extends UnitTestBase
         Assert::assertTrue(true); // prevents flagging as risky test
     }
 
-    /**
-     * @test
-     */
     public function testRandomnessStatistically(): void
     {
         $countVerificationCodesThatStartWithThreeZeros = 0;

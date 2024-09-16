@@ -12,7 +12,7 @@ class SignUp
 
     public string $username;
 
-    public string $termsOfUseAccepted;
+    public bool $termsOfUseAccepted;
 
     public array $metadata;
 }

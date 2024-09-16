@@ -6,23 +6,11 @@ namespace Galeas\Api\BoundedContext\Security\Session\Command;
 
 class RefreshToken
 {
-    /**
-     * @var string
-     */
-    public $authenticatedUserId;
+    public string $authenticatedUserId;
 
-    /**
-     * @var string
-     */
-    public $withIp;
+    public string $withIp;
 
-    /**
-     * @var string
-     */
-    public $withSessionToken;
+    public string $withSessionToken;
 
-    /**
-     * @var array
-     */
-    public $metadata;
+    public array $metadata;
 }

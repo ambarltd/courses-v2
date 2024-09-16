@@ -12,20 +12,15 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
+use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use Galeas\Api\Service\EventStore\EventStore;
 
 class RefreshTokenHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var SessionIdFromSessionToken
-     */
-    private $sessionIdFromSessionToken;
+    private SessionIdFromSessionToken $sessionIdFromSessionToken;
 
     public function __construct(
         EventStore $eventStore,
@@ -51,8 +46,13 @@ class RefreshTokenHandler
 
         $this->eventStore->beginTransaction();
 
-        $session = $this->eventStore->find($sessionId);
+        $aggregateAndEventIds = $this->eventStore->find($command->authenticatedUserId);
 
+        if (null === $aggregateAndEventIds) {
+            throw new NoSessionFound();
+        }
+
+        $session = $aggregateAndEventIds->aggregate();
         if (!($session instanceof Session)) {
             throw new NoSessionFound();
         }
@@ -69,12 +69,17 @@ class RefreshTokenHandler
             throw new InvalidIp();
         }
 
-        $event = TokenRefreshed::fromProperties(
+        $event = TokenRefreshed::new(
+            Id::createNew(),
             $session->aggregateId(),
-            Id::fromId($command->authenticatedUserId),
+            $session->aggregateVersion() + 1,
+            $aggregateAndEventIds->lastEventId(),
+            $aggregateAndEventIds->firstEventId(),
+            new \DateTimeImmutable("now"),
             $command->metadata,
             $command->withIp,
-            $command->withSessionToken
+            $command->withSessionToken,
+            SessionTokenCreator::create()
         );
 
         $this->eventStore->save($event);

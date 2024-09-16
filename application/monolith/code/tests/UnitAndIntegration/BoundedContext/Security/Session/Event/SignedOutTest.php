@@ -5,48 +5,67 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
+use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
+use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SignedOutTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
+        $eventId = Id::createNew();
         $aggregateId = Id::createNew();
-        $authenticatedUserId = Id::createNew();
-        $metadata = [1, 2, 3];
-        $withIp = '127.0.0.1';
-        $withSessionToken = 'session_token';
-
-        $signedOut = SignedOut::fromProperties(
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $signedOut = SignedOut::new(
+            $eventId,
             $aggregateId,
-            $authenticatedUserId,
-            $metadata,
-            $withIp,
-            $withSessionToken
+            1,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            "201.201.20.201",
+            'existingSessionToken',
         );
-
-        Assert::assertEquals($aggregateId, $signedOut->aggregateId());
-        Assert::assertEquals($authenticatedUserId, $signedOut->authenticatedUserId());
-        Assert::assertEquals($metadata, $signedOut->metadata());
-        Assert::assertEquals($withIp, $signedOut->withIp());
-        Assert::assertEquals($withSessionToken, $signedOut->withSessionToken());
+        
+        Assert::assertEquals(
+            [
+                $eventId,
+                $aggregateId,
+                1,
+                $causationId,
+                $correlationId,
+                new \DateTimeImmutable("2024-01-03 10:35:23"),
+                ["metadataField" => "hello world 123"],
+                "201.201.20.201",
+                'existingSessionToken',
+            ],
+            [
+                $signedOut->eventId(),
+                $signedOut->aggregateId(),
+                $signedOut->aggregateVersion(),
+                $signedOut->causationId(),
+                $signedOut->correlationId(),
+                $signedOut->recordedOn(),
+                $signedOut->metadata(),
+                $signedOut->withIp(),
+                $signedOut->withSessionToken(),
+            ]
+        );
     }
 
-    /**
-     * @test
-     */
     public function testTransformAggregate(): void
     {
         $session = Session::fromProperties(
             Id::createNew(),
+            1,
             SessionDetails::fromProperties(
                 Id::createNew(),
                 'test_username',
@@ -54,35 +73,40 @@ class SignedOutTest extends UnitTestBase
                 'test_hashed_password',
                 'by_device_label',
                 '127.0.0.1',
-                'with_session_token'
+                'old_session_token'
             ),
             null
         );
 
-        $signedOut = SignedOut::fromProperties(
-            Id::createNew(),
-            Id::createNew(),
-            [1, 2, 3],
-            '127.0.0.2',
-            'new_session_token'
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        $causationId = $eventId;
+        $correlationId = $eventId;
+        $signedOut = SignedOut::new(
+            $eventId,
+            $aggregateId,
+            2,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("2024-01-03 10:35:23"),
+            ["metadataField" => "hello world 123"],
+            "201.201.20.201",
+            'new_session_token',
         );
 
         $transformedSession = $signedOut->transformSession($session);
 
         Assert::assertEquals(
-            $session->aggregateId(),
-            $transformedSession->id()
-        );
-        Assert::assertEquals(
-            $session->sessionDetails(),
-            $transformedSession->sessionDetails()
-        );
-        Assert::assertEquals(
-            SessionIsSignedOut::fromProperties(
-                $signedOut->withSessionToken(),
-                $signedOut->withIp()
+            Session::fromProperties(
+                $session->aggregateId(),
+                2,
+                $session->sessionDetails(),
+                SessionIsSignedOut::fromProperties(
+                    $signedOut->withSessionToken(),
+                    $signedOut->withIp()
+                )
             ),
-            $transformedSession->sessionIsSignedOut()
+            $transformedSession
         );
     }
 }

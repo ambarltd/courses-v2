@@ -12,9 +12,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class UnverifiedEmailTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $email = Email::fromEmail('test@example.com');

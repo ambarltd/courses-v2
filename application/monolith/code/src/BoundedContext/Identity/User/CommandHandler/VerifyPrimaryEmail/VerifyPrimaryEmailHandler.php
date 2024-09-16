@@ -15,23 +15,15 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class VerifyPrimaryEmailHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var UserIdFromPrimaryEmailVerificationCode
-     */
-    private $userIdFromVerificationCode;
+    private UserIdFromPrimaryEmailVerificationCode $userIdFromVerificationCode;
 
     public function __construct(
         EventStore $eventStore,
@@ -58,12 +50,14 @@ class VerifyPrimaryEmailHandler
             throw new NoUserFoundForCode();
         }
 
-        $authenticatedUserId = $userId;
-
         $this->eventStore->beginTransaction();
 
-        $user = $this->eventStore->find($userId);
+        $aggregateAndEventIds = $this->eventStore->find($userId);
+        if (null === $aggregateAndEventIds) {
+            throw new NoUserFoundForCode();
+        }
 
+        $user = $aggregateAndEventIds->aggregate();
         if (!($user instanceof User)) {
             throw new NoUserFoundForCode();
         }
@@ -87,8 +81,12 @@ class VerifyPrimaryEmailHandler
         }
 
         $event = PrimaryEmailVerified::new(
-            Id::fromId($userId),
-            Id::fromId($authenticatedUserId),
+            Id::createNew(),
+            $user->aggregateId(),
+            $user->aggregateVersion() + 1,
+            $aggregateAndEventIds->lastEventId(),
+            $aggregateAndEventIds->firstEventId(),
+            new \DateTimeImmutable("now"),
             $command->metadata,
             $command->verificationCode
         );

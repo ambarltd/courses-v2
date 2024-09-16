@@ -19,9 +19,6 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\V
 
 class RefreshTokenHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     */
     public function testHandle(): void
     {
         $signedIn = SignedIn::fromProperties(

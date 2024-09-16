@@ -8,6 +8,7 @@ use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
+use Galeas\Api\Service\EventStore\AggregateAndEventIds;
 use Galeas\Api\Service\EventStore\Exception\CancellingTransactionRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\CompletingTransactionRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransaction;
@@ -34,9 +35,13 @@ class InMemoryEventStoreTest extends UnitTestBase
         $inMemoryEventStore->completeTransaction();
 
         $inMemoryEventStore->beginTransaction();
-        $user = $inMemoryEventStore->find($signedUp->aggregateId()->id());
+        $aggregateAndEventIds = $inMemoryEventStore->find($signedUp->aggregateId()->id());
         $inMemoryEventStore->completeTransaction();
 
+        if (!($aggregateAndEventIds instanceof AggregateAndEventIds)) {
+            throw new \Exception();
+        }
+        $user = $aggregateAndEventIds->aggregate();
         if (!($user instanceof User)) {
             throw new \Exception();
         }

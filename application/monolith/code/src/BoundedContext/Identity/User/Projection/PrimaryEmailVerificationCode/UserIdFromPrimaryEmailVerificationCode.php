@@ -10,10 +10,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
 class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVerificationCodeVPE
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

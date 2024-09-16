@@ -17,23 +17,13 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\Vali
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidVerificationCodes;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidPasswords;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testHandleUnverifiedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
+        $signedUp = SampleEvents::signedUp();
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
         $eventStore->save($signedUp);
@@ -41,7 +31,6 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
 
         $handler = new VerifyPrimaryEmailHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 UserIdFromPrimaryEmailVerificationCode::class,
                 'userIdFromPrimaryEmailVerificationCode',
@@ -57,32 +46,19 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
 
         $command = new VerifyPrimaryEmail();
         $command->verificationCode = $signedUp->primaryEmailVerificationCode();
-        $command->metadata = $this->mockMetadata();
+        $command->metadata = $signedUp->metadata();
 
         $handler->handle($command);
 
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[1];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
-        if (
-            null === $storedEvent->authenticatedUserId() ||
-            (!($storedEvent instanceof PrimaryEmailVerified)) ||
-            (!($queuedEvent instanceof PrimaryEmailVerified))
-        ) {
+        if (!$storedEvent instanceof PrimaryEmailVerified) {
             throw new \Exception();
         }
 
         Assert::assertEquals(
-            $storedEvent,
-            $queuedEvent
-        );
-        Assert::assertEquals(
             $command->verificationCode,
             $storedEvent->verifiedWithCode()
-        );
-        Assert::assertEquals(
-            $signedUp->aggregateId()->id(),
-            $storedEvent->authenticatedUserId()->id()
         );
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
@@ -94,23 +70,14 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         );
     }
 
-    /**
-     * @test
-     */
     public function testHandleRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $requestedEmail = PrimaryEmailChangeRequested::fromProperties(
             $signedUp->aggregateId(),
@@ -129,7 +96,6 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
 
         $handler = new VerifyPrimaryEmailHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 UserIdFromPrimaryEmailVerificationCode::class,
                 'userIdFromPrimaryEmailVerificationCode',
@@ -150,13 +116,8 @@ class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
         $handler->handle($command);
 
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[3];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
-        if (
-            null === $storedEvent->authenticatedUserId() ||
-            (!($storedEvent instanceof PrimaryEmailVerified)) ||
-            (!($queuedEvent instanceof PrimaryEmailVerified))
-        ) {
+        if (!$storedEvent instanceof PrimaryEmailVerified) {
             throw new \Exception();
         }
 

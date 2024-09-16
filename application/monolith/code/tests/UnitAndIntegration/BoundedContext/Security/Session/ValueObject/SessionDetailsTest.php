@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class SessionDetailsTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testCreate(): void
     {
         $asUser = Id::createNew();

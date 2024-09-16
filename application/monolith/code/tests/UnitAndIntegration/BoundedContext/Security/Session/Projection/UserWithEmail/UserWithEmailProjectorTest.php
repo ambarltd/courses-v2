@@ -10,23 +10,18 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\RequestedChange;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Unverified;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmail;
-use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmailProcessor;
+use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmailProjector;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
-class UserWithEmailProcessorTest extends KernelTestBase
+class UserWithEmailProjectorTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessSignedUp(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
             [],
@@ -36,7 +31,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             false
         );
         $userId = $signedUp->aggregateId()->id();
-        $userWithEmailProcessorService->process($signedUp);
+        $UserWithEmailProjectorService->process($signedUp);
 
         Assert::assertEquals(
             [
@@ -51,15 +46,10 @@ class UserWithEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailVerifiedWhenUnverified(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -79,7 +69,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             [],
             'fake_code'
         );
-        $userWithEmailProcessorService->process($primaryEmailVerified);
+        $UserWithEmailProjectorService->process($primaryEmailVerified);
 
         Assert::assertEquals(
             [
@@ -94,15 +84,10 @@ class UserWithEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessPrimaryEmailVerifiedWhenChangeRequested(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -122,7 +107,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             [],
             'fake_code'
         );
-        $userWithEmailProcessorService->process($primaryEmailVerified);
+        $UserWithEmailProjectorService->process($primaryEmailVerified);
 
         Assert::assertEquals(
             [
@@ -137,15 +122,10 @@ class UserWithEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessChangeRequestedWhenUnverified(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -166,7 +146,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             'new@galeas.com',
             'fake_hashed_password'
         );
-        $userWithEmailProcessorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
@@ -181,15 +161,10 @@ class UserWithEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessChangeRequestedWhenVerified(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -210,7 +185,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             'new_requested@galeas.com',
             'fake_hashed_password'
         );
-        $userWithEmailProcessorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
@@ -225,15 +200,10 @@ class UserWithEmailProcessorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testProcessChangeRequestedWhenChangeRequested(): void
     {
-        $userWithEmailProcessorService = $this->getContainer()
-            ->get(UserWithEmailProcessor::class);
+        $UserWithEmailProjectorService = $this->getContainer()
+            ->get(UserWithEmailProjector::class);
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -254,7 +224,7 @@ class UserWithEmailProcessorTest extends KernelTestBase
             'new_requested@galeas.com',
             'fake_hashed_password'
         );
-        $userWithEmailProcessorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [

@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class UserIdFromSignInUsernameTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
     public function testUserIdFromUsernameTest(): void
     {
         $userIdFromUsername = $this->getContainer()

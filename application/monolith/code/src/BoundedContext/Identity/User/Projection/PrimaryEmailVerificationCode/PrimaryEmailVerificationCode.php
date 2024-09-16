@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerific
 
 class PrimaryEmailVerificationCode
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var string|null
-     */
-    private $primaryEmailVerificationCode;
+    private ?string $primaryEmailVerificationCode;
 
     private function __construct()
     {
@@ -30,19 +24,13 @@ class PrimaryEmailVerificationCode
         return $this->primaryEmailVerificationCode;
     }
 
-    /**
-     * @return $this
-     */
-    public function updateVerificationCode(?string $primaryEmailVerificationCode)
+    public function updateVerificationCode(?string $primaryEmailVerificationCode): self
     {
         $this->primaryEmailVerificationCode = $primaryEmailVerificationCode;
 
         return $this;
     }
 
-    /**
-     * @return PrimaryEmailVerificationCode
-     */
     public static function fromUserIdAndVerificationCode(string $userId, ?string $primaryEmailVerificationCode): self
     {
         $primaryEmailVerificationCodeObject = new self();

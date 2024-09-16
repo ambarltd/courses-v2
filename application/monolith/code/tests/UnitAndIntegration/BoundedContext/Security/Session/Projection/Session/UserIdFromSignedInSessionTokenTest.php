@@ -11,11 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class UserIdFromSignedInSessionTokenTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testUserIdFromSignedInSessionToken(): void
     {
         $userIdFromSignedInSessionToken = $this->getContainer()
@@ -150,11 +145,6 @@ class UserIdFromSignedInSessionTokenTest extends KernelTestBase
         );
     }
 
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testUserIdFromSignedInSessionTokenWithSignedOutTrue(): void
     {
         $userIdFromSignedInSessionToken = $this->getContainer()

@@ -10,9 +10,6 @@ use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
 
 class PrimaryEmailVerificationCodeTest extends UnitTestBase
 {
-    /**
-     * @test
-     */
     public function testPrimaryEmailVerificationCode(): void
     {
         // start with code_123_test

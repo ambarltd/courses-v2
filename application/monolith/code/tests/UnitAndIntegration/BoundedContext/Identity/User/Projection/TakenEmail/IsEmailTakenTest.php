@@ -11,11 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class IsEmailTakenTest extends KernelTestBase
 {
-    /**
-     * @test
-     *
-     * @throws \Exception
-     */
     public function testIsEmailTaken(): void
     {
         $isEmailTakenService = $this->getContainer()

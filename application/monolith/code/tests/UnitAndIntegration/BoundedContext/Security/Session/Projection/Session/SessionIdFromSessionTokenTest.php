@@ -11,9 +11,6 @@ use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
 
 class SessionIdFromSessionTokenTest extends KernelTestBase
 {
-    /**
-     * @test
-     */
     public function testSessionIdFromSessionToken(): void
     {
         $sessionIdFromSessionToken = $this->getContainer()
