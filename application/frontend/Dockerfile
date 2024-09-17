@@ -9,8 +9,8 @@ RUN yarn install
 
 COPY ./src /app/src
 
-ENV DOMAIN_IDENTITY;
-ENV DOMAIN_SECURITY;
+ENV DOMAIN_IDENTITY="https://placeholder.com"
+ENV DOMAIN_SECURITY="https://placeholder.com"
 
 EXPOSE 8080
 CMD [ "node", "src/main.js" ]
