@@ -53,7 +53,7 @@ class DBMigration extends Command
                     aggregate_version BIGINT NOT NULL,
                     causation_id VARCHAR(56) NOT NULL,
                     correlation_id VARCHAR(56) NOT NULL,
-                    event_occurred_on TIMESTAMP(30) NOT NULL,
+                    recorded_on VARCHAR(30) NOT NULL,
                     event_name VARCHAR(255) NOT NULL,
                     json_payload TEXT NOT NULL,
                     json_metadata TEXT NOT NULL,
@@ -62,7 +62,7 @@ class DBMigration extends Command
         $this->executeIndexStatementAndIgnoreExceptions("CREATE UNIQUE INDEX idx_event_aggregate_id_version ON event(aggregate_id, aggregate_version);");
         $this->executeIndexStatementAndIgnoreExceptions("CREATE INDEX idx_event_causation_id ON event(causation_id);");
         $this->executeIndexStatementAndIgnoreExceptions("CREATE INDEX idx_event_correlation_id ON event(correlation_id);");
-        $this->executeIndexStatementAndIgnoreExceptions("CREATE INDEX idx_event_occurred_on ON event(event_occurred_on);");
+        $this->executeIndexStatementAndIgnoreExceptions("CREATE INDEX idx_occurred_on ON event(recorded_on);");
         $this->executeIndexStatementAndIgnoreExceptions("CREATE INDEX idx_event_name ON event(event_name);");
         $this->projectionDocumentManager->getSchemaManager()->createCollections();
         $this->projectionDocumentManager->getSchemaManager()->createSearchIndexes();

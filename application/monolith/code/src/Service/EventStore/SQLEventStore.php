@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\EventStore;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
@@ -169,15 +170,15 @@ class SQLEventStore implements EventStore
                     'json_metadata' => $serializedEvent->jsonMetadata(),
                 ],
                 [
-                    'event_id' => \PDO::PARAM_STR,
-                    'aggregate_id' => \PDO::PARAM_STR,
-                    'aggregate_version' => \PDO::PARAM_INT,
-                    'causation_id' => \PDO::PARAM_STR,
-                    'correlation_id' => \PDO::PARAM_STR,
-                    'recorded_on' => \PDO::PARAM_STR,
-                    'event_name' => \PDO::PARAM_STR,
-                    'json_payload' => \PDO::PARAM_LOB,
-                    'json_metadata' => \PDO::PARAM_LOB,
+                    'event_id' => ParameterType::STRING,
+                    'aggregate_id' => ParameterType::STRING,
+                    'aggregate_version' => ParameterType::INTEGER,
+                    'causation_id' => ParameterType::STRING,
+                    'correlation_id' => ParameterType::STRING,
+                    'recorded_on' => ParameterType::STRING,
+                    'event_name' => ParameterType::STRING,
+                    'json_payload' => ParameterType::STRING,
+                    'json_metadata' => ParameterType::STRING,
                 ]
             );
         } catch (\Throwable $exception) {
