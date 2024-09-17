@@ -39,6 +39,10 @@ app.get('/sign-up', (_, res) => {
   res.render(`sign-up`, { layout: false })
 })
 
+app.get('/sign-up-success', (_, res) => {
+  res.render(`sign-up-success`, { layout: false })
+})
+
 app.get('/home', (_, res) => {
   res.render(`home`, { layout: false })
 })
@@ -146,8 +150,7 @@ app.post('/sign-up', async (req, res) => {
   }
 
   if (typeof r.userId === "string") {
-    res.send(`Success. User id: ${r.userId}`);
-    res.redirect(`/sign-in`);
+    res.redirect(`/sign-up-success`);
     return;
   }
 
