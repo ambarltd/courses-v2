@@ -8,8 +8,8 @@ const port = 8080
 const app = Express()
 
 const domains = {
-  identity: process.env.DOMAIN_IDENTITY,
-  security: process.env.DOMAIN_SECURITY
+  identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
+  security: process.env.DOMAIN_SECURITY + "/api/v1/security"
 }
 
 const endpoints = {
