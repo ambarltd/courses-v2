@@ -66,10 +66,6 @@ class SignUpHandlerTest extends HandlerTestBase
         /** @var SignedUp $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
 
-        Assert::assertEquals(
-            $command->primaryEmail,
-            $storedEvent->primaryEmail()
-        );
         Assert::assertTrue(
             password_verify(
                 $command->password,
@@ -77,30 +73,41 @@ class SignUpHandlerTest extends HandlerTestBase
             )
         );
         Assert::assertEquals(
-            $command->username,
-            $storedEvent->username()
-        );
-        Assert::assertEquals(
-            $command->termsOfUseAccepted,
-            $storedEvent->termsOfUseAccepted()
-        );
-        Assert::assertEquals(
-            $command->metadata,
-            $storedEvent->metadata()
-        );
-        Assert::assertEquals(
-            $storedEvent->eventId(),
-            $storedEvent->correlationId()
-        );
-        Assert::assertEquals(
-            $storedEvent->eventId(),
-            $storedEvent->causationId()
-        );
-        Assert::assertEquals(
             [
                 'userId' => $storedEvent->aggregateId()->id(),
             ],
             $response
+        );
+
+        Assert::assertEquals(
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                1,
+                $storedEvent->eventId(),
+                $storedEvent->eventId(),
+                $storedEvent->recordedOn(),
+                $command->metadata,
+                $storedEvent->primaryEmail(),
+                $storedEvent->primaryEmailVerificationCode(),
+                $storedEvent->hashedPassword(),
+                $command->username,
+                $command->termsOfUseAccepted
+            ],
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                $storedEvent->aggregateVersion(),
+                $storedEvent->causationId(),
+                $storedEvent->correlationId(),
+                $storedEvent->recordedOn(),
+                $storedEvent->metadata(),
+                $storedEvent->primaryEmail(),
+                $storedEvent->primaryEmailVerificationCode(),
+                $storedEvent->hashedPassword(),
+                $storedEvent->username(),
+                $storedEvent->termsOfUseAccepted(),
+            ]
         );
     }
 

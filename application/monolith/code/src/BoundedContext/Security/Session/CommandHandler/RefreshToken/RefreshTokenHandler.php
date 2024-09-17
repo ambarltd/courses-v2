@@ -46,7 +46,7 @@ class RefreshTokenHandler
 
         $this->eventStore->beginTransaction();
 
-        $aggregateAndEventIds = $this->eventStore->find($command->authenticatedUserId);
+        $aggregateAndEventIds = $this->eventStore->find($sessionId);
 
         if (null === $aggregateAndEventIds) {
             throw new NoSessionFound();
@@ -55,6 +55,10 @@ class RefreshTokenHandler
         $session = $aggregateAndEventIds->aggregate();
         if (!($session instanceof Session)) {
             throw new NoSessionFound();
+        }
+
+        if (null !== $session->sessionIsSignedOut()) {
+            throw new AlreadySignedOut();
         }
 
         if ($command->authenticatedUserId !== $session->sessionDetails()->asUser()->id()) {

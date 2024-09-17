@@ -10,11 +10,9 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class SignOutHandler
 {
@@ -52,8 +50,13 @@ class SignOutHandler
 
         $this->eventStore->beginTransaction();
 
-        $session = $this->eventStore->find($sessionId);
+        $aggregateAndEventIds = $this->eventStore->find($sessionId);
 
+        if (null === $aggregateAndEventIds) {
+            throw new NoSessionFound();
+        }
+
+        $session = $aggregateAndEventIds->aggregate();
         if (!($session instanceof Session)) {
             throw new NoSessionFound();
         }
@@ -66,9 +69,13 @@ class SignOutHandler
             throw new SessionTokenDoesNotMatch();
         }
 
-        $event = SignedOut::fromProperties(
+        $event = SignedOut::new(
+            Id::createNew(),
             $session->aggregateId(),
-            Id::fromId($command->authenticatedUserId),
+            $session->aggregateVersion() + 1,
+            $aggregateAndEventIds->lastEventId(),
+            $aggregateAndEventIds->firstEventId(),
+            new \DateTimeImmutable("now"),
             $command->metadata,
             $command->withIp,
             $command->withSessionToken

@@ -6,12 +6,18 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Co
 
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\HashedPasswordFromUserId;
+use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidDeviceLabel;
+use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidIp;
+use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidPassword;
+use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\NoPasswordFound;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\SignInHandler;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\UserIdFromSignInEmail;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\UserIdFromSignInUsername;
+use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\UserNotFound;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
+use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\InvalidIpsV4AndV6;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;
@@ -73,42 +79,58 @@ class SignInHandlerTest extends HandlerTestBase
 
         /** @var SignedIn $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
-        $this->assertEquals($storedEvent, $queuedEvent);
-        $this->assertEquals(
-            $command->withUsernameOrEmail,
-            $storedEvent->withUsername()
-        );
-        $this->assertEquals(
-            null,
-            $storedEvent->withEmail()
-        );
-        $this->assertEquals(
-            $command->metadata,
-            $storedEvent->metadata()
-        );
         $this->assertTrue(
             password_verify(
                 $command->withPassword,
                 $storedEvent->withHashedPassword()
             )
         );
-        $this->assertEquals(
-            $command->withIp,
-            $storedEvent->withIp()
-        );
         $this->assertTrue(
             SessionTokenValidator::isValid(
                 $storedEvent->sessionTokenCreated()
             )
         );
-
         $this->assertEquals(
             [
                 'sessionTokenCreated' => $storedEvent->sessionTokenCreated(),
             ],
             $response
+        );
+
+        Assert::assertEquals(
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                1,
+                $storedEvent->eventId(),
+                $storedEvent->eventId(),
+                $storedEvent->recordedOn(),
+                $command->metadata,
+                $userIdFromSignInUsername,
+                $command->withUsernameOrEmail,
+                null,
+                $storedEvent->withHashedPassword(),
+                $command->byDeviceLabel,
+                $command->withIp,
+                $storedEvent->sessionTokenCreated()
+            ],
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                $storedEvent->aggregateVersion(),
+                $storedEvent->causationId(),
+                $storedEvent->correlationId(),
+                $storedEvent->recordedOn(),
+                $storedEvent->metadata(),
+                $storedEvent->asUser(),
+                $storedEvent->withUsername(),
+                $storedEvent->withEmail(),
+                $storedEvent->withHashedPassword(),
+                $storedEvent->byDeviceLabel(),
+                $storedEvent->withIp(),
+                $storedEvent->sessionTokenCreated(),
+            ]
         );
     }
 
@@ -163,50 +185,64 @@ class SignInHandlerTest extends HandlerTestBase
 
         /** @var SignedIn $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
-        $this->assertEquals($storedEvent, $queuedEvent);
-        $this->assertEquals(
-            null,
-            $storedEvent->withUsername()
-        );
-        $this->assertEquals(
-            $command->withUsernameOrEmail,
-            $storedEvent->withEmail()
-        );
-        $this->assertEquals(
-            $command->metadata,
-            $storedEvent->metadata()
-        );
         $this->assertTrue(
             password_verify(
                 $command->withPassword,
                 $storedEvent->withHashedPassword()
             )
         );
-        $this->assertEquals(
-            $command->withIp,
-            $storedEvent->withIp()
-        );
         $this->assertTrue(
             SessionTokenValidator::isValid(
                 $storedEvent->sessionTokenCreated()
             )
         );
-
         $this->assertEquals(
             [
                 'sessionTokenCreated' => $storedEvent->sessionTokenCreated(),
             ],
             $response
         );
+
+        Assert::assertEquals(
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                1,
+                $storedEvent->eventId(),
+                $storedEvent->eventId(),
+                $storedEvent->recordedOn(),
+                $command->metadata,
+                $userIdFromSignInEmail,
+                null,
+                $command->withUsernameOrEmail,
+                $storedEvent->withHashedPassword(),
+                $command->byDeviceLabel,
+                $command->withIp,
+                $storedEvent->sessionTokenCreated()
+            ],
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                $storedEvent->aggregateVersion(),
+                $storedEvent->causationId(),
+                $storedEvent->correlationId(),
+                $storedEvent->recordedOn(),
+                $storedEvent->metadata(),
+                $storedEvent->asUser(),
+                $storedEvent->withUsername(),
+                $storedEvent->withEmail(),
+                $storedEvent->withHashedPassword(),
+                $storedEvent->byDeviceLabel(),
+                $storedEvent->withIp(),
+                $storedEvent->sessionTokenCreated(),
+            ]
+        );
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\UserNotFound
-     */
     public function testUserNotFound(): void
     {
+        $this->expectException(UserNotFound::class);
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 4]);
 
         $handler = new SignInHandler(
@@ -238,11 +274,9 @@ class SignInHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\NoPasswordFound
-     */
     public function testNoPasswordFound(): void
     {
+        $this->expectException(NoPasswordFound::class);
         $userIdFromSignInUsername = Id::createNew();
 
         $handler = new SignInHandler(
@@ -274,11 +308,9 @@ class SignInHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidPassword
-     */
     public function testInvalidPassword(): void
     {
+        $this->expectException(InvalidPassword::class);
         $userIdFromSignInUsername = Id::createNew();
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 4]);
 
@@ -311,11 +343,9 @@ class SignInHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidDeviceLabel
-     */
     public function testInvalidDeviceLabel(): void
     {
+        $this->expectException(InvalidDeviceLabel::class);
         $userIdFromSignInUsername = Id::createNew();
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 4]);
 
@@ -348,11 +378,9 @@ class SignInHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\InvalidIp
-     */
     public function testInvalidIp(): void
     {
+        $this->expectException(InvalidIp::class);
         $userIdFromSignInUsername = Id::createNew();
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 4]);
 
