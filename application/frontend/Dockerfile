@@ -1,11 +1,11 @@
-FROM php:8.3-cli
+FROM node:20.11.1
 
-WORKDIR /srv
-RUN mkdir /srv -p
-RUN mkdir /srv/public -p
-COPY public /srv/public
+CMD yarn install
+
+WORKDIR /app
+COPY . /app
 
 EXPOSE 8080
-CMD [ "php", "-S", "0.0.0.0:8080", "-t", "public" ]
+CMD [ "node", "server.js" ]
 
 
