@@ -7,6 +7,20 @@ import { fileURLToPath } from 'url';
 const port = 8080
 const app = Express()
 
+const domains = {
+  identity: process.env.DOMAIN_IDENTITY,
+  security: process.env.DOMAIN_SECURITY
+}
+
+const endpoints = {
+  "request-primary-email-change": domains.identity + "/user/request-primary-email-change",
+  "sign-up": domains.identity + "/user/sign-up",
+  "verify-primary-email": domains.identity + "/user/verify-primary-email",
+  "refresh-token": domains.security + "/session/refresh-token",
+  "sign-in": domains.security + "/session/sign-in",
+  "sign-out": domains.security + "session/sign-out"
+}
+
 // Accept JSON bodies
 app.use(Express.json())
 app.use(Express.urlencoded({ extended: true }));
@@ -47,12 +61,13 @@ app.post('/sign-in', async (req, res) => {
       deviceOrientation: "unknown"
     }
   }
-  const response = await fetch("https://a34f7853b5c9b-pro-mon-app-app-323035764089.europe-west2.run.app/api/v1/security/session/sign-in", {
+  const response = await fetch(endpoints["sign-in"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {'Content-Type': 'application/json'}
   });
 
+  console.log(endpoints["sign-in"])
   const r = await response.json();
   if (!response.ok) {
     const rawError = getError(r);
@@ -106,7 +121,7 @@ app.post('/sign-up', async (req, res) => {
 
   console.log(JSON.stringify(contents, null, 2));
 
-  const response = await fetch("https://a34f7853b5c9b-pro-mon-app-app-323035764089.europe-west2.run.app/api/v1/identity/user/sign-up", {
+  const response = await fetch(endpoints["sign-up"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {'Content-Type': 'application/json'}
