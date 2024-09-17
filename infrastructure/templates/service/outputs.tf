@@ -24,3 +24,7 @@ output "connection_outputs" {
     session_tokens_expire_after_seconds        = 72000
   }
 }
+
+output public_domain {
+  value = module.application.cloudrun_public_https_endpoint
+}

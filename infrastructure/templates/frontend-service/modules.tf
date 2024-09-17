@@ -12,4 +12,6 @@ module "frontend_application" {
   application_directory_name                 = var.application_directory_name
   git_commit_hash                            = var.git_commit_hash
   vpc_connector_subnetwork_name              = module.networking.vpc_connector_name
+  domain_identity                            = var.domain_identity
+  domain_security                            = var.domain_security
 }

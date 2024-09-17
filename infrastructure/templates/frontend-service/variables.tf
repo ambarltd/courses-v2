@@ -22,3 +22,11 @@ variable "git_commit_hash" {
 variable "application_directory_name" {
   type = string
 }
+
+variable "domain_identity" {
+  type = string
+}
+
+variable "domain_security" {
+  type = string
+}

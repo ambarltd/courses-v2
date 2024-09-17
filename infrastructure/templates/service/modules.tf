@@ -37,6 +37,7 @@ module "application" {
   mongodb_reaction_host                      = module.projection_and_reaction_store.database_private_ip
   mongodb_reaction_port                      = module.projection_and_reaction_store.database_port
   session_tokens_expire_after_seconds        = 72000
+  full_service_name_in_lowercase             = var.full_service_name_in_lowercase
 }
 
 module "pgt_proxy" {

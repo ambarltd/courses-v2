@@ -85,3 +85,7 @@ variable "mongodb_reaction_database_password" {
 variable "session_tokens_expire_after_seconds" {
   type = number
 }
+
+variable "full_service_name_in_lowercase" {
+  type = string
+}

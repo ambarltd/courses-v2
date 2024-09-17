@@ -9,6 +9,14 @@ resource "google_cloud_run_service" "application" {
         ports {
           container_port = 8080
         }
+        env {
+          name  = "DOMAIN_IDENTITY"
+          value = var.domain_identity
+        }
+        env {
+          name  = "DOMAIN_SECURITY"
+          value = var.domain_security
+        }
       }
     }
     metadata {
@@ -24,6 +32,12 @@ resource "google_cloud_run_service" "application" {
   }
 
   depends_on = [null_resource.push_app_image]
+
+  lifecycle {
+    ignore_changes = [
+      metadata.0.annotations
+    ]
+  }
 }
 
 resource "google_cloud_run_service_iam_policy" "public_policy" {

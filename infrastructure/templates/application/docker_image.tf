@@ -18,7 +18,7 @@ resource "null_resource" "push_app_image" {
       cp /var/application/${var.application_directory_name} docker_image_builder_${var.application_directory_name}_${random_id.image_tag.hex}/ -Rf
       cd docker_image_builder_${var.application_directory_name}_${random_id.image_tag.hex}/${var.application_directory_name}
       ls -la
-      docker build --tag ${local.docker_registry_url}/${local.docker_repository_name}:${random_id.image_tag.hex} .
+      docker build --build-arg SERVICE_NAME_IN_LOWERCASE=${var.full_service_name_in_lowercase} --tag ${local.docker_registry_url}/${local.docker_repository_name}:${random_id.image_tag.hex} .
       echo ${local.gcp_current_access_token_for_docker} | docker login -u oauth2accesstoken --password-stdin https://${local.docker_registry_url}
       docker image push ${local.docker_registry_url}/${local.docker_repository_name}:${random_id.image_tag.hex}
       cd ../../

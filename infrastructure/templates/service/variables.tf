@@ -34,3 +34,7 @@ variable "pgtproxy_key_in_base64" {
 variable "application_directory_name" {
   type = string
 }
+
+variable "full_service_name_in_lowercase" {
+  type = string
+}
