@@ -31,39 +31,52 @@ app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/views`);
 
-app.get('/sign-in', (_, res) => {
-  res.render(`sign-in`, { layout: false })
-})
+app.get('/sign-in', (_, res) => { res.render(`sign-in`, { layout: false }) })
+app.get('/sign-up', (_, res) => { res.render(`sign-up`, { layout: false }) })
+app.get('/sign-up-success', (_, res) => { res.render(`sign-up-success`, { layout: false }) })
+app.get('/home', (_, res) => { res.render(`home`, { layout: false }) })
+app.get('/', (_, res) => { res.render(`home`, { layout: false }) })
+app.get('/verify-email', routeVerifyEmail);
+app.post('/sign-in', routeSignIn);
+app.post('/sign-up',  routeSignUp);
 
-app.get('/sign-up', (_, res) => {
-  res.render(`sign-up`, { layout: false })
-})
+// Default metadata for requests.
+const metadata = {
+  environment: "browser",
+  devicePlatform: "unknown",
+  deviceModel: "unknown",
+  deviceOSVersion: "unknown",
+  deviceOrientation: "unknown"
+};
 
-app.get('/sign-up-success', (_, res) => {
-  res.render(`sign-up-success`, { layout: false })
-})
+async function routeVerifyEmail(req,res) {
+  const verificationCode = req.query.code;
+  const contents = { verificationCode, metadata };
+  const response = await fetch(endpoints["verify-primary-email"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {'Content-Type': 'application/json'}
+  });
+  const r = await response.json();
 
-app.get('/home', (_, res) => {
-  res.render(`home`, { layout: false })
-})
+  if (!response.ok) {
+    const error = getError(r);
+    res.render("verify-email", {
+      layout: false,
+      error,
+    });
+    return;
+  }
 
-app.get('/', (_, res) => {
-  res.render(`home`, { layout: false })
-})
+  res.render(`verify-email`, { layout: false })
+}
 
-app.post('/sign-in', async (req, res) => {
+async function routeSignIn(req, res) {
   const { email, password } = req.body;
   const contents = {
     withUsernameOrEmail: email,
     withPassword: password,
     byDeviceLabel: "desktop",
-    metadata: {
-      environment: "browser",
-      devicePlatform: "unknown",
-      deviceModel: "unknown",
-      deviceOSVersion: "unknown",
-      deviceOrientation: "unknown"
-    }
   }
   const response = await fetch(endpoints["sign-in"], {
       method: "POST",
@@ -94,7 +107,7 @@ app.post('/sign-in', async (req, res) => {
   } else {
     res.send(`Failure. ${JSON.stringify(r)}`);
   }
-});
+};
 
 // Parse error from a failure response
 function getError({ errors, errorIdentifier, errorMessage }) {
@@ -107,7 +120,7 @@ function getError({ errors, errorIdentifier, errorMessage }) {
     : errorIdentifier
 }
 
-app.post('/sign-up', async (req, res) => {
+async function routeSignUp(req, res) {
   const { email, password, username } = req.body;
   const contents = {
     primaryEmail: email,
@@ -155,7 +168,7 @@ app.post('/sign-up', async (req, res) => {
   }
 
   res.send(`Unexpected response. ${JSON.stringify(r)}`);
-});
+}
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

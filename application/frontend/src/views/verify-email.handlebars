@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Sign-up successful</title>
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+  const token = window.localStorage.getItem("session-id");
+  const signedIn = typeof token === "string";
+  if (signedIn) {
+    window.location.replace("/home");
+  }
+</script>
+
+</head>
+<body>
+
+<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-sm">
+    <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign-up successful</h2>
+  </div>
+
+  <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    <p class="text-center">
+      {{#if error}}
+        Unable to verify email: <span style="color:red">{{error}}</span>.
+      {{else}}
+        Email verified successfully. You can now <a href="/sign-in">sign-in</a>.
+      {{/if}}
+    </p>
+  </div>
+</div>
+
+</body>
+</html>
