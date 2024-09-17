@@ -46,7 +46,6 @@ services:
     ### EVENT STORE ####
 
     Galeas\Api\Service\EventStore\SQLEventStoreConnection:
-        public: true # so it's available in our kernel tests
         class: Galeas\Api\Service\EventStore\SQLEventStoreConnection
         arguments:
             - '%event_store_database_name%'

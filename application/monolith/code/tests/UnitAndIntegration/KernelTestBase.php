@@ -8,6 +8,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Kernel;
 use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
+use Galeas\Api\Service\ODM\DocumentManagerForTests;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,12 +68,16 @@ abstract class KernelTestBase extends TestCase
 
     protected function getProjectionDocumentManager(): DocumentManager
     {
-        return $this->container->get('doctrine_mongodb.odm.projection_document_manager');
+        /** @var DocumentManagerForTests $documentManagerForTests */
+        $documentManagerForTests = $this->container->get(DocumentManagerForTests::class);
+        return $documentManagerForTests->projectionDocumentManager();
     }
 
     protected function getReactionDocumentManager(): DocumentManager
     {
-        return $this->container->get('doctrine_mongodb.odm.reaction_document_manager');
+        /** @var DocumentManagerForTests $documentManagerForTests */
+        $documentManagerForTests = $this->container->get(DocumentManagerForTests::class);
+        return $documentManagerForTests->reactionDocumentManager();
     }
 
     protected function getEventStoreConnection(): Connection
