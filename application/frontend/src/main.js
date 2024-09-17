@@ -48,7 +48,7 @@ app.get('/home', (_, res) => {
 })
 
 app.get('/', (_, res) => {
-  res.render(`index`, { layout: false })
+  res.render(`home`, { layout: false })
 })
 
 app.post('/sign-in', async (req, res) => {
