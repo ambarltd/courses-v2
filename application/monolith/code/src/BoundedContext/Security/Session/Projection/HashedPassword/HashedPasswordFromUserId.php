@@ -20,9 +20,6 @@ class HashedPasswordFromUserId implements SIHashedPasswordFromUserId
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function hashedPasswordFromUserId(string $userId): ?string
     {
         try {

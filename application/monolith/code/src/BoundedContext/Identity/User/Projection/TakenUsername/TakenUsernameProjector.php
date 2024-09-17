@@ -22,9 +22,6 @@ class TakenUsernameProjector implements EventProjector
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function project(Event $event): void
     {
         try {

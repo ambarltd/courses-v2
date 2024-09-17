@@ -12,25 +12,16 @@ use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class HashedPasswordProjector implements EventProjector
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function project(Event $event): void
     {
         try {
-            $userId = null;
-            $hashedPassword = null;
-
             if (!($event instanceof SignedUp)) {
                 return;
             }

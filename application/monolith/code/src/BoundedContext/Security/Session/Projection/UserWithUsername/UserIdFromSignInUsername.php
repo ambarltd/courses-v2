@@ -20,9 +20,6 @@ class UserIdFromSignInUsername implements SIUserIdFromUsername
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function userIdFromSignInUsername(string $username): ?string
     {
         try {

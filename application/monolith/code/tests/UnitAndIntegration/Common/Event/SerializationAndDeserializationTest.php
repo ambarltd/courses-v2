@@ -15,8 +15,8 @@ class SerializationAndDeserializationTest extends UnitTestBase
 {
     public function testSerializationAndDeserialization() {
         $events = array_merge(
-            SampleEvents::sampleUserEvents(),
-            SampleEvents::sampleSessionEvents(),
+            SampleEvents::userEvents(),
+            SampleEvents::sessionEvents(),
         );
 
         $serializedEvents = EventSerializer::eventsToSerializedEvents($events);

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\ODM;
 
-use Doctrine\ODM\MongoDB\Types\Type;
+use Doctrine\ODM\MongoDB\Types\DateType;
 
 /**
  * Mongo does not allow for DateTimeImmutable, nor does it allow for microseconds.
@@ -12,7 +12,7 @@ use Doctrine\ODM\MongoDB\Types\Type;
  *
  * This overriden type forces \DateTimeImmutable for properties, and it stores dates in UTC,
  */
-class OverrideDateType extends Type
+class OverrideDateType extends DateType
 {
     /**
      * @param string|\DateTimeImmutable|null $value

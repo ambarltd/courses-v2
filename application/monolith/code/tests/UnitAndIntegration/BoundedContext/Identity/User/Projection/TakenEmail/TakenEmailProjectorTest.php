@@ -12,6 +12,7 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProj
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class TakenEmailProjectorTest extends KernelTestBase
 {
@@ -20,22 +21,16 @@ class TakenEmailProjectorTest extends KernelTestBase
         $TakenEmailProjectorService = $this->getContainer()
             ->get(TakenEmailProjector::class);
 
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'username_test',
-            false
-        );
+        $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
-        $TakenEmailProjectorService->process($signedUp);
+        $TakenEmailProjectorService->project($signedUp);
 
         Assert::assertEquals(
             [
                 TakenEmail::fromUserIdAndEmails(
                     $userId,
                     null,
-                    'test1@example.com'
+                    $signedUp->primaryEmail()
                 ),
             ],
             $this->findTakenEmails($userId)
@@ -47,31 +42,19 @@ class TakenEmailProjectorTest extends KernelTestBase
         $TakenEmailProjectorService = $this->getContainer()
             ->get(TakenEmailProjector::class);
 
-        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'username_test_1',
-            false
-        );
-        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'Test2@example.com',
-            'password_test_123',
-            'username_test_2',
-            false
-        );
+        $signedUp1 = SampleEvents::signedUp();
+        $signedUp2 = SampleEvents::anotherSignedUp();
         $userId1 = $signedUp1->aggregateId()->id();
         $userId2 = $signedUp2->aggregateId()->id();
-        $TakenEmailProjectorService->process($signedUp1);
-        $TakenEmailProjectorService->process($signedUp2);
+        $TakenEmailProjectorService->project($signedUp1);
+        $TakenEmailProjectorService->project($signedUp2);
 
         Assert::assertEquals(
             [
                 TakenEmail::fromUserIdAndEmails(
                     $userId1,
                     null,
-                    'test1@example.com'
+                    $signedUp1->primaryEmail()
                 ),
             ],
             $this->findTakenEmails($userId1)
@@ -81,7 +64,7 @@ class TakenEmailProjectorTest extends KernelTestBase
                 TakenEmail::fromUserIdAndEmails(
                     $userId2,
                     null,
-                    'test2@example.com'
+                    $signedUp2->primaryEmail()
                 ),
             ],
             $this->findTakenEmails($userId2)
@@ -101,14 +84,14 @@ class TakenEmailProjectorTest extends KernelTestBase
         $this->getProjectionDocumentManager()->persist($takenEmail);
         $this->getProjectionDocumentManager()->flush();
 
-        $signedUp = PrimaryEmailVerified::new(
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             Id::fromId($takenEmail->getUserId()),
-            Id::fromId($takenEmail->getUserId()),
-            [],
-            'code'
+            2,
+            Id::createNew(),
+            Id::createNew()
         );
-        $userId = $signedUp->aggregateId()->id();
-        $TakenEmailProjectorService->process($signedUp);
+        $userId = $primaryEmailVerified->aggregateId()->id();
+        $TakenEmailProjectorService->project($primaryEmailVerified);
 
         Assert::assertEquals(
             [
@@ -135,22 +118,21 @@ class TakenEmailProjectorTest extends KernelTestBase
         $this->getProjectionDocumentManager()->persist($takenEmail);
         $this->getProjectionDocumentManager()->flush();
 
-        $signedUp = PrimaryEmailChangeRequested::fromProperties(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             Id::fromId($takenEmail->getUserId()),
-            Id::fromId($takenEmail->getUserId()),
-            [],
-            'requested_new_email@example.com',
-            'fake_hashed_password'
+            2,
+            Id::createNew(),
+            Id::createNew(),
         );
-        $userId = $signedUp->aggregateId()->id();
-        $TakenEmailProjectorService->process($signedUp);
+        $userId = $primaryEmailChangeRequested->aggregateId()->id();
+        $TakenEmailProjectorService->project($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
                 TakenEmail::fromUserIdAndEmails(
                     $userId,
                     'verified_email@example.com',
-                    'requested_new_email@example.com'
+                    $primaryEmailChangeRequested->newEmailRequested()
                 ),
             ],
             $this->findTakenEmails($userId)

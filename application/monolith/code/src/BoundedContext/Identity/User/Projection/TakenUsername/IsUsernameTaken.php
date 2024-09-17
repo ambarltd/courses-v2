@@ -20,9 +20,6 @@ class IsUsernameTaken implements SUIsUsernameTaken
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isUsernameTaken(string $username): bool
     {
         try {

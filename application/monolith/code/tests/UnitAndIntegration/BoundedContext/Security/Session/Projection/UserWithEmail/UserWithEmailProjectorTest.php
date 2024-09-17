@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\UserWithEmail;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\RequestedChange;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Unverified;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmail;
@@ -15,6 +12,7 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class UserWithEmailProjectorTest extends KernelTestBase
 {
@@ -23,22 +21,16 @@ class UserWithEmailProjectorTest extends KernelTestBase
         $UserWithEmailProjectorService = $this->getContainer()
             ->get(UserWithEmailProjector::class);
 
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'username_test',
-            false
-        );
+        $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
-        $UserWithEmailProjectorService->process($signedUp);
+        $UserWithEmailProjectorService->project($signedUp);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId,
                     null,
-                    'test1@example.com',
+                    $signedUp->primaryEmail(),
                     Unverified::setStatus()
                 ),
             ],
@@ -57,25 +49,25 @@ class UserWithEmailProjectorTest extends KernelTestBase
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
                     null,
-                    'unverified@galeas.com',
+                    'unverified189181727@galeas.com',
                     Unverified::setStatus()
                 )
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $userId,
-            $userId,
-            [],
-            'fake_code'
+            2,
+            Id::createNew(),
+            Id::createNew()
         );
-        $UserWithEmailProjectorService->process($primaryEmailVerified);
+        $UserWithEmailProjectorService->project($primaryEmailVerified);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'unverified@galeas.com',
+                    'unverified189181727@galeas.com',
                     null,
                     Verified::setStatus()
                 ),
@@ -94,26 +86,26 @@ class UserWithEmailProjectorTest extends KernelTestBase
             ->persist(
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'verified@galeas.com',
-                    'requested@galeas.com',
+                    'verified189181727@galeas.com',
+                    'requested189181727@galeas.com',
                     RequestedChange::setStatus()
                 )
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $userId,
-            $userId,
-            [],
-            'fake_code'
+            2,
+            Id::createNew(),
+            Id::createNew()
         );
-        $UserWithEmailProjectorService->process($primaryEmailVerified);
+        $UserWithEmailProjectorService->project($primaryEmailVerified);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'requested@galeas.com',
+                    'requested189181727@galeas.com',
                     null,
                     Verified::setStatus()
                 ),
@@ -133,27 +125,26 @@ class UserWithEmailProjectorTest extends KernelTestBase
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
                     null,
-                    'unverified@galeas.com',
+                    'unverified189181727@galeas.com',
                     Unverified::setStatus()
                 )
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $userId,
-            $userId,
-            [],
-            'new@galeas.com',
-            'fake_hashed_password'
+            33,
+            Id::createNew(),
+            Id::createNew(),
         );
-        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->project($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
                     null,
-                    'new@galeas.com',
+                    $primaryEmailChangeRequested->newEmailRequested(),
                     Unverified::setStatus()
                 ),
             ],
@@ -171,28 +162,27 @@ class UserWithEmailProjectorTest extends KernelTestBase
             ->persist(
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'verified@galeas.com',
+                    'verified189181727@galeas.com',
                     null,
                     Verified::setStatus()
                 )
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $userId,
-            $userId,
-            [],
-            'new_requested@galeas.com',
-            'fake_hashed_password'
+            43,
+            Id::createNew(),
+            Id::createNew()
         );
-        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->project($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'verified@galeas.com',
-                    'new_requested@galeas.com',
+                    'verified189181727@galeas.com',
+                    $primaryEmailChangeRequested->newEmailRequested(),
                     RequestedChange::setStatus()
                 ),
             ],
@@ -210,28 +200,27 @@ class UserWithEmailProjectorTest extends KernelTestBase
             ->persist(
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'verified@galeas.com',
-                    'requested@galeas.com',
+                    'verified189181727@galeas.com',
+                    'requested189181727@galeas.com',
                     RequestedChange::setStatus()
                 )
             );
         $this->getProjectionDocumentManager()->flush();
 
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $userId,
-            $userId,
-            [],
-            'new_requested@galeas.com',
-            'fake_hashed_password'
+            182,
+            Id::createNew(),
+            Id::createNew(),
         );
-        $UserWithEmailProjectorService->process($primaryEmailChangeRequested);
+        $UserWithEmailProjectorService->project($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
                 UserWithEmail::fromUserIdAndEmails(
                     $userId->id(),
-                    'verified@galeas.com',
-                    'new_requested@galeas.com',
+                    'verified189181727@galeas.com',
+                    $primaryEmailChangeRequested->newEmailRequested(),
                     RequestedChange::setStatus()
                 ),
             ],

@@ -11,6 +11,7 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\Common\Id\Id;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class SessionProjectorTest extends KernelTestBase
 {
@@ -19,17 +20,9 @@ class SessionProjectorTest extends KernelTestBase
         $SessionProjector = $this->getContainer()
             ->get(SessionProjector::class);
 
-        $signedIn = SignedIn::fromProperties(
-            [],
-            Id::createNew(),
-            'username_123',
-            'email@example.com',
-            'hashed_password',
-            'byDeviceLabel',
-            '127.128.129.130'
-        );
+        $signedIn = SampleEvents::signedIn();
 
-        $SessionProjector->process($signedIn);
+        $SessionProjector->project($signedIn);
         // This make sure mongo is restoring DateTimeImmutable correctly.
         // The Session object with DateTimeImmutable gets recreated and rehydrated.
         // It's not necessary in every test, but having it here makes sure that
@@ -70,7 +63,7 @@ class SessionProjectorTest extends KernelTestBase
         );
 
         // test idempotency
-        $SessionProjector->process($signedIn);
+        $SessionProjector->project($signedIn);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -111,19 +104,13 @@ class SessionProjectorTest extends KernelTestBase
         $SessionProjector = $this->getContainer()
             ->get(SessionProjector::class);
 
-        $sessionId = Id::createNew();
-        $asUser = Id::createNew();
-        $existingSessionToken = 'existing_session_token';
-
-        $tokenRefreshed = TokenRefreshed::fromProperties(
-            $sessionId,
-            $asUser,
-            [],
-            '189.189.189.189',
-            $existingSessionToken
+        $tokenRefreshed = SampleEvents::tokenRefreshed(
+            Id::createNew(),
+            153,
+            Id::createNew(),
+            Id::createNew()
         );
-
-        $SessionProjector->process($tokenRefreshed);
+        $SessionProjector->project($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -159,7 +146,7 @@ class SessionProjectorTest extends KernelTestBase
         );
 
         // test idempotency
-        $SessionProjector->process($tokenRefreshed);
+        $SessionProjector->project($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -200,25 +187,16 @@ class SessionProjectorTest extends KernelTestBase
         $SessionProjector = $this->getContainer()
             ->get(SessionProjector::class);
 
-        $signedIn = SignedIn::fromProperties(
-            [],
-            Id::createNew(),
-            'username_123',
-            'email@example.com',
-            'hashed_password',
-            'byDeviceLabel',
-            '127.128.129.130'
-        );
-        $tokenRefreshed = TokenRefreshed::fromProperties(
+        $signedIn = SampleEvents::signedIn();
+        $tokenRefreshed = SampleEvents::tokenRefreshed(
             $signedIn->aggregateId(),
-            $signedIn->asUser(),
-            [],
-            '189.189.189.189',
-            $signedIn->sessionTokenCreated()
+            2,
+            $signedIn->eventId(),
+            $signedIn->eventId(),
         );
 
-        $SessionProjector->process($signedIn);
-        $SessionProjector->process($tokenRefreshed);
+        $SessionProjector->project($signedIn);
+        $SessionProjector->project($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -254,7 +232,7 @@ class SessionProjectorTest extends KernelTestBase
         );
 
         // test idempotency
-        $SessionProjector->process($tokenRefreshed);
+        $SessionProjector->project($tokenRefreshed);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -295,19 +273,13 @@ class SessionProjectorTest extends KernelTestBase
         $SessionProjector = $this->getContainer()
             ->get(SessionProjector::class);
 
-        $sessionId = Id::createNew();
-        $asUser = Id::createNew();
-        $existingSessionToken = 'existing_session_token';
-
-        $signedOut = SignedOut::fromProperties(
-            $sessionId,
-            $asUser,
-            [],
-            '189.189.189.189',
-            $existingSessionToken
+        $signedOut = SampleEvents::signedOut(
+            Id::createNew(),
+            2,
+            Id::createNew(),
+            Id::createNew(),
         );
-
-        $SessionProjector->process($signedOut);
+        $SessionProjector->project($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -343,7 +315,7 @@ class SessionProjectorTest extends KernelTestBase
         );
 
         // test idempotency
-        $SessionProjector->process($signedOut);
+        $SessionProjector->project($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -381,28 +353,20 @@ class SessionProjectorTest extends KernelTestBase
 
     public function testProcessSignedInThenSignedOut(): void
     {
+        /** @var SessionProjector $SessionProjector */
         $SessionProjector = $this->getContainer()
             ->get(SessionProjector::class);
 
-        $signedIn = SignedIn::fromProperties(
-            [],
-            Id::createNew(),
-            'username_123',
-            'email@example.com',
-            'hashed_password',
-            'byDeviceLabel',
-            '127.128.129.130'
-        );
-        $signedOut = SignedOut::fromProperties(
+        $signedIn = SampleEvents::signedIn();
+        $signedOut = SampleEvents::signedOut(
             $signedIn->aggregateId(),
-            $signedIn->asUser(),
-            [],
-            '189.189.189.189',
-            $signedIn->sessionTokenCreated()
+            2,
+            $signedIn->eventId(),
+            $signedIn->eventId(),
         );
 
-        $SessionProjector->process($signedIn);
-        $SessionProjector->process($signedOut);
+        $SessionProjector->project($signedIn);
+        $SessionProjector->project($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -425,7 +389,7 @@ class SessionProjectorTest extends KernelTestBase
             $sessions[0]->getUserId()
         );
         $this->assertEquals(
-            $signedIn->sessionTokenCreated(),
+            $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         $this->assertEquals(
@@ -438,7 +402,7 @@ class SessionProjectorTest extends KernelTestBase
         );
 
         // test idempotency
-        $SessionProjector->process($signedOut);
+        $SessionProjector->project($signedOut);
 
         $allSessions = $this->findAllSessions();
         $this->assertCount(
@@ -461,7 +425,7 @@ class SessionProjectorTest extends KernelTestBase
             $sessions[0]->getUserId()
         );
         $this->assertEquals(
-            $signedIn->sessionTokenCreated(),
+            $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         $this->assertEquals(
@@ -474,9 +438,6 @@ class SessionProjectorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @return Session[]
-     */
     private function findSessionsById(string $sessionId): array
     {
         return array_values(
@@ -489,9 +450,6 @@ class SessionProjectorTest extends KernelTestBase
         );
     }
 
-    /**
-     * @return Session[]
-     */
     private function findAllSessions(): array
     {
         return array_values(

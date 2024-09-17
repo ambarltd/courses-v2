@@ -9,6 +9,7 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUserna
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class TakenUsernameProjectorTest extends KernelTestBase
 {
@@ -17,32 +18,20 @@ class TakenUsernameProjectorTest extends KernelTestBase
         $TakenUsernameProjectorService = $this->getContainer()
             ->get(TakenUsernameProjector::class);
 
-        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'uSername_test',
-            false
-        );
-        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'username_tEst_2',
-            false
-        );
+        $signedUp1 = SampleEvents::signedUp();
+        $signedUp2 = SampleEvents::anotherSignedUp();
 
         $userId1 = $signedUp1->aggregateId()->id();
         $userId2 = $signedUp2->aggregateId()->id();
-        $TakenUsernameProjectorService->process($signedUp1);
-        $TakenUsernameProjectorService->process($signedUp2);
+        $TakenUsernameProjectorService->project($signedUp1);
+        $TakenUsernameProjectorService->project($signedUp2);
 
         $takenUsernames = $this->findTakenUsernames($userId1);
         Assert::assertEquals(
             [
                 TakenUsername::fromUserIdAndUsername(
                     $userId1,
-                    'username_test'
+                    $signedUp1->username()
                 ),
             ],
             $takenUsernames
@@ -52,18 +41,13 @@ class TakenUsernameProjectorTest extends KernelTestBase
             [
                 TakenUsername::fromUserIdAndUsername(
                     $userId2,
-                    'username_test_2'
+                    $signedUp2->username()
                 ),
             ],
             $takenUsernames
         );
     }
 
-    /**
-     * @return TakenUsername[]
-     *
-     * @throws \Exception
-     */
     private function findTakenUsernames(string $userId): array
     {
         $queryBuilder = $this->getProjectionDocumentManager()

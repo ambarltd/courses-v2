@@ -17,9 +17,6 @@ class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVe
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function userIdFromPrimaryEmailVerificationCode(string $primaryEmailVerificationCode): ?string
     {
         try {

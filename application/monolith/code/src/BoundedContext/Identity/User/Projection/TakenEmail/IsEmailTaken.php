@@ -21,9 +21,6 @@ class IsEmailTaken implements SUIsEmailTaken, RPECIsEmailTaken
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isEmailTaken(string $email): bool
     {
         try {

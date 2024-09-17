@@ -8,6 +8,7 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class UserWithUsernameProjectorTest extends KernelTestBase
 {
@@ -16,20 +17,8 @@ class UserWithUsernameProjectorTest extends KernelTestBase
         $UserWithUsernameProjector = $this->getContainer()
             ->get(UserWithUsernameProjector::class);
 
-        $signedUp1 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'Email_1_a@example.com',
-            'password',
-            'uSername',
-            true
-        );
-        $signedUp2 = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'Email_2_a@@example.com',
-            'password_2',
-            'uSername_2',
-            true
-        );
+        $signedUp1 = SampleEvents::signedUp();
+        $signedUp2 = SampleEvents::anotherSignedUp();
 
         // EMPTY
 
@@ -50,8 +39,8 @@ class UserWithUsernameProjectorTest extends KernelTestBase
 
         // SignedUp 1
 
-        $UserWithUsernameProjector->process($signedUp1);
-        $UserWithUsernameProjector->process($signedUp1); // test idempotency
+        $UserWithUsernameProjector->project($signedUp1);
+        $UserWithUsernameProjector->project($signedUp1); // test idempotency
 
         $userWithUsernameArray1 = $this->findUsersById(
             $signedUp1->aggregateId()->id()
@@ -78,8 +67,8 @@ class UserWithUsernameProjectorTest extends KernelTestBase
 
         // SignedUp 2
 
-        $UserWithUsernameProjector->process($signedUp2);
-        $UserWithUsernameProjector->process($signedUp2); // test idempotency
+        $UserWithUsernameProjector->project($signedUp2);
+        $UserWithUsernameProjector->project($signedUp2); // test idempotency
 
         $userWithUsernameArray1 = $this->findUsersById(
             $signedUp1->aggregateId()->id()

@@ -36,9 +36,6 @@ class InMemoryEventStore implements EventStore
 
     private bool $isTransactionActive = false;
 
-    /**
-     * {@inheritdoc}
-     */
     public function beginTransaction(): void
     {
         try {

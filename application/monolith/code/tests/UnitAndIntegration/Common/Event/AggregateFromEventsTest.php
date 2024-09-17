@@ -30,8 +30,8 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 class AggregateFromEventsTest extends UnitTestBase {
     public function testAggregateFromEvents(): void
     {
-        $userEvents = SampleEvents::sampleUserEvents();
-        $sessionEvents = SampleEvents::sampleSessionEvents();
+        $userEvents = SampleEvents::userEvents();
+        $sessionEvents = SampleEvents::sessionEvents();
         $this->runAssertions($userEvents, "createUser", "transformUser");
         $this->runAssertions($sessionEvents, "createSession", "transformSession");
 

@@ -12,10 +12,26 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 
+/**
+ * The functions below are used in tests to avoid having to generate events over and over again.
+ * It's recommended to not edit existing functions, because tests might make assumptions
+ * using the results. At best, editing means you might break existing tests. And at worst, it means
+ * that now you aren't testing certain things.
+ *
+ * There is a naming convention here, that should help us get different events for different use cases.
+ * When we speak about another value (e.g., one more email) in the same aggregate, we refer to the new value
+ * as "second" or "third" or "fourth" etc.
+ * When we speak about another aggregate, or another value inside a separate aggregate, we prefix with "another".
+ * Example:
+ *  UserAggregate: SignIn with "email", Request change to a "second email".
+ *  AnotherUserAggregate: SignIn with "another email", Request a change to "another second email".
+ *
+ * When there are tests you need to write that don't quite fit the sample events, don't try to pollute this class.
+ * Instead, simply instantiate events directly in your test, the world won't end because of a few extra lines of code.
+ */
 abstract class SampleEvents {
-    public static function sampleUserEvents(): array {
+    public static function userEvents(): array {
         $event1 = SampleEvents::signedUp();
         $event2 = SampleEvents::primaryEmailVerificationCodeSent(
             $event1->aggregateId(),
@@ -115,14 +131,33 @@ abstract class SampleEvents {
             $correlationId,
             new \DateTimeImmutable("now"),
             self::sampleMetadata(null),
-            self::anotherSampleEmail(),
-            self::anotherSampleVerificationCode(),
+            self::secondSampleEmail(),
+            self::secondSampleVerificationCode(),
             self::sampleHashedPassword()
         );
     }
 
+    public static function anotherSignedUp(): SignedUp {
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        return SignedUp::new(
+            $eventId,
+            $aggregateId,
+            1,
+            $eventId,
+            $eventId,
+            new \DateTimeImmutable("now"),
+            self::anotherSampleMetadata(null),
+            self::anotherSampleEmail(),
+            self::anotherSampleVerificationCode(),
+            self::anotherSampleHashedPassword(),
+            self::anotherSampleUsername(),
+            true,
+        );
+    }
 
-    public static function sampleSessionEvents(): array {
+
+    public static function sessionEvents(): array {
         $event1 = SampleEvents::signedIn();
         $event2 = SampleEvents::tokenRefreshed(
             $event1->aggregateId(),
@@ -178,9 +213,9 @@ abstract class SampleEvents {
             $correlationId,
             new \DateTimeImmutable("now"),
             self::sampleMetadata($existingSessionToken),
-            self::anotherSampleIp(),
+            self::secondSampleIp(),
             $existingSessionToken,
-            self::anotherSampleSessionToken()
+            self::secondSampleSessionToken()
         );
     }
 
@@ -191,7 +226,7 @@ abstract class SampleEvents {
         Id $correlationId
     ): SignedOut {
         $eventId = Id::createNew();
-        $existingSessionToken = self::anotherSampleSessionToken();
+        $existingSessionToken = self::secondSampleSessionToken();
         return SignedOut::new(
             $eventId,
             $aggregateId,
@@ -200,7 +235,7 @@ abstract class SampleEvents {
             $correlationId,
             new \DateTimeImmutable("now"),
             self::sampleMetadata($existingSessionToken),
-            self::yetAnotherSampleIp(),
+            self::thirdSampleIp(),
             $existingSessionToken,
         );
     }
@@ -222,12 +257,33 @@ abstract class SampleEvents {
         ];
     }
 
+    private static function anotherSampleMetadata(?string $withSessionToken): array
+    {
+        return [
+            "environment" => "browser",
+            "devicePlatform" => "windows",
+            "deviceModel" => "The OG",
+            "deviceOSVersion" => "Windows 99.9999",
+            "deviceOrientation" => "portrait",
+            "latitude" => 15.3232,
+            "longitude" => -25.32123,
+            "ipAddress" => "150.102.12.3",
+            "userAgent" => "A_COOL_USER_AGENT",
+            "referer" => "2.example.com",
+            "withSessionToken" => $withSessionToken,
+        ];
+    }
+
     private static function sampleEmail(): string {
         return "test@galeas.com";
     }
 
-    private static function anotherSampleEmail(): string {
+    private static function secondSampleEmail(): string {
         return "proof@galeas2.net";
+    }
+
+    private static function anotherSampleEmail(): string {
+        return "anotherEmail@gmail.com";
     }
 
     private static function systemEmailFrom(): string {
@@ -238,16 +294,28 @@ abstract class SampleEvents {
         return '$2y$10$tS8Y8CvwOeBVaFzPkXOfBuSearouW45pb5OlujqV6Y2BQPgvU5W2q'; // corresponds to "abcDEFg1/2"
     }
 
+    private static function anotherSampleHashedPassword(): string {
+        return '$2a$10$/q4ZluKn5QrNz2FizyFxaOtinBAfninfZTFAI/02d2kfHTcgTc336'; // corresponds to "b3rdsnn128FU&d9"
+    }
+
     private static function sampleUsername(): string {
         return "MyUsername";
+    }
+
+    private static function anotherSampleUsername(): string {
+        return "ThisIsMe";
     }
 
     private static function sampleVerificationCode(): string {
         return "FirstVerificationCode";
     }
 
-    private static function anotherSampleVerificationCode(): string {
+    private static function secondSampleVerificationCode(): string {
         return "SecondVerificationCode";
+    }
+
+    private static function anotherSampleVerificationCode(): string {
+        return "FirstVerificationCode";
     }
 
     private static function sampleDeviceLabel(): string {
@@ -258,11 +326,11 @@ abstract class SampleEvents {
         return "130.130.130.130";
     }
 
-    private static function anotherSampleIp(): string {
+    private static function secondSampleIp(): string {
         return "131.131.131.131";
     }
 
-    private static function yetAnotherSampleIp(): string {
+    private static function thirdSampleIp(): string {
         return "132.132.132.132";
     }
 
@@ -270,7 +338,7 @@ abstract class SampleEvents {
         return "SessionToken17891028561029";
     }
 
-    private static function anotherSampleSessionToken(): string {
+    private static function secondSampleSessionToken(): string {
         return "SessionToken02067776337012";
     }
 }

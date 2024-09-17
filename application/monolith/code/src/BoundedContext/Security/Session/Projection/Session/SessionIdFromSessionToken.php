@@ -21,9 +21,6 @@ class SessionIdFromSessionToken implements RTSessionIdFromSessionToken, SOSessio
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function sessionIdFromSessionToken(string $sessionToken): ?string
     {
         try {

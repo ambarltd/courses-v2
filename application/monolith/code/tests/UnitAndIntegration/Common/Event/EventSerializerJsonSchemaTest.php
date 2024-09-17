@@ -18,8 +18,8 @@ class EventSerializerJsonSchemaTest extends UnitTestBase
 {
     public function testSchemaMatching() {
         $events = array_merge(
-            SampleEvents::sampleUserEvents(),
-            SampleEvents::sampleSessionEvents(),
+            SampleEvents::userEvents(),
+            SampleEvents::sessionEvents(),
         );
 
         $jsonSchemaValidator = new Validator();

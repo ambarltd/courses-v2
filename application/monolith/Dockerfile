@@ -42,6 +42,8 @@ COPY code/composer.lock /srv/composer.lock
 RUN composer install
 # vendor folder is ignored in COPY because of .dockerignore
 COPY code /srv
+# Prevent executing tests, which do silly things like touch the database
+RUN rm /srv/tests -Rf
 RUN composer install
 
 EXPOSE 8080

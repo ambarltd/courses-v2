@@ -20,9 +20,6 @@ class UserIdFromSignInEmail implements SIUserIdFromEmail
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function userIdFromSignInEmail(string $email): ?string
     {
         try {

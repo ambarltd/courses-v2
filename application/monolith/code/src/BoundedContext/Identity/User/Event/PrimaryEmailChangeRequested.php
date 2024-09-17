@@ -67,9 +67,6 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         return $event;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transformUser(User $user): User
     {
         $previousEmailStatus = $user->primaryEmailStatus();

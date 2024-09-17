@@ -62,9 +62,6 @@ class TokenRefreshed implements EventTransformedSession
         return $event;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function transformSession(Session $session): Session
     {
         return Session::fromProperties(

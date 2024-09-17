@@ -12,6 +12,7 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationC
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class PrimaryEmailVerificationCodeProjectorTest extends KernelTestBase
 {
@@ -20,16 +21,10 @@ class PrimaryEmailVerificationCodeProjectorTest extends KernelTestBase
         $processorService = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProjector::class);
 
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'uSername_test',
-            false
-        );
+        $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
         $primaryEmailVerificationCode = $signedUp->primaryEmailVerificationCode();
-        $processorService->process($signedUp);
+        $processorService->project($signedUp);
 
         Assert::assertEquals(
             [
@@ -47,16 +42,15 @@ class PrimaryEmailVerificationCodeProjectorTest extends KernelTestBase
         $processorService = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProjector::class);
 
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
+            Id::createNew(),
+            2,
             Id::createNew(),
             Id::createNew(),
-            [],
-            'tEst1@example.com',
-            'fake_hashed_password'
         );
         $userId = $primaryEmailChangeRequested->aggregateId()->id();
         $primaryEmailVerificationCode = $primaryEmailChangeRequested->newVerificationCode();
-        $processorService->process($primaryEmailChangeRequested);
+        $processorService->project($primaryEmailChangeRequested);
 
         Assert::assertEquals(
             [
@@ -74,22 +68,16 @@ class PrimaryEmailVerificationCodeProjectorTest extends KernelTestBase
         $processorService = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProjector::class);
 
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            [],
-            'tEst1@example.com',
-            'password_test_123',
-            'uSername_test',
-            false
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            [],
-            "should_be_ignored",
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId(),
         );
         $userId = $primaryEmailVerified->aggregateId()->id();
-        $processorService->process($signedUp);
-        $processorService->process($primaryEmailVerified);
+        $processorService->project($signedUp);
+        $processorService->project($primaryEmailVerified);
 
         Assert::assertEquals(
             [

@@ -6,9 +6,6 @@ namespace Galeas\Api\Common\ExceptionBase;
 
 class EventStoreCannotRead extends DatabaseFailure
 {
-    /**
-     * {@inheritdoc}
-     */
     final public static function getErrorIdentifier(): string
     {
         return 'Common_EventStoreCannotRead';
