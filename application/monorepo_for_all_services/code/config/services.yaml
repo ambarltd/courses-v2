@@ -70,6 +70,9 @@ services:
                 - setJsonSchemaFetcher: ['@Galeas\Api\JsonSchema\JsonSchemaFetcher']
                 - setJsonSchemaValidator: ['@Galeas\Api\JsonSchema\JsonSchemaValidator']
                 - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
+        Galeas\Api\Common\Controller\ProjectionReactionController:
+            calls:
+                - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
         Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
             # Handlers and their dependencies will only be testable if they're in the test container.
             # For this to be true at least one public service has to use them. Controllers will do the job.
