@@ -46,6 +46,9 @@ COPY code /srv
 RUN rm /srv/tests -Rf
 RUN composer install
 
+ARG SERVICE_NAME_IN_LOWERCASE
+RUN cp "/srv/config/routes_by_service_for_build_stage/routes_$SERVICE_NAME_IN_LOWERCASE.yaml" /srv/config/routes.yaml
+
 EXPOSE 8080
 CMD ["./run_inside_docker.sh"]
 
