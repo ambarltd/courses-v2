@@ -45,6 +45,6 @@ COPY code /srv
 RUN composer install
 
 EXPOSE 8080
-CMD [ "php", "-S", "0.0.0.0:8080", "-t", "public" ]
+CMD ["./run_inside_docker.sh"]
 
 

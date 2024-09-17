@@ -46,6 +46,7 @@ class SQLEventStoreConnection
                     'user' => $databaseUser,
                     'password' => $databasePassword,
                     'driver' => 'pdo_pgsql',
+                    'sslmode' => 'require'
                 ],
                 $configuration,
                 null

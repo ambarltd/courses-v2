@@ -15,9 +15,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class KernelTestBase extends TestCase
 {
-    private ?Kernel $kernel;
+    /**
+     * @var Kernel
+     */
+    private $kernel;
 
-    private ?Container $container;
+    /**
+     * @var Container
+     */
+    private $container;
 
     public function setUp(): void
     {
@@ -34,7 +40,7 @@ abstract class KernelTestBase extends TestCase
 
         // debug = true, because running a test should refresh the cache
         // this is only run once, so it shouldn't impact CI time
-        $this->kernel = new Kernel("test", true);
+        $this->kernel = new Kernel("test", false);
         $this->kernel->boot();
         $this->container = $this->containerFromKernel($this->kernel);
     }
@@ -86,7 +92,7 @@ abstract class KernelTestBase extends TestCase
 
     private function deleteDatabasesAndCloseConnections(): void
     {
-        $projectionDocumentManager = self::getProjectionDocumentManager();
+        $projectionDocumentManager = $this->getProjectionDocumentManager();
         $projectionDocumentManager->clear();
         $projectionDatabase = $projectionDocumentManager->getClient()
             ->selectDatabase(
@@ -98,7 +104,7 @@ abstract class KernelTestBase extends TestCase
             )->deleteMany([]);
         }
 
-        $reactionDocumentManager = self::getReactionDocumentManager();
+        $reactionDocumentManager = $this->getReactionDocumentManager();
         $reactionDocumentManager->clear();
         $reactionDatabase = $reactionDocumentManager->getClient()
             ->selectDatabase(
@@ -110,7 +116,7 @@ abstract class KernelTestBase extends TestCase
             )->deleteMany([]);
         }
 
-        $eventStoreConnection = $this->getEventStoreConnection(); // connects to the test database
+        $eventStoreConnection = $this->getEventStoreConnection();
         $eventStoreConnection->beginTransaction();
         $eventStoreConnection->executeStatement('TRUNCATE TABLE event');
         $eventStoreConnection->commit();

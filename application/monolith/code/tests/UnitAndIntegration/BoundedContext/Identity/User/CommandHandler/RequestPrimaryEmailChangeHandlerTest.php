@@ -5,8 +5,13 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\CommandHandler;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsNotChanging;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsTaken;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\InvalidEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\IsEmailTaken;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\PasswordDoesNotMatch;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\UserNotFound;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
@@ -17,23 +22,18 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\Vali
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Id\ValidIds;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidPasswords;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
+use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 {
     public function testHandleForVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -43,12 +43,11 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 IsEmailTaken::class,
                 'isEmailTaken',
                 function (string $email): bool {
-                    if ($email === ValidEmails::listValidEmails()[1]) {
+                    if ($email === "new_email_requested@example.com") {
                         return false;
                     }
 
@@ -59,66 +58,60 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $command = new RequestPrimaryEmailChange();
         $command->authenticatedUserId = $signedUp->aggregateId()->id();
-        $command->password = ValidPasswords::listValidPasswords()[0];
-        $command->newEmailRequested = ValidEmails::listValidEmails()[1];
+        $command->password = "abcDEFg1/2"; // known password for the hash in signedUp
+        $command->newEmailRequested = "new_email_requested@example.com";
         $command->metadata = $this->mockMetadata();
 
         $handler->handle($command);
 
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[2];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
         if (!($storedEvent instanceof PrimaryEmailChangeRequested)) {
             throw new \Exception();
         }
 
         Assert::assertEquals(
-            $storedEvent,
-            $queuedEvent
-        );
-        Assert::assertEquals(
-            $command->newEmailRequested,
-            $storedEvent->newEmailRequested()
-        );
-        Assert::assertEquals(
-            $command->authenticatedUserId,
-            $storedEvent->authenticatedUserId()->id()
-        );
-        Assert::assertEquals(
-            $command->authenticatedUserId,
-            $storedEvent->aggregateId()->id()
-        );
-        Assert::assertInternalType(
-            'string',
-            $storedEvent->newVerificationCode()
-        );
-        Assert::assertEquals(
-            $command->metadata,
-            $storedEvent->metadata()
+            [
+                $storedEvent->eventId(),
+                $signedUp->aggregateId(),
+                $primaryEmailVerified->aggregateVersion() + 1,
+                $primaryEmailVerified->eventId(),
+                $signedUp->eventId(),
+                $storedEvent->recordedOn(),
+                $command->metadata,
+                $command->newEmailRequested,
+                $storedEvent->newVerificationCode(),
+                $signedUp->hashedPassword()
+            ],
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                $storedEvent->aggregateVersion(),
+                $storedEvent->causationId(),
+                $storedEvent->correlationId(),
+                $storedEvent->recordedOn(),
+                $storedEvent->metadata(),
+                $storedEvent->newEmailRequested(),
+                $storedEvent->newVerificationCode(),
+                $storedEvent->requestedWithHashedPassword(),
+            ]
         );
     }
 
     public function testHandleForRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
+            $signedUp->aggregateId(),
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
-        );
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
-            $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[1],
-            $signedUp->hashedPassword()
+            3,
+            $primaryEmailVerified->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -129,12 +122,11 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithCallback(
                 IsEmailTaken::class,
                 'isEmailTaken',
-                function (string $email): bool {
-                    if ($email === ValidEmails::listValidEmails()[2]) {
+                function (string $email) use($primaryEmailChangeRequested): bool {
+                    if ($email === "new_email_requested@example.com") {
                         return false;
                     }
 
@@ -145,62 +137,57 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $command = new RequestPrimaryEmailChange();
         $command->authenticatedUserId = $signedUp->aggregateId()->id();
-        $command->password = ValidPasswords::listValidPasswords()[0];
-        $command->newEmailRequested = ValidEmails::listValidEmails()[2];
+        $command->password = "abcDEFg1/2"; // known password for the hash in signedUp
+        $command->newEmailRequested = "new_email_requested@example.com";
         $command->metadata = $this->mockMetadata();
 
         $handler->handle($command);
 
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[3];
-        $queuedEvent = $this->getInMemoryQueue()->queuedEvents()[0];
 
         if (!($storedEvent instanceof PrimaryEmailChangeRequested)) {
             throw new \Exception();
         }
 
+
+
         Assert::assertEquals(
-            $storedEvent,
-            $queuedEvent
-        );
-        Assert::assertEquals(
-            $command->newEmailRequested,
-            $storedEvent->newEmailRequested()
-        );
-        Assert::assertEquals(
-            $command->authenticatedUserId,
-            $storedEvent->authenticatedUserId()->id()
-        );
-        Assert::assertEquals(
-            $command->authenticatedUserId,
-            $storedEvent->aggregateId()->id()
-        );
-        Assert::assertInternalType(
-            'string',
-            $storedEvent->newVerificationCode()
-        );
-        Assert::assertEquals(
-            $command->metadata,
-            $storedEvent->metadata()
+            [
+                $storedEvent->eventId(),
+                $signedUp->aggregateId(),
+                $primaryEmailChangeRequested->aggregateVersion() + 1,
+                $primaryEmailChangeRequested->eventId(),
+                $signedUp->eventId(),
+                $storedEvent->recordedOn(),
+                $command->metadata,
+                $command->newEmailRequested,
+                $storedEvent->newVerificationCode(),
+                $signedUp->hashedPassword()
+            ],
+            [
+                $storedEvent->eventId(),
+                $storedEvent->aggregateId(),
+                $storedEvent->aggregateVersion(),
+                $storedEvent->causationId(),
+                $storedEvent->correlationId(),
+                $storedEvent->recordedOn(),
+                $storedEvent->metadata(),
+                $storedEvent->newEmailRequested(),
+                $storedEvent->newVerificationCode(),
+                $storedEvent->requestedWithHashedPassword(),
+            ]
         );
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\UserNotFound
-     */
     public function testUserNotFound(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $this->expectException(UserNotFound::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -210,7 +197,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -227,18 +213,10 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsNotChanging
-     */
     public function testEmailIsNotChangingForUnverifiedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
+        $this->expectException(EmailIsNotChanging::class);
+        $signedUp = SampleEvents::signedUp();
 
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -247,7 +225,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -264,23 +241,15 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsNotChanging
-     */
     public function testEmailIsNotChangingForVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $this->expectException(EmailIsNotChanging::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -290,7 +259,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -307,30 +275,21 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsNotChanging
-     */
     public function testEmailIsNotChangingForRequestedEmailWithPreviouslyVerifiedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
+        $this->expectException(EmailIsNotChanging::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
+            $signedUp->aggregateId(),
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
-        );
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
-            $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[1],
-            $signedUp->hashedPassword()
+            3,
+            $primaryEmailVerified->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -341,7 +300,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -358,30 +316,21 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsNotChanging
-     */
     public function testEmailIsNotChangingForRequestedEmailWithPreviouslyRequestedEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
+        $this->expectException(EmailIsNotChanging::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
+            $signedUp->aggregateId(),
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
-        );
-        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::fromProperties(
-            $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[1],
-            $signedUp->hashedPassword()
+            3,
+            $primaryEmailVerified->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -392,7 +341,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -409,23 +357,15 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\PasswordDoesNotMatch
-     */
     public function testPasswordDoesNotMatch(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $this->expectException(PasswordDoesNotMatch::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -435,40 +375,37 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
-            $this->mockForCommandHandlerWithReturnValue(
+            $this->mockForCommandHandlerWithCallback(
                 IsEmailTaken::class,
                 'isEmailTaken',
-                false
+                function (string $email): bool {
+                    if ($email === ValidEmails::listValidEmails()[1]) {
+                        return false;
+                    }
+
+                    return true;
+                }
             )
         );
 
         $command = new RequestPrimaryEmailChange();
         $command->authenticatedUserId = $signedUp->aggregateId()->id();
-        $command->password = ValidPasswords::listValidPasswords()[1];
-        $command->newEmailRequested = ValidEmails::listValidEmails()[1];
+        $command->password = "somePasswordThatDoesNotMatch12391283"; // known password = "abcDEFg1/2" for the hash in signedUp
+        $command->newEmailRequested = "new_email_requested@example.com";
         $command->metadata = $this->mockMetadata();
 
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\InvalidEmail
-     */
     public function testInvalidEmail(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $this->expectException(InvalidEmail::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -478,7 +415,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',
@@ -496,23 +432,15 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
         $handler->handle($command);
     }
 
-    /**
-     * @expectedException \Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\EmailIsTaken
-     */
     public function testEmailIsTaken(): void
     {
-        $signedUp = SignedUp::fromPropertiesAndDefaultOthers(
-            $this->mockMetadata(),
-            ValidEmails::listValidEmails()[0],
-            ValidPasswords::listValidPasswords()[0],
-            ValidUsernames::listValidUsernames()[0],
-            true
-        );
-        $primaryEmailVerified = PrimaryEmailVerified::new(
+        $this->expectException(EmailIsTaken::class);
+        $signedUp = SampleEvents::signedUp();
+        $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
-            $signedUp->aggregateId(),
-            $this->mockMetadata(),
-            $signedUp->primaryEmailVerificationCode()
+            2,
+            $signedUp->eventId(),
+            $signedUp->eventId()
         );
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -522,7 +450,6 @@ class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
 
         $handler = new RequestPrimaryEmailChangeHandler(
             $this->getInMemoryEventStore(),
-            $this->getInMemoryQueue(),
             $this->mockForCommandHandlerWithReturnValue(
                 IsEmailTaken::class,
                 'isEmailTaken',

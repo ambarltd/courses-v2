@@ -29,13 +29,4 @@
             <directory>tests/UnitAndIntegration/Service</directory>
         </testsuite>
     </testsuites>
-    <!-- Add a filter to make sure we don't count some things in the coverage report -->
-    <filter>
-        <whitelist>
-            <directory suffix=".php">src</directory>
-            <exclude>
-                <file>src/Kernel.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
 </phpunit>

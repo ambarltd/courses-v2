@@ -15,14 +15,12 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\Common\ExceptionBase\QueuingFailure;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use Galeas\Api\Service\EventStore\EventStore;
-use Galeas\Api\Service\Queue\Queue;
 
 class RequestPrimaryEmailChangeHandler
 {
@@ -53,7 +51,7 @@ class RequestPrimaryEmailChangeHandler
 
         $aggregateAndEventIds = $this->eventStore->find($command->authenticatedUserId);
         if (null === $aggregateAndEventIds) {
-            throw new NoUserFoundForCode();
+            throw new UserNotFound();
         }
 
         $user = $aggregateAndEventIds->aggregate();

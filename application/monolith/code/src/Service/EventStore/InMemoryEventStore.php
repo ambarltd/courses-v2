@@ -127,7 +127,7 @@ class InMemoryEventStore implements EventStore
                     $transformationEvents
                 ),
                 $creationEvent->eventId(),
-                $count > 0 ? $transformationEvents[$count - 1] : $creationEvent->eventId()
+                $count > 0 ? $transformationEvents[$count - 1]->eventId() : $creationEvent->eventId()
             );
         } catch (\Throwable $exception) {
             throw new EventStoreCannotRead($exception);

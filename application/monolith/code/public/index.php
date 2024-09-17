@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 use Galeas\Api\Kernel;
-use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 require __DIR__.'/../vendor/autoload.php';

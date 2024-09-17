@@ -12,19 +12,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TestConnections extends Command
 {
-    /**
-     * @var DocumentManager
-     */
     private DocumentManager $reactionDocumentManager;
 
-    /**
-     * @var DocumentManager
-     */
     private DocumentManager $projectionDocumentManager;
 
-    /**
-     * @var SQLEventStoreConnection
-     */
     private SQLEventStoreConnection $sqlEventStoreConnection;
 
     public function __construct(
@@ -42,16 +33,13 @@ class TestConnections extends Command
     protected function configure(): void
     {
         try {
-            $this->setName('galeas:dev:test_connections')
+            $this->setName('galeas:dbs:connection_tests')
                 ->setDescription('Test connections to databases and queues.');
         } catch (\Throwable $throwable) {
             return;
         }
     }
 
-    /**
-     * No logic exeptions thrown.
-     */
     protected function execute(
         InputInterface $input,
         OutputInterface $output
