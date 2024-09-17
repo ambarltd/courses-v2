@@ -1,11 +1,18 @@
-FROM php:8.3-cli
+FROM node:20.11.1
 
-WORKDIR /srv
-RUN mkdir /srv -p
-RUN mkdir /srv/public -p
-COPY public /srv/public
+
+WORKDIR /app
+
+COPY package.json /app
+COPY yarn.lock /app
+RUN yarn install
+
+COPY ./src /app/src
+
+ENV DOMAIN_IDENTITY="https://placeholder.com"
+ENV DOMAIN_SECURITY="https://placeholder.com"
 
 EXPOSE 8080
-CMD [ "php", "-S", "0.0.0.0:8080", "-t", "public" ]
+CMD [ "node", "src/main.js" ]
 
 

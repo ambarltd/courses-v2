@@ -1,0 +1,86 @@
+services:
+    # default configuration for services in *this* file
+    _defaults:
+        # automatically injects dependencies in your services
+        autowire: true
+        # automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: false
+        # false means you cannot fetch services directly from the container via $container->get()
+        # if you need to do this, you can override this setting on individual services
+        public: false
+        bind:
+            $eventStore: '@Galeas\Api\Service\EventStore\SQLEventStore'
+            $reactionDocumentManager: '@doctrine_mongodb.odm.reaction_document_manager'
+            $projectionDocumentManager: '@doctrine_mongodb.odm.projection_document_manager'
+            $kernelEnvironment: '%kernel.environment%'
+
+    # Make any class in src/BoundedContext, src/Service, src/JsonSchema, srv/Console which is depended on by the service container, a service.
+    # https://symfony.com/doc/current/service_container/3.3-di-changes.html#services-are-loaded-automatically
+
+    galeas.bounded_context_services:
+        namespace: Galeas\Api\BoundedContext\
+        resource: '../src/BoundedContext/'
+
+    galeas.service_services:
+        namespace: Galeas\Api\Service\
+        resource: '../src/Service/*'
+
+    galeas.json_schema_services:
+        namespace: Galeas\Api\JsonSchema\
+        resource: '../src/JsonSchema/*'
+
+    galeas.console_services:
+        namespace: Galeas\Api\Console\
+        resource: '../src/Console/*'
+
+    ### JSON SCHEMA ###
+
+    JsonSchema\Validator:
+        class: JsonSchema\Validator
+
+    Galeas\Api\JsonSchema\Controller\SchemaController:
+        class: Galeas\Api\JsonSchema\Controller\SchemaController
+        arguments:
+            $kernelEnvironment: '%kernel.environment%'
+
+    ### EVENT STORE ####
+
+    Galeas\Api\Service\EventStore\SQLEventStoreConnection:
+        class: Galeas\Api\Service\EventStore\SQLEventStoreConnection
+        arguments:
+            - '%event_store_database_name%'
+            - '%event_store_database_host%'
+            - '%event_store_database_port%'
+            - '%event_store_database_user%'
+            - '%event_store_database_password%'
+
+    ### REQUEST MAPPER ####
+
+    Galeas\Api\Service\RequestMapper\JsonPostRequestMapper:
+        class: Galeas\Api\Service\RequestMapper\JsonPostRequestMapper
+        arguments:
+            $sessionExpiresAfterSeconds: '%session_tokens_expire_after_seconds%'
+
+    #### INSTANCE OF (Controller setters, bound properties) (Console commands bound properties) (Reaction/Projection processors) ####
+
+    _instanceof:
+        Galeas\Api\Common\Controller\BaseController:
+            calls:
+                - setJsonPostRequestMapper: ['@Galeas\Api\Service\RequestMapper\JsonPostRequestMapper']
+                - setJsonSchemaFetcher: ['@Galeas\Api\JsonSchema\JsonSchemaFetcher']
+                - setJsonSchemaValidator: ['@Galeas\Api\JsonSchema\JsonSchemaValidator']
+                - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
+        Galeas\Api\Common\Controller\ProjectionReactionController:
+            calls:
+                - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
+        Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
+            # Handlers and their dependencies will only be testable if they're in the test container.
+            # For this to be true at least one public service has to use them. Controllers will do the job.
+            public: true
+            tags: [ 'controller.service_arguments' ]
+            calls:
+                - ['setContainer', ['@service_container']]
+
+        Symfony\Component\Console\Command\Command:
+            public: true
+            tags: [console.command]

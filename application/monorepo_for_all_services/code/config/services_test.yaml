@@ -1,0 +1,46 @@
+services:    # default configuration for services in *this* file
+  _defaults:
+    # automatically injects dependencies in your services
+    autowire: true
+    # automatically registers your services as commands, event subscribers, etc.
+    autoconfigure: false
+    # false means you cannot fetch services directly from the container via $container->get()
+    # if you need to do this, you can override this setting on individual services
+    public: false
+    bind:
+      $eventStore: '@Galeas\Api\Service\EventStore\SQLEventStore'
+      $reactionDocumentManager: '@doctrine_mongodb.odm.reaction_document_manager'
+      $projectionDocumentManager: '@doctrine_mongodb.odm.projection_document_manager'
+  Galeas\Api\Service\EventStore\SQLEventStoreConnection:
+    public: true
+    class: Galeas\Api\Service\EventStore\SQLEventStoreConnection
+    arguments:
+      - '%event_store_database_name%'
+      - '%event_store_database_host%'
+      - '%event_store_database_port%'
+      - '%event_store_database_user%'
+      - '%event_store_database_password%'
+  Galeas\Api\Service\ODM\DocumentManagerForTests:
+    public: true
+    class: Galeas\Api\Service\ODM\DocumentManagerForTests
+  galeas.bounded_context_services:
+    public: true
+    namespace: Galeas\Api\BoundedContext\
+    resource: '../src/BoundedContext/'
+  _instanceof:
+    Galeas\Api\Common\Controller\BaseController:
+      calls:
+        - setJsonPostRequestMapper: [ '@Galeas\Api\Service\RequestMapper\JsonPostRequestMapper' ]
+        - setJsonSchemaFetcher: [ '@Galeas\Api\JsonSchema\JsonSchemaFetcher' ]
+        - setJsonSchemaValidator: [ '@Galeas\Api\JsonSchema\JsonSchemaValidator' ]
+        - setPhpOutLogger: [ '@Galeas\Api\Service\Logger\PhpOutLogger' ]
+    Galeas\Api\Common\Controller\ProjectionController:
+      calls:
+        - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
+    Symfony\Bundle\FrameworkBundle\Controller\AbstractController:
+      # Handlers and their dependencies will only be testable if they're in the test container.
+      # For this to be true at least one public service has to use them. Controllers will do the job.
+      public: true
+      tags: [ 'controller.service_arguments' ]
+      calls:
+        - [ 'setContainer', [ '@service_container' ] ]

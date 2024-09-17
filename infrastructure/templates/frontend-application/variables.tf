@@ -13,3 +13,11 @@ variable "application_directory_name" {
 variable "vpc_connector_subnetwork_name" {
   type = string
 }
+
+variable "domain_identity" {
+  type = string
+}
+
+variable "domain_security" {
+  type = string
+}

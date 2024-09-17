@@ -1,0 +1,7 @@
+schema_controller:
+  resource: ../src/JsonSchema/Controller/
+  type: attribute
+
+security_session_controller:
+  resource: ../src/BoundedContext/Security/Session/Controller/
+  type: attribute

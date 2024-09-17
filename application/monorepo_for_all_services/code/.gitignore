@@ -1,0 +1,9 @@
+/behat.yml
+/phpunit.xml
+/vendor/*
+!vendor/.gitkeep
+/.php_cs
+/.php_cs.cache
+/.deptrac.cache
+/.phpunit.result.cache
+/config/routes.yaml
