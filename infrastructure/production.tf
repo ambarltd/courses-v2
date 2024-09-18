@@ -48,7 +48,7 @@ module "production_frontend" {
   }
 }
 
-module "ambar" {
+module "production_ambar" {
   source = "./ambar/production"
   data_source_identity = {
     "hostname"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint_domain"]
