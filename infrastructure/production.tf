@@ -48,39 +48,39 @@ module "production_frontend" {
   }
 }
 
-module "production_ambar" {
-  source = "./ambar/production"
-  data_source_identity = {
-    "hostname"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint_domain"]
-    "endpoint"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint"]
-    "port"                       = module.production_identity.connection_outputs["event_store_port"]
-    "database"                   = module.production_identity.connection_outputs["event_store_database_name"]
-    "username"                   = module.production_identity.connection_outputs["event_store_replication_username"]
-    "password"                   = module.production_identity.connection_outputs["event_store_replication_password"]
-    "publicationName"            = module.production_identity.connection_outputs["event_store_replication_publication_name"]
-    "tableName"                  = module.production_identity.connection_outputs["event_store_table_name"]
-    "columns"                    = "id,event_id,aggregate_id,aggregate_version,causation_id,correlation_id,recorded_on,event_name,json_payload,json_metadata"
-    "partitioningColumn"         = "correlation_id"
-    "serialColumn"               = "id"
-  }
-  data_source_security = {
-    "hostname"                   = module.production_security.connection_outputs["event_store_proxy_endpoint_domain"]
-    "endpoint"                   = module.production_security.connection_outputs["event_store_proxy_endpoint"]
-    "port"                       = module.production_security.connection_outputs["event_store_port"]
-    "database"                   = module.production_security.connection_outputs["event_store_database_name"]
-    "username"                   = module.production_security.connection_outputs["event_store_replication_username"]
-    "password"                   = module.production_security.connection_outputs["event_store_replication_password"]
-    "publicationName"            = module.production_security.connection_outputs["event_store_replication_publication_name"]
-    "tableName"                  = module.production_security.connection_outputs["event_store_table_name"]
-    "columns"                    = "id,event_id,aggregate_id,aggregate_version,causation_id,correlation_id,recorded_on,event_name,json_payload,json_metadata"
-    "partitioningColumn"         = "correlation_id"
-    "serialColumn"               = "id"
-  }
-
-  providers = {
-    ambar = ambar.production
-  }
-}
+#module "production_ambar" {
+#  source = "./ambar/production"
+#  data_source_identity = {
+#    "hostname"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint_domain"]
+#    "endpoint"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint"]
+#    "port"                       = module.production_identity.connection_outputs["event_store_port"]
+#    "database"                   = module.production_identity.connection_outputs["event_store_database_name"]
+#    "username"                   = module.production_identity.connection_outputs["event_store_replication_username"]
+#    "password"                   = module.production_identity.connection_outputs["event_store_replication_password"]
+#    "publicationName"            = module.production_identity.connection_outputs["event_store_replication_publication_name"]
+#    "tableName"                  = module.production_identity.connection_outputs["event_store_table_name"]
+#    "columns"                    = "id,event_id,aggregate_id,aggregate_version,causation_id,correlation_id,recorded_on,event_name,json_payload,json_metadata"
+#    "partitioningColumn"         = "correlation_id"
+#    "serialColumn"               = "id"
+#  }
+#  data_source_security = {
+#    "hostname"                   = module.production_security.connection_outputs["event_store_proxy_endpoint_domain"]
+#    "endpoint"                   = module.production_security.connection_outputs["event_store_proxy_endpoint"]
+#    "port"                       = module.production_security.connection_outputs["event_store_port"]
+#    "database"                   = module.production_security.connection_outputs["event_store_database_name"]
+#    "username"                   = module.production_security.connection_outputs["event_store_replication_username"]
+#    "password"                   = module.production_security.connection_outputs["event_store_replication_password"]
+#    "publicationName"            = module.production_security.connection_outputs["event_store_replication_publication_name"]
+#    "tableName"                  = module.production_security.connection_outputs["event_store_table_name"]
+#    "columns"                    = "id,event_id,aggregate_id,aggregate_version,causation_id,correlation_id,recorded_on,event_name,json_payload,json_metadata"
+#    "partitioningColumn"         = "correlation_id"
+#    "serialColumn"               = "id"
+#  }
+#
+#  providers = {
+#    ambar = ambar.production
+#  }
+#}
 
 output "production_backend_connection_outputs" {
   value = {

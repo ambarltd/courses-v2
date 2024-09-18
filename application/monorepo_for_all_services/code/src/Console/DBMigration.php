@@ -61,13 +61,13 @@ class DBMigration extends Command
             ->executeStatement(sprintf("
                 CREATE TABLE IF NOT EXISTS %s (
                     id BIGSERIAL NOT NULL,
-                    event_id VARCHAR(56) NOT NULL UNIQUE,
-                    aggregate_id VARCHAR(56) NOT NULL,
+                    event_id TEXT NOT NULL UNIQUE,
+                    aggregate_id TEXT NOT NULL,
                     aggregate_version BIGINT NOT NULL,
-                    causation_id VARCHAR(56) NOT NULL,
-                    correlation_id VARCHAR(56) NOT NULL,
-                    recorded_on VARCHAR(30) NOT NULL,
-                    event_name VARCHAR(255) NOT NULL,
+                    causation_id TEXT NOT NULL,
+                    correlation_id TEXT NOT NULL,
+                    recorded_on TEXT NOT NULL,
+                    event_name TEXT NOT NULL,
                     json_payload TEXT NOT NULL,
                     json_metadata TEXT NOT NULL,
                     PRIMARY KEY (id)
