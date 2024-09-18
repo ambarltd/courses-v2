@@ -24,9 +24,12 @@ class SQLEventStore implements EventStore
 {
     private Connection $connection;
 
-    public function __construct(SQLEventStoreConnection $SQLEventStoreConnection)
+    private string $eventStoreTableName;
+
+    public function __construct(SQLEventStoreConnection $SQLEventStoreConnection, string $eventStoreTableName)
     {
         $this->connection = $SQLEventStoreConnection->getConnection();
+        $this->eventStoreTableName = $eventStoreTableName;
     }
 
     public function beginTransaction(): void
@@ -75,8 +78,9 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `event` WHERE `aggregate_id` = ? FOR UPDATE');
-            $statement->bindValue(1, $aggregateId);
+            $statement = $this->connection->prepare('SELECT * FROM `?` WHERE `aggregate_id` = ? FOR UPDATE');
+            $statement->bindValue(1, $this->eventStoreTableName);
+            $statement->bindValue(2, $aggregateId);
 
             $eventArrays = $statement->executeQuery()->fetchAllAssociative();
             if (0 === count($eventArrays)) {
@@ -122,7 +126,8 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `event` WHERE `event_id` = ? FOR UPDATE');
+            $statement = $this->connection->prepare('SELECT * FROM `?` WHERE `event_id` = ? FOR UPDATE');
+            $statement->bindValue(1, $this->eventStoreTableName);
             $statement->bindValue(1, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();

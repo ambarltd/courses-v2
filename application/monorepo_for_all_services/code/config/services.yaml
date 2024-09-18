@@ -63,6 +63,12 @@ services:
             - '%event_store_database_user%'
             - '%event_store_database_password%'
 
+    Galeas\Api\Service\EventStore\SQLEventStore:
+        class: Galeas\Api\Service\EventStore\SQLEventStore
+        arguments:
+            - '@Galeas\Api\Service\EventStore\SQLEventStoreConnection'
+            - '%event_store_create_event_table_with_name%'
+
     ### REQUEST MAPPER ####
 
     Galeas\Api\Service\RequestMapper\JsonPostRequestMapper:
