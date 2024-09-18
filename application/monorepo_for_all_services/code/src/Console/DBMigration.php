@@ -6,6 +6,7 @@ namespace Galeas\Api\Console;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
+use Galeas\Api\Service\Logger\PhpOutLogger;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,6 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class DBMigration extends Command
 {
     private DocumentManager $reactionDocumentManager;
+    private PhpOutLogger $phpOutLogger;
 
     private DocumentManager $projectionDocumentManager;
 
@@ -28,6 +30,7 @@ class DBMigration extends Command
         DocumentManager $reactionDocumentManager,
         DocumentManager $projectionDocumentManager,
         SQLEventStoreConnection $sqlEventStoreConnection,
+        PhpOutLogger $phpOutLogger,
         string $eventStoreDatabaseName,
         string $eventStoreTableName,
         string $eventStoreCreateReplicationUserWithUsername,
@@ -39,6 +42,7 @@ class DBMigration extends Command
         $this->reactionDocumentManager = $reactionDocumentManager;
         $this->projectionDocumentManager = $projectionDocumentManager;
         $this->sqlEventStoreConnection = $sqlEventStoreConnection;
+        $this->phpOutLogger = $phpOutLogger;
         $this->eventStoreDatabaseName = $eventStoreDatabaseName;
         $this->eventStoreTableName = $eventStoreTableName;
         $this->eventStoreCreateReplicationUserWithUsername = $eventStoreCreateReplicationUserWithUsername;
@@ -82,9 +86,9 @@ class DBMigration extends Command
         # the others. AND we don't know if we are executing this script for the first time (it gets executed whenever
         # we redeploy).
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE USER %s REPLICATION LOGIN PASSWORD '%s';", $this->eventStoreCreateReplicationUserWithUsername, $this->eventStoreCreateReplicationUserWithPassword));
-        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT CONNECTION ON DATABASE\"%s\"TO %s};", $this->eventStoreDatabaseName, $this->eventStoreCreateReplicationUserWithUsername));
-        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT USAGE ON SCHEMA public TO %s};", $this->eventStoreCreateReplicationUserWithUsername));
-        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT SELECT ON TABLE %s TO %s};", $this->eventStoreTableName, $this->eventStoreCreateReplicationUserWithUsername));
+        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT CONNECT ON DATABASE\"%s\"TO %s;", $this->eventStoreDatabaseName, $this->eventStoreCreateReplicationUserWithUsername));
+        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT USAGE ON SCHEMA public TO %s;", $this->eventStoreCreateReplicationUserWithUsername));
+        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT SELECT ON TABLE %s TO %s;", $this->eventStoreTableName, $this->eventStoreCreateReplicationUserWithUsername));
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE PUBLICATION %s FOR TABLE %s;", $this->eventStoreCreateReplicationPublication, $this->eventStoreTableName));
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE UNIQUE INDEX event_store_idx_event_aggregate_id_version ON %s(aggregate_id, aggregate_version);", $this->eventStoreTableName));
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE INDEX event_store_idx_event_causation_id ON %s(causation_id);", $this->eventStoreTableName));
@@ -105,6 +109,9 @@ class DBMigration extends Command
             $this->sqlEventStoreConnection->getConnection()
                 ->executeStatement($statement);
         } catch (\Exception $e) {
+            $this->phpOutLogger->warning(get_class($e));
+            $this->phpOutLogger->warning($e->getMessage());
+            $this->phpOutLogger->warning($e->getTraceAsString());
             return;
         }
     }
