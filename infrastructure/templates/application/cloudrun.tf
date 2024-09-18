@@ -102,6 +102,7 @@ resource "google_cloud_run_service" "application" {
     metadata {
       annotations = {
         "run.googleapis.com/vpc-access-connector" = var.vpc_connector_subnetwork_name
+        "autoscaling.knative.dev/minScale" = 1
       }
     }
   }
