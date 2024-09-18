@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\Common\Controller;
 
 use Galeas\Api\Common\Event\EventDeserializer;
+use Galeas\Api\Common\Event\Exception\FoundBadJsonInProjectionOrReaction;
 use Galeas\Api\Common\Event\SerializedEvent;
 use Galeas\Api\Common\ExceptionBase\BaseException;
 use Galeas\Api\Service\Logger\PhpOutLogger;
@@ -144,6 +145,21 @@ class ProjectionReactionController extends AbstractController
             }
         }
 
-        return $requestArray;
+        if (
+            array_key_exists("data_source_id", $requestArray) &&
+            array_key_exists("data_source_description", $requestArray) &&
+            array_key_exists("data_destination_id", $requestArray) &&
+            array_key_exists("data_destination_id", $requestArray) &&
+            array_key_exists("payload", $requestArray) &&
+            $request["data_source_id"] !== null &&
+            $request["data_source_description"] !== null &&
+            $request["data_destination_id"] !== null &&
+            $request["data_destination_description"] !== null &&
+            $request["payload"] !== null
+        ) {
+            return $requestArray;
+        }
+
+        throw new FoundBadJsonInProjectionOrReaction();
     }
 }
