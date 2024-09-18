@@ -15,11 +15,11 @@ terraform {
   }
 }
 
-#provider "ambar" {
-#  api_key = local.credentials["ambar_api_key"]
-#  endpoint   = "euw1.api.ambar.cloud"
-#  alias      = "production"
-#}
+provider "ambar" {
+  api_key = local.credentials["ambar_api_key"]
+  endpoint   = "euw1.api.ambar.cloud"
+  alias      = "production"
+}
 
 provider "google" {
   credentials = base64decode(local.credentials["gcp_service_account_json_in_base64"])
