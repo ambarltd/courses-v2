@@ -77,6 +77,7 @@ async function routeSignIn(req, res) {
     withUsernameOrEmail: email,
     withPassword: password,
     byDeviceLabel: "desktop",
+    metadata
   }
   const response = await fetch(endpoints["sign-in"], {
       method: "POST",
@@ -127,13 +128,7 @@ async function routeSignUp(req, res) {
     password: password,
     username: username,
     termsOfUseAccepted: true,
-    metadata: {
-      environment: "browser",
-      devicePlatform: "unknown",
-      deviceModel: "unknown",
-      deviceOSVersion: "unknown",
-      deviceOrientation: "unknown"
-    }
+    metadata
   }
 
   console.log(JSON.stringify(contents, null, 2));
