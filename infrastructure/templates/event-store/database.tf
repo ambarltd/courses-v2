@@ -53,6 +53,16 @@ resource "google_sql_database_instance" "main" {
       zone = "${local.gcp_default_region}-a"
     }
 
+    database_flags {
+      name  = "cloudsql.enable_pglogical"
+      value = "on"
+    }
+
+    database_flags {
+      name  = "cloudsql.logical_decoding"
+      value = "on"
+    }
+
     maintenance_window {
       day          = 6
       hour         = 3

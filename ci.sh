@@ -59,4 +59,4 @@ docker run \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   drew/terraform-runner output -json public_domains
 
-echo "\n==================\nSEE ABOVE FOR YOUR PUBLIC DOMAINS\n==================\n"
+echo "================== SEE ABOVE FOR YOUR PUBLIC DOMAINS =================="
