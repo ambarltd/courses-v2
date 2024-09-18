@@ -55,7 +55,7 @@ resource "google_sql_database_instance" "main" {
 
     database_flags {
       name  = "cloudsql.enable_pglogical"
-      value = "on"
+      value = "off"
     }
 
     database_flags {
