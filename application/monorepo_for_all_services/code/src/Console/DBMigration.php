@@ -18,6 +18,7 @@ class DBMigration extends Command
 
     private SQLEventStoreConnection $sqlEventStoreConnection;
 
+    private string $eventStoreDatabaseName;
     private string $eventStoreTableName;
     private string $eventStoreCreateReplicationUserWithUsername;
     private string $eventStoreCreateReplicationUserWithPassword;
@@ -27,6 +28,7 @@ class DBMigration extends Command
         DocumentManager $reactionDocumentManager,
         DocumentManager $projectionDocumentManager,
         SQLEventStoreConnection $sqlEventStoreConnection,
+        string $eventStoreDatabaseName,
         string $eventStoreTableName,
         string $eventStoreCreateReplicationUserWithUsername,
         string $eventStoreCreateReplicationUserWithPassword,
@@ -37,6 +39,7 @@ class DBMigration extends Command
         $this->reactionDocumentManager = $reactionDocumentManager;
         $this->projectionDocumentManager = $projectionDocumentManager;
         $this->sqlEventStoreConnection = $sqlEventStoreConnection;
+        $this->eventStoreDatabaseName = $eventStoreDatabaseName;
         $this->eventStoreTableName = $eventStoreTableName;
         $this->eventStoreCreateReplicationUserWithUsername = $eventStoreCreateReplicationUserWithUsername;
         $this->eventStoreCreateReplicationUserWithPassword = $eventStoreCreateReplicationUserWithPassword;
@@ -79,6 +82,8 @@ class DBMigration extends Command
         # the others. AND we don't know if we are executing this script for the first time (it gets executed whenever
         # we redeploy).
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE USER %s REPLICATION LOGIN PASSWORD '%s';", $this->eventStoreCreateReplicationUserWithUsername, $this->eventStoreCreateReplicationUserWithPassword));
+        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT CONNECTION ON DATABASE\"%s\"TO %s};", $this->eventStoreDatabaseName, $this->eventStoreCreateReplicationUserWithUsername));
+        $this->executeStatementAndIgnoreExceptions(sprintf("GRANT USAGE ON SCHEMA public TO %s};", $this->eventStoreCreateReplicationUserWithUsername));
         $this->executeStatementAndIgnoreExceptions(sprintf("GRANT SELECT ON TABLE %s TO %s};", $this->eventStoreTableName, $this->eventStoreCreateReplicationUserWithUsername));
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE PUBLICATION %s FOR TABLE %s;", $this->eventStoreCreateReplicationPublication, $this->eventStoreTableName));
         $this->executeStatementAndIgnoreExceptions(sprintf("CREATE UNIQUE INDEX event_store_idx_event_aggregate_id_version ON %s(aggregate_id, aggregate_version);", $this->eventStoreTableName));
