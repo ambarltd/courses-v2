@@ -121,6 +121,7 @@ module "production_ambar" {
 
 output "production_backend_connection_outputs" {
   value = {
+    "frontend" = module.production_frontend.public_domain
     "identity" = module.production_identity.connection_outputs
     "security" = module.production_security.connection_outputs
     "credit_card_product" = module.production_credit_card_product.connection_outputs
@@ -132,7 +133,7 @@ output "public_domains" {
   value = {
     "frontend" = module.production_frontend.public_domain
     "identity" = module.production_identity.public_domain
-    "identity" = module.production_identity.public_domain
+    "security" = module.production_security.public_domain
     "credit_card_product" = module.production_credit_card_product.public_domain
   }
 }
