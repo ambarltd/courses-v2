@@ -26,6 +26,10 @@ variable "event_store_database_name" {
   type = string
 }
 
+variable "event_store_table_name" {
+  type = string
+}
+
 variable "event_store_user" {
   type = string
 }
