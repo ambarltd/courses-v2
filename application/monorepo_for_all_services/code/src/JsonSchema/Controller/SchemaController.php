@@ -201,15 +201,23 @@ class SchemaController extends AbstractController
                     $schemeAndHttpHost.'/schema/request',
                     $schemeAndHttpHost.'/schema/response',
                     $schemeAndHttpHost.'/schema/error',
+                    $schemeAndHttpHost.'/api/.*/projection/.*',
+                    $schemeAndHttpHost.'/api/.*/reaction/.*',
                 ];
 
-                if (in_array($route['path'], $notThesePaths, true)) {
-                    return false;
+                foreach ($notThesePaths as $notThisPath) {
+                    // Check if the route path matches the regex pattern
+                    // We use # as our escape character to avoid forward slashes being
+                    // interpreted as a regex escape character.
+                    if (preg_match('#^'.str_replace('/', '\/', $notThisPath).'$#', $route['path'])) {
+                        return false;
+                    }
                 }
 
                 return true;
             }
         );
+
 
         usort(
             $betterRoutes,
