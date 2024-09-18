@@ -36,7 +36,7 @@ services:
     Galeas\Api\Console\DBMigration:
         class: Galeas\Api\Console\DBMigration
         arguments:
-            $eventStoreDatabaseName: '%event_store_create_event_table_with_name%'
+            $eventStoreDatabaseName: '%event_store_database_name%'
             $eventStoreTableName: '%event_store_create_event_table_with_name%'
             $eventStoreCreateReplicationUserWithUsername: '%event_store_create_replication_user_with_username%'
             $eventStoreCreateReplicationUserWithPassword: '%event_store_create_replication_user_with_password%'
