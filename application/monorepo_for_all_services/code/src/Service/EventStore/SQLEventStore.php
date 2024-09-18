@@ -162,7 +162,7 @@ class SQLEventStore implements EventStore
 
             $serializedEvent = EventSerializer::eventsToSerializedEvents([$event])[0];
 
-            $this->connection->insert('event',
+            $this->connection->insert($this->eventStoreTableName,
                 [
                     'event_id' => $serializedEvent->eventId(),
                     'aggregate_id' => $serializedEvent->aggregateId(),
