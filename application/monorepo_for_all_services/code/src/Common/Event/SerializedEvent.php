@@ -174,35 +174,35 @@ class SerializedEvent
         $json = json_decode($json, true);
 
         if (
-            array_key_exists("eventId", $json) &&
-            array_key_exists("aggregateId", $json) &&
-            array_key_exists("aggregateVersion", $json) &&
-            array_key_exists("causationId", $json) &&
-            array_key_exists("correlationId", $json) &&
-            array_key_exists("recordedOn", $json) &&
-            array_key_exists("eventName", $json) &&
-            array_key_exists("jsonPayload", $json) &&
-            array_key_exists("jsonMetadata", $json) &&
-            is_string($json["eventId"]) &&
-            is_string($json["aggregateId"]) &&
-            is_int($json["aggregateVersion"]) &&
-            is_string($json["causationId"]) &&
-            is_string($json["correlationId"]) &&
-            is_string($json["recordedOn"]) &&
-            is_string($json["eventName"]) &&
-            is_string($json["jsonPayload"]) &&
-            is_string($json["jsonMetadata"])
+            array_key_exists("event_id", $json) &&
+            array_key_exists("aggregate_id", $json) &&
+            array_key_exists("aggregate_version", $json) &&
+            array_key_exists("causation_id", $json) &&
+            array_key_exists("correlation_id", $json) &&
+            array_key_exists("recorded_on", $json) &&
+            array_key_exists("event_name", $json) &&
+            array_key_exists("json_payload", $json) &&
+            array_key_exists("json_metadata", $json) &&
+            is_string($json["event_id"]) &&
+            is_string($json["aggregate_id"]) &&
+            is_int($json["aggregate_version"]) &&
+            is_string($json["causation_id"]) &&
+            is_string($json["correlation_id"]) &&
+            is_string($json["recorded_on"]) &&
+            is_string($json["event_name"]) &&
+            is_string($json["json_payload"]) &&
+            is_string($json["json_metadata"])
         ) {
             return new self(
-                $json["eventId"],
-                $json["aggregateId"],
-                $json["aggregateVersion"],
-                $json["causationId"],
-                $json["correlationId"],
-                $json["recordedOn"],
-                $json["eventName"],
-                $json["jsonPayload"],
-                $json["jsonMetadata"],
+                $json["event_id"],
+                $json["aggregate_id"],
+                $json["aggregate_version"],
+                $json["causation_id"],
+                $json["correlation_id"],
+                $json["recorded_on"],
+                $json["event_name"],
+                $json["json_payload"],
+                $json["json_metadata"],
             );
         }
 
