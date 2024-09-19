@@ -3,6 +3,7 @@ import fetch from "node-fetch"
 import { engine } from 'express-handlebars';
 import { dirname } from 'path';
 import { fileURLToPath } from 'url';
+import Session from "express-session";
 
 const port = 8080
 const app = Express()
@@ -25,20 +26,56 @@ const endpoints = {
 app.use(Express.json())
 app.use(Express.urlencoded({ extended: true }));
 
+// Handle sessions
+app.use(Session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}))
+
+// Middleware to ensure authentication.
+function authenticated(req, res, next) {
+  if (req.session.token) {
+    return next();
+  }
+  return res.redirect("/sign-in");
+}
+
+// Middleware to ensure user is not authenticated.
+function unauthenticated(req, res, next) {
+  if (!req.session.token) {
+    return next();
+  }
+  return res.redirect("/sign-in");
+}
+
+function authenticate(req, token) {
+  req.session.token = token;
+}
+
+function unauthenticate(req) {
+  delete req.session.token;
+}
+
+function render(template) {
+  return function (_, res) {
+    return res.render(`sign-in`, { layout: false });
+  }
+}
 // Setup templating
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/views`);
 
-app.get('/sign-in', (_, res) => { res.render(`sign-in`, { layout: false }) })
-app.get('/sign-up', (_, res) => { res.render(`sign-up`, { layout: false }) })
-app.get('/sign-up-success', (_, res) => { res.render(`sign-up-success`, { layout: false }) })
-app.get('/home', (_, res) => { res.render(`home`, { layout: false }) })
-app.get('/', (_, res) => { res.render(`home`, { layout: false }) })
-app.get('/verify-email', routeVerifyEmail);
-app.post('/sign-in', routeSignIn);
-app.post('/sign-up',  routeSignUp);
+app.get('/sign-in', unauthenticated, render("sign-in"))
+app.get('/sign-up', unauthenticated, render("sign-up"))
+app.get('/sign-up-success', unauthenticated, render("sign-up-success"))
+app.get('/home', authenticated, render("home"))
+app.get('/', authenticated, render("home"))
+app.get('/verify-email', unauthenticated, routeVerifyEmail);
+app.post('/sign-in', unauthenticated, routeSignIn);
+app.post('/sign-up', unauthenticated,  routeSignUp);
 
 // Default metadata for requests.
 const metadata = {
@@ -101,9 +138,11 @@ async function routeSignIn(req, res) {
     return;
   }
 
-  if (typeof r.sessionTokenCreated === "string") {
-    console.log(`Success. Session token: ${r.sessionTokenCreated}`);
-    res.redirect(`/home?session-id=${sessionTokenCreated}`);
+  const token = r.sessionTokenCreated;
+  if (typeof token === "string") {
+    authenticate(req, token);
+    console.log(`Success. Session token: ${token}`);
+    res.redirect("/home");
     return;
   } else {
     res.send(`Failure. ${JSON.stringify(r)}`);
