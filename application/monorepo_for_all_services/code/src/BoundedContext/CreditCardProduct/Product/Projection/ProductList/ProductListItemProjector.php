@@ -30,49 +30,50 @@ class ProductListItemProjector implements EventProjector
         try {
             $id = $event->aggregateId()->id();
 
+            $productListItem = null;
+
+            // ProductDefined -> create an item in the projection database
             if ($event instanceof ProductDefined) {
-                $setName = $event->name();
-                $setIsActive = false;
-            } elseif ($event instanceof ProductActivated) {
-                $setName = null;
-                $setIsActive = true;
-            } elseif ($event instanceof ProductDeactivated) {
-                $setName = null;
-                $setIsActive = false;
-            } else {
-                return;
-            }
-
-            /** @var ProductListItem $productListItem */
-            $productListItem = $this->projectionDocumentManager
-                ->createQueryBuilder(ProductListItem::class)
-                ->field('id')->equals($id)
-                ->getQuery()
-                ->getSingleResult();
-
-            if (null === $productListItem) {
                 $productListItem = ProductListItem::fromProperties(
                     $id,
-                    $setName !== null ? $setName : false,
-                    $setIsActive
+                    $event->name(),
+                    false
                 );
-
-                $this->projectionDocumentManager->persist($productListItem);
-                $this->projectionDocumentManager->flush();
-
-                return;
             }
 
-            if ($setIsActive) {
+            // ProductActivated -> update the item in the projection database
+            if ($event instanceof ProductActivated) {
+                $productListItem = $this->findItem($id);
                 $productListItem->activate();
-            } else {
+            }
+
+            // ProductDeactivated -> update the item in the projection database
+            if ($event instanceof ProductDeactivated) {
+                $productListItem = $this->findItem($id);
                 $productListItem->deactivate();
             }
 
-            $this->projectionDocumentManager->persist($productListItem);
-            $this->projectionDocumentManager->flush();
+            if (null !== $productListItem) {
+                $this->projectionDocumentManager->persist($productListItem);
+                $this->projectionDocumentManager->flush();
+            }
         } catch (\Throwable $throwable) {
             throw new ProjectionCannotProcess($throwable);
         }
+    }
+
+    private function findItem(string $id): ProductListItem
+    {
+        /** @var ProductListItem $productListItem */
+        $productListItem = $this->projectionDocumentManager
+            ->createQueryBuilder(ProductListItem::class)
+            ->field('id')->equals($id)
+            ->getQuery()
+            ->getSingleResult();
+        if ($productListItem === null) {
+            throw new \Exception();
+        }
+
+        return $productListItem;
     }
 }
