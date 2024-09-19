@@ -67,6 +67,12 @@ class ProductDefined implements EventCreatedProduct
         return $event;
     }
 
+    public function name(): string
+    {
+        return $this->name;
+    }
+
+
     public function createProduct(): Product
     {
         $paymentCycle = match ($this->paymentCycle) {

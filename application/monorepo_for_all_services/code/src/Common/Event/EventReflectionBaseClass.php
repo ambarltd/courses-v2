@@ -6,6 +6,7 @@ namespace Galeas\Api\Common\Event;
 
 use Galeas\Api\BoundedContext\Identity\User;
 use Galeas\Api\BoundedContext\Security\Session;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product;
 use Galeas\Api\Common\Event\Exception as EventException;
 
 abstract class EventReflectionBaseClass {
@@ -20,6 +21,9 @@ abstract class EventReflectionBaseClass {
         'Security_Session_SignedIn' => Session\Event\SignedIn::class,
         'Security_Session_TokenRefreshed' => Session\Event\TokenRefreshed::class,
         'Security_Session_SignedOut' => Session\Event\SignedOut::class,
+        'CreditCardProduct_Product_ProductDefined' => Product\Event\ProductDefined::class,
+        'CreditCardProduct_Product_ProductActivated' => Product\Event\ProductActivated::class,
+        'CreditCardProduct_Product_ProductDeactivated' => Product\Event\ProductDeactivated::class,
     ];
 
     /**

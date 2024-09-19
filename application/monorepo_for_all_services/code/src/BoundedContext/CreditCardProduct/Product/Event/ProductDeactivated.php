@@ -8,7 +8,7 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\Aggregate\Product;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
 
-class ProductActivated implements EventTransformedProduct
+class ProductDeactivated implements EventTransformedProduct
 {
     use EventTrait;
 
@@ -20,7 +20,7 @@ class ProductActivated implements EventTransformedProduct
         Id                 $correlationId,
         \DateTimeImmutable $recordedOn,
         array              $metadata,
-    ): ProductActivated
+    ): ProductDeactivated
     {
         $event = new self(
             $eventId,
@@ -48,7 +48,7 @@ class ProductActivated implements EventTransformedProduct
             $product->maxBalanceTransferAllowedInCents(),
             $product->reward(),
             $product->cardBackgroundHex(),
-            true
+            false
         );
     }
 }
