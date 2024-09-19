@@ -152,11 +152,11 @@ class ProjectionReactionController extends AbstractController
             array_key_exists("data_destination_id", $requestArray) &&
             array_key_exists("data_destination_id", $requestArray) &&
             array_key_exists("payload", $requestArray) &&
-            $request["data_source_id"] !== null &&
-            $request["data_source_description"] !== null &&
-            $request["data_destination_id"] !== null &&
-            $request["data_destination_description"] !== null &&
-            $request["payload"] !== null
+            $requestArray["data_source_id"] !== null &&
+            $requestArray["data_source_description"] !== null &&
+            $requestArray["data_destination_id"] !== null &&
+            $requestArray["data_destination_description"] !== null &&
+            $requestArray["payload"] !== null
         ) {
             return $requestArray;
         }
