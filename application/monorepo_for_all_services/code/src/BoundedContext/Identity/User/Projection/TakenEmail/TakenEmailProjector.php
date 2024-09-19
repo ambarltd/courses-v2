@@ -41,36 +41,27 @@ class TakenEmailProjector implements EventProjector
                 ->getQuery()
                 ->getSingleResult();
 
-            if (
-                null === $takenEmail &&
-                $event instanceof SignedUp
-            ) {
+            if ($event instanceof SignedUp) {
                 // email used to sign up is taken
                 $takenEmail = TakenEmail::fromUserIdAndEmails(
                     $event->aggregateId()->id(),
                     null,
                     $event->primaryEmail()
                 );
-            } elseif (
-                $takenEmail instanceof TakenEmail &&
-                $event instanceof PrimaryEmailVerified
-            ) {
+            } elseif ($event instanceof PrimaryEmailVerified) {
                 // requested email becomes verified email
                 $takenEmail->changeEmails(
                     $takenEmail->getCanonicalRequestedEmail(),
                     null
                 );
-            } elseif (
-                $takenEmail instanceof TakenEmail &&
-                $event instanceof PrimaryEmailChangeRequested
-            ) {
+            } elseif ($event instanceof PrimaryEmailChangeRequested) {
                 // verified email stays the same, requested email changes
                 $takenEmail->changeEmails(
                     $takenEmail->getCanonicalVerifiedEmail(),
                     $event->newEmailRequested()
                 );
             } else {
-                throw new \Exception(sprintf('Could not process serialized event %s of class %s where TakenEmail for userId %s was found', $event->eventId()->id(), get_class($event), $event->authenticatedUserId()->id()));
+                throw new \Exception(sprintf('Could not process serialized event %s of class %s where TakenEmail for aggregateId %s was found', $event->eventId()->id(), get_class($event), $event->aggregateId()->id()));
             }
 
             $this->projectionDocumentManager->persist($takenEmail);

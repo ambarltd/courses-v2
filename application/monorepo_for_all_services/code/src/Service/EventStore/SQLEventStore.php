@@ -128,7 +128,7 @@ class SQLEventStore implements EventStore
 
             $statement = $this->connection->prepare('SELECT * FROM `?` WHERE `event_id` = ? FOR UPDATE');
             $statement->bindValue(1, $this->eventStoreTableName);
-            $statement->bindValue(1, $eventId);
+            $statement->bindValue(2, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();
             if (false === $eventArray || null === $eventArray) {
