@@ -59,7 +59,7 @@ function unauthenticate(req) {
 
 function render(template) {
   return function (_, res) {
-    return res.render(`sign-in`, { layout: false });
+    return res.render(template, { layout: false });
   }
 }
 // Setup templating
@@ -122,7 +122,6 @@ async function routeSignIn(req, res) {
       headers: {'Content-Type': 'application/json'}
   });
 
-  console.log(endpoints["sign-in"])
   const r = await response.json();
   if (!response.ok) {
     const rawError = getError(r);
@@ -141,7 +140,6 @@ async function routeSignIn(req, res) {
   const token = r.sessionTokenCreated;
   if (typeof token === "string") {
     authenticate(req, token);
-    console.log(`Success. Session token: ${token}`);
     res.redirect("/home");
     return;
   } else {
@@ -169,8 +167,6 @@ async function routeSignUp(req, res) {
     termsOfUseAccepted: true,
     metadata
   }
-
-  console.log(JSON.stringify(contents, null, 2));
 
   const response = await fetch(endpoints["sign-up"], {
       method: "POST",
@@ -205,6 +201,6 @@ async function routeSignUp(req, res) {
 }
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Server listening on port ${port}`)
 })
 
