@@ -97,6 +97,10 @@ resource "google_cloud_run_service" "application" {
           name  = "SESSION_TOKENS_EXPIRE_AFTER_SECONDS"
           value = var.session_tokens_expire_after_seconds
         }
+        env {
+          name  = "SERVICE_NAME_IN_LOWERCASE"
+          value = var.full_service_name_in_lowercase
+        }
       }
     }
     metadata {

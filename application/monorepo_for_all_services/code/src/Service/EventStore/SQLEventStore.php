@@ -78,7 +78,7 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `'.$this->eventStoreTableName.'` WHERE `aggregate_id` = ? FOR UPDATE');
+            $statement = $this->connection->prepare("SELECT * FROM ".$this->eventStoreTableName." WHERE aggregate_id = ? FOR UPDATE");
             $statement->bindValue(1, $aggregateId);
 
             $eventArrays = $statement->executeQuery()->fetchAllAssociative();
@@ -90,7 +90,7 @@ class SQLEventStore implements EventStore
                 return SerializedEvent::fromProperties(
                     $eventArray['event_id'],
                     $eventArray['aggregate_id'],
-                    $eventArray['authorizer_id'],
+                    $eventArray['aggregate_version'],
                     $eventArray['causation_id'],
                     $eventArray['correlation_id'],
                     $eventArray['recorded_on'],
@@ -125,7 +125,7 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `'.$this->eventStoreTableName.'` WHERE `event_id` = ? FOR UPDATE');
+            $statement = $this->connection->prepare("SELECT * FROM ".$this->eventStoreTableName." WHERE event_id = ? FOR UPDATE");
             $statement->bindValue(1, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();
@@ -136,7 +136,7 @@ class SQLEventStore implements EventStore
             $serializedEvent = SerializedEvent::fromProperties(
                 $eventArray['event_id'],
                 $eventArray['aggregate_id'],
-                $eventArray['authorizer_id'],
+                $eventArray['aggregate_version'],
                 $eventArray['causation_id'],
                 $eventArray['correlation_id'],
                 $eventArray['recorded_on'],

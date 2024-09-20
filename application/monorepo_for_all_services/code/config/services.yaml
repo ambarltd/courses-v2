@@ -13,6 +13,7 @@ services:
             $reactionDocumentManager: '@doctrine_mongodb.odm.reaction_document_manager'
             $projectionDocumentManager: '@doctrine_mongodb.odm.projection_document_manager'
             $kernelEnvironment: '%kernel.environment%'
+            $serviceNameInLowercase: '%service_name_in_lowercase%'
 
     # Make any class in src/BoundedContext, src/Service, src/JsonSchema, srv/Console which is depended on by the service container, a service.
     # https://symfony.com/doc/current/service_container/3.3-di-changes.html#services-are-loaded-automatically

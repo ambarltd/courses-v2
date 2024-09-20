@@ -7,6 +7,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Event;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Aggregate\Product;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\Cashback;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\Monthly;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\NoReward;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\PaymentCycle;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\Points;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\Quarterly;
@@ -93,8 +94,8 @@ class ProductDefined implements EventCreatedProduct
             "cashback" => Reward::fromProperties(
                 Cashback::fromProperties()
             ),
-            default => PaymentCycle::fromProperties(
-                UnknownFrequency::fromProperties()
+            default => Reward::fromProperties(
+                NoReward::fromProperties()
             ),
         };
 

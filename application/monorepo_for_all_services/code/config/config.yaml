@@ -84,3 +84,4 @@ parameters:
     mongodb_reaction_username: '%env(MONGODB_REACTION_DATABASE_USERNAME)%'
     mongodb_reaction_password: '%env(MONGODB_REACTION_DATABASE_PASSWORD)%'
     session_tokens_expire_after_seconds: '%env(SESSION_TOKENS_EXPIRE_AFTER_SECONDS)%'
+    service_name_in_lowercase: '%env(SERVICE_NAME_IN_LOWERCASE)%'
