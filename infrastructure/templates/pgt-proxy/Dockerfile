@@ -1,4 +1,4 @@
-FROM ambarltd/pgt-proxy:v1.0.1
+FROM ambarltd/pgt-proxy:v1.0.2
 
 
 COPY trust_this_ca.pem /etc/pgt_proxy/client_tls/custom_cas/
