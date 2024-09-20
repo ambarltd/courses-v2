@@ -24,7 +24,7 @@ class ProductDefined implements EventCreatedProduct
     private int $annualFeeInCents;
     private string $paymentCycle;
     private int $creditLimitInCents;
-    private float $maxBalanceTransferAllowedInCents;
+    private int $maxBalanceTransferAllowedInCents;
     private string $reward;
     private string $cardBackgroundHex;
 
@@ -41,7 +41,7 @@ class ProductDefined implements EventCreatedProduct
         int                $annualFeeInCents,
         string             $paymentCycle,
         int                $creditLimitInCents,
-        float              $maxBalanceTransferAllowedInCents,
+        int                $maxBalanceTransferAllowedInCents,
         string             $reward,
         string             $cardBackgroundHex,
     ): ProductDefined
