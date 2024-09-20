@@ -50,12 +50,12 @@ doctrine_mongodb:
                     prefix: Galeas\Api\BoundedContext\Security\Session\Projection
                     dir: '%kernel.project_dir%/src/BoundedContext/Security/Session/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Security\Session\Projection
-                Galeas\Api\BoundedContext\CreditCardProduct\CreditCardProduct\Projection:
+                Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection:
                     type: xml
                     is_bundle: false
-                    prefix: Galeas\Api\BoundedContext\CreditCardProduct\CreditCardProduct\Projection
-                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/CreditCardProduct/Projection/MongoMapping'
-                    alias: Galeas\Api\BoundedContext\CreditCardProduct\CreditCardProduct\Projection
+                    prefix: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/Product/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
         reaction:
             connection: reaction
             database: '%mongodb_reaction_database_name%'
