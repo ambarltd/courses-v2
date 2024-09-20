@@ -57,12 +57,13 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
         $fromEmailAddress = "system.development-application.example.com";
         $subjectLine = "Your Verification Code";
         $emailContents = "This is your verification code: https://example.com/page/?verificationCode=" . $verificationCode;
-        $this->emailer->send(
-            $sendToEmailAddress,
-            $subjectLine,
-            $emailContents,
-            $fromEmailAddress
-        );
+//        We're not sending emails for now
+//        $this->emailer->send(
+//            $sendToEmailAddress,
+//            $subjectLine,
+//            $emailContents,
+//            $fromEmailAddress
+//        );
 
         $aggregateAndEventIds = $this->eventStore->find($existingReaction->aggregateId()->id());
         if (null === $aggregateAndEventIds) {
