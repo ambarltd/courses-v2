@@ -54,7 +54,7 @@ doctrine_mongodb:
                     type: xml
                     is_bundle: false
                     prefix: Galeas\Api\BoundedContext\CreditCardProduct\CreditCardProduct\Projection
-                    dir: '%kernel.project_dir%/src/BoundedContext/Security/Session/Projection/MongoMapping'
+                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/CreditCardProduct/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\CreditCardProduct\CreditCardProduct\Projection
         reaction:
             connection: reaction
