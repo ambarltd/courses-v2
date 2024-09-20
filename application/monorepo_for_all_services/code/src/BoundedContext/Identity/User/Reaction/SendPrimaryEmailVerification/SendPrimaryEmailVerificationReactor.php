@@ -65,7 +65,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 //            $fromEmailAddress
 //        );
 
-        $aggregateAndEventIds = $this->eventStore->find($existingReaction->aggregateId()->id());
+        $aggregateAndEventIds = $this->eventStore->find($event->aggregateId()->id());
         if (null === $aggregateAndEventIds) {
             throw new NoUserFoundForCode();
         }
