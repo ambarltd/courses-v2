@@ -78,9 +78,8 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `?` WHERE `aggregate_id` = ? FOR UPDATE');
-            $statement->bindValue(1, $this->eventStoreTableName);
-            $statement->bindValue(2, $aggregateId);
+            $statement = $this->connection->prepare('SELECT * FROM `'.$this->eventStoreTableName.'` WHERE `aggregate_id` = ? FOR UPDATE');
+            $statement->bindValue(1, $aggregateId);
 
             $eventArrays = $statement->executeQuery()->fetchAllAssociative();
             if (0 === count($eventArrays)) {
@@ -126,9 +125,8 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare('SELECT * FROM `?` WHERE `event_id` = ? FOR UPDATE');
-            $statement->bindValue(1, $this->eventStoreTableName);
-            $statement->bindValue(2, $eventId);
+            $statement = $this->connection->prepare('SELECT * FROM `'.$this->eventStoreTableName.'` WHERE `event_id` = ? FOR UPDATE');
+            $statement->bindValue(1, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();
             if (false === $eventArray || null === $eventArray) {
