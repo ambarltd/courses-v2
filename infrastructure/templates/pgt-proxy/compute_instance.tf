@@ -1,7 +1,7 @@
 resource "google_compute_instance" "postgres_proxy" {
   # Forces recreation on new image (gcp docker doesn't actually deploy new image)
   name                      = "${var.resource_id_prefix}-${random_id.image_tag.hex}-ins"
-  machine_type              = "e2-small"
+  machine_type              = "e2-micro"
   zone                      = "${local.gcp_default_region}-a"
   allow_stopping_for_update = true
 

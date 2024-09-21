@@ -3,6 +3,8 @@ resource "google_sql_user" "admin_user" {
   name     = "admin_user"
   instance = google_sql_database_instance.main.name
   password = random_password.admin_user.result
+  # We create tables with this user outside of terraform. Thus, when deleting this resource
+  # let's just abandon it. otherwise we get stuck and can't delete.
   deletion_policy = "ABANDON"
 }
 
