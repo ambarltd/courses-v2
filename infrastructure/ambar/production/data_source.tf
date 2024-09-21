@@ -1,3 +1,41 @@
+resource "ambar_data_source" "identity_event_store_proxy" {
+  data_source_type = "postgres"
+  description      = "identity_event_store_proxy"
+
+  data_source_config = {
+    "hostname"                   = var.data_source_identity.hostname
+    "tlsTerminationOverrideHost" = var.data_source_identity.endpoint
+    "hostPort"                   = var.data_source_identity.port
+    "databaseName"               = var.data_source_identity.database
+    "username"                   = var.data_source_identity.username
+    "password"                   = var.data_source_identity.password
+    "publicationName"            = var.data_source_identity.publicationName
+    "tableName"                  = var.data_source_identity.tableName
+    "columns"                    = var.data_source_identity.columns
+    "partitioningColumn"         = var.data_source_identity.partitioningColumn
+    "serialColumn"               = var.data_source_identity.serialColumn
+  }
+}
+
+resource "ambar_data_source" "identity_event_store_direct_ip" {
+  data_source_type = "postgres"
+  description      = "identity_event_store_direct_ip"
+
+  data_source_config = {
+    "hostname"                   = var.data_source_identity.direct_ip
+    "tlsTerminationOverrideHost" = var.data_source_identity.direct_ip
+    "hostPort"                   = var.data_source_identity.port
+    "databaseName"               = var.data_source_identity.database
+    "username"                   = var.data_source_identity.username
+    "password"                   = var.data_source_identity.password
+    "publicationName"            = var.data_source_identity.publicationName
+    "tableName"                  = var.data_source_identity.tableName
+    "columns"                    = var.data_source_identity.columns
+    "partitioningColumn"         = var.data_source_identity.partitioningColumn
+    "serialColumn"               = var.data_source_identity.serialColumn
+  }
+}
+
 #resource "ambar_data_source" "identity_event_store" {
 #  data_source_type = "postgres"
 #  description      = "identity_event_store"
