@@ -3,7 +3,7 @@ resource "ambar_data_destination" "identity_event_store_proxy" {
     ambar_filter.identity_event_store_proxy.resource_id,
   ]
   description          = "identity_event_store_proxy"
-  destination_endpoint = "https://webhook.site/94a5b769-bc57-435f-9f67-a9f6d799f882"
+  destination_endpoint = "https://webhook.site/e7b78211-63ce-427b-ac27-b4d45f5640a5"
   username             = "username"
   password             = "password"
 }
@@ -13,7 +13,7 @@ resource "ambar_data_destination" "identity_event_store_direct" {
     ambar_filter.identity_event_store_direct_ip.resource_id,
   ]
   description          = "identity_event_store_direct"
-  destination_endpoint = "https://webhook.site/94a5b769-bc57-435f-9f67-a9f6d799f882"
+  destination_endpoint = "https://webhook.site/e7b78211-63ce-427b-ac27-b4d45f5640a5"
   username             = "username"
   password             = "password"
 }
