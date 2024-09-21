@@ -1,6 +1,5 @@
 variable "data_source_identity" {
   type = object({
-    direct_ip = string
     hostname = string
     endpoint = string
     port = string

@@ -67,7 +67,6 @@ module "production_frontend" {
 module "production_ambar" {
   source = "./ambar/production"
   data_source_identity = {
-    "direct_ip"                  = module.production_identity.connection_outputs["event_store_proxy_endpoint"]
     "hostname"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint_domain"]
     "endpoint"                   = module.production_identity.connection_outputs["event_store_proxy_endpoint"]
     "port"                       = module.production_identity.connection_outputs["event_store_port"]
