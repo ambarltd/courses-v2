@@ -10,7 +10,7 @@ module "production_identity" {
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
   pgtproxy_cert_in_base64    = local.credentials["pgtproxy_cert_in_base64"]
   pgtproxy_key_in_base64     = local.credentials["pgtproxy_key_in_base64"]
-  application_directory_name = "monorepo_for_all_services"
+  application_directory_name = "backend-monorepo-multiservice"
   full_service_name_in_lowercase = "identity"
 
   providers = {
@@ -26,7 +26,7 @@ module "production_security" {
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
   pgtproxy_cert_in_base64    = local.credentials["pgtproxy_cert_in_base64"]
   pgtproxy_key_in_base64     = local.credentials["pgtproxy_key_in_base64"]
-  application_directory_name = "monorepo_for_all_services"
+  application_directory_name = "backend-monorepo-multiservice"
   full_service_name_in_lowercase = "security"
 
   providers = {
@@ -42,7 +42,7 @@ module "production_credit_card_product" {
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
   pgtproxy_cert_in_base64    = local.credentials["pgtproxy_cert_in_base64"]
   pgtproxy_key_in_base64     = local.credentials["pgtproxy_key_in_base64"]
-  application_directory_name = "monorepo_for_all_services"
+  application_directory_name = "backend-monorepo-multiservice"
   full_service_name_in_lowercase = "credit_card_product"
 
   providers = {
