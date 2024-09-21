@@ -3,12 +3,7 @@ resource "google_sql_user" "admin_user" {
   name     = "admin_user"
   instance = google_sql_database_instance.main.name
   password = random_password.admin_user.result
-
-  // this gets blocked from deleting, unless we block all associated objects
-  // thus just delete the cloud sql instance itself when you need to delete it, and ignore this resource
-  lifecycle {
-    prevent_destroy = true
-  }
+  deletion_policy = "ABANDON"
 }
 
 resource "random_password" "admin_user" {
