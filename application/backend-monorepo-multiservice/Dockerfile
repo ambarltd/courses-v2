@@ -49,9 +49,9 @@ COPY code/composer.json /srv/composer.json
 COPY code/composer.lock /srv/composer.lock
 RUN composer install
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY php-fpm.conf /usr/local/etc/php-fpm.conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY server-config/nginx.conf /etc/nginx/nginx.conf
+COPY server-config/php-fpm.conf /usr/local/etc/php-fpm.conf
+COPY server-config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN mkdir /var/run/php
 RUN chmod 777 /var/run/php
 
