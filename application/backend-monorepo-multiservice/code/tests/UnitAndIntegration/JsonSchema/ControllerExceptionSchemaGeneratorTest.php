@@ -16,14 +16,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class ControllerExceptionSerializerTest extends UnitTest
+class ControllerExceptionSchemaGeneratorTest extends UnitTest
 {
+    /**
+     * @throws \Exception
+     */
     public function testCommandHandler(): void
     {
         $serializer = new ControllerExceptionsSchemaGenerator();
         $result = $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::commandHandler'
         );
+        $result = json_decode($result, true);
+        if (false === $result) {
+            throw new \Exception('Could not decode JSON');
+        }
 
         Assert::assertEquals(
             [
@@ -160,12 +167,20 @@ class ControllerExceptionSerializerTest extends UnitTest
         );
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testQueryHandler(): void
     {
         $serializer = new ControllerExceptionsSchemaGenerator();
         $result = $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::queryHandler'
         );
+        $result = json_decode($result, true);
+
+        if (false === $result) {
+            throw new \Exception('Could not decode JSON');
+        }
 
         Assert::assertEquals(
             [

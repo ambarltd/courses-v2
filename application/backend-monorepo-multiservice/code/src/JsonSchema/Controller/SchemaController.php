@@ -6,12 +6,10 @@ namespace Galeas\Api\JsonSchema\Controller;
 
 use Galeas\Api\JsonSchema\AnnotationReaderFailed;
 use Galeas\Api\JsonSchema\ControllerExceptionsSchemaGenerator;
-use Galeas\Api\JsonSchema\CouldNotEncodeRoutes;
 use Galeas\Api\JsonSchema\CouldNotFindControllerAndMethod;
 use Galeas\Api\JsonSchema\ExceptionSerializerFailed;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use Galeas\Api\JsonSchema\SchemaAnnotationReader;
-use http\Exception\RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -67,7 +65,7 @@ class SchemaController extends AbstractController
 
             $encodedResponse = json_encode($betterRoutes);
             if (false === $encodedResponse) {
-                throw new \Exception("Could not encode routes");
+                throw new \Exception('Could not encode routes');
             }
             $response = JsonResponse::fromJsonString(
                 $encodedResponse,
@@ -85,8 +83,9 @@ class SchemaController extends AbstractController
             if (false === $response) {
                 $response = '{"error": "Server Error"}, "message": "", "stackTrace": ""}';
             }
+
             return JsonResponse::fromJsonString(
-                 $response,
+                $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
@@ -99,8 +98,8 @@ class SchemaController extends AbstractController
             $path = $request->query->get('path');
             $schemaName = $this->getRequestSchemaFromRoutePath(\is_string($path) ? $path : '');
 
-            if ($schemaName === null) {
-                throw new \Exception("Could not get request schema from route path");
+            if (null === $schemaName) {
+                throw new \Exception('Could not get request schema from route path');
             }
 
             $schema = $this->jsonSchemaFetcher->fetch('Request/'.$schemaName.'.json');
@@ -121,6 +120,7 @@ class SchemaController extends AbstractController
             if (false === $response) {
                 $response = '{"error": "Server Error"}, "message": "", "stackTrace": ""}';
             }
+
             return JsonResponse::fromJsonString(
                 $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -136,7 +136,7 @@ class SchemaController extends AbstractController
             $schemaName = $this->getResponseSchemaFromRoutePath(\is_string($path) ? $path : '');
 
             if (null === $schemaName) {
-                throw new \Exception("Could not get response schema name from route path");
+                throw new \Exception('Could not get response schema name from route path');
             }
 
             $schema = $this->jsonSchemaFetcher->fetch('Response/'.$schemaName.'.json');
@@ -157,6 +157,7 @@ class SchemaController extends AbstractController
             if (false === $response) {
                 $response = '{"error": "Server Error"}, "message": "", "stackTrace": ""}';
             }
+
             return JsonResponse::fromJsonString(
                 $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -172,7 +173,7 @@ class SchemaController extends AbstractController
             $errorSchema = $this->getExceptionSchemaFromRoutePath(\is_string($path) ? $path : '');
 
             if (null === $errorSchema) {
-                throw new \Exception("Could not get error schema from route path");
+                throw new \Exception('Could not get error schema from route path');
             }
 
             $response = JsonResponse::fromJsonString(
@@ -191,6 +192,7 @@ class SchemaController extends AbstractController
             if (false === $response) {
                 $response = '{"error": "Server Error"}, "message": "", "stackTrace": ""}';
             }
+
             return JsonResponse::fromJsonString(
                 $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR
@@ -251,7 +253,7 @@ class SchemaController extends AbstractController
             static fn (array $routeA, array $routeB): int => $routeA['path'] > $routeB['path'] ? 1 : -1
         );
 
-        /** @var array<string, mixed> $betterRoutes */
+        // @var array<string, mixed> $betterRoutes
         return $betterRoutes;
     }
 
@@ -266,7 +268,7 @@ class SchemaController extends AbstractController
             if ($routeObject->getPath() === $routePath) {
                 $controllerAndMethod = $routeObject->getDefault('_controller');
 
-                if (!is_string($controllerAndMethod)) {
+                if (!\is_string($controllerAndMethod)) {
                     throw new CouldNotFindControllerAndMethod();
                 }
 
@@ -288,7 +290,7 @@ class SchemaController extends AbstractController
             if ($routeObject->getPath() === $routePath) {
                 $controllerAndMethod = $routeObject->getDefault('_controller');
 
-                if (!is_string($controllerAndMethod)) {
+                if (!\is_string($controllerAndMethod)) {
                     throw new CouldNotFindControllerAndMethod();
                 }
 
@@ -300,7 +302,7 @@ class SchemaController extends AbstractController
     }
 
     /**
-     * @throws ExceptionSerializerFailed|CouldNotFindControllerAndMethod|\Exception
+     * @throws CouldNotFindControllerAndMethod|\Exception|ExceptionSerializerFailed
      */
     private function getExceptionSchemaFromRoutePath(string $routePath): ?string
     {
@@ -310,7 +312,7 @@ class SchemaController extends AbstractController
             if ($routeObject->getPath() === $routePath) {
                 $controllerAndMethod = $routeObject->getDefault('_controller');
 
-                if (!is_string($controllerAndMethod)) {
+                if (!\is_string($controllerAndMethod)) {
                     throw new CouldNotFindControllerAndMethod();
                 }
 

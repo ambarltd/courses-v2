@@ -10,8 +10,6 @@ class ControllerExceptionsSchemaGenerator
 {
     /**
      * @throws ExceptionSerializerFailed
-     *
-     * @return string
      */
     public function getExceptionSchemaFromControllerClassAndMethod(string $controllerClassAndMethod): string
     {
@@ -312,6 +310,7 @@ class ControllerExceptionsSchemaGenerator
                 }
                 $allThrows = array_merge(
                     $allThrows,
+                    $newThrows
                 );
             }
         }
