@@ -24,10 +24,10 @@ use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\EventReflectionBaseClass;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class AggregateFromEventsTest extends UnitTestBase {
+class AggregateFromEventsTest extends UnitTest {
     public function testAggregateFromEvents(): void
     {
         $userEvents = SampleEvents::userEvents();

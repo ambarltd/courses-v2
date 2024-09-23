@@ -14,14 +14,14 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidBCryptHashes;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Session\ValidDeviceLabels;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SignOutHandlerTest extends HandlerTestBase
+class SignOutHandlerUnitTest extends HandlerUnitTest
 {
     public function testHandle(): void
     {

@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 use Galeas\Api\JsonSchema\JsonSchemaValidator;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class JsonSchemaValidatorTest extends UnitTestBase
+class JsonSchemaValidatorTest extends UnitTest
 {
     public function testValid(): void
     {

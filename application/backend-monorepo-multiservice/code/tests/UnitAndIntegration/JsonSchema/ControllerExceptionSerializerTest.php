@@ -14,9 +14,9 @@ use Galeas\Api\JsonSchema\ExceptionSerializerFailed;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class ControllerExceptionSerializerTest extends UnitTestBase
+class ControllerExceptionSerializerTest extends UnitTest
 {
     public function testCommandHandler(): void
     {

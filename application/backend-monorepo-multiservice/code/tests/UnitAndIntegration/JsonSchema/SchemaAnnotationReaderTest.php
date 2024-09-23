@@ -9,9 +9,9 @@ use Galeas\Api\Common\Controller\ResponseSchema;
 use Galeas\Api\JsonSchema\AnnotationReaderFailed;
 use Galeas\Api\JsonSchema\SchemaAnnotationReader;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SchemaAnnotationReaderTest extends UnitTestBase
+class SchemaAnnotationReaderTest extends UnitTest
 {
     public function testRequestAnnotationExtraction(): void
     {

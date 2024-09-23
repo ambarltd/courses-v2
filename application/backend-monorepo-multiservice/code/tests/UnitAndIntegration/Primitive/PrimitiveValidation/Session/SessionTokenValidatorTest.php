@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Sess
 
 use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SessionTokenValidatorTest extends UnitTestBase
+class SessionTokenValidatorTest extends UnitTest
 {
     public function testValidSessionTokens(): void
     {

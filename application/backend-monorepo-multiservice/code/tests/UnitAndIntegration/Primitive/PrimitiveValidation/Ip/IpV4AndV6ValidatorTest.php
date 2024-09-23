@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip;
 
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class IpV4AndV6ValidatorTest extends UnitTestBase
+class IpV4AndV6ValidatorTest extends UnitTest
 {
     public function testValidIps(): void
     {

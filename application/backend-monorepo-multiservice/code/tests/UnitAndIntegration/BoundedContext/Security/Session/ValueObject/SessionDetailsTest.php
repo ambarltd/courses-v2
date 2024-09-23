@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Va
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SessionDetailsTest extends UnitTestBase
+class SessionDetailsTest extends UnitTest
 {
     public function testCreate(): void
     {

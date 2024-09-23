@@ -16,7 +16,7 @@ use PHPUnit\Framework\TestCase;
  * instead in memory abstractions are used, which speeds up the tests, and leaves the
  * full integration to be covered by end to end tests.
  */
-abstract class HandlerTestBase extends TestCase
+abstract class HandlerUnitTest extends TestCase
 {
     /**
      * @var InMemoryEventStore

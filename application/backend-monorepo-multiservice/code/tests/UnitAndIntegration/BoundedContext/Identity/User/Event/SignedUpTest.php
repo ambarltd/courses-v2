@@ -13,9 +13,9 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SignedUpTest extends UnitTestBase
+class SignedUpTest extends UnitTest
 {
     public function testCreate(): void
     {

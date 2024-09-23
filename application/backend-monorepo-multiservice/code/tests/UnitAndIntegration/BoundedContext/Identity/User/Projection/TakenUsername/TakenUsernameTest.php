@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class TakenUsernameTest extends UnitTestBase
+class TakenUsernameTest extends UnitTest
 {
     public function testTakenUsername(): void
     {

@@ -13,9 +13,9 @@ use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SignedOutTest extends UnitTestBase
+class SignedOutTest extends UnitTest
 {
     public function testCreate(): void
     {

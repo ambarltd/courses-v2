@@ -15,10 +15,10 @@ use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransa
 use Galeas\Api\Service\EventStore\Exception\SavingEventRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\InMemoryEventStore;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class InMemoryEventStoreTest extends UnitTestBase
+class InMemoryEventStoreTest extends UnitTest
 {
     private function createNewInMemoryEventStore(): InMemoryEventStore
     {

@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPassword;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProjector;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class HashedPasswordProjectorTest extends KernelTestBase
+class HashedPasswordProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testHashedPasswordProjector(): void
     {

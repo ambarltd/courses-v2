@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Value
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class VerifiedEmailTest extends UnitTestBase
+class VerifiedEmailTest extends UnitTest
 {
     public function testCreate(): void
     {

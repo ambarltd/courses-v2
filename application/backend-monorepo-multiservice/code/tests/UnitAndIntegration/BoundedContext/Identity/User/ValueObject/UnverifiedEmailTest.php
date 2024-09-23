@@ -8,9 +8,9 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class UnverifiedEmailTest extends UnitTestBase
+class UnverifiedEmailTest extends UnitTest
 {
     public function testCreate(): void
     {

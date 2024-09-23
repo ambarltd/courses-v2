@@ -10,10 +10,10 @@ use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\Common\Id\Id;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SessionProjectorTest extends KernelTestBase
+class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testProcessSignedIn(): void
     {

@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveComparison\Emai
 
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class AreEmailsEquivalentTest extends UnitTestBase
+class AreEmailsEquivalentTest extends UnitTest
 {
     public function testEquivalentEmails(): void
     {

@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPassword;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordFromUserId;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 
-class HashedPasswordFromUserIdTest extends KernelTestBase
+class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrationTest
 {
     public function testHashedPasswordFromUserId(): void
     {

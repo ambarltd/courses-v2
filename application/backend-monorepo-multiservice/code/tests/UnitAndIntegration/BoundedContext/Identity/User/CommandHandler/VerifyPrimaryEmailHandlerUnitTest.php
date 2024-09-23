@@ -16,14 +16,14 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidEmails;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidVerificationCodes;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidPasswords;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class VerifyPrimaryEmailHandlerTest extends HandlerTestBase
+class VerifyPrimaryEmailHandlerUnitTest extends HandlerUnitTest
 {
     public function testHandleUnverifiedEmail(): void
     {

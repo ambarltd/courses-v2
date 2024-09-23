@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Secu
 
 use Galeas\Api\Primitive\PrimitiveValidation\Security\BCryptHashValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class BCryptHashValidatorTest extends UnitTestBase
+class BCryptHashValidatorTest extends UnitTest
 {
     public function testValid(): void
     {

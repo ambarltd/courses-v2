@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCode;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class PrimaryEmailVerificationCodeTest extends UnitTestBase
+class PrimaryEmailVerificationCodeTest extends UnitTest
 {
     public function testPrimaryEmailVerificationCode(): void
     {

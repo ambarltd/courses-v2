@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 
-class UserIdFromSignedInSessionTokenTest extends KernelTestBase
+class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIntegrationTest
 {
     public function testUserIdFromSignedInSessionToken(): void
     {

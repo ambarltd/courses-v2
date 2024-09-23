@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Value
 
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class AccountDetailsTest extends UnitTestBase
+class AccountDetailsTest extends UnitTest
 {
     public function testCreate(): void
     {

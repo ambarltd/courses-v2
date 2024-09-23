@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Id;
 
 use Galeas\Api\Primitive\PrimitiveValidation\Id\IdValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class IdValidatorTest extends UnitTestBase
+class IdValidatorTest extends UnitTest
 {
     public function testValidIds(): void
     {

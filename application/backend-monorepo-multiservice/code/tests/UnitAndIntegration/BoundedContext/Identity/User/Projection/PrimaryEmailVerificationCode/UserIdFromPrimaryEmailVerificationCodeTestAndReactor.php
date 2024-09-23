@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\UserIdFromPrimaryEmailVerificationCode;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 
-class UserIdFromPrimaryEmailVerificationCodeTest extends KernelTestBase
+class UserIdFromPrimaryEmailVerificationCodeTestAndReactor extends ProjectorAndReactorIntegrationTest
 {
     public function testUserIdFromPrimaryEmailVerificationCode(): void
     {

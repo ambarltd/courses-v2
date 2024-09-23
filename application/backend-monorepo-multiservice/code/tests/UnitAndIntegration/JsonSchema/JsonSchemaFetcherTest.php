@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 use Galeas\Api\JsonSchema\CouldNotFetchJsonSchema;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class JsonSchemaFetcherTest extends UnitTestBase
+class JsonSchemaFetcherTest extends UnitTest
 {
     public function testFetch(): void
     {

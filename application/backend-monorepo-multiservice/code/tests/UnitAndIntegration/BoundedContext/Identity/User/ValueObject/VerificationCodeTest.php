@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Value
 
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class VerificationCodeTest extends UnitTestBase
+class VerificationCodeTest extends UnitTest
 {
     public function testCreate(): void
     {

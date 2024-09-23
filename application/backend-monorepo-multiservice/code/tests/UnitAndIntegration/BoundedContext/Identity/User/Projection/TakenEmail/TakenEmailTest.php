@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class TakenEmailTest extends UnitTestBase
+class TakenEmailTest extends UnitTest
 {
     public function testTakenEmail(): void
     {

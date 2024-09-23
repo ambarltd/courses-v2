@@ -4,13 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\UserWithUsername;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class UserWithUsernameProjectorTest extends KernelTestBase
+class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testSessionProjector(): void
     {

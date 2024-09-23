@@ -13,9 +13,9 @@ use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\JsonPostRequestMapper;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class JsonPostRequestMapperTest extends UnitTestBase
+class JsonPostRequestMapperTest extends UnitTest
 {
     private JsonPostRequestMapper $jsonPostRequestMapper;
 

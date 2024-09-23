@@ -11,9 +11,9 @@ use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class TokenRefreshedTest extends UnitTestBase
+class TokenRefreshedTest extends UnitTest
 {
     public function testCreate(): void
     {

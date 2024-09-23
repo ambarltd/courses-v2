@@ -8,9 +8,9 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Unverifi
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmail;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class UserWithEmailTest extends UnitTestBase
+class UserWithEmailTest extends UnitTest
 {
     public function testUserWithEmail(): void
     {

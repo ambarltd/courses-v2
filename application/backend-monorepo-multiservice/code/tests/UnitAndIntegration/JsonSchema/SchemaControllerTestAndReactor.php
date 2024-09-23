@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\RequestTest;
+use Tests\Galeas\Api\UnitAndIntegration\ControllerIntegrationTest;
 
-class SchemaControllerTest extends RequestTest
+class SchemaControllerTestAndReactor extends ControllerIntegrationTest
 {
     public function testSchemaList(): void
     {

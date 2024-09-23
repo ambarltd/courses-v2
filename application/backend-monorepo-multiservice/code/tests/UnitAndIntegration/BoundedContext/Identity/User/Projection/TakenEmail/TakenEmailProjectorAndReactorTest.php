@@ -11,10 +11,10 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class TakenEmailProjectorTest extends KernelTestBase
+class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testProcessSignedUp(): void
     {

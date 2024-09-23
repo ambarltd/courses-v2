@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Va
 
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SessionIsSignedOutTest extends UnitTestBase
+class SessionIsSignedOutTest extends UnitTest
 {
     public function testCreate(): void
     {

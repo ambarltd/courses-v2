@@ -18,7 +18,7 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\InvalidIpsV4AndV6;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidPasswords;
@@ -26,7 +26,7 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Session\In
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Session\ValidDeviceLabels;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 
-class SignInHandlerTest extends HandlerTestBase
+class SignInHandlerUnitTest extends HandlerUnitTest
 {
     public function testHandleWithUsername(): void
     {

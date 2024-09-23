@@ -15,9 +15,9 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class PrimaryEmailChangeRequestedTest extends UnitTestBase
+class PrimaryEmailChangeRequestedTest extends UnitTest
 {
     public function testCreate(): void
     {

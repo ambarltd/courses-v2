@@ -16,7 +16,7 @@ use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\TermsAreNotAgr
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\UsernameIsTaken;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\InvalidEmails;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidEmails;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\InvalidPasswords;
@@ -24,7 +24,7 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\V
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\InvalidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 
-class SignUpHandlerTest extends HandlerTestBase
+class SignUpHandlerUnitTest extends HandlerUnitTest
 {
     public function testHandle(): void
     {

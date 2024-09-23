@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Common\Event;
 
 use Galeas\Api\Common\Event\SerializedEvent;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SerializedEventTest extends UnitTestBase
+class SerializedEventTest extends UnitTest
 {
     public function testCreate(): void
     {

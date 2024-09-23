@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Service\ODM;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Galeas\Api\Service\ODM\OverrideDateType;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class OverrideDateTypeTest extends UnitTestBase
+class OverrideDateTypeTest extends UnitTest
 {
     private OverrideDateType $overrideDateType;
 

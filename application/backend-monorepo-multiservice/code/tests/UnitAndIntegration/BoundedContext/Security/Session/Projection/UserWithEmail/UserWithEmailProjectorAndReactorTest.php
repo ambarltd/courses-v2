@@ -11,10 +11,10 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWith
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class UserWithEmailProjectorTest extends KernelTestBase
+class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testProcessSignedUp(): void
     {

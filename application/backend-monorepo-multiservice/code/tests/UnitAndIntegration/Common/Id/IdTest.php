@@ -10,9 +10,9 @@ use Galeas\Api\Primitive\PrimitiveValidation\Id\IdValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Id\InvalidIds;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Id\ValidIds;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class IdTest extends UnitTestBase
+class IdTest extends UnitTest
 {
     public function testWithValidIds(): void
     {

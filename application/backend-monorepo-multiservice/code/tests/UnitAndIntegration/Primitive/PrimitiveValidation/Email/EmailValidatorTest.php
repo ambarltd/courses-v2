@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Emai
 
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class EmailValidatorTest extends UnitTestBase
+class EmailValidatorTest extends UnitTest
 {
     public function testValidEmails(): void
     {

@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class SessionTest extends UnitTestBase
+class SessionTest extends UnitTest
 {
     public function testCreate(): void
     {

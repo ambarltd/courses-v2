@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveTransformation\
 
 use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class BCryptPasswordHashTest extends UnitTestBase
+class BCryptPasswordHashTest extends UnitTest
 {
     public function testHash(): void
     {

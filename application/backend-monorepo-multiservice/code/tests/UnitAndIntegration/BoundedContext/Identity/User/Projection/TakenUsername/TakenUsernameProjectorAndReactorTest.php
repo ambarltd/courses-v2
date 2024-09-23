@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\KernelTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class TakenUsernameProjectorTest extends KernelTestBase
+class TakenUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
 {
     public function testProcessSignedUpWithTwoUsers(): void
     {

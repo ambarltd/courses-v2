@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Secu
 
 use Galeas\Api\Primitive\PrimitiveValidation\Security\PasswordValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class PasswordValidatorTest extends UnitTestBase
+class PasswordValidatorTest extends UnitTest
 {
     public function testValid(): void
     {

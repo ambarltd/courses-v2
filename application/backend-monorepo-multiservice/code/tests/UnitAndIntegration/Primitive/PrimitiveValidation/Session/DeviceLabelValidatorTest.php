@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Sess
 
 use Galeas\Api\Primitive\PrimitiveValidation\Session\DeviceLabelValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class DeviceLabelValidatorTest extends UnitTestBase
+class DeviceLabelValidatorTest extends UnitTest
 {
     public function testValidDeviceLabels(): void
     {

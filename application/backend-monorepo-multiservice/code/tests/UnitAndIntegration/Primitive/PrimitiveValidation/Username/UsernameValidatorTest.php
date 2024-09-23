@@ -6,9 +6,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\User
 
 use Galeas\Api\Primitive\PrimitiveValidation\Username\UsernameValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class UsernameValidatorTest extends UnitTestBase
+class UsernameValidatorTest extends UnitTest
 {
     public function testValidUsernames(): void
     {

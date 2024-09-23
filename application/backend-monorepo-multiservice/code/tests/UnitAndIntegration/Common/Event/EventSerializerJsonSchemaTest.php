@@ -11,10 +11,10 @@ use Galeas\Api\JsonSchema\JsonSchemaFetcher;
 use Galeas\Api\JsonSchema\JsonSchemaValidator;
 use JsonSchema\Validator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class EventSerializerJsonSchemaTest extends UnitTestBase
+class EventSerializerJsonSchemaTest extends UnitTest
 {
     public function testSchemaMatching() {
         $events = array_merge(

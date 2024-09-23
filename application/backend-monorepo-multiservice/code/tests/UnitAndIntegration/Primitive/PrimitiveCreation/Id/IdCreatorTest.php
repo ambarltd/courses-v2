@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveCreation\Id;
 use Galeas\Api\Primitive\PrimitiveCreation\Id\IdCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Id\IdValidator;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
-class IdCreatorTest extends UnitTestBase
+class IdCreatorTest extends UnitTest
 {
     public function testCreate(): void
     {

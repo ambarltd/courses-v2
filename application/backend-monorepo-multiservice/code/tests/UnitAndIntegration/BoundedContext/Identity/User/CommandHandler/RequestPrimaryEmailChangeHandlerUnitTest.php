@@ -16,7 +16,7 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\HandlerTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\InvalidEmails;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Email\ValidEmails;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Id\ValidIds;
@@ -24,7 +24,7 @@ use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\V
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class RequestPrimaryEmailChangeHandlerTest extends HandlerTestBase
+class RequestPrimaryEmailChangeHandlerUnitTest extends HandlerUnitTest
 {
     public function testHandleForVerifiedEmail(): void
     {

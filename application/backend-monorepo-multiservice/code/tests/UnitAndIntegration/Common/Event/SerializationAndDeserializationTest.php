@@ -8,10 +8,10 @@ use Galeas\Api\Common\Event\EventDeserializer;
 use Galeas\Api\Common\Event\EventReflectionBaseClass;
 use Galeas\Api\Common\Event\EventSerializer;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTestBase;
+use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SerializationAndDeserializationTest extends UnitTestBase
+class SerializationAndDeserializationTest extends UnitTest
 {
     public function testSerializationAndDeserialization() {
         $events = array_merge(
