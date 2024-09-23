@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Console;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
 use Galeas\Api\Service\Logger\PhpOutLogger;
@@ -62,7 +63,7 @@ class DBMigration extends Command
     }
 
     /**
-     * @throws \Doctrine\DBAL\Exception
+     * @throws Exception
      */
     protected function execute(
         InputInterface $input,

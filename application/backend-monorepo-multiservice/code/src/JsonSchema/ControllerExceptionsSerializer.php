@@ -9,9 +9,9 @@ use Galeas\Api\Common\ExceptionBase\BaseException;
 class ControllerExceptionsSerializer
 {
     /**
-     * @throws ExceptionSerializerFailed
-     *
      * @return array<string, mixed>
+     *
+     * @throws ExceptionSerializerFailed
      */
     public function getSerializedExceptionsFromControllerClassAndMethod(string $controllerClassAndMethod): array
     {
@@ -20,7 +20,7 @@ class ControllerExceptionsSerializer
         $serializedThrownClasses = [];
         foreach ($thrownClasses as $class) {
             if (
-                \array_key_exists(BaseException::class, class_parents($class) !== false ? class_parents($class) : [])
+                \array_key_exists(BaseException::class, false !== class_parents($class) ? class_parents($class) : [])
                 && \is_callable($class.'::getErrorIdentifier')
                 && \is_callable($class.'::getHttpCode')
             ) {
@@ -166,9 +166,9 @@ class ControllerExceptionsSerializer
     }
 
     /**
-     * @throws ExceptionSerializerFailed
-     *
      * @return class-string
+     *
+     * @throws ExceptionSerializerFailed
      */
     private function locateHandlerServiceFromControllerClassAndMethod(string $controllerClassAndMethod): string
     {
@@ -269,9 +269,9 @@ class ControllerExceptionsSerializer
      * Collects from multiple definition in a single statement
      *   Eg: %throws Exception1|Exception2
      *
-     * @throws ExceptionSerializerFailed
-     *
      * @return string[]
+     *
+     * @throws ExceptionSerializerFailed
      */
     private function thrownExceptionAnnotationsInClassName(string $handlerService): array
     {
@@ -312,11 +312,12 @@ class ControllerExceptionsSerializer
     }
 
     /**
-     * @throws ExceptionSerializerFailed
-     *
      * @param array<string> $annotationClassNames
-     * @param class-string $occurringInClassName
+     * @param class-string  $occurringInClassName
+     *
      * @return array<class-string>
+     *
+     * @throws ExceptionSerializerFailed
      */
     private function resolveClassNamesFromAnnotationClassNames(array $annotationClassNames, string $occurringInClassName, string $additonalErrorMessage): array
     {
@@ -348,11 +349,11 @@ class ControllerExceptionsSerializer
     }
 
     /**
-     * @throws ExceptionSerializerFailed
-     *
      * @param class-string $className
      *
      * @return array<string>
+     *
+     * @throws ExceptionSerializerFailed
      */
     private function useStatementsInClassName(string $className): array
     {
@@ -402,9 +403,9 @@ class ControllerExceptionsSerializer
     }
 
     /**
-     * @throws ExceptionSerializerFailed
-     *
      * @param class-string $className
+     *
+     * @throws ExceptionSerializerFailed
      */
     private function namespaceFromClassName(string $className): string
     {

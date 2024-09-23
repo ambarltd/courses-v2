@@ -15,3 +15,4 @@ else
     echo "Styling in ./tests passed."
 fi
 
+echo "All linter checks succesful!!!"
