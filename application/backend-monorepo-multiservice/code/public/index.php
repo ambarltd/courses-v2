@@ -9,10 +9,10 @@ require __DIR__.'/../vendor/autoload.php';
 
 // Request::setTrustedProxies(['0.0.0.0/0'], Request::HEADER_FORWARDED);
 
-$kernel = new Kernel("production", false);
+$kernel = new Kernel('production', false);
 
-# cache has to be manually reset
-# trying to change this per environment adds a lot of complexity
+// cache has to be manually reset
+// trying to change this per environment adds a lot of complexity
 $request = Request::createFromGlobals();
 $response = $kernel->handle($request);
 $response->send();

@@ -1,6 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
+use Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle;
+use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
+
 return [
-    Symfony\Bundle\FrameworkBundle\FrameworkBundle::class => ['all' => true],
-    Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle::class => ['all' => true],
+    FrameworkBundle::class => ['all' => true],
+    DoctrineMongoDBBundle::class => ['all' => true],
 ];
