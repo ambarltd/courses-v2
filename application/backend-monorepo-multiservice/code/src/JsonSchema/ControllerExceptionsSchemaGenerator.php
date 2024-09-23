@@ -6,14 +6,14 @@ namespace Galeas\Api\JsonSchema;
 
 use Galeas\Api\Common\ExceptionBase\BaseException;
 
-class ControllerExceptionsSerializer
+class ControllerExceptionsSchemaGenerator
 {
     /**
-     * @return array<string, mixed>
-     *
      * @throws ExceptionSerializerFailed
+     *
+     * @return string
      */
-    public function getSerializedExceptionsFromControllerClassAndMethod(string $controllerClassAndMethod): array
+    public function getExceptionSchemaFromControllerClassAndMethod(string $controllerClassAndMethod): string
     {
         $thrownClasses = $this->retrieveThrownClassesFromControllerClassAndMethod($controllerClassAndMethod);
 
@@ -137,6 +137,11 @@ class ControllerExceptionsSerializer
                     'httpCode',
                 ],
             ];
+        }
+
+        $errorSchema = json_encode($errorSchema);
+        if (false === $errorSchema) {
+            throw new ExceptionSerializerFailed('Could not encode error schema for '.$controllerClassAndMethod);
         }
 
         return $errorSchema;
@@ -295,15 +300,18 @@ class ControllerExceptionsSerializer
                 continue;
             }
             if ($stringPositionOfThrows = strpos($line, '@throws')) {
+                $newThrows = explode(
+                    '|',
+                    substr(
+                        $line,
+                        $stringPositionOfThrows + \strlen('@throws')
+                    )
+                );
+                if (!\is_array($newThrows)) {
+                    throw new ExceptionSerializerFailed('Could not explode throws in '.$handlerService);
+                }
                 $allThrows = array_merge(
                     $allThrows,
-                    explode(
-                        '|',
-                        substr(
-                            $line,
-                            $stringPositionOfThrows + \strlen('@throws')
-                        )
-                    )
                 );
             }
         }

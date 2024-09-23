@@ -10,6 +10,6 @@ class CouldNotFindControllerAndMethod extends InternalServerErrorException
 {
     public static function getErrorIdentifier(): string
     {
-        return 'JsonSchema_ExceptionSerializerFailed';
+        return 'JsonSchema_CouldNotFindControllerAndMethod';
     }
 }

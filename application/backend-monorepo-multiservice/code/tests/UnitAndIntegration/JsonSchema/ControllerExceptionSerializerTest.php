@@ -9,7 +9,7 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
-use Galeas\Api\JsonSchema\ControllerExceptionsSerializer;
+use Galeas\Api\JsonSchema\ControllerExceptionsSchemaGenerator;
 use Galeas\Api\JsonSchema\ExceptionSerializerFailed;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +20,8 @@ class ControllerExceptionSerializerTest extends UnitTest
 {
     public function testCommandHandler(): void
     {
-        $serializer = new ControllerExceptionsSerializer();
-        $result = $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $result = $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::commandHandler'
         );
 
@@ -162,8 +162,8 @@ class ControllerExceptionSerializerTest extends UnitTest
 
     public function testQueryHandler(): void
     {
-        $serializer = new ControllerExceptionsSerializer();
-        $result = $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $result = $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::queryHandler'
         );
 
@@ -303,8 +303,8 @@ class ControllerExceptionSerializerTest extends UnitTest
     {
         $this->expectExceptionMessage('Cannot find line which might have a handler service class in Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::noHandler');
         $this->expectException(ExceptionSerializerFailed::class);
-        $serializer = new ControllerExceptionsSerializer();
-        $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::noHandler'
         );
     }
@@ -313,8 +313,8 @@ class ControllerExceptionSerializerTest extends UnitTest
     {
         $this->expectExceptionMessage('Could not build reflection method for Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::methodDoesNotExist');
         $this->expectException(ExceptionSerializerFailed::class);
-        $serializer = new ControllerExceptionsSerializer();
-        $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::methodDoesNotExist'
         );
     }
@@ -323,8 +323,8 @@ class ControllerExceptionSerializerTest extends UnitTest
     {
         $this->expectExceptionMessage('Cannot find annotation for handle method in service of class Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockCommandHandlerWithoutAnnotation');
         $this->expectException(ExceptionSerializerFailed::class);
-        $serializer = new ControllerExceptionsSerializer();
-        $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::commandHandlerWithoutAnnotation'
         );
     }
@@ -333,8 +333,8 @@ class ControllerExceptionSerializerTest extends UnitTest
     {
         $this->expectExceptionMessage('All handler exception classes must implement the base exception - Failed for Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::commandHandlerWithNonBaseException');
         $this->expectException(ExceptionSerializerFailed::class);
-        $serializer = new ControllerExceptionsSerializer();
-        $serializer->getSerializedExceptionsFromControllerClassAndMethod(
+        $serializer = new ControllerExceptionsSchemaGenerator();
+        $serializer->getExceptionSchemaFromControllerClassAndMethod(
             MockController::class.'::commandHandlerWithNonBaseException'
         );
     }
