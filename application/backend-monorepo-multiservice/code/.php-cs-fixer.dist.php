@@ -32,6 +32,7 @@ return (new Config())
         'php_unit_test_class_requires_covers' => false,
         'php_unit_internal_class' => false,
         'phpdoc_to_property_type' => true,
+        'php_unit_strict' => false,
     ])
     ->setFinder(
         (new Finder())
