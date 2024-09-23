@@ -28,7 +28,8 @@ class ListSentVerificationEmail
             $items = $this->projectionDocumentManager
                 ->createQueryBuilder(SentVerificationEmail::class)
                 ->getQuery()
-                ->getIterator();
+                ->getIterator()
+            ;
 
             $list = [];
             foreach ($items as $item) {

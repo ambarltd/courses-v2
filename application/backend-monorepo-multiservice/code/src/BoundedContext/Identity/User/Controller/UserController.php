@@ -91,7 +91,6 @@ class UserController extends BaseController
         );
     }
 
-
     /**
      * @RequestSchema(name="V1_Identity_User_ListSentVerificationEmail")
      *
@@ -110,5 +109,4 @@ class UserController extends BaseController
             Response::HTTP_OK
         );
     }
-
 }

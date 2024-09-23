@@ -57,24 +57,24 @@ class SentVerificationEmail
         return $this->sentAt;
     }
 
-public static function fromProperties(
-    string $userId,
-    string $verificationCodeSent,
-    string $toEmailAddress,
-    string $emailContents,
-    string $fromEmailAddress,
-    string $subjectLine,
-    \DateTimeImmutable $sentAt
-): self {
-    $sentVerificationEmail = new self();
-    $sentVerificationEmail->id = $userId;
-    $sentVerificationEmail->verificationCodeSent = $verificationCodeSent;
-    $sentVerificationEmail->toEmailAddress = $toEmailAddress;
-    $sentVerificationEmail->emailContents = $emailContents;
-    $sentVerificationEmail->fromEmailAddress = $fromEmailAddress;
-    $sentVerificationEmail->subjectLine = $subjectLine;
-    $sentVerificationEmail->sentAt = $sentAt;
+    public static function fromProperties(
+        string $userId,
+        string $verificationCodeSent,
+        string $toEmailAddress,
+        string $emailContents,
+        string $fromEmailAddress,
+        string $subjectLine,
+        \DateTimeImmutable $sentAt
+    ): self {
+        $sentVerificationEmail = new self();
+        $sentVerificationEmail->id = $userId;
+        $sentVerificationEmail->verificationCodeSent = $verificationCodeSent;
+        $sentVerificationEmail->toEmailAddress = $toEmailAddress;
+        $sentVerificationEmail->emailContents = $emailContents;
+        $sentVerificationEmail->fromEmailAddress = $fromEmailAddress;
+        $sentVerificationEmail->subjectLine = $subjectLine;
+        $sentVerificationEmail->sentAt = $sentAt;
 
-    return $sentVerificationEmail;
-}
+        return $sentVerificationEmail;
+    }
 }

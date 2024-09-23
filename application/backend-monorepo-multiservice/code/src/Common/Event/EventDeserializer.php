@@ -73,10 +73,11 @@ abstract class EventDeserializer extends EventReflectionBaseClass
     }
 
     /**
-     * @throws InvalidId|EventException\PropertyIsOfInvalidType
-     *
      * @param array<string,mixed> $serializedArrayPayload
+     *
      * @return array<string,mixed>
+     *
+     * @throws EventException\PropertyIsOfInvalidType|InvalidId
      */
     private static function serializedArrayPayloadToArrayPayload(array $serializedArrayPayload): array
     {
@@ -115,7 +116,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
                 $payload[$propertyName] = $value;
             }
         } catch (\DateInvalidTimeZoneException $exception) {
-            throw new EventException\PropertyIsOfInvalidType('Property is of invalid type: ' . $propertyName);
+            throw new EventException\PropertyIsOfInvalidType('Property is of invalid type: '.$propertyName);
         }
 
         return $payload;
