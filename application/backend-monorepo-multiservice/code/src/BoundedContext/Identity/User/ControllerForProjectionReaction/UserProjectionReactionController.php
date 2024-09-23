@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Controller;
+namespace Galeas\Api\BoundedContext\Identity\User\ControllerForProjectionReaction;
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
