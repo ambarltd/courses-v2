@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-cd development-environment
 if docker exec -it php-all-services-test "php" "vendor/bin/php-cs-fixer" "fix" "--config=.php-cs-fixer.php-highest.php" "--allow-risky=yes" "--dry-run" | grep 'src'; then
     echo "Styling in ./src failed. To fix run ./dev_linter_fix.sh"
     exit 1
