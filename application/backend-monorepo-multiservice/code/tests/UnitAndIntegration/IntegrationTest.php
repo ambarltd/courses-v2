@@ -8,12 +8,17 @@ use Galeas\Api\Kernel;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
-// todo??? make the event store pass any saved events to all projection handlers?
 abstract class IntegrationTest extends TestCase
 {
-    private Kernel $kernel;
+    /**
+     * @var Kernel
+     */
+    private $kernel;
 
-    private Container $container;
+    /**
+     * @var Container
+     */
+    private $container;
 
     protected function setUp(): void
     {
