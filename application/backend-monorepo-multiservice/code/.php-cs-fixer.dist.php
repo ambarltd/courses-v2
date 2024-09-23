@@ -37,6 +37,10 @@ return (new Config())
         (new Finder())
             ->ignoreDotFiles(true)
             ->ignoreVCSIgnored(true)
-            ->exclude(['dev-tools/phpstan', 'tests/Fixtures'])
+            ->filter(
+                static function (\SplFileInfo $file): bool {
+                    return !str_contains($file->getFilename(), "IntegrationTest.php");
+                }
+            )
             ->in(__DIR__)
     );
