@@ -80,13 +80,13 @@ services:
     #### INSTANCE OF (Controller setters, bound properties) (Console commands bound properties) (Reaction/Projection processors) ####
 
     _instanceof:
-        Galeas\Api\Common\Controller\BaseController:
+        Galeas\Api\CommonController\BaseController:
             calls:
                 - setJsonPostRequestMapper: ['@Galeas\Api\Service\RequestMapper\JsonPostRequestMapper']
                 - setJsonSchemaFetcher: ['@Galeas\Api\JsonSchema\JsonSchemaFetcher']
                 - setJsonSchemaValidator: ['@Galeas\Api\JsonSchema\JsonSchemaValidator']
                 - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
-        Galeas\Api\Common\Controller\ProjectionReactionController:
+        Galeas\Api\CommonController\ProjectionReactionController:
             calls:
                 - setPhpOutLogger: ['@Galeas\Api\Service\Logger\PhpOutLogger']
         Symfony\Bundle\FrameworkBundle\Controller\AbstractController:

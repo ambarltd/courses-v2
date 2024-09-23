@@ -12,7 +12,7 @@ use Galeas\Api\Common\Event\Exception as EventException;
 abstract class EventReflectionBaseClass
 {
     /**
-     * @var array<string, string>
+     * @var array<string, class-string<Event>>
      */
     private static array $eventNamesToEventClasses = [
         'Identity_User_SignedUp' => User\Event\SignedUp::class,
@@ -57,6 +57,7 @@ abstract class EventReflectionBaseClass
                 self::$eventClassesToEventNames = array_flip(self::$eventNamesToEventClasses);
 
                 foreach (self::$eventNamesToEventClasses as $eventName => $eventClass) {
+                    /** @var \ReflectionClass<Event> $reflectionClass */
                     $reflectionClass = new \ReflectionClass($eventClass);
 
                     $creationMethod = self::findFirstMethodBeginningWith($reflectionClass, 'create');
@@ -79,6 +80,9 @@ abstract class EventReflectionBaseClass
         }
     }
 
+    /**
+     * @return array<class-string<Event>>
+     */
     public static function allEventClasses(): array
     {
         return array_values(self::$eventNamesToEventClasses);
@@ -144,7 +148,10 @@ abstract class EventReflectionBaseClass
         throw new EventException\NoTransformationMethodFound('No mapping found for class name '.$eventClass);
     }
 
-    private static function findFirstMethodBeginningWith(\ReflectionClass $reflection, $beginningWith): ?string
+    /**
+     * @param \ReflectionClass<Event> $reflection
+     */
+    private static function findFirstMethodBeginningWith(\ReflectionClass $reflection, string $beginningWith): ?string
     {
         $methods = $reflection->getMethods();
         foreach ($methods as $method) {

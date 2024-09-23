@@ -21,7 +21,6 @@ abstract class EventSerializer extends EventReflectionBaseClass
      * @throws PropertyIsOfInvalidType
      * @throws ArraysNotAllowedWhenMappingPayload
      * @throws JsonEventEncodingError
-     * @throws EventException\NoEventReflectionClassMappingMethodFound
      * @throws EventException\EventMappingReflectionError
      */
     public static function eventsToSerializedEvents(array $events): array
@@ -37,7 +36,6 @@ abstract class EventSerializer extends EventReflectionBaseClass
      * @throws PropertyIsOfInvalidType
      * @throws ArraysNotAllowedWhenMappingPayload
      * @throws JsonEventEncodingError
-     * @throws EventException\NoEventReflectionClassMappingMethodFound
      * @throws EventException\EventMappingReflectionError
      */
     private static function eventToSerializedEvent(Event $event): SerializedEvent
@@ -51,8 +49,8 @@ abstract class EventSerializer extends EventReflectionBaseClass
             $event->eventId()->id(),
             $event->aggregateId()->id(),
             $event->aggregateVersion(),
-            null === $event->causationId() ? null : $event->causationId()->id(),
-            null === $event->correlationId() ? null : $event->correlationId()->id(),
+            $event->causationId()->id() ,
+            $event->correlationId()->id(),
             $recordedOn->format('Y-m-d H:i:s.u e'),
             self::eventClassToEventName($event::class),
             self::arrayPayloadToJsonPayload(
@@ -71,7 +69,7 @@ abstract class EventSerializer extends EventReflectionBaseClass
     }
 
     /**
-     * @throws PropertyIsOfInvalidType
+     * @return array<string, mixed>
      */
     private static function arrayPayloadFromEvent(Event $event): array
     {
@@ -119,6 +117,8 @@ abstract class EventSerializer extends EventReflectionBaseClass
     }
 
     /**
+     * @param array<string, mixed> $arrayPayload
+     *
      * @throws ArraysNotAllowedWhenMappingPayload|JsonEventEncodingError|PropertyIsOfInvalidType
      */
     private static function arrayPayloadToJsonPayload(array $arrayPayload, bool $arrayPropertiesAllowed): string
@@ -143,6 +143,9 @@ abstract class EventSerializer extends EventReflectionBaseClass
 
     /**
      * @throws ArraysNotAllowedWhenMappingPayload|PropertyIsOfInvalidType
+     *
+     * @param array<string, mixed> $arrayPayload
+     * @return array<string, mixed>
      */
     private static function arrayPayloadToSerializedArrayPayload(array $arrayPayload, bool $arrayPropertiesAllowed): array
     {
