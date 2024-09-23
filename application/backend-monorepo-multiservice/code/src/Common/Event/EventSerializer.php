@@ -49,7 +49,7 @@ abstract class EventSerializer extends EventReflectionBaseClass
             $event->eventId()->id(),
             $event->aggregateId()->id(),
             $event->aggregateVersion(),
-            $event->causationId()->id() ,
+            $event->causationId()->id(),
             $event->correlationId()->id(),
             $recordedOn->format('Y-m-d H:i:s.u e'),
             self::eventClassToEventName($event::class),
@@ -142,10 +142,11 @@ abstract class EventSerializer extends EventReflectionBaseClass
     }
 
     /**
-     * @throws ArraysNotAllowedWhenMappingPayload|PropertyIsOfInvalidType
-     *
      * @param array<string, mixed> $arrayPayload
+     *
      * @return array<string, mixed>
+     *
+     * @throws ArraysNotAllowedWhenMappingPayload|PropertyIsOfInvalidType
      */
     private static function arrayPayloadToSerializedArrayPayload(array $arrayPayload, bool $arrayPropertiesAllowed): array
     {

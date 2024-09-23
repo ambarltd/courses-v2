@@ -15,6 +15,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
      *
      * @return Event[]
      *
+     * @throws EventException\UnrecoverableDeserializationError
      * @throws EventException\EventMappingReflectionError
      * @throws EventException\NoEventReflectionClassMappingMethodFound
      * @throws InvalidId
@@ -28,20 +29,28 @@ abstract class EventDeserializer extends EventReflectionBaseClass
     }
 
     /**
-     * @throws InvalidId
+     * @throws EventException\UnrecoverableDeserializationError
+     *
+     * @return array<string,mixed>
      */
     public static function jsonPayloadToArrayPayload(string $jsonPayload): array
     {
+        /** @var null|array<string, mixed> $arrayPayload */
+        $arrayPayload = json_decode(
+            $jsonPayload,
+            true
+        );
+        if (null === $arrayPayload) {
+            throw new EventException\UnrecoverableDeserializationError('Could not recover for: '.$jsonPayload);
+        }
         return self::serializedArrayPayloadToArrayPayload(
-            json_decode(
-                $jsonPayload,
-                true
-            )
+            $arrayPayload
         );
     }
 
     /**
      * @throws InvalidId
+     * @throws EventException\UnrecoverableDeserializationError
      * @throws EventException\EventMappingReflectionError
      * @throws EventException\NoEventReflectionClassMappingMethodFound
      */
@@ -77,7 +86,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
      *
      * @return array<string,mixed>
      *
-     * @throws EventException\PropertyIsOfInvalidType|InvalidId
+     * @throws EventException\UnrecoverableDeserializationError
      */
     private static function serializedArrayPayloadToArrayPayload(array $serializedArrayPayload): array
     {
@@ -115,8 +124,10 @@ abstract class EventDeserializer extends EventReflectionBaseClass
 
                 $payload[$propertyName] = $value;
             }
-        } catch (\DateInvalidTimeZoneException $exception) {
-            throw new EventException\PropertyIsOfInvalidType('Property is of invalid type: '.$propertyName);
+        } catch (\Throwable $exception) {
+            $jsonPayload = json_encode($serializedArrayPayload);
+            $jsonPayload = false === $jsonPayload ? 'Could not encode failed payload' : $jsonPayload;
+            throw new EventException\UnrecoverableDeserializationError('Unrecoverable for:'.$jsonPayload);
         }
 
         return $payload;
