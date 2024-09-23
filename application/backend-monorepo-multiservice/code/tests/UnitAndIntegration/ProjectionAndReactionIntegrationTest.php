@@ -6,7 +6,7 @@ namespace Tests\Galeas\Api\UnitAndIntegration;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 
-abstract class ProjectorAndReactorIntegrationTest extends IntegrationTest
+abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
 {
     protected function setUp(): void
     {

@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\Common\Id\Id;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
+class SessionProjectorTest extends ProjectionAndReactionIntegrationTest
 {
     public function testProcessSignedIn(): void
     {

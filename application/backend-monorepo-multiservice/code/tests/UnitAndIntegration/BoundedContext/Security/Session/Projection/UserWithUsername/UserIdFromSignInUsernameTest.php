@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserIdFromSignInUsername;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
 
-class UserIdFromSignInUsernameTestAndReactor extends ProjectorAndReactorIntegrationTest
+class UserIdFromSignInUsernameTest extends ProjectionAndReactionIntegrationTest
 {
     public function testUserIdFromUsernameTest(): void
     {

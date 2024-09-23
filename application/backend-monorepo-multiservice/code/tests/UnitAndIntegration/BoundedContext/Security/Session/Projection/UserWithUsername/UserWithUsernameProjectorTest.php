@@ -6,10 +6,10 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
+class UserWithUsernameProjectorTest extends ProjectionAndReactionIntegrationTest
 {
     public function testSessionProjector(): void
     {

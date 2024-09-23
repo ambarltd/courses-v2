@@ -7,10 +7,10 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPassword;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProjector;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectorAndReactorIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class HashedPasswordProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
+class HashedPasswordProjectorTest extends ProjectionAndReactionIntegrationTest
 {
     public function testHashedPasswordProjector(): void
     {
