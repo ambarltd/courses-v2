@@ -14,6 +14,7 @@ abstract class AggregateFromEvents extends EventReflectionBaseClass
      *
      * @throws EventException\NoCreationMethodFound
      * @throws EventException\NoTransformationMethodFound
+     * @throws EventException\EventMappingReflectionError
      */
     public static function aggregateFromEvents(
         Event $creationEvent,
