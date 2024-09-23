@@ -3,72 +3,50 @@ deptrac:
         - ./src
     
     layers:
-        -
-            name: Aggregate
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Aggregate\\.*
-        -
-            name: Command
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Command\\.*
-        -
-            name: CommandHandler
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\CommandHandler\\.*
-        -
-            name: Controller
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Controller\\.*
-        -
-            name: ControllerForProjectionReaction
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\ControllerForProjectionReaction\\.*
-        -
-            name: Event
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Event\\.*
-        -
-            name: Projection
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Projection\\.*
-        -
-            name: Reaction
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Reaction\\.*
-        -
-            name: Query
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\Query\\.*
-        -
-            name: QueryHandler
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\QueryHandler\\.*
-        -
-            name: ValueObject
-            collectors:
-                -
-                    type: classLike
-                    value: ^Galeas\\Api\\BoundedContext\\.*\\ValueObject\\.*
+        - name: Aggregate
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Aggregate\\.*
+        - name: Command
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Command\\.*
+        - name: CommandHandler
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\CommandHandler\\.*
+        - name: Controller
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Controller\\.*
+        - name: ControllerForProjectionReaction
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\ControllerForProjectionReaction\\.*
+        - name: Event
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Event\\.*
+        - name: Projection
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Projection\\.*
+        - name: Reaction
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Reaction\\.*
+        - name: Query
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Query\\.*
+        - name: QueryHandler
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\QueryHandler\\.*
+        - name: ValueObject
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\ValueObject\\.*
 
     ruleset:
         Aggregate:

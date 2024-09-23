@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 
+use Galeas\Api\CommonController\BaseController;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\CommonException\InternalServerErrorException;
 use Galeas\Api\CommonException\ProjectionCannotRead;
-use Galeas\Api\CommonController\BaseController;
 use Galeas\Api\JsonSchema\ControllerExceptionsSchemaGenerator;
 use Galeas\Api\JsonSchema\ExceptionSerializerFailed;
 use PHPUnit\Framework\Assert;
