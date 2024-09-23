@@ -201,7 +201,7 @@ class SchemaController extends AbstractController
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<int,array<string, array<string>|string>>
      */
     private function allNonSchemaRoutesExceptRoot(string $schemeAndHttpHost): array
     {
@@ -253,7 +253,6 @@ class SchemaController extends AbstractController
             static fn (array $routeA, array $routeB): int => $routeA['path'] > $routeB['path'] ? 1 : -1
         );
 
-        // @var array<string, mixed> $betterRoutes
         return $betterRoutes;
     }
 

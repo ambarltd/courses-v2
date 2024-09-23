@@ -10,6 +10,7 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;
 use Galeas\Api\Primitive\PrimitiveValidation\Session\DeviceLabelValidator;
@@ -42,6 +43,7 @@ class SignInHandler
      *
      * @throws InvalidDeviceLabel|InvalidPassword|NoPasswordFound|UserNotFound
      * @throws EventStoreCannotWrite|InvalidId|InvalidIp|ProjectionCannotRead
+     * @throws NoRandomnessAvailable
      */
     public function handle(SignIn $command): array
     {

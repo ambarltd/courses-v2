@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Primitive\PrimitiveCreation\Id;
 
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
+use Random\RandomException;
+
 abstract class IdCreator
 {
     /**
@@ -17,13 +20,19 @@ abstract class IdCreator
      * alphanumeric characters, although unfortunately reducing the effective number of bytes.
      *
      * @see https://en.wikipedia.org/wiki/Base64
+     *
+     * @throws NoRandomnessAvailable
      */
     public static function create(): string
     {
-        $base64String = base64_encode(random_bytes(42)); // 336 / 6 = 56 characters
-        $urlSafeString = str_replace('+', 'A', $base64String);
+        try {
+            $base64String = base64_encode(random_bytes(42)); // 336 / 6 = 56 characters
+            $urlSafeString = str_replace('+', 'A', $base64String);
 
-        return str_replace('/', 'B', $urlSafeString);
+            return str_replace('/', 'B', $urlSafeString);
+        } catch (RandomException $exception) {
+            throw new NoRandomnessAvailable();
+        }
     }
 
     public static function createByHashingString(string $string): string

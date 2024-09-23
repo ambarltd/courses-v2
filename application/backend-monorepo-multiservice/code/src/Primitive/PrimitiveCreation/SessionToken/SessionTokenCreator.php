@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Primitive\PrimitiveCreation\SessionToken;
 
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
+use Random\RandomException;
+
 abstract class SessionTokenCreator
 {
     /**
@@ -17,12 +20,18 @@ abstract class SessionTokenCreator
      * alphanumeric characters, although unfortunately reducing the effective number of bytes.
      *
      * @see https://en.wikipedia.org/wiki/Base64
+     *
+     * @throws NoRandomnessAvailable
      */
     public static function create(): string
     {
-        $base64String = base64_encode(random_bytes(72)); // 576 / 6 = 96 characters
-        $urlSafeString = str_replace('+', 'A', $base64String);
+        try {
+            $base64String = base64_encode(random_bytes(72)); // 576 / 6 = 96 characters
+            $urlSafeString = str_replace('+', 'A', $base64String);
 
-        return str_replace('/', 'B', $urlSafeString);
+            return str_replace('/', 'B', $urlSafeString);
+        } catch (RandomException $exception) {
+            throw new NoRandomnessAvailable();
+        }
     }
 }

@@ -18,6 +18,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;
 use Galeas\Api\Service\EventStore\EventStore;
 
@@ -43,6 +44,7 @@ class RequestPrimaryEmailChangeHandler
      * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
      * @throws EmailIsTaken|InvalidEmail|NoUserFoundForCode
      * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws NoRandomnessAvailable
      */
     public function handle(RequestPrimaryEmailChange $command): void
     {

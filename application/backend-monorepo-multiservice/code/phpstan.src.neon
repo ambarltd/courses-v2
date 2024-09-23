@@ -3,6 +3,7 @@ parameters:
         - src/BoundedContext
         - src/Console
         - src/JsonSchema
+        - src/Primitive
     exceptions:
         reportUncheckedExceptionDeadCatch: false
         check:

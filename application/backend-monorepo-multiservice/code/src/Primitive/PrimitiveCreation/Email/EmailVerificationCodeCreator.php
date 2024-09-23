@@ -4,11 +4,21 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Primitive\PrimitiveCreation\Email;
 
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
+use Random\RandomException;
+
 abstract class EmailVerificationCodeCreator
 {
+    /**
+     * @throws NoRandomnessAvailable
+     */
     public static function create(): string
     {
-        return str_pad(self::cryptographicallySecureString(), 96, '0', STR_PAD_LEFT);
+        try {
+            return str_pad(self::cryptographicallySecureString(), 96, '0', STR_PAD_LEFT);
+        } catch (RandomException $e) {
+            throw new NoRandomnessAvailable();
+        }
     }
 
     /**
@@ -17,6 +27,8 @@ abstract class EmailVerificationCodeCreator
      * Well beyond birthday problem collisions, and cryptographically safe for a while.
      *
      * @return string
+     *
+     * @throws RandomException
      */
     private static function cryptographicallySecureString()
     {
