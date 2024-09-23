@@ -16,7 +16,6 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Email\EmailValidator;

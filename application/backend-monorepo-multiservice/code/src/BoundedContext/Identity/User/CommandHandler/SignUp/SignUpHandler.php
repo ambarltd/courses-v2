@@ -35,11 +35,11 @@ class SignUpHandler
     }
 
     /**
+     * @return array{userId: string}
+     *
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
      * @throws CouldNotHashWithBCrypt|EmailIsTaken|UsernameIsTaken
      * @throws EventStoreCannotWrite|ProjectionCannotRead
-     *
-     * @return array{userId: string}
      */
     public function handle(SignUp $command): array
     {

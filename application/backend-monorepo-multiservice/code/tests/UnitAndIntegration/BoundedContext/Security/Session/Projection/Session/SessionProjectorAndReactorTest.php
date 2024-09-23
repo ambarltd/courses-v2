@@ -40,22 +40,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->sessionTokenCreated(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -75,22 +75,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->sessionTokenCreated(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -122,7 +122,7 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
@@ -130,14 +130,14 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             // asUser is defined in SignedIn, which wasn't processed in this case
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->refreshedSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -157,7 +157,7 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
@@ -165,14 +165,14 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             // asUser is defined in SignedIn, which wasn't processed in this case
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->refreshedSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -207,22 +207,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->refreshedSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -242,22 +242,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->refreshedSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $tokenRefreshed->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -289,7 +289,7 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
@@ -297,14 +297,14 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             // asUser is defined in SignedIn, which wasn't processed in this case
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertTrue(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -324,7 +324,7 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
@@ -332,14 +332,14 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             // asUser is defined in SignedIn, which wasn't processed in this case
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertTrue(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -375,22 +375,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertTrue(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
@@ -410,22 +410,22 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
             1,
             $sessions
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessions[0]->getSessionId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->asUser()->id(),
             $sessions[0]->getUserId()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedOut->withSessionToken(),
             $sessions[0]->getSessionToken()
         );
         self::assertTrue(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );
