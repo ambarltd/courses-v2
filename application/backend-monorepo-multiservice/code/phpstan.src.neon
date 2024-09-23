@@ -4,6 +4,7 @@ parameters:
         - src/Console
         - src/JsonSchema
         - src/Primitive
+        - src/Service
     exceptions:
         reportUncheckedExceptionDeadCatch: false
         check:

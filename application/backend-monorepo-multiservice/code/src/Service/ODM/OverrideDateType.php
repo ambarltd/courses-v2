@@ -80,8 +80,6 @@ class OverrideDateType extends DateType
 
             throw new \Exception('Doctrine Mapping Exception on OverrideDateType::getDateTimeImmutable');
         }
-
-        throw new \Exception('Doctrine Mapping Exception on OverrideDateType::getDateTimeImmutable');
     }
 
     /**

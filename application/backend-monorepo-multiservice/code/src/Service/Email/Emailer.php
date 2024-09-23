@@ -6,6 +6,9 @@ namespace Galeas\Api\Service\Email;
 
 class Emailer
 {
+    /**
+     * @throws CouldNotSendEmail
+     */
     public function send(
         string $to,
         string $subject,

@@ -13,6 +13,9 @@ class PhpOutLogger implements LoggerInterface
 {
     private Logger $logger;
 
+    /**
+     * @throws \InvalidArgumentException
+     */
     public function __construct()
     {
         $handler = new StreamHandler('php://stdout', Level::Debug);
@@ -59,8 +62,24 @@ class PhpOutLogger implements LoggerInterface
         $this->logger->debug($message, $context);
     }
 
+    /**
+     * @param mixed $level
+     *
+     * @throws \InvalidArgumentException
+     */
     public function log($level, string|\Stringable $message, array $context = []): void
     {
-        $this->logger->log($level, $message, $context);
+        try {
+            $isValidString = \is_string($level)
+                && \in_array($level, ['alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'], true);
+            $isLevel = $level instanceof Level;
+            if (!$isValidString || !$isLevel) {
+                throw new \InvalidArgumentException('Invalid log level');
+            }
+
+            $this->logger->log($level, $message, $context);
+        } catch (\Throwable $exception) {
+            throw new \InvalidArgumentException('Invalid log level');
+        }
     }
 }

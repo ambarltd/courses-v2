@@ -7,6 +7,7 @@ namespace Galeas\Api\Service\EventStore;
 use Doctrine\DBAL\Configuration;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception as DBALException;
 use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\TransactionIsolationLevel;
 
@@ -23,7 +24,7 @@ class SQLEventStoreConnection
      * @see https://dev.mysql.com/doc/refman/5.7/en/innodb-locking-reads.html
      * @see https://en.wikipedia.org/wiki/Isolation_(database_systems)#Isolation_levels
      *
-     * @throws \InvalidArgumentException
+     * @throws DBALException|\InvalidArgumentException
      */
     public function __construct(
         string $databaseName,
@@ -42,14 +43,13 @@ class SQLEventStoreConnection
                 [
                     'dbname' => $databaseName,
                     'host' => $databaseHost,
-                    'port' => $databasePort,
+                    'port' => (int) $databasePort,
                     'user' => $databaseUser,
                     'password' => $databasePassword,
                     'driver' => 'pdo_pgsql',
                     'sslmode' => 'require',
                 ],
                 $configuration,
-                null
             );
         } catch (DriverException $DBALException) {
             throw new \InvalidArgumentException(\sprintf('Could not connect. dbname "%s" user "%s" password *** host "%s" port "%s" driver "%s"', $databaseName, $databaseUser, $databaseHost, $databasePort, 'pdo_pgsql'));

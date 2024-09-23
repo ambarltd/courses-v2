@@ -7,6 +7,7 @@ namespace Galeas\Api\Service\RequestMapper;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
+use Galeas\Api\Service\RequestMapper\Exception\InternalDateHandlingError;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
 use Galeas\Api\Service\RequestMapper\Exception\MissingExpectedSessionToken;
@@ -57,12 +58,13 @@ class JsonPostRequestMapper
      *
      * @throws InvalidContentType|InvalidJson
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
+     * @throws InternalDateHandlingError
      */
     public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
     {
         $requestArray = $this->requestJsonToRequestArray($request);
         $overridenArray = $this->overrideSensitiveFieldsInRequestArrayAndRemoveMetadata($requestArray, $request, $commandOrQueryClass);
-        $validatedMetadata = $this->metadataToValidatedMetadata($requestArray['metadata'], $request);
+        $validatedMetadata = $this->metadataToValidatedMetadata(\is_array($requestArray['metadata']) ? $requestArray['metadata'] : [], $request);
 
         $safeArray = $overridenArray;
         $safeArray['metadata'] = $validatedMetadata;
@@ -71,6 +73,8 @@ class JsonPostRequestMapper
     }
 
     /**
+     * @return array<string, mixed>
+     *
      * @throws InvalidContentType|InvalidJson
      */
     private function requestJsonToRequestArray(Request $request): array
@@ -96,6 +100,9 @@ class JsonPostRequestMapper
         $requestArray = [];
         if (!empty($content)) {
             $requestArray = json_decode($content, true);
+            if (!\is_array($requestArray)) {
+                throw new InvalidJson(\sprintf('%s is not in a valid JSON format', $content));
+            }
 
             if (JSON_ERROR_NONE !== json_last_error()) {
                 throw new InvalidJson(\sprintf('%s is not in a valid JSON format', $content));
@@ -105,6 +112,14 @@ class JsonPostRequestMapper
         return $requestArray;
     }
 
+    /**
+     * @param array<string, mixed> $requestArray
+     *
+     * @return array<string, mixed>
+     *
+     * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
+     * @throws InternalDateHandlingError
+     */
     private function overrideSensitiveFieldsInRequestArrayAndRemoveMetadata(
         array $requestArray,
         Request $request,
@@ -114,12 +129,10 @@ class JsonPostRequestMapper
         $requestArray['withIp'] = null;
         $requestArray['withSessionToken'] = null;
 
-        $withSessionToken = $request->headers->get('X-With-Session-Token', null);
-        if (\is_array($withSessionToken)) {
-            $withSessionToken = array_values($withSessionToken)[0];
-        }
+        $withSessionToken = $request->headers->get('X-With-Session-Token');
         if (
             \array_key_exists('metadata', $requestArray)
+            && \is_array($requestArray['metadata'])
             && \array_key_exists('withSessionToken', $requestArray['metadata'])
             && (\is_string($requestArray['metadata']['withSessionToken']) || null === $requestArray['metadata']['withSessionToken'])
         ) {
@@ -127,11 +140,17 @@ class JsonPostRequestMapper
         }
 
         try {
+            $withTokenRefreshedAfterDate = (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds');
+        } catch (\DateMalformedStringException $exception) {
+            throw new InternalDateHandlingError();
+        }
+
+        try {
             if (\is_string($withSessionToken)) {
                 $requestArray['authenticatedUserId'] = $this->userIdFromSignedInSessionToken
                     ->userIdFromSignedInSessionToken(
                         $withSessionToken,
-                        (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds')
+                        $withTokenRefreshedAfterDate
                     )
                 ;
                 $requestArray['withSessionToken'] = $withSessionToken;
@@ -165,6 +184,11 @@ class JsonPostRequestMapper
         return $requestArray;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     *
+     * @return array<string, mixed>
+     */
     private function metadataToValidatedMetadata(
         array $metadata,
         Request $request
@@ -212,10 +236,7 @@ class JsonPostRequestMapper
             $receivedDeviceOrientation = $metadata['deviceOrientation'];
         }
 
-        $receivedUserAgent = $request->headers->get('User-Agent', null);
-        if (\is_array($receivedUserAgent)) {
-            $receivedUserAgent = array_values($receivedUserAgent)[0];
-        }
+        $receivedUserAgent = $request->headers->get('User-Agent');
         if (
             \array_key_exists('userAgent', $metadata)
             && (\is_string($metadata['userAgent']) || null === $metadata['userAgent'])
@@ -223,10 +244,7 @@ class JsonPostRequestMapper
             $receivedUserAgent = $metadata['userAgent'];
         }
 
-        $receivedReferer = $request->headers->get('Referer', null);
-        if (\is_array($receivedReferer)) {
-            $receivedReferer = array_values($receivedReferer)[0];
-        }
+        $receivedReferer = $request->headers->get('Referer');
         if (
             \array_key_exists('referer', $metadata)
             && (\is_string($metadata['referer']) || null === $metadata['referer'])
@@ -275,6 +293,9 @@ class JsonPostRequestMapper
         ];
     }
 
+    /**
+     * @param array<string,mixed> $safeArray
+     */
     private function safeArrayToCommandOrQuery(string $commandOrQueryClass, array $safeArray): object
     {
         $command = new $commandOrQueryClass();

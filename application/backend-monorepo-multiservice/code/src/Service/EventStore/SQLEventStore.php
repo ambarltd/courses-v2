@@ -85,7 +85,33 @@ class SQLEventStore implements EventStore
                 return null;
             }
 
-            $aggregateEvents = array_map(static function (array $eventArray) {
+            $aggregateEvents = array_map(static function (array $eventArray) use ($aggregateId) {
+                if (
+                    !\array_key_exists('event_id', $eventArray)
+                    || !\is_string($eventArray['event_id'])
+                    || !\array_key_exists('aggregate_id', $eventArray)
+                    || !\is_string($eventArray['aggregate_id'])
+                    || !\array_key_exists('aggregate_version', $eventArray)
+                    || !\is_int($eventArray['aggregate_version'])
+                    || !\array_key_exists('causation_id', $eventArray)
+                    || !\is_string($eventArray['causation_id'])
+                    || !\array_key_exists('correlation_id', $eventArray)
+                    || !\is_string($eventArray['correlation_id'])
+                    || !\array_key_exists('recorded_on', $eventArray)
+                    || !\is_string($eventArray['recorded_on'])
+                    || !\array_key_exists('event_name', $eventArray)
+                    || !\is_string($eventArray['event_name'])
+                    || !\array_key_exists('json_payload', $eventArray)
+                    || !\is_string($eventArray['json_payload'])
+                    || !\array_key_exists('json_metadata', $eventArray)
+                    || !\is_string($eventArray['json_metadata'])
+                ) {
+                    throw new EventStoreCannotRead(new \RuntimeException(\sprintf(
+                        'Could not get the correct event properties from the event array for aggregate id %s',
+                        $aggregateId
+                    )));
+                }
+
                 return SerializedEvent::fromProperties(
                     $eventArray['event_id'],
                     $eventArray['aggregate_id'],
@@ -129,8 +155,34 @@ class SQLEventStore implements EventStore
             $statement->bindValue(1, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();
-            if (false === $eventArray || null === $eventArray) {
+            if (!\is_array($eventArray)) {
                 return null;
+            }
+
+            if (
+                !\array_key_exists('event_id', $eventArray)
+                || !\is_string($eventArray['event_id'])
+                || !\array_key_exists('aggregate_id', $eventArray)
+                || !\is_string($eventArray['aggregate_id'])
+                || !\array_key_exists('aggregate_version', $eventArray)
+                || !\is_int($eventArray['aggregate_version'])
+                || !\array_key_exists('causation_id', $eventArray)
+                || !\is_string($eventArray['causation_id'])
+                || !\array_key_exists('correlation_id', $eventArray)
+                || !\is_string($eventArray['correlation_id'])
+                || !\array_key_exists('recorded_on', $eventArray)
+                || !\is_string($eventArray['recorded_on'])
+                || !\array_key_exists('event_name', $eventArray)
+                || !\is_string($eventArray['event_name'])
+                || !\array_key_exists('json_payload', $eventArray)
+                || !\is_string($eventArray['json_payload'])
+                || !\array_key_exists('json_metadata', $eventArray)
+                || !\is_string($eventArray['json_metadata'])
+            ) {
+                throw new EventStoreCannotRead(new \RuntimeException(\sprintf(
+                    'Could not get the correct event properties from the event array for event id %s',
+                    $eventId
+                )));
             }
 
             $serializedEvent = SerializedEvent::fromProperties(
