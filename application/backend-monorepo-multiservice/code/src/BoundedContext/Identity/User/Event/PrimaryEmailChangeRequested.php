@@ -38,6 +38,9 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         return $this->requestedWithHashedPassword;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

@@ -22,6 +22,9 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
 
     private string $subjectLine;
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

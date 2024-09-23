@@ -12,5 +12,6 @@ class RequestPrimaryEmailChange
 
     public string $newEmailRequested;
 
+    /** @var array<string, mixed> */
     public array $metadata;
 }

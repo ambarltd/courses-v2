@@ -88,7 +88,7 @@ class UserWithEmailProjector implements EventProjector
                     );
                 }
             } else {
-                throw new \Exception(\sprintf('Could not process serialized event %s of class %s where UserWithEmail for userId %s was found', $event->eventId()->id(), $event::class, $event->authenticatedUserId()->id()));
+                throw new \Exception(\sprintf('Could not process serialized event %s of class %s', $event->eventId()->id(), $event::class));
             }
 
             $this->projectionDocumentManager->persist($userWithEmail);

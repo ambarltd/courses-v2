@@ -58,19 +58,21 @@ class ProductListItemProjector implements EventProjector
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     private function findItem(string $id): ProductListItem
     {
-        /** @var ProductListItem $productListItem */
         $productListItem = $this->projectionDocumentManager
             ->createQueryBuilder(ProductListItem::class)
             ->field('id')->equals($id)
             ->getQuery()
             ->getSingleResult()
         ;
-        if (null === $productListItem) {
-            throw new \Exception();
+        if ($productListItem instanceof ProductListItem) {
+            return $productListItem;
         }
 
-        return $productListItem;
+        throw new \Exception();
     }
 }

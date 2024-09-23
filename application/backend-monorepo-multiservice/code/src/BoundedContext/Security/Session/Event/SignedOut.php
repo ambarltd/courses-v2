@@ -27,6 +27,9 @@ class SignedOut implements EventTransformedSession
         return $this->withSessionToken;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

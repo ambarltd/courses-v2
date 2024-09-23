@@ -8,7 +8,7 @@ class Reward
 {
     private Cashback|NoReward|Points $type;
 
-    public function type(): Cashback|Points
+    public function type(): Cashback|NoReward|Points
     {
         return $this->type;
     }

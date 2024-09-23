@@ -12,5 +12,6 @@ class RefreshToken
 
     public string $withSessionToken;
 
+    /** @var array<string, mixed> */
     public array $metadata;
 }

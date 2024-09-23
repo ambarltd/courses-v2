@@ -40,6 +40,8 @@ class SignInHandler
     /**
      * @throws InvalidDeviceLabel|InvalidPassword|NoPasswordFound|UserNotFound
      * @throws EventStoreCannotWrite|InvalidId|InvalidIp|ProjectionCannotRead
+     *
+     * @return array{sessionTokenCreated: string}
      */
     public function handle(SignIn $command): array
     {

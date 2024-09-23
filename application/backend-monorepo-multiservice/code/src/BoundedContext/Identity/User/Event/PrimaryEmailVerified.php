@@ -17,6 +17,9 @@ class PrimaryEmailVerified implements EventTransformedUser
 
     private string $verifiedWithCode;
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

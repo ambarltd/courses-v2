@@ -42,7 +42,7 @@ class RequestPrimaryEmailChangeHandler
      * @see SignUpHandler
      *
      * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
-     * @throws EmailIsTaken|InvalidEmail|InvalidId
+     * @throws EmailIsTaken|InvalidEmail|NoUserFoundForCode
      * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(RequestPrimaryEmailChange $command): void

@@ -14,5 +14,6 @@ class SignIn
 
     public string $withIp;
 
+    /** @var array<string, mixed> */
     public array $metadata;
 }

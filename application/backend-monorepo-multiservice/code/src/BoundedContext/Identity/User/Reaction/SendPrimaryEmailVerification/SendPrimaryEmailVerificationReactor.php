@@ -22,17 +22,15 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 {
     private EventStore $eventStore;
 
-    private Emailer $emailer;
-
-    public function __construct(EventStore $eventStore, Emailer $emailer)
+    public function __construct(EventStore $eventStore)
     {
         $this->eventStore = $eventStore;
-        $this->emailer = $emailer;
     }
 
     /**
      * @throws PrimaryEmailVerificationAlreadySent
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws EventStoreCannotRead|EventStoreCannotWrite
+     * @throws NoUserFoundForCode
      */
     public function react(Event $event): void
     {

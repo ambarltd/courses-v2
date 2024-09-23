@@ -6,6 +6,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
+use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
@@ -21,7 +22,7 @@ class DefineProductHandler
     }
 
     /**
-     * @throws EventStoreCannotWrite|ProjectionCannotRead
+     * @throws EventStoreCannotWrite|EventStoreCannotRead
      */
     public function handle(DefineProductCommand $command): void
     {

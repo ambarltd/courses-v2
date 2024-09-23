@@ -14,5 +14,6 @@ class SignUp
 
     public bool $termsOfUseAccepted;
 
+    /** @var array<string, mixed> */
     public array $metadata;
 }

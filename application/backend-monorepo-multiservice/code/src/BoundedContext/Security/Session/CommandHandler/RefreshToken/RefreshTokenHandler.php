@@ -31,8 +31,10 @@ class RefreshTokenHandler
     }
 
     /**
-     * @throws InvalidId|InvalidIp|NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws InvalidIp|NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead|AlreadySignedOut
+     *
+     * @return array{refreshedSessionToken: string}
      */
     public function handle(RefreshToken $command): array
     {

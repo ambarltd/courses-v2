@@ -11,17 +11,17 @@ class ProductListItem
     private string $name;
     private bool $isActive;
 
-    public function id()
+    public function id(): string
     {
         return $this->id;
     }
 
-    public function name()
+    public function name(): string
     {
         return $this->name;
     }
 
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->isActive;
     }

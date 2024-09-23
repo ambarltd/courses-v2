@@ -32,6 +32,7 @@ class TakenEmailProjector implements EventProjector
                 return;
             }
 
+            /** @var null|TakenEmail $takenEmail */
             $takenEmail = $this->projectionDocumentManager
                 ->createQueryBuilder(TakenEmail::class)
                 ->field('id')->equals($event->aggregateId()->id())
@@ -46,13 +47,13 @@ class TakenEmailProjector implements EventProjector
                     null,
                     $event->primaryEmail()
                 );
-            } elseif ($event instanceof PrimaryEmailVerified) {
+            } elseif ($event instanceof PrimaryEmailVerified && $takenEmail instanceof TakenEmail) {
                 // requested email becomes verified email
                 $takenEmail->changeEmails(
                     $takenEmail->getCanonicalRequestedEmail(),
                     null
                 );
-            } elseif ($event instanceof PrimaryEmailChangeRequested) {
+            } elseif ($event instanceof PrimaryEmailChangeRequested && $takenEmail instanceof TakenEmail) {
                 // verified email stays the same, requested email changes
                 $takenEmail->changeEmails(
                     $takenEmail->getCanonicalVerifiedEmail(),

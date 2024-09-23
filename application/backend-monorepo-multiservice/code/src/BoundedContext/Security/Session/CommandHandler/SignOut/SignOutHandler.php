@@ -29,7 +29,7 @@ class SignOutHandler
     }
 
     /**
-     * @throws InvalidId|NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
+     * @throws NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
      * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(SignOut $command): void

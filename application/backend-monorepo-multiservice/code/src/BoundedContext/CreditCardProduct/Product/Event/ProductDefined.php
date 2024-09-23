@@ -29,6 +29,9 @@ class ProductDefined implements EventCreatedProduct
     private string $reward;
     private string $cardBackgroundHex;
 
+    /**
+     * @param array<string,mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

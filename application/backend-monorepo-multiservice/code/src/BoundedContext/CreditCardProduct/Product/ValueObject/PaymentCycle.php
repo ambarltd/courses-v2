@@ -8,7 +8,7 @@ class PaymentCycle
 {
     private Monthly|Quarterly|UnknownFrequency $frequency;
 
-    public function frequency(): Monthly|Quarterly
+    public function frequency(): Monthly|Quarterly|UnknownFrequency
     {
         return $this->frequency;
     }

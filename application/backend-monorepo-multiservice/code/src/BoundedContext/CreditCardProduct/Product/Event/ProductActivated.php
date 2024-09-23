@@ -12,6 +12,9 @@ class ProductActivated implements EventTransformedProduct
 {
     use EventTrait;
 
+    /**
+     * @param array<string,mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

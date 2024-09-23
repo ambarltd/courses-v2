@@ -34,6 +34,9 @@ class TokenRefreshed implements EventTransformedSession
         return $this->refreshedSessionToken;
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     */
     public static function new(
         Id $eventId,
         Id $aggregateId,

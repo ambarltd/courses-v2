@@ -16,7 +16,12 @@ class ListProducts
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    public function list()
+    /**
+     * @return array<array{id: string, name: string, isActive: bool}>
+     *
+     * @throws ProjectionCannotRead
+     */
+    public function list(): array
     {
         try {
             /** @var ProductListItem[] $items */
