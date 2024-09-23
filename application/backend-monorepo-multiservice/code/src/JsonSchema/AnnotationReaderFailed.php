@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\JsonSchema;
 
-use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
+use Galeas\Api\CommonException\InternalServerErrorException;
 
 class AnnotationReaderFailed extends InternalServerErrorException
 {

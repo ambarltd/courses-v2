@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\QueryHandler;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection\ProductList\ListProducts;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Query\ListProductsQuery;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class ListProductsQueryHandler
 {

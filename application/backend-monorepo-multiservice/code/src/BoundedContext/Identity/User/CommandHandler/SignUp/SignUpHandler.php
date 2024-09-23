@@ -6,9 +6,9 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;

@@ -9,7 +9,7 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
+use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class PrimaryEmailVerificationCodeProjector implements EventProjector

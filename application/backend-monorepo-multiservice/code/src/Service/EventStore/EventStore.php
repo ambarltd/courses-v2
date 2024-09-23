@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\EventStore;
 
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
+use Galeas\Api\CommonException\EventStoreCannotRead;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
 
 interface EventStore
 {

@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerific
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\UserIdFromPrimaryEmailVerificationCode as UserIdFromPrimaryEmailVerificationCodeVPE;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVerificationCodeVPE
 {

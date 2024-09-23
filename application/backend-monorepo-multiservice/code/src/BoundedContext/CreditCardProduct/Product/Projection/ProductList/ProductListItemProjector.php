@@ -9,7 +9,7 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
+use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class ProductListItemProjector implements EventProjector

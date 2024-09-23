@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\Common\Controller;
+namespace Galeas\Api\CommonController;
 
 use Galeas\Api\Common\Event\EventDeserializer;
 use Galeas\Api\Common\Event\Exception\FoundBadJsonInProjectionOrReaction;
 use Galeas\Api\Common\Event\SerializedEvent;
-use Galeas\Api\Common\ExceptionBase\BaseException;
+use Galeas\Api\CommonException\BaseException;
 use Galeas\Api\Service\Logger\PhpOutLogger;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 use Galeas\Api\Service\QueueProcessor\EventReactor;

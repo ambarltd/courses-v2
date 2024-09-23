@@ -6,10 +6,10 @@ namespace Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn;
 
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveCreation\SessionToken\SessionTokenCreator;
 use Galeas\Api\Primitive\PrimitiveValidation\Ip\IpV4AndV6Validator;

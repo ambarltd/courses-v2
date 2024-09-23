@@ -6,8 +6,8 @@ namespace Galeas\Api\Console;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefineProductHandler;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
+use Galeas\Api\CommonException\EventStoreCannotRead;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

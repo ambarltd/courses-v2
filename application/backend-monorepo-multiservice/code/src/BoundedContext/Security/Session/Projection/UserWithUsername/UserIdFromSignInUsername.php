@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\UserIdFromSignInUsername as SIUserIdFromUsername;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class UserIdFromSignInUsername implements SIUserIdFromUsername
 {

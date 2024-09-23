@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\Common\Controller;
+namespace Galeas\Api\CommonController;
 
 /**
  * This is an annotation class.

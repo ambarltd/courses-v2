@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Controller;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Query\ListProductsQuery;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\QueryHandler\ListProductsQueryHandler;
-use Galeas\Api\Common\Controller\BaseController;
+use Galeas\Api\CommonController\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

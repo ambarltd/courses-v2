@@ -10,7 +10,7 @@ use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
+use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class SessionProjector implements EventProjector

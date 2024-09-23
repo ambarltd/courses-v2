@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection\ProductList;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class ListProducts
 {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\JsonSchema;
 
-use Galeas\Api\Common\Controller\RequestSchema;
-use Galeas\Api\Common\Controller\ResponseSchema;
 use Galeas\Api\JsonSchema\AnnotationReaderFailed;
 use Galeas\Api\JsonSchema\SchemaAnnotationReader;
 use PHPUnit\Framework\Assert;

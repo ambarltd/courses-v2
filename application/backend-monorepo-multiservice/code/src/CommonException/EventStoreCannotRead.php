@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\Common\ExceptionBase;
+namespace Galeas\Api\CommonException;
 
 class EventStoreCannotRead extends DatabaseFailure
 {

@@ -6,8 +6,8 @@ namespace Galeas\Api\Service\EventStore;
 
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
+use Galeas\Api\CommonException\EventStoreCannotRead;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Service\EventStore\Exception\CancellingTransactionRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\CompletingTransactionRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransaction;

@@ -8,7 +8,7 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedP
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmailProjector;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
-use Galeas\Api\Common\Controller\ProjectionReactionController;
+use Galeas\Api\CommonController\ProjectionReactionController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

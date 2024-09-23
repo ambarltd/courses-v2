@@ -6,7 +6,7 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn\HashedPasswordFromUserId as SIHashedPasswordFromUserId;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class HashedPasswordFromUserId implements SIHashedPasswordFromUserId
 {

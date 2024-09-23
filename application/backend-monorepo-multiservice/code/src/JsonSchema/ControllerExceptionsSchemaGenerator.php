@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\JsonSchema;
 
-use Galeas\Api\Common\ExceptionBase\BaseException;
+use Galeas\Api\CommonException\BaseException;
 
 class ControllerExceptionsSchemaGenerator
 {

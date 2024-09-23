@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Primitive\PrimitiveCreation;
 
-use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
+use Galeas\Api\CommonException\InternalServerErrorException;
 
 class NoRandomnessAvailable extends InternalServerErrorException
 {

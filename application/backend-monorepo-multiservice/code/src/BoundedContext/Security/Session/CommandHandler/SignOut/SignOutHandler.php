@@ -7,10 +7,10 @@ namespace Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut;
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
 use Galeas\Api\BoundedContext\Security\Session\Command\SignOut;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
-use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\CommonException\EventStoreCannotRead;
+use Galeas\Api\CommonException\EventStoreCannotWrite;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 

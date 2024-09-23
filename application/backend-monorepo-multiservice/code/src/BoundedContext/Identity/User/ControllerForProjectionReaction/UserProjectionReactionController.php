@@ -8,7 +8,7 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationC
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification\SendPrimaryEmailVerificationReactor;
-use Galeas\Api\Common\Controller\ProjectionReactionController;
+use Galeas\Api\CommonController\ProjectionReactionController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;

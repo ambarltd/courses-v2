@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\RequestMapper;
 
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
+use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
 use Galeas\Api\Service\RequestMapper\Exception\InternalDateHandlingError;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;

@@ -7,7 +7,7 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
+use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class HashedPasswordProjector implements EventProjector

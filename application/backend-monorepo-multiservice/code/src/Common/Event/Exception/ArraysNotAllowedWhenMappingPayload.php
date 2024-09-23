@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Common\Event\Exception;
 
-use Galeas\Api\Common\ExceptionBase\InternalServerErrorException;
+use Galeas\Api\CommonException\InternalServerErrorException;
 
 class ArraysNotAllowedWhenMappingPayload extends InternalServerErrorException
 {
