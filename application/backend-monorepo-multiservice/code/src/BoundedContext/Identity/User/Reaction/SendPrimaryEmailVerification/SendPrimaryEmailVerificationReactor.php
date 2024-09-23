@@ -13,7 +13,7 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Service\Email\Emailer;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 use Galeas\Api\Service\QueueProcessor\EventReactor;
 
@@ -29,7 +29,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
     /**
      * @throws PrimaryEmailVerificationAlreadySent
      * @throws EventStoreCannotRead|EventStoreCannotWrite
-     * @throws NoUserFoundForCode
+     * @throws NoUserFoundForCode|NoRandomnessAvailable
      */
     public function react(Event $event): void
     {

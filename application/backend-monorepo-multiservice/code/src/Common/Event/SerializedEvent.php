@@ -117,9 +117,12 @@ class SerializedEvent
         );
     }
 
+    /**
+     * @throws FoundBadJsonForSerializedEvent
+     */
     public function toJson(): string
     {
-        return json_encode([
+        $json = json_encode([
             'eventId' => $this->eventId,
             'aggregateId' => $this->aggregateId,
             'aggregateVersion' => $this->aggregateVersion,
@@ -130,14 +133,24 @@ class SerializedEvent
             'jsonPayload' => json_decode($this->jsonPayload, false),
             'jsonMetadata' => json_decode($this->jsonMetadata, false),
         ]);
+
+        if (!\is_string($json)) {
+            throw new FoundBadJsonForSerializedEvent();
+        }
+
+        return $json;
     }
 
+    /**
+     * @throws FoundBadJsonForSerializedEvent
+     */
     public static function fromJson(string $json): self
     {
         $jsonObject = json_decode($json);
 
         if (
-            isset($jsonObject->eventId, $jsonObject->aggregateId, $jsonObject->aggregateVersion, $jsonObject->causationId, $jsonObject->correlationId, $jsonObject->recordedOn, $jsonObject->eventName, $jsonObject->jsonPayload, $jsonObject->jsonMetadata)
+            is_object($jsonObject)
+            && isset($jsonObject->eventId, $jsonObject->aggregateId, $jsonObject->aggregateVersion, $jsonObject->causationId, $jsonObject->correlationId, $jsonObject->recordedOn, $jsonObject->eventName, $jsonObject->jsonPayload, $jsonObject->jsonMetadata)
             && \is_string($jsonObject->eventId)
             && \is_string($jsonObject->aggregateId)
             && \is_int($jsonObject->aggregateVersion)
@@ -148,6 +161,11 @@ class SerializedEvent
             && \is_object($jsonObject->jsonPayload)
             && \is_object($jsonObject->jsonMetadata)
         ) {
+            $payload = json_encode($jsonObject->jsonPayload);
+            $metadata = json_encode($jsonObject->jsonMetadata);
+            if (!\is_string($payload) || !\is_string($metadata)) {
+                throw new FoundBadJsonForSerializedEvent();
+            }
             return new self(
                 $jsonObject->eventId,
                 $jsonObject->aggregateId,
@@ -156,20 +174,24 @@ class SerializedEvent
                 $jsonObject->correlationId,
                 $jsonObject->recordedOn,
                 $jsonObject->eventName,
-                json_encode($jsonObject->jsonPayload),
-                json_encode($jsonObject->jsonMetadata),
+                $payload,
+                $metadata,
             );
         }
 
         throw new FoundBadJsonForSerializedEvent();
     }
 
+    /**
+     * @throws FoundBadJsonForSerializedEvent
+     */
     public static function fromAmbarJson(string $json): self
     {
         $json = json_decode($json, true);
 
         if (
-            \array_key_exists('event_id', $json)
+            \is_array($json)
+            && \array_key_exists('event_id', $json)
             && \array_key_exists('aggregate_id', $json)
             && \array_key_exists('aggregate_version', $json)
             && \array_key_exists('causation_id', $json)

@@ -20,8 +20,12 @@ trait EventTrait
 
     private \DateTimeImmutable $recordedOn;
 
+    /** @var array<string, mixed>  */
     private array $metadata;
 
+    /**
+     * @param array<string,mixed> $metadata
+     */
     private function __construct(
         Id $eventId,
         Id $aggregateId,
@@ -70,13 +74,17 @@ trait EventTrait
         return $this->recordedOn;
     }
 
+    /**
+     * @return array<string,mixed>
+     */
     public function metadata(): array
     {
         return $this->metadata;
     }
 
     /**
-     * @throws \RuntimeException
+     * @param array<string, mixed> $metadata
+     * @param array<string, mixed> $extraPropertiesAndValues
      */
     private static function reflectionConstructor(
         Id $eventId,

@@ -11,6 +11,7 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 
 class SignOutHandler
@@ -30,6 +31,7 @@ class SignOutHandler
     /**
      * @throws NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
      * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws NoRandomnessAvailable
      */
     public function handle(SignOut $command): void
     {

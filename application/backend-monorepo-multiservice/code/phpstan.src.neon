@@ -1,6 +1,7 @@
 parameters:
     paths:
         - src/BoundedContext
+        - src/Common
         - src/Console
         - src/JsonSchema
         - src/Primitive

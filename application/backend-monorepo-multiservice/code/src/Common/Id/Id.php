@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\Common\Id;
 
 use Galeas\Api\Primitive\PrimitiveCreation\Id\IdCreator;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveValidation\Id\IdValidator;
 
 class Id
@@ -44,6 +45,9 @@ class Id
         return new self(IdCreator::createByHashingString($stringToHash));
     }
 
+    /**
+     * @throws NoRandomnessAvailable
+     */
     public static function createNew(): self
     {
         return new self(IdCreator::create());

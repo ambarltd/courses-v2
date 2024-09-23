@@ -8,6 +8,7 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCom
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefineProductHandler;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -40,7 +41,7 @@ class DefineCreditCardProducts extends Command
     }
 
     /**
-     * @throws EventStoreCannotRead|EventStoreCannotWrite
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
      */
     protected function execute(
         InputInterface $input,

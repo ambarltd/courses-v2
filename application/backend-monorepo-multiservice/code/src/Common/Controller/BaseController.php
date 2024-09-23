@@ -31,6 +31,9 @@ class BaseController extends AbstractController
 
     private bool $shouldValidateResponseSchemas = false;
 
+    /**
+     * @param array<object> $services
+     */
     public function __construct(
         array $services
     ) {
@@ -85,12 +88,16 @@ class BaseController extends AbstractController
             if (!empty($errors)) {
                 $this->phpOutLogger->warning('json_schema_validation_error');
 
+                $response = json_encode([
+                    'errors' => $errors,
+                    'errorIdentifier' => 'json_schema_validation_error',
+                    'errorMessage' => 'Json Schema Validation Error',
+                ]);
+                if (false === $response) {
+                    throw new \RuntimeException('error json_encode failed');
+                }
                 return JsonResponse::fromJsonString(
-                    json_encode([
-                        'errors' => $errors,
-                        'errorIdentifier' => 'json_schema_validation_error',
-                        'errorMessage' => 'Json Schema Validation Error',
-                    ]),
+                    $response,
                     Response::HTTP_BAD_REQUEST
                 );
             }
@@ -123,12 +130,16 @@ class BaseController extends AbstractController
             if (!empty($errors)) {
                 $this->phpOutLogger->warning('invalid_response_against_json_schema');
 
+                $response = json_encode([
+                    'errors' => $errors,
+                    'errorIdentifier' => 'invalid_response_against_json_schema',
+                    'errorMessage' => 'Invalid Response Against Json Schema',
+                ]);
+                if (false === $response) {
+                    throw new \RuntimeException('error json_encode failed');
+                }
                 return JsonResponse::fromJsonString(
-                    json_encode([
-                        'errors' => $errors,
-                        'errorIdentifier' => 'invalid_response_against_json_schema',
-                        'errorMessage' => 'Invalid Response Against Json Schema',
-                    ]),
+                    $response,
                     Response::HTTP_INTERNAL_SERVER_ERROR
                 );
             }
@@ -144,12 +155,16 @@ class BaseController extends AbstractController
                 $stackTrace
             ));
 
+            $response = json_encode([
+                'errors' => [],
+                'errorIdentifier' => 'invalid_response_against_json_schema',
+                'errorMessage' => 'Invalid Response Against Json Schema',
+            ]);
+            if (false === $response) {
+                throw new \RuntimeException('error json_encode failed');
+            }
             return JsonResponse::fromJsonString(
-                json_encode([
-                    'errors' => [],
-                    'errorIdentifier' => $exception::getErrorIdentifier(),
-                    'errorMessage' => '',
-                ]),
+                $response,
                 $exception::getHttpCode()
             );
         } catch (\Throwable $throwable) {
@@ -162,12 +177,16 @@ class BaseController extends AbstractController
                 $stackTrace
             ));
 
+            $response = json_encode([
+                'errors' => [],
+                'errorIdentifier' => 'internal_server_error',
+                'errorMessage' => $errorMessage,
+            ]);
+            if (false === $response) {
+                throw new \RuntimeException('error json_encode failed');
+            }
             return JsonResponse::fromJsonString(
-                json_encode([
-                    'errors' => [],
-                    'errorIdentifier' => 'internal_server_error',
-                    'errorMessage' => $errorMessage,
-                ]),
+                $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }

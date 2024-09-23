@@ -9,6 +9,7 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 
 class DefineProductHandler
@@ -21,7 +22,7 @@ class DefineProductHandler
     }
 
     /**
-     * @throws EventStoreCannotRead|EventStoreCannotWrite
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
      */
     public function handle(DefineProductCommand $command): void
     {

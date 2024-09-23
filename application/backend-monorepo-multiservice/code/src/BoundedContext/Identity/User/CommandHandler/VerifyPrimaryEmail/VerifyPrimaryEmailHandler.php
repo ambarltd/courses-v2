@@ -16,6 +16,7 @@ use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 
 class VerifyPrimaryEmailHandler
@@ -39,7 +40,7 @@ class VerifyPrimaryEmailHandler
      * @see RequestPrimaryEmailChangeHandler
      *
      * @throws EmailIsAlreadyVerified|NoUserFoundForCode|VerificationCodeDoesNotMatch
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead|NoRandomnessAvailable
      */
     public function handle(VerifyPrimaryEmail $command): void
     {

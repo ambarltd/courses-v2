@@ -20,5 +20,8 @@ interface Event
 
     public function recordedOn(): \DateTimeImmutable;
 
+    /**
+     * @return array<string,mixed>
+     */
     public function metadata(): array;
 }
