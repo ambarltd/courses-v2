@@ -14,7 +14,8 @@ class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrat
     public function testHashedPasswordFromUserId(): void
     {
         $hashedPasswordFromUserIdService = $this->getContainer()
-            ->get(HashedPasswordFromUserId::class);
+            ->get(HashedPasswordFromUserId::class)
+        ;
 
         Assert::assertEquals(
             null,
@@ -31,7 +32,8 @@ class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrat
                     'user_id_1',
                     'hashed_password_1_a'
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
         Assert::assertEquals(
             'hashed_password_1_a',
@@ -48,7 +50,8 @@ class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrat
                     'user_id_2',
                     'hashed_password_2_a'
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
         Assert::assertEquals(
             'hashed_password_1_a',
@@ -64,7 +67,8 @@ class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrat
             ->createQueryBuilder(HashedPassword::class)
             ->field('id')->equals('user_id_1')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
         $hashedPasswordUserId1->changeHashedPassword('hashed_password_1_b');
         $this->getProjectionDocumentManager()->persist($hashedPasswordUserId1);
         $this->getProjectionDocumentManager()->flush();
@@ -82,7 +86,8 @@ class HashedPasswordFromUserIdTestAndReactor extends ProjectorAndReactorIntegrat
             ->createQueryBuilder(HashedPassword::class)
             ->field('id')->equals('user_id_2')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
         $hashedPasswordUserId2->changeHashedPassword('hashed_password_2_b');
         $this->getProjectionDocumentManager()->persist($hashedPasswordUserId2);
         $this->getProjectionDocumentManager()->flush();

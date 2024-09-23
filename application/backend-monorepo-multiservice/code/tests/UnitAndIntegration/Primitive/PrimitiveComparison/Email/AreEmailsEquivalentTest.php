@@ -14,7 +14,7 @@ class AreEmailsEquivalentTest extends UnitTest
     {
         foreach (EquivalentEmails::validEmailPairsWhichAreTheSameAddress() as $pair) {
             if (false === AreEmailsEquivalent::areEmailsEquivalent($pair[0], $pair[1])) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s and %s should be equivalent',
                     $pair[0],
                     $pair[1]
@@ -29,7 +29,7 @@ class AreEmailsEquivalentTest extends UnitTest
     {
         foreach (NonEquivalentEmails::validEmailPairsWhichAreNotTheSameAddress() as $pair) {
             if (true === AreEmailsEquivalent::areEmailsEquivalent($pair[0], $pair[1])) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s and %s should not be equivalent',
                     $pair[0],
                     $pair[1]

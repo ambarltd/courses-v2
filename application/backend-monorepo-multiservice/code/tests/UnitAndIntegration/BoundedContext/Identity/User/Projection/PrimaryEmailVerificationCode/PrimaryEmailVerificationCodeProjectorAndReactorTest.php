@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
 use Galeas\Api\Common\Id\Id;
@@ -19,7 +16,8 @@ class PrimaryEmailVerificationCodeProjectorAndReactorTest extends ProjectorAndRe
     public function testProcessSignedUp(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProjector::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
@@ -40,7 +38,8 @@ class PrimaryEmailVerificationCodeProjectorAndReactorTest extends ProjectorAndRe
     public function testProcessPrimaryEmailChangeRequested(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProjector::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class)
+        ;
 
         $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
             Id::createNew(),
@@ -66,7 +65,8 @@ class PrimaryEmailVerificationCodeProjectorAndReactorTest extends ProjectorAndRe
     public function testProcessPrimaryEmailVerifiedAfterSignedUp(): void
     {
         $processorService = $this->getContainer()
-            ->get(PrimaryEmailVerificationCodeProjector::class);
+            ->get(PrimaryEmailVerificationCodeProjector::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $primaryEmailVerified = SampleEvents::primaryEmailVerified(
@@ -98,7 +98,8 @@ class PrimaryEmailVerificationCodeProjectorAndReactorTest extends ProjectorAndRe
     private function findUserIdToPrimaryEmailVerificationCode(string $userId): array
     {
         $queryBuilder = $this->getProjectionDocumentManager()
-            ->createQueryBuilder(PrimaryEmailVerificationCode::class);
+            ->createQueryBuilder(PrimaryEmailVerificationCode::class)
+        ;
 
         $queryBuilder->field('id')->equals($userId);
 

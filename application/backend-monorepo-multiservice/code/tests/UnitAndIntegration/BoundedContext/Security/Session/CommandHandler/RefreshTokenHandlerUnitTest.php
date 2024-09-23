@@ -12,16 +12,12 @@ use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\Refre
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionIdFromSessionToken;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionTokenDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionUserDoesNotMatch;
-use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\InvalidIpsV4AndV6;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Security\ValidBCryptHashes;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Session\ValidDeviceLabels;
-use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Username\ValidUsernames;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class RefreshTokenHandlerUnitTest extends HandlerUnitTest
@@ -39,7 +35,7 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
-                function (string $sessionToken) use ($signedIn): ?string {
+                static function (string $sessionToken) use ($signedIn): ?string {
                     if ($sessionToken === $signedIn->sessionTokenCreated()) {
                         return $signedIn->aggregateId()->id();
                     }
@@ -60,11 +56,11 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
         /** @var TokenRefreshed $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[1];
 
-        $this->assertNotEquals(
+        self::assertNotSame(
             $command->withSessionToken,
             $storedEvent->refreshedSessionToken()
         );
-        $this->assertEquals(
+        self::assertSame(
             [
                 'refreshedSessionToken' => $storedEvent->refreshedSessionToken(),
             ],
@@ -81,7 +77,7 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
                 $command->metadata,
                 $command->withIp,
                 $command->withSessionToken,
-                $storedEvent->refreshedSessionToken()
+                $storedEvent->refreshedSessionToken(),
             ],
             [
                 $storedEvent->eventId(),
@@ -96,9 +92,8 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
                 $storedEvent->refreshedSessionToken(),
             ]
         );
-
-
     }
+
     public function testAlreadySignedOut(): void
     {
         $this->expectException(AlreadySignedOut::class);
@@ -121,7 +116,7 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
-                function (string $sessionToken) use ($signedIn): ?string {
+                static function (string $sessionToken) use ($signedIn): ?string {
                     if ($sessionToken === $signedIn->sessionTokenCreated()) {
                         return $signedIn->aggregateId()->id();
                     }
@@ -154,7 +149,7 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
-                function (string $sessionToken) use ($signedIn): ?string {
+                static function (string $sessionToken) use ($signedIn): ?string {
                     if ($sessionToken === $signedIn->sessionTokenCreated()) {
                         return $signedIn->aggregateId()->id();
                     }
@@ -187,7 +182,7 @@ class RefreshTokenHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 SessionIdFromSessionToken::class,
                 'sessionIdFromSessionToken',
-                function (string $sessionToken) use ($signedIn): ?string {
+                static function (string $sessionToken) use ($signedIn): ?string {
                     if ($sessionToken === $signedIn->sessionTokenCreated()) {
                         return $signedIn->aggregateId()->id();
                     }

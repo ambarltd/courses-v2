@@ -33,7 +33,7 @@ class SignUpHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 IsEmailTaken::class,
                 'isEmailTaken',
-                function (string $email): bool {
+                static function (string $email): bool {
                     if (ValidEmails::listValidEmails()[0] === $email) {
                         return false;
                     }
@@ -44,7 +44,7 @@ class SignUpHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 IsUsernameTaken::class,
                 'isUsernameTaken',
-                function (string $username): bool {
+                static function (string $username): bool {
                     if (ValidUsernames::listValidUsernames()[0] === $username) {
                         return false;
                     }
@@ -92,7 +92,7 @@ class SignUpHandlerUnitTest extends HandlerUnitTest
                 $storedEvent->primaryEmailVerificationCode(),
                 $storedEvent->hashedPassword(),
                 $command->username,
-                $command->termsOfUseAccepted
+                $command->termsOfUseAccepted,
             ],
             [
                 $storedEvent->eventId(),

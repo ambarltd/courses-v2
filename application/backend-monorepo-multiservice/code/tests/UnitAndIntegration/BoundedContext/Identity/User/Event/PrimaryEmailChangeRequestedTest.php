@@ -9,9 +9,9 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
@@ -28,11 +28,11 @@ class PrimaryEmailChangeRequestedTest extends UnitTest
         $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
             $eventId,
             $aggregateId,
-            1432,
+            1_432,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             'newEmailRequested@example.com',
             'newVerificationCode123',
             'hashedPassword123123',
@@ -42,14 +42,14 @@ class PrimaryEmailChangeRequestedTest extends UnitTest
             [
                 $eventId,
                 $aggregateId,
-                1432,
+                1_432,
                 $causationId,
                 $correlationId,
-                new \DateTimeImmutable("2024-01-03 10:35:23"),
-                ["metadataField" => "hello world 123"],
+                new \DateTimeImmutable('2024-01-03 10:35:23'),
+                ['metadataField' => 'hello world 123'],
                 'newEmailRequested@example.com',
                 'newVerificationCode123',
-                'hashedPassword123123'
+                'hashedPassword123123',
             ],
             [
                 $primaryEmailChangeRequested->eventId(),
@@ -76,7 +76,7 @@ class PrimaryEmailChangeRequestedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'newEmailRequested@example.com',
             'newVerificationCode123',
             'hashedPassword123123',
@@ -121,7 +121,7 @@ class PrimaryEmailChangeRequestedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'newEmailRequested@example.com',
             'newVerificationCode123',
             'hashedPassword123123',
@@ -168,7 +168,7 @@ class PrimaryEmailChangeRequestedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'newEmailRequested@example.com',
             'newVerificationCode123',
             'hashedPassword123123',

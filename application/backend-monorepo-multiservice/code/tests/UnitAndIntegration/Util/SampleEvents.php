@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Util;
 
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Aggregate\Product;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
@@ -34,41 +33,45 @@ use Galeas\Api\Common\Id\Id;
  * When there are tests you need to write that don't quite fit the sample events, don't try to pollute this class.
  * Instead, simply instantiate events directly in your test, the world won't end because of a few extra lines of code.
  */
-abstract class SampleEvents {
-    public static function userEvents(): array {
-        $event1 = SampleEvents::signedUp();
-        $event2 = SampleEvents::primaryEmailVerificationCodeSent(
+abstract class SampleEvents
+{
+    public static function userEvents(): array
+    {
+        $event1 = self::signedUp();
+        $event2 = self::primaryEmailVerificationCodeSent(
             $event1->aggregateId(),
             2,
             $event1->eventId(),
             $event1->eventId()
         );
-        $event3 = SampleEvents::primaryEmailVerified(
+        $event3 = self::primaryEmailVerified(
             $event1->aggregateId(),
             3,
             $event2->eventId(),
             $event1->eventId(),
         );
-        $event4 = SampleEvents::primaryEmailChangeRequested(
+        $event4 = self::primaryEmailChangeRequested(
             $event1->aggregateId(),
             4,
             $event3->eventId(),
             $event1->eventId()
         );
-        
+
         return [$event1, $event2, $event3, $event4];
     }
-    
-    public static function signedUp(): SignedUp {
+
+    public static function signedUp(): SignedUp
+    {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
+
         return SignedUp::new(
             $eventId,
             $aggregateId,
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
             self::sampleEmail(),
             self::sampleVerificationCode(),
@@ -85,19 +88,20 @@ abstract class SampleEvents {
         Id $correlationId,
     ): PrimaryEmailVerificationCodeSent {
         $eventId = Id::createNew();
+
         return PrimaryEmailVerificationCodeSent::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
             self::sampleVerificationCode(),
             self::sampleEmail(),
-            "Your code is: " . self::sampleVerificationCode(),
+            'Your code is: '.self::sampleVerificationCode(),
             self::systemEmailFrom(),
-            "Verify Yourself"
+            'Verify Yourself'
         );
     }
 
@@ -108,13 +112,14 @@ abstract class SampleEvents {
         Id $correlationId,
     ): PrimaryEmailVerified {
         $eventId = Id::createNew();
+
         return PrimaryEmailVerified::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
             self::sampleVerificationCode(),
         );
@@ -127,13 +132,14 @@ abstract class SampleEvents {
         Id $correlationId
     ): PrimaryEmailChangeRequested {
         $eventId = Id::createNew();
+
         return PrimaryEmailChangeRequested::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
             self::secondSampleEmail(),
             self::secondSampleVerificationCode(),
@@ -141,16 +147,18 @@ abstract class SampleEvents {
         );
     }
 
-    public static function anotherSignedUp(): SignedUp {
+    public static function anotherSignedUp(): SignedUp
+    {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
+
         return SignedUp::new(
             $eventId,
             $aggregateId,
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::anotherSampleMetadata(null),
             self::anotherSampleEmail(),
             self::anotherSampleVerificationCode(),
@@ -160,16 +168,16 @@ abstract class SampleEvents {
         );
     }
 
-
-    public static function sessionEvents(): array {
-        $event1 = SampleEvents::signedIn();
-        $event2 = SampleEvents::tokenRefreshed(
+    public static function sessionEvents(): array
+    {
+        $event1 = self::signedIn();
+        $event2 = self::tokenRefreshed(
             $event1->aggregateId(),
             2,
             $event1->eventId(),
             $event1->eventId()
         );
-        $event3 = SampleEvents::signedOut(
+        $event3 = self::signedOut(
             $event1->aggregateId(),
             3,
             $event2->eventId(),
@@ -179,17 +187,19 @@ abstract class SampleEvents {
         return [$event1, $event2, $event3];
     }
 
-    public static function signedIn(): SignedIn {
+    public static function signedIn(): SignedIn
+    {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
         $asUser = Id::createNew();
+
         return SignedIn::new(
             $eventId,
             $aggregateId,
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
             $asUser,
             null,
@@ -209,13 +219,14 @@ abstract class SampleEvents {
     ): TokenRefreshed {
         $eventId = Id::createNew();
         $existingSessionToken = self::sampleSessionToken();
+
         return TokenRefreshed::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata($existingSessionToken),
             self::secondSampleIp(),
             $existingSessionToken,
@@ -231,13 +242,14 @@ abstract class SampleEvents {
     ): SignedOut {
         $eventId = Id::createNew();
         $existingSessionToken = self::secondSampleSessionToken();
+
         return SignedOut::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata($existingSessionToken),
             self::thirdSampleIp(),
             $existingSessionToken,
@@ -259,10 +271,11 @@ abstract class SampleEvents {
             $productActivated->eventId(),
             $productDefined->eventId()
         );
+
         return [
             $productDefined,
             $productActivated,
-            $productDeactivated
+            $productDeactivated,
         ];
     }
 
@@ -270,22 +283,23 @@ abstract class SampleEvents {
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
+
         return ProductDefined::new(
             $eventId,
             $aggregateId,
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null),
-            "Cool-Card",
-            1200,
-            5000,
-            "monthly",
-            50000,
+            'Cool-Card',
+            1_200,
+            5_000,
+            'monthly',
+            50_000,
             0,
-            "none",
-            "#7fffd4"
+            'none',
+            '#7fffd4'
         );
     }
 
@@ -296,13 +310,14 @@ abstract class SampleEvents {
         Id $correlationId
     ): ProductActivated {
         $eventId = Id::createNew();
+
         return ProductActivated::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null)
         );
     }
@@ -314,13 +329,14 @@ abstract class SampleEvents {
         Id $correlationId
     ): ProductDeactivated {
         $eventId = Id::createNew();
+
         return ProductDeactivated::new(
             $eventId,
             $aggregateId,
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             self::sampleMetadata(null)
         );
     }
@@ -328,102 +344,119 @@ abstract class SampleEvents {
     private static function sampleMetadata(?string $withSessionToken): array
     {
         return [
-            "environment" => "native",
-            "devicePlatform" => "linux",
-            "deviceModel" => "Penguin 1.0",
-            "deviceOSVersion" => "Ubuntu 14.04",
-            "deviceOrientation" => "landscape",
-            "latitude" => 12.32123,
-            "longitude" => 22.32123,
-            "ipAddress" => "120.123.193.12",
-            "userAgent" => "Test_UserAgent",
-            "referer" => "example.com",
-            "withSessionToken" => $withSessionToken,
+            'environment' => 'native',
+            'devicePlatform' => 'linux',
+            'deviceModel' => 'Penguin 1.0',
+            'deviceOSVersion' => 'Ubuntu 14.04',
+            'deviceOrientation' => 'landscape',
+            'latitude' => 12.321_23,
+            'longitude' => 22.321_23,
+            'ipAddress' => '120.123.193.12',
+            'userAgent' => 'Test_UserAgent',
+            'referer' => 'example.com',
+            'withSessionToken' => $withSessionToken,
         ];
     }
 
     private static function anotherSampleMetadata(?string $withSessionToken): array
     {
         return [
-            "environment" => "browser",
-            "devicePlatform" => "windows",
-            "deviceModel" => "The OG",
-            "deviceOSVersion" => "Windows 99.9999",
-            "deviceOrientation" => "portrait",
-            "latitude" => 15.3232,
-            "longitude" => -25.32123,
-            "ipAddress" => "150.102.12.3",
-            "userAgent" => "A_COOL_USER_AGENT",
-            "referer" => "2.example.com",
-            "withSessionToken" => $withSessionToken,
+            'environment' => 'browser',
+            'devicePlatform' => 'windows',
+            'deviceModel' => 'The OG',
+            'deviceOSVersion' => 'Windows 99.9999',
+            'deviceOrientation' => 'portrait',
+            'latitude' => 15.323_2,
+            'longitude' => -25.321_23,
+            'ipAddress' => '150.102.12.3',
+            'userAgent' => 'A_COOL_USER_AGENT',
+            'referer' => '2.example.com',
+            'withSessionToken' => $withSessionToken,
         ];
     }
 
-    private static function sampleEmail(): string {
-        return "test@galeas.com";
+    private static function sampleEmail(): string
+    {
+        return 'test@galeas.com';
     }
 
-    private static function secondSampleEmail(): string {
-        return "proof@galeas2.net";
+    private static function secondSampleEmail(): string
+    {
+        return 'proof@galeas2.net';
     }
 
-    private static function anotherSampleEmail(): string {
-        return "anotherEmail@gmail.com";
+    private static function anotherSampleEmail(): string
+    {
+        return 'anotherEmail@gmail.com';
     }
 
-    private static function systemEmailFrom(): string {
-        return "from@system.example.com";
+    private static function systemEmailFrom(): string
+    {
+        return 'from@system.example.com';
     }
 
-    private static function sampleHashedPassword(): string {
+    private static function sampleHashedPassword(): string
+    {
         return '$2y$10$tS8Y8CvwOeBVaFzPkXOfBuSearouW45pb5OlujqV6Y2BQPgvU5W2q'; // corresponds to "abcDEFg1/2"
     }
 
-    private static function anotherSampleHashedPassword(): string {
+    private static function anotherSampleHashedPassword(): string
+    {
         return '$2a$10$/q4ZluKn5QrNz2FizyFxaOtinBAfninfZTFAI/02d2kfHTcgTc336'; // corresponds to "b3rdsnn128FU&d9"
     }
 
-    private static function sampleUsername(): string {
-        return "MyUsername";
+    private static function sampleUsername(): string
+    {
+        return 'MyUsername';
     }
 
-    private static function anotherSampleUsername(): string {
-        return "ThisIsMe";
+    private static function anotherSampleUsername(): string
+    {
+        return 'ThisIsMe';
     }
 
-    private static function sampleVerificationCode(): string {
-        return "FirstVerificationCode";
+    private static function sampleVerificationCode(): string
+    {
+        return 'FirstVerificationCode';
     }
 
-    private static function secondSampleVerificationCode(): string {
-        return "SecondVerificationCode";
+    private static function secondSampleVerificationCode(): string
+    {
+        return 'SecondVerificationCode';
     }
 
-    private static function anotherSampleVerificationCode(): string {
-        return "FirstVerificationCode";
+    private static function anotherSampleVerificationCode(): string
+    {
+        return 'FirstVerificationCode';
     }
 
-    private static function sampleDeviceLabel(): string {
-        return "My Iphone Device Label";
+    private static function sampleDeviceLabel(): string
+    {
+        return 'My Iphone Device Label';
     }
 
-    private static function sampleIp(): string {
-        return "130.130.130.130";
+    private static function sampleIp(): string
+    {
+        return '130.130.130.130';
     }
 
-    private static function secondSampleIp(): string {
-        return "131.131.131.131";
+    private static function secondSampleIp(): string
+    {
+        return '131.131.131.131';
     }
 
-    private static function thirdSampleIp(): string {
-        return "132.132.132.132";
+    private static function thirdSampleIp(): string
+    {
+        return '132.132.132.132';
     }
 
-    private static function sampleSessionToken(): string {
-        return "SessionToken17891028561029";
+    private static function sampleSessionToken(): string
+    {
+        return 'SessionToken17891028561029';
     }
 
-    private static function secondSampleSessionToken(): string {
-        return "SessionToken02067776337012";
+    private static function secondSampleSessionToken(): string
+    {
+        return 'SessionToken02067776337012';
     }
 }

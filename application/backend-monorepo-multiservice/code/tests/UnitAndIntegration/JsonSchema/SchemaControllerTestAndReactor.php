@@ -12,65 +12,66 @@ class SchemaControllerTestAndReactor extends ControllerIntegrationTest
     public function testSchemaList(): void
     {
         $response = $this->requestGet('/schema/list', []);
-        Assert::assertEquals(200, $response["statusCode"]);
-        $jsonToArrayContent = json_decode($response["content"]);
+        Assert::assertEquals(200, $response['statusCode']);
+        $jsonToArrayContent = json_decode($response['content']);
 
         foreach ($jsonToArrayContent as $routeData) {
-            $requestSchemaPath = str_replace("http://localhost", "", $routeData->schema->request);
-            $pathAndParameterString = explode("?", $requestSchemaPath);
+            $requestSchemaPath = str_replace('http://localhost', '', $routeData->schema->request);
+            $pathAndParameterString = explode('?', $requestSchemaPath);
             $response = $this->requestGet(
                 $pathAndParameterString[0],
                 [
-                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                    'path' => str_replace('path=', '', $pathAndParameterString[1]),
                 ]
             );
             Assert::assertEquals(
                 200,
-                $response["statusCode"],
-                sprintf(
-                    "Could not find request schema %s with contents: %s",
+                $response['statusCode'],
+                \sprintf(
+                    'Could not find request schema %s with contents: %s',
                     $requestSchemaPath,
-                    $response["contents"]
+                    $response['contents']
                 )
             );
 
-            $responseSchemaPath = str_replace("http://localhost", "", $routeData->schema->response);
-            $pathAndParameterString = explode("?", $responseSchemaPath);
+            $responseSchemaPath = str_replace('http://localhost', '', $routeData->schema->response);
+            $pathAndParameterString = explode('?', $responseSchemaPath);
             $response = $this->requestGet(
                 $pathAndParameterString[0],
                 [
-                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                    'path' => str_replace('path=', '', $pathAndParameterString[1]),
                 ]
             );
             Assert::assertEquals(
                 200,
-                $response["statusCode"],
-                sprintf(
-                    "Could not find request schema %s with contents: %s",
+                $response['statusCode'],
+                \sprintf(
+                    'Could not find request schema %s with contents: %s',
                     $responseSchemaPath,
-                    $response["contents"]
+                    $response['contents']
                 )
             );
 
-            $errorSchemaPath = str_replace("http://localhost", "", $routeData->schema->error);
-            $pathAndParameterString = explode("?", $errorSchemaPath);
+            $errorSchemaPath = str_replace('http://localhost', '', $routeData->schema->error);
+            $pathAndParameterString = explode('?', $errorSchemaPath);
             $response = $this->requestGet(
                 $pathAndParameterString[0],
                 [
-                    "path" => str_replace("path=", "", $pathAndParameterString[1]),
+                    'path' => str_replace('path=', '', $pathAndParameterString[1]),
                 ]
             );
-            if (200 !== $response["statusCode"]) {
+            if (200 !== $response['statusCode']) {
                 var_dump($response);
-                die();
+
+                exit;
             }
             Assert::assertEquals(
                 200,
-                $response["statusCode"],
-                sprintf(
-                    "Could not find request schema %s with contents: %s",
+                $response['statusCode'],
+                \sprintf(
+                    'Could not find request schema %s with contents: %s',
                     $errorSchemaPath,
-                    $response["contents"]
+                    $response['contents']
                 )
             );
         }

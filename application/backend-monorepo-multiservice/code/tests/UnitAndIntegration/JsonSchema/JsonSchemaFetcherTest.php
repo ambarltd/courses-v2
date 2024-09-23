@@ -151,7 +151,7 @@ class JsonSchemaFetcherTest extends UnitTest
     }
 
     /**
-     * @throws \Galeas\Api\JsonSchema\CouldNotFetchJsonSchema
+     * @throws CouldNotFetchJsonSchema
      */
     public function testCannotFetch(): void
     {

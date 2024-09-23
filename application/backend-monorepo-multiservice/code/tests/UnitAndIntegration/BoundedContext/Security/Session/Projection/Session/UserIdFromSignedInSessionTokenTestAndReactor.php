@@ -14,7 +14,8 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
     public function testUserIdFromSignedInSessionToken(): void
     {
         $userIdFromSignedInSessionToken = $this->getContainer()
-            ->get(UserIdFromSignedInSessionToken::class);
+            ->get(UserIdFromSignedInSessionToken::class)
+        ;
 
         $tokenLastRefreshedAt = \DateTimeImmutable::createFromFormat(
             'Y-m-d H:i:s.u',
@@ -25,11 +26,11 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
             '2018-02-01 23:55:31.841313'
         );
 
-        if (is_bool($tokenLastRefreshedAt)) {
+        if (\is_bool($tokenLastRefreshedAt)) {
             throw new \Exception();
         }
 
-        if (is_bool($tokenLastRefreshedAtMinusOneMicrosecond)) {
+        if (\is_bool($tokenLastRefreshedAtMinusOneMicrosecond)) {
             throw new \Exception();
         }
 
@@ -71,7 +72,8 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
                     false,
                     $tokenLastRefreshedAt
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(
@@ -112,7 +114,8 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
                     false,
                     $tokenLastRefreshedAt
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(
@@ -148,7 +151,8 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
     public function testUserIdFromSignedInSessionTokenWithSignedOutTrue(): void
     {
         $userIdFromSignedInSessionToken = $this->getContainer()
-            ->get(UserIdFromSignedInSessionToken::class);
+            ->get(UserIdFromSignedInSessionToken::class)
+        ;
 
         $tokenLastRefreshedAt = \DateTimeImmutable::createFromFormat(
             'Y-m-d H:i:s.u',
@@ -159,11 +163,11 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
             '2018-02-01 23:55:31.841313'
         );
 
-        if (is_bool($tokenLastRefreshedAt)) {
+        if (\is_bool($tokenLastRefreshedAt)) {
             throw new \Exception();
         }
 
-        if (is_bool($tokenLastRefreshedAtMinusOneMicrosecond)) {
+        if (\is_bool($tokenLastRefreshedAtMinusOneMicrosecond)) {
             throw new \Exception();
         }
 
@@ -191,7 +195,8 @@ class UserIdFromSignedInSessionTokenTestAndReactor extends ProjectorAndReactorIn
                     true,
                     $tokenLastRefreshedAt
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(

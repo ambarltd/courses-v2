@@ -13,22 +13,22 @@ class IdCreatorTest extends UnitTest
 {
     public function testCreate(): void
     {
-        for ($i = 0; $i < 20000; ++$i) {
+        for ($i = 0; $i < 20_000; ++$i) {
             $id = IdCreator::create();
 
-            $idHasInvalidLength = 56 !== strlen($id);
+            $idHasInvalidLength = 56 !== \strlen($id);
             if ($idHasInvalidLength) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s is %s characters long, but it should be 56 characters long',
                     $id,
-                    strlen($id)
+                    \strlen($id)
                 ));
             }
 
             // Assuming the validator class has its tests passing
             $idIsNotValid = false === IdValidator::isValid($id);
             if ($idIsNotValid) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s is not a valid id',
                     $id
                 ));
@@ -43,7 +43,7 @@ class IdCreatorTest extends UnitTest
         $firstThreeCharactersArray = [];
         $lastThreeCharactersArray = [];
 
-        for ($i = 0; $i < 100000; ++$i) {
+        for ($i = 0; $i < 100_000; ++$i) {
             $id = IdCreator::create();
 
             $firstThreeCharacters = substr($id, 0, 3);
@@ -53,17 +53,16 @@ class IdCreatorTest extends UnitTest
             $lastThreeCharactersArray[$lastThreeCharacters] = $lastThreeCharacters;
         }
 
-        $firstThreeCharactersCollisions = 100000 - count($firstThreeCharactersArray);
-        $lastThreeCharactersCollisions = 100000 - count($lastThreeCharactersArray);
-
+        $firstThreeCharactersCollisions = 100_000 - \count($firstThreeCharactersArray);
+        $lastThreeCharactersCollisions = 100_000 - \count($lastThreeCharactersArray);
 
         $errorMessage = 'Testing randomness failed. Unless you are extremely unlucky, this should only fail when you did something wrong.';
 
-        if ($firstThreeCharactersCollisions < 18000 || $firstThreeCharactersCollisions > 20000) {
+        if ($firstThreeCharactersCollisions < 18_000 || $firstThreeCharactersCollisions > 20_000) {
             Assert::fail($errorMessage);
         }
 
-        if ($lastThreeCharactersCollisions < 18000 || $lastThreeCharactersCollisions > 20000) {
+        if ($lastThreeCharactersCollisions < 18_000 || $lastThreeCharactersCollisions > 20_000) {
             Assert::fail($errorMessage);
         }
 

@@ -10,6 +10,7 @@ use Galeas\Api\BoundedContext\Security\Session\Command\RefreshToken;
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
+use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
 use Galeas\Api\Service\RequestMapper\JsonPostRequestMapper;
 use PHPUnit\Framework\Assert;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,19 +20,20 @@ class JsonPostRequestMapperTest extends UnitTest
 {
     private JsonPostRequestMapper $jsonPostRequestMapper;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $userIdFromSignedInSessionToken = $this->createMock(UserIdFromSignedInSessionToken::class);
         $userIdFromSignedInSessionToken->method('userIdFromSignedInSessionToken')
             ->with(
-                $this->equalTo('token_123'),
-                $this->anything()
+                self::equalTo('token_123'),
+                self::anything()
             )
-            ->willReturn('user_id_123');
+            ->willReturn('user_id_123')
+        ;
         $this->jsonPostRequestMapper = new JsonPostRequestMapper(
             $userIdFromSignedInSessionToken,
-            "7200"
+            '7200'
         );
     }
 
@@ -54,8 +56,8 @@ class JsonPostRequestMapperTest extends UnitTest
                 $this->jsonEncodeOrThrowException([
                     'verificationCode' => 'abcdefghijklmnopqrstuvwxyz',
                     'metadata' => [
-                        'latitude' => 51.5074,
-                        'longitude' => 0.1278,
+                        'latitude' => 51.507_4,
+                        'longitude' => 0.127_8,
                         'devicePlatform' => 'linux',
                         'deviceModel' => 'Penguin 1.0',
                         'deviceOSVersion' => 'Ubuntu 14.04',
@@ -75,8 +77,8 @@ class JsonPostRequestMapperTest extends UnitTest
 
         Assert::assertInstanceOf(VerifyPrimaryEmail::class, $command);
         Assert::assertEquals('abcdefghijklmnopqrstuvwxyz', $command->verificationCode);
-        Assert::assertEquals(51.5074, $command->metadata['latitude']);
-        Assert::assertEquals(0.1278, $command->metadata['longitude']);
+        Assert::assertEquals(51.507_4, $command->metadata['latitude']);
+        Assert::assertEquals(0.127_8, $command->metadata['longitude']);
         Assert::assertEquals('linux', $command->metadata['devicePlatform']);
         Assert::assertEquals('Penguin 1.0', $command->metadata['deviceModel']);
         Assert::assertEquals('Ubuntu 14.04', $command->metadata['deviceOSVersion']);
@@ -112,8 +114,8 @@ class JsonPostRequestMapperTest extends UnitTest
                     'withSessionToken' => 'hackWithSessionToken',
                     'metadata' => [
                         'withSessionToken' => 'token_123',
-                        'latitude' => 51.5074,
-                        'longitude' => 0.1278,
+                        'latitude' => 51.507_4,
+                        'longitude' => 0.127_8,
                         'devicePlatform' => 'linux',
                         'deviceModel' => 'Penguin 1.0',
                         'deviceOSVersion' => 'Ubuntu 14.04',
@@ -135,8 +137,8 @@ class JsonPostRequestMapperTest extends UnitTest
         Assert::assertEquals('user_id_123', $command->authenticatedUserId);
         Assert::assertEquals('77.96.237.178', $command->withIp);
         Assert::assertEquals('token_123', $command->withSessionToken);
-        Assert::assertEquals(51.5074, $command->metadata['latitude']);
-        Assert::assertEquals(0.1278, $command->metadata['longitude']);
+        Assert::assertEquals(51.507_4, $command->metadata['latitude']);
+        Assert::assertEquals(0.127_8, $command->metadata['longitude']);
         Assert::assertEquals('linux', $command->metadata['devicePlatform']);
         Assert::assertEquals('Penguin 1.0', $command->metadata['deviceModel']);
         Assert::assertEquals('Ubuntu 14.04', $command->metadata['deviceOSVersion']);
@@ -149,7 +151,6 @@ class JsonPostRequestMapperTest extends UnitTest
         Assert::assertEquals('token_123', $command->metadata['withSessionToken']);
         Assert::assertArrayNotHasKey('hack', $command->metadata);
         Assert::assertObjectNotHasProperty('hack', $command);
-
     }
 
     public function testCreateCommandOverrideReferer(): void
@@ -264,7 +265,7 @@ class JsonPostRequestMapperTest extends UnitTest
         Assert::assertEquals(null, $command->metadata['userAgent']);
     }
 
-    public function testCreateCommand_ResolveWithIp(): void
+    public function testCreateCommandResolveWithIp(): void
     {
         /** @var SignIn $command */
         $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
@@ -286,8 +287,8 @@ class JsonPostRequestMapperTest extends UnitTest
                     'byDeviceLabel' => 'username_123',
                     'withIp' => 'hack',
                     'metadata' => [
-                        'latitude' => 51.5074,
-                        'longitude' => 0.1278,
+                        'latitude' => 51.507_4,
+                        'longitude' => 0.127_8,
                         'devicePlatform' => 'linux',
                         'deviceModel' => 'Penguin 1.0',
                         'deviceOSVersion' => 'Ubuntu 14.04',
@@ -326,7 +327,7 @@ class JsonPostRequestMapperTest extends UnitTest
 
     public function testRejectsInvalidJson(): void
     {
-        $this->expectException(\Galeas\Api\Service\RequestMapper\Exception\InvalidJson::class);
+        $this->expectException(InvalidJson::class);
         $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest(
             Request::create(
                 '',
@@ -361,8 +362,8 @@ class JsonPostRequestMapperTest extends UnitTest
                 $this->jsonEncodeOrThrowException([
                     'verificationCode' => 'abcdefghijklmnopqrstuvwxyz',
                     'metadata' => [
-                        'latitude' => 51.5074,
-                        'longitude' => 0.1278,
+                        'latitude' => 51.507_4,
+                        'longitude' => 0.127_8,
                         'devicePlatform' => 'linux',
                         'deviceModel' => 'Penguin 1.0',
                         'deviceOSVersion' => 'Ubuntu 14.04',
@@ -388,7 +389,7 @@ class JsonPostRequestMapperTest extends UnitTest
     {
         $encoded = json_encode($encodeThis);
 
-        if (is_string($encoded)) {
+        if (\is_string($encoded)) {
             return $encoded;
         }
 

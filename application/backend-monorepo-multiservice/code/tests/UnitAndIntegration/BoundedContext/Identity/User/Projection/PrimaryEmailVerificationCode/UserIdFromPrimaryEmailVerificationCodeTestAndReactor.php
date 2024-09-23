@@ -14,7 +14,8 @@ class UserIdFromPrimaryEmailVerificationCodeTestAndReactor extends ProjectorAndR
     public function testUserIdFromPrimaryEmailVerificationCode(): void
     {
         $userIdService = $this->getContainer()
-            ->get(UserIdFromPrimaryEmailVerificationCode::class);
+            ->get(UserIdFromPrimaryEmailVerificationCode::class)
+        ;
 
         Assert::assertNull($userIdService->userIdFromPrimaryEmailVerificationCode('verification_code_1'));
         Assert::assertNull($userIdService->userIdFromPrimaryEmailVerificationCode('verification_code_2'));
@@ -41,7 +42,8 @@ class UserIdFromPrimaryEmailVerificationCodeTestAndReactor extends ProjectorAndR
             ->createQueryBuilder(PrimaryEmailVerificationCode::class)
             ->field('id')->equals('user_id_2')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
 
         if (false === ($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode)) {
             throw new \Exception();
@@ -57,7 +59,8 @@ class UserIdFromPrimaryEmailVerificationCodeTestAndReactor extends ProjectorAndR
             ->createQueryBuilder(PrimaryEmailVerificationCode::class)
             ->field('id')->equals('user_id_2')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
         if (false === ($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode)) {
             throw new \Exception();
         }

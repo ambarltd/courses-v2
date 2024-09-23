@@ -26,32 +26,32 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTest
         $primaryEmailChangeRequested = PrimaryEmailVerificationCodeSent::new(
             $eventId,
             $aggregateId,
-            1432,
+            1_432,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             'verificationCode91230',
             'sentTo@example.com',
             'YourCode:verificationCode91230',
             'sentFrom@example.com',
-            "Verify Yourself"
+            'Verify Yourself'
         );
 
         Assert::assertEquals(
             [
                 $eventId,
                 $aggregateId,
-                1432,
+                1_432,
                 $causationId,
                 $correlationId,
-                new \DateTimeImmutable("2024-01-03 10:35:23"),
-                ["metadataField" => "hello world 123"],
+                new \DateTimeImmutable('2024-01-03 10:35:23'),
+                ['metadataField' => 'hello world 123'],
                 'verificationCode91230',
                 'sentTo@example.com',
                 'YourCode:verificationCode91230',
                 'sentFrom@example.com',
-                "Verify Yourself"
+                'Verify Yourself',
             ],
             [
                 $primaryEmailChangeRequested->eventId(),
@@ -76,24 +76,23 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTest
         $primaryEmailChangeRequested = PrimaryEmailVerificationCodeSent::new(
             Id::createNew(),
             $aggregateId,
-            1432,
+            1_432,
             Id::createNew(),
             Id::createNew(),
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             'verificationCode91230',
             'sentTo@example.com',
             'YourCode:verificationCode91230',
             'sentFrom@example.com',
-            "Verify Yourself"
-
+            'Verify Yourself'
         );
         $user = User::fromProperties(
             $aggregateId,
             27,
             UnverifiedEmail::fromEmailAndVerificationCode(
                 Email::fromEmail('verified@example.com'),
-                VerificationCode::fromVerificationCode("verificationCode91230"),
+                VerificationCode::fromVerificationCode('verificationCode91230'),
             ),
             HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration;
 
 use Galeas\Api\Service\EventStore\InMemoryEventStore;
-use Galeas\Api\Service\Queue\InMemoryQueue;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -23,6 +22,19 @@ abstract class HandlerUnitTest extends TestCase
      */
     private $inMemoryEventStore;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->clearEventStore();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        $this->clearEventStore();
+    }
 
     protected function getInMemoryEventStore(): InMemoryEventStore
     {
@@ -39,7 +51,8 @@ abstract class HandlerUnitTest extends TestCase
     ): MockObject {
         $mock = $this->createMock($mockedInterfaceName);
         $mock->method($mockedMethodName)
-            ->willReturn($methodWillReturnValue);
+            ->willReturn($methodWillReturnValue)
+        ;
 
         return $mock;
     }
@@ -51,7 +64,8 @@ abstract class HandlerUnitTest extends TestCase
     ): MockObject {
         $mock = $this->createMock($mockedInterfaceName);
         $mock->method($mockedMethodName)
-            ->willReturnCallback($callback);
+            ->willReturnCallback($callback)
+        ;
 
         return $mock;
     }
@@ -64,19 +78,5 @@ abstract class HandlerUnitTest extends TestCase
     private function clearEventStore(): void
     {
         $this->inMemoryEventStore = new InMemoryEventStore();
-    }
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->clearEventStore();
-    }
-
-    public function tearDown(): void
-    {
-        parent::tearDown();
-
-        $this->clearEventStore();
     }
 }

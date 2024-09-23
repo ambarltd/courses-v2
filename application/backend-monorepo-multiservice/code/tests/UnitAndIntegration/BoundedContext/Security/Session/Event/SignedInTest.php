@@ -26,15 +26,15 @@ class SignedInTest extends UnitTest
             1,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             $userId,
             'UserNameBob',
             null,
             'HashedPassword819',
             'DeviceIphoneFrom2023',
-            "201.201.20.201",
-            "SessionTokenCreatedForSessionblablabla909090"
+            '201.201.20.201',
+            'SessionTokenCreatedForSessionblablabla909090'
         );
 
         Assert::assertEquals(
@@ -44,15 +44,15 @@ class SignedInTest extends UnitTest
                 1,
                 $causationId,
                 $correlationId,
-                new \DateTimeImmutable("2024-01-03 10:35:23"),
-                ["metadataField" => "hello world 123"],
+                new \DateTimeImmutable('2024-01-03 10:35:23'),
+                ['metadataField' => 'hello world 123'],
                 $userId,
                 'UserNameBob',
                 null,
                 'HashedPassword819',
                 'DeviceIphoneFrom2023',
-                "201.201.20.201",
-                "SessionTokenCreatedForSessionblablabla909090"
+                '201.201.20.201',
+                'SessionTokenCreatedForSessionblablabla909090',
             ],
             [
                 $signedIn->eventId(),
@@ -86,15 +86,15 @@ class SignedInTest extends UnitTest
             1,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             $userId,
             'UserNameBob',
             null,
             'HashedPassword819',
             'DeviceIphoneFrom2023',
-            "201.201.20.201",
-            "SessionTokenCreatedForSessionblablabla909090"
+            '201.201.20.201',
+            'SessionTokenCreatedForSessionblablabla909090'
         );
 
         Assert::assertEquals(

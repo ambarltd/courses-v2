@@ -20,7 +20,7 @@ class IdTest extends UnitTest
             $id = Id::fromId($idString);
 
             if ($idString !== $id->id()) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     'Expected %s, got %s',
                     $idString,
                     $id->id()
@@ -43,7 +43,7 @@ class IdTest extends UnitTest
             Assert::fail($id.' should be invalid.');
         }
 
-        Assert::assertTrue(true); //prevents flagging as risky test
+        Assert::assertTrue(true); // prevents flagging as risky test
     }
 
     public function testCreate(): void
@@ -56,19 +56,19 @@ class IdTest extends UnitTest
             }
         }
 
-        Assert::assertTrue(true); //prevents flagging as risky test
+        Assert::assertTrue(true); // prevents flagging as risky test
     }
 
     public function testCreateNewByHashing(): void
     {
         for ($i = 0; $i < 100; ++$i) {
-            $id = Id::createNewByHashing(strval($i));
+            $id = Id::createNewByHashing((string) $i);
             if (false === IdValidator::isValid($id->id())) {
                 // validator test must be passing for this to be relevant
                 Assert::fail($id->id().' should be valid');
             }
         }
 
-        Assert::assertTrue(true); //prevents flagging as risky test
+        Assert::assertTrue(true); // prevents flagging as risky test
     }
 }

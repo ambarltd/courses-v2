@@ -20,11 +20,6 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class InMemoryEventStoreTest extends UnitTest
 {
-    private function createNewInMemoryEventStore(): InMemoryEventStore
-    {
-        return new InMemoryEventStore();
-    }
-
     public function testPersistence(): void
     {
         $inMemoryEventStore = $this->createNewInMemoryEventStore();
@@ -38,11 +33,11 @@ class InMemoryEventStoreTest extends UnitTest
         $aggregateAndEventIds = $inMemoryEventStore->find($signedUp->aggregateId()->id());
         $inMemoryEventStore->completeTransaction();
 
-        if (!($aggregateAndEventIds instanceof AggregateAndEventIds)) {
+        if (!$aggregateAndEventIds instanceof AggregateAndEventIds) {
             throw new \Exception();
         }
         $user = $aggregateAndEventIds->aggregate();
-        if (!($user instanceof User)) {
+        if (!$user instanceof User) {
             throw new \Exception();
         }
 
@@ -50,7 +45,7 @@ class InMemoryEventStoreTest extends UnitTest
             throw new \Exception();
         }
 
-        if (!($user->primaryEmailStatus() instanceof UnverifiedEmail)) {
+        if (!$user->primaryEmailStatus() instanceof UnverifiedEmail) {
             throw new \Exception();
         }
 
@@ -153,5 +148,10 @@ class InMemoryEventStoreTest extends UnitTest
         }
 
         Assert::fail('Did not have expected exception');
+    }
+
+    private function createNewInMemoryEventStore(): InMemoryEventStore
+    {
+        return new InMemoryEventStore();
     }
 }

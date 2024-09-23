@@ -301,7 +301,7 @@ class ControllerExceptionSerializerTest extends UnitTest
 
     public function testCannotFindLineWithHandlerServiceStringInHandler(): void
     {
-        $this->expectExceptionMessage("Cannot find line which might have a handler service class in Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::noHandler");
+        $this->expectExceptionMessage('Cannot find line which might have a handler service class in Tests\\Galeas\\Api\\UnitAndIntegration\\JsonSchema\\MockController::noHandler');
         $this->expectException(ExceptionSerializerFailed::class);
         $serializer = new ControllerExceptionsSerializer();
         $serializer->getSerializedExceptionsFromControllerClassAndMethod(
@@ -311,7 +311,7 @@ class ControllerExceptionSerializerTest extends UnitTest
 
     public function testCouldNotBuildReflectionMethodForControllerClassAndMethod(): void
     {
-        $this->expectExceptionMessage("Could not build reflection method for Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::methodDoesNotExist");
+        $this->expectExceptionMessage('Could not build reflection method for Tests\\Galeas\\Api\\UnitAndIntegration\\JsonSchema\\MockController::methodDoesNotExist');
         $this->expectException(ExceptionSerializerFailed::class);
         $serializer = new ControllerExceptionsSerializer();
         $serializer->getSerializedExceptionsFromControllerClassAndMethod(
@@ -321,7 +321,7 @@ class ControllerExceptionSerializerTest extends UnitTest
 
     public function testCannotFindAnnotationForHandlerMethod(): void
     {
-        $this->expectExceptionMessage("Cannot find annotation for handle method in service of class Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockCommandHandlerWithoutAnnotation");
+        $this->expectExceptionMessage('Cannot find annotation for handle method in service of class Tests\\Galeas\\Api\\UnitAndIntegration\\JsonSchema\\MockCommandHandlerWithoutAnnotation');
         $this->expectException(ExceptionSerializerFailed::class);
         $serializer = new ControllerExceptionsSerializer();
         $serializer->getSerializedExceptionsFromControllerClassAndMethod(
@@ -331,7 +331,7 @@ class ControllerExceptionSerializerTest extends UnitTest
 
     public function testAllHandlerExceptionClassesMustImplementTheBaseException(): void
     {
-        $this->expectExceptionMessage("All handler exception classes must implement the base exception - Failed for Tests\Galeas\Api\UnitAndIntegration\JsonSchema\MockController::commandHandlerWithNonBaseException");
+        $this->expectExceptionMessage('All handler exception classes must implement the base exception - Failed for Tests\\Galeas\\Api\\UnitAndIntegration\\JsonSchema\\MockController::commandHandlerWithNonBaseException');
         $this->expectException(ExceptionSerializerFailed::class);
         $serializer = new ControllerExceptionsSerializer();
         $serializer->getSerializedExceptionsFromControllerClassAndMethod(
@@ -354,28 +354,38 @@ class MockCommandHandler
 {
     /**
      * @throws MockException
-     * @throws ProjectionCannotRead|EventStoreCannotWrite
+     * @throws EventStoreCannotWrite|ProjectionCannotRead
      * @throws EventStoreCannotRead
      */
     public function handle(MockCommand $mockCommand): void
     {
-        $random = rand(1, $mockCommand->maxInt);
+        $random = random_int(1, $mockCommand->maxInt);
+
         switch ($random) {
             case 1:
                 throw new MockException();
+
                 break;
+
             case 2:
                 throw new ProjectionCannotRead(new \InvalidArgumentException());
+
                 break;
+
             case 3:
                 throw new EventStoreCannotWrite(new \InvalidArgumentException());
+
                 break;
+
             case 4:
-                throw new \Galeas\Api\Common\ExceptionBase\EventStoreCannotRead(new \RuntimeException());
+                throw new EventStoreCannotRead(new \RuntimeException());
+
                 break;
+
             case 5:
             default:
                 throw new ABC(new \RuntimeException());
+
                 break;
         }
     }
@@ -392,6 +402,7 @@ class MockQueryHandler
             case 'x':
             default:
                 throw new ProjectionCannotRead(new \RuntimeException());
+
                 break;
         }
     }
@@ -399,9 +410,7 @@ class MockQueryHandler
 
 class MockCommandHandlerWithoutAnnotation
 {
-    public function handle(MockCommand $mockCommand): void
-    {
-    }
+    public function handle(MockCommand $mockCommand): void {}
 }
 
 class MockCommandHandlerWithNonBaseException
@@ -411,7 +420,7 @@ class MockCommandHandlerWithNonBaseException
      */
     public function handle(MockCommand $mockCommand): void
     {
-        throw new \RuntimeException(strval($mockCommand->maxInt));
+        throw new \RuntimeException((string) $mockCommand->maxInt);
     }
 }
 

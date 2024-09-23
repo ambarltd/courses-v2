@@ -14,7 +14,8 @@ class SessionIdFromSessionTokenTestAndReactor extends ProjectorAndReactorIntegra
     public function testSessionIdFromSessionToken(): void
     {
         $sessionIdFromSessionToken = $this->getContainer()
-            ->get(SessionIdFromSessionToken::class);
+            ->get(SessionIdFromSessionToken::class)
+        ;
 
         Assert::assertEquals(
             null,
@@ -34,7 +35,8 @@ class SessionIdFromSessionTokenTestAndReactor extends ProjectorAndReactorIntegra
                     false,
                     new \DateTimeImmutable()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(
@@ -55,7 +57,8 @@ class SessionIdFromSessionTokenTestAndReactor extends ProjectorAndReactorIntegra
                     false,
                     new \DateTimeImmutable()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(

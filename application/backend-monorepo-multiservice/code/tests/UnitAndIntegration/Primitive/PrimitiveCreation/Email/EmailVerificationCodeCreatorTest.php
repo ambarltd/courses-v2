@@ -13,22 +13,22 @@ class EmailVerificationCodeCreatorTest extends UnitTest
 {
     public function testCreate(): void
     {
-        for ($i = 0; $i < 20000; ++$i) {
+        for ($i = 0; $i < 20_000; ++$i) {
             $code = EmailVerificationCodeCreator::create();
 
-            $codeHasInvalidLength = 96 !== strlen($code);
+            $codeHasInvalidLength = 96 !== \strlen($code);
             if ($codeHasInvalidLength) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s is %s characters long, but it should be 96 characters long',
                     $code,
-                    strlen($code)
+                    \strlen($code)
                 ));
             }
 
             // Assuming the validator class has its tests passing
             $codeIsNotValid = false === EmailVerificationCodeValidator::isValid($code);
             if ($codeIsNotValid) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     '%s is not a valid id',
                     $code
                 ));
@@ -44,9 +44,9 @@ class EmailVerificationCodeCreatorTest extends UnitTest
         $countVerificationCodesThatStartWithThreeNines = 0;
         $countVerificationCodesThatEndWithThreeZeros = 0;
         $countVerificationCodesThatEndWithThreeNines = 0;
-        $verificationCodeLength = strlen(EmailVerificationCodeCreator::create());
+        $verificationCodeLength = \strlen(EmailVerificationCodeCreator::create());
 
-        for ($i = 0; $i < 20000; ++$i) {
+        for ($i = 0; $i < 20_000; ++$i) {
             $verificationCode = EmailVerificationCodeCreator::create();
             $firstThreeCharacters = substr($verificationCode, 0, 3);
             $lastThreeCharacters = substr($verificationCode, $verificationCodeLength - 3, 3);

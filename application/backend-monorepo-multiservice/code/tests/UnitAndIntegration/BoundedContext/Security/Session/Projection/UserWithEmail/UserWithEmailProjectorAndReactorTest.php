@@ -19,7 +19,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessSignedUp(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
@@ -41,7 +42,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessPrimaryEmailVerifiedWhenUnverified(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -52,7 +54,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
                     'unverified189181727@galeas.com',
                     Unverified::setStatus()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         $primaryEmailVerified = SampleEvents::primaryEmailVerified(
@@ -79,7 +82,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessPrimaryEmailVerifiedWhenChangeRequested(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -90,7 +94,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
                     'requested189181727@galeas.com',
                     RequestedChange::setStatus()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         $primaryEmailVerified = SampleEvents::primaryEmailVerified(
@@ -117,7 +122,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessChangeRequestedWhenUnverified(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -128,7 +134,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
                     'unverified189181727@galeas.com',
                     Unverified::setStatus()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
@@ -155,7 +162,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessChangeRequestedWhenVerified(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -166,7 +174,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
                     null,
                     Verified::setStatus()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
@@ -193,7 +202,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessChangeRequestedWhenChangeRequested(): void
     {
         $UserWithEmailProjectorService = $this->getContainer()
-            ->get(UserWithEmailProjector::class);
+            ->get(UserWithEmailProjector::class)
+        ;
 
         $userId = Id::createNew();
         $this->getProjectionDocumentManager()
@@ -204,7 +214,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
                     'requested189181727@galeas.com',
                     RequestedChange::setStatus()
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         $primaryEmailChangeRequested = SampleEvents::primaryEmailChangeRequested(
@@ -236,7 +247,8 @@ class UserWithEmailProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     private function findUserWithEmails(string $userId): array
     {
         $queryBuilder = $this->getProjectionDocumentManager()
-            ->createQueryBuilder(UserWithEmail::class);
+            ->createQueryBuilder(UserWithEmail::class)
+        ;
 
         $queryBuilder->field('id')->equals($userId);
 

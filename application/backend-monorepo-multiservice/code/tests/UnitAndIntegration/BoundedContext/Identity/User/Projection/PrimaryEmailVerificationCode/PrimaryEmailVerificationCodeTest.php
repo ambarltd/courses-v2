@@ -23,7 +23,7 @@ class PrimaryEmailVerificationCodeTest extends UnitTest
         $primaryEmailVerificationCodeObject->updateVerificationCode(null);
         Assert::assertEquals('user_id_test', $primaryEmailVerificationCodeObject->getUserId());
         Assert::assertEquals(null, $primaryEmailVerificationCodeObject->getPrimaryEmailVerificationCode());
-        //update to code_1234
+        // update to code_1234
         $primaryEmailVerificationCodeObject->updateVerificationCode('code_1234_test');
         Assert::assertEquals('user_id_test', $primaryEmailVerificationCodeObject->getUserId());
         Assert::assertEquals('code_1234_test', $primaryEmailVerificationCodeObject->getPrimaryEmailVerificationCode());
@@ -39,7 +39,7 @@ class PrimaryEmailVerificationCodeTest extends UnitTest
         $primaryEmailVerificationCodeObject->updateVerificationCode('code_123_test');
         Assert::assertEquals('user_id_test', $primaryEmailVerificationCodeObject->getUserId());
         Assert::assertEquals('code_123_test', $primaryEmailVerificationCodeObject->getPrimaryEmailVerificationCode());
-        //update to null
+        // update to null
         $primaryEmailVerificationCodeObject->updateVerificationCode(null);
         Assert::assertEquals('user_id_test', $primaryEmailVerificationCodeObject->getUserId());
         Assert::assertEquals(null, $primaryEmailVerificationCodeObject->getPrimaryEmailVerificationCode());

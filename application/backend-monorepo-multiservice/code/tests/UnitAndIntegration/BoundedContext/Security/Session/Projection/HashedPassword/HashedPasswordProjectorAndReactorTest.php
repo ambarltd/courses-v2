@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\HashedPassword;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPassword;
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProjector;
 use PHPUnit\Framework\Assert;
@@ -16,7 +15,8 @@ class HashedPasswordProjectorAndReactorTest extends ProjectorAndReactorIntegrati
     public function testHashedPasswordProjector(): void
     {
         $HashedPasswordProjector = $this->getContainer()
-            ->get(HashedPasswordProjector::class);
+            ->get(HashedPasswordProjector::class)
+        ;
 
         $signedUp1 = SampleEvents::signedUp();
         $signedUp2 = SampleEvents::anotherSignedUp();

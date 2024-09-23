@@ -21,18 +21,18 @@ class ProductTest extends UnitTest
         $product = Product::fromProperties(
             $productId,
             1,
-            "name",
-            1200,
-            5000,
+            'name',
+            1_200,
+            5_000,
             PaymentCycle::fromProperties(
                 Monthly::fromProperties()
             ),
-            150000,
-            10000,
+            150_000,
+            10_000,
             Reward::fromProperties(
                 NoReward::fromProperties()
             ),
-            "#ff00ff",
+            '#ff00ff',
             false
         );
 
@@ -40,18 +40,18 @@ class ProductTest extends UnitTest
             [
                 $productId,
                 1,
-                "name",
-                1200,
-                5000,
+                'name',
+                1_200,
+                5_000,
                 PaymentCycle::fromProperties(
                     Monthly::fromProperties()
                 ),
-                150000,
-                10000,
+                150_000,
+                10_000,
                 Reward::fromProperties(
                     NoReward::fromProperties()
                 ),
-                "#ff00ff",
+                '#ff00ff',
                 false,
             ],
             [

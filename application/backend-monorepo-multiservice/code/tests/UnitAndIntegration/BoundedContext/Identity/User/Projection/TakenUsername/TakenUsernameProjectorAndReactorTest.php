@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\TakenUsername;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use PHPUnit\Framework\Assert;
@@ -16,7 +15,8 @@ class TakenUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     public function testProcessSignedUpWithTwoUsers(): void
     {
         $TakenUsernameProjectorService = $this->getContainer()
-            ->get(TakenUsernameProjector::class);
+            ->get(TakenUsernameProjector::class)
+        ;
 
         $signedUp1 = SampleEvents::signedUp();
         $signedUp2 = SampleEvents::anotherSignedUp();
@@ -51,7 +51,8 @@ class TakenUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegratio
     private function findTakenUsernames(string $userId): array
     {
         $queryBuilder = $this->getProjectionDocumentManager()
-            ->createQueryBuilder(TakenUsername::class);
+            ->createQueryBuilder(TakenUsername::class)
+        ;
 
         $queryBuilder->field('id')->equals($userId);
 

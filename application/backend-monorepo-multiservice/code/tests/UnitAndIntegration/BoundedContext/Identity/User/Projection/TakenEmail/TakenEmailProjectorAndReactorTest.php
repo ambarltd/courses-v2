@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\TakenEmail;
 
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\Common\Id\Id;
@@ -19,7 +16,8 @@ class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTe
     public function testProcessSignedUp(): void
     {
         $TakenEmailProjectorService = $this->getContainer()
-            ->get(TakenEmailProjector::class);
+            ->get(TakenEmailProjector::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
@@ -40,7 +38,8 @@ class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTe
     public function testProcessSignedUpForTwoUsers(): void
     {
         $TakenEmailProjectorService = $this->getContainer()
-            ->get(TakenEmailProjector::class);
+            ->get(TakenEmailProjector::class)
+        ;
 
         $signedUp1 = SampleEvents::signedUp();
         $signedUp2 = SampleEvents::anotherSignedUp();
@@ -74,7 +73,8 @@ class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTe
     public function testProcessPrimaryEmailVerified(): void
     {
         $TakenEmailProjectorService = $this->getContainer()
-            ->get(TakenEmailProjector::class);
+            ->get(TakenEmailProjector::class)
+        ;
 
         $takenEmail = TakenEmail::fromUserIdAndEmails(
             Id::createNew()->id(),
@@ -108,7 +108,8 @@ class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTe
     public function testProcessPrimaryEmailChangeRequested(): void
     {
         $TakenEmailProjectorService = $this->getContainer()
-            ->get(TakenEmailProjector::class);
+            ->get(TakenEmailProjector::class)
+        ;
 
         $takenEmail = TakenEmail::fromUserIdAndEmails(
             Id::createNew()->id(),
@@ -147,7 +148,8 @@ class TakenEmailProjectorAndReactorTest extends ProjectorAndReactorIntegrationTe
     private function findTakenEmails(string $userId): array
     {
         $queryBuilder = $this->getProjectionDocumentManager()
-            ->createQueryBuilder(TakenEmail::class);
+            ->createQueryBuilder(TakenEmail::class)
+        ;
 
         $queryBuilder->field('id')->equals($userId);
 

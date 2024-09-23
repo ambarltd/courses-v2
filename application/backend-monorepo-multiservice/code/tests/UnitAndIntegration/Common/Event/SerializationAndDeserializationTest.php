@@ -13,7 +13,8 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class SerializationAndDeserializationTest extends UnitTest
 {
-    public function testSerializationAndDeserialization() {
+    public function testSerializationAndDeserialization(): void
+    {
         $events = array_merge(
             SampleEvents::userEvents(),
             SampleEvents::sessionEvents(),
@@ -30,11 +31,10 @@ class SerializationAndDeserializationTest extends UnitTest
         $this->assertWeTestedAllRegisteredEvents($events);
     }
 
-    private function assertWeTestedAllRegisteredEvents(array $events) {
+    private function assertWeTestedAllRegisteredEvents(array $events): void
+    {
         $testedClasses = array_map(
-            function ($event) {
-                return get_class($event);
-            },
+            static fn ($event) => $event::class,
             $events
         );
         sort($testedClasses);

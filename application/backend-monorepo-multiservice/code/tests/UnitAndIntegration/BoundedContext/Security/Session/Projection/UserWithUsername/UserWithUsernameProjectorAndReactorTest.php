@@ -14,7 +14,8 @@ class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegra
     public function testSessionProjector(): void
     {
         $UserWithUsernameProjector = $this->getContainer()
-            ->get(UserWithUsernameProjector::class);
+            ->get(UserWithUsernameProjector::class)
+        ;
 
         $signedUp1 = SampleEvents::signedUp();
         $signedUp2 = SampleEvents::anotherSignedUp();
@@ -27,11 +28,11 @@ class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegra
         $userWithUsernameArray2 = $this->findUsersById(
             $signedUp2->aggregateId()->id()
         );
-        $this->assertCount(
+        self::assertCount(
             0,
             $userWithUsernameArray1
         );
-        $this->assertCount(
+        self::assertCount(
             0,
             $userWithUsernameArray2
         );
@@ -47,19 +48,19 @@ class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegra
         $userWithUsernameArray2 = $this->findUsersById(
             $signedUp2->aggregateId()->id()
         );
-        $this->assertCount(
+        self::assertCount(
             1,
             $userWithUsernameArray1
         );
-        $this->assertEquals(
+        self::assertSame(
             $signedUp1->aggregateId()->id(),
             $userWithUsernameArray1[0]->getUserId()
         );
-        $this->assertEquals(
+        self::assertSame(
             strtolower($signedUp1->username()),
             $userWithUsernameArray1[0]->getCanonicalUsername()
         );
-        $this->assertCount(
+        self::assertCount(
             0,
             $userWithUsernameArray2
         );
@@ -75,27 +76,27 @@ class UserWithUsernameProjectorAndReactorTest extends ProjectorAndReactorIntegra
         $userWithUsernameArray2 = $this->findUsersById(
             $signedUp2->aggregateId()->id()
         );
-        $this->assertCount(
+        self::assertCount(
             1,
             $userWithUsernameArray1
         );
-        $this->assertEquals(
+        self::assertSame(
             $signedUp1->aggregateId()->id(),
             $userWithUsernameArray1[0]->getUserId()
         );
-        $this->assertEquals(
+        self::assertSame(
             strtolower($signedUp1->username()),
             $userWithUsernameArray1[0]->getCanonicalUsername()
         );
-        $this->assertCount(
+        self::assertCount(
             1,
             $userWithUsernameArray2
         );
-        $this->assertEquals(
+        self::assertSame(
             $signedUp2->aggregateId()->id(),
             $userWithUsernameArray2[0]->getUserId()
         );
-        $this->assertEquals(
+        self::assertSame(
             strtolower($signedUp2->username()),
             $userWithUsernameArray2[0]->getCanonicalUsername()
         );

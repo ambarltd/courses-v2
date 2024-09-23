@@ -14,7 +14,8 @@ class IsEmailTakenTestAndReactor extends ProjectorAndReactorIntegrationTest
     public function testIsEmailTaken(): void
     {
         $isEmailTakenService = $this->getContainer()
-            ->get(IsEmailTaken::class);
+            ->get(IsEmailTaken::class)
+        ;
 
         Assert::assertFalse($isEmailTakenService->isEmailTaken('test_1@example.com'));
         Assert::assertFalse($isEmailTakenService->isEmailTaken('test_2@example.com'));
@@ -47,7 +48,8 @@ class IsEmailTakenTestAndReactor extends ProjectorAndReactorIntegrationTest
             ->createQueryBuilder(TakenEmail::class)
             ->field('id')->equals('user_id_1')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
 
         if (false === ($takenEmail instanceof TakenEmail)) {
             throw new \Exception();

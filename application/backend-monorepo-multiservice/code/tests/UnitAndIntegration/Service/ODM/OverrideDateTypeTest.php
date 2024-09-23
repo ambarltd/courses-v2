@@ -13,13 +13,13 @@ class OverrideDateTypeTest extends UnitTest
 {
     private OverrideDateType $overrideDateType;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Type::registerType('date_override_for_testing', OverrideDateType::class);
         $overrideDateType = Type::getType('date_override_for_testing');
 
-        if (!($overrideDateType instanceof OverrideDateType)) {
+        if (!$overrideDateType instanceof OverrideDateType) {
             throw new \Exception();
         }
 
@@ -49,7 +49,7 @@ class OverrideDateTypeTest extends UnitTest
     {
         $dateTimeImmutable = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.uP', '2018-06-21T14:36:34.887181+00:00');
 
-        if (is_bool($dateTimeImmutable)) {
+        if (\is_bool($dateTimeImmutable)) {
             throw new \Exception();
         }
         Assert::assertEquals(
@@ -59,7 +59,7 @@ class OverrideDateTypeTest extends UnitTest
 
         // test values are saved as UTC for sortability
         $dateTimeImmutable = \DateTimeImmutable::createFromFormat('Y-m-d\TH:i:s.uP', '2018-06-21T14:36:34.887181+04:00');
-        if (is_bool($dateTimeImmutable)) {
+        if (\is_bool($dateTimeImmutable)) {
             throw new \Exception();
         }
         Assert::assertEquals(

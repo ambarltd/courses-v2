@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Event;
 
 use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
-use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\Primitive\PrimitiveValidation\Session\SessionTokenValidator;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
@@ -27,13 +25,13 @@ class TokenRefreshedTest extends UnitTest
             1,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
-            "201.201.20.201",
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
+            '201.201.20.201',
             'existingSessionToken',
             'refreshedSessionToken',
         );
-        
+
         Assert::assertEquals(
             [
                 $eventId,
@@ -41,9 +39,9 @@ class TokenRefreshedTest extends UnitTest
                 1,
                 $causationId,
                 $correlationId,
-                new \DateTimeImmutable("2024-01-03 10:35:23"),
-                ["metadataField" => "hello world 123"],
-                "201.201.20.201",
+                new \DateTimeImmutable('2024-01-03 10:35:23'),
+                ['metadataField' => 'hello world 123'],
+                '201.201.20.201',
                 'existingSessionToken',
                 'refreshedSessionToken',
             ],
@@ -89,9 +87,9 @@ class TokenRefreshedTest extends UnitTest
             2,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
-            "201.201.20.201",
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
+            '201.201.20.201',
             'existingSessionToken',
             'refreshedSessionToken',
         );

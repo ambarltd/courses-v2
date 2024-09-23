@@ -14,7 +14,8 @@ class UserIdFromSignInUsernameTestAndReactor extends ProjectorAndReactorIntegrat
     public function testUserIdFromUsernameTest(): void
     {
         $userIdFromUsername = $this->getContainer()
-            ->get(UserIdFromSignInUsername::class);
+            ->get(UserIdFromSignInUsername::class)
+        ;
 
         Assert::assertEquals(
             null,
@@ -31,7 +32,8 @@ class UserIdFromSignInUsernameTestAndReactor extends ProjectorAndReactorIntegrat
                     'username_123',
                     'user_id_123'
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(
@@ -50,7 +52,8 @@ class UserIdFromSignInUsernameTestAndReactor extends ProjectorAndReactorIntegrat
                     'useRName_1234',
                     'user_id_1234'
                 )
-            );
+            )
+        ;
         $this->getProjectionDocumentManager()->flush();
 
         Assert::assertEquals(

@@ -9,9 +9,9 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
@@ -28,11 +28,11 @@ class PrimaryEmailVerifiedTest extends UnitTest
         $primaryEmailVerified = PrimaryEmailVerified::new(
             $eventId,
             $aggregateId,
-            1432,
+            1_432,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable("2024-01-03 10:35:23"),
-            ["metadataField" => "hello world 123"],
+            new \DateTimeImmutable('2024-01-03 10:35:23'),
+            ['metadataField' => 'hello world 123'],
             'verifiedWithCode',
         );
 
@@ -40,12 +40,12 @@ class PrimaryEmailVerifiedTest extends UnitTest
             [
                 $eventId,
                 $aggregateId,
-                1432,
+                1_432,
                 $causationId,
                 $correlationId,
-                new \DateTimeImmutable("2024-01-03 10:35:23"),
-                ["metadataField" => "hello world 123"],
-                'verifiedWithCode'
+                new \DateTimeImmutable('2024-01-03 10:35:23'),
+                ['metadataField' => 'hello world 123'],
+                'verifiedWithCode',
             ],
             [
                 $primaryEmailVerified->eventId(),
@@ -70,7 +70,7 @@ class PrimaryEmailVerifiedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'changed_code_1234'
         );
         $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
@@ -92,11 +92,11 @@ class PrimaryEmailVerifiedTest extends UnitTest
                 $aggregateId,
                 28,
                 VerifiedEmail::fromEmail(
-                    Email::fromEmail("test@example.com"),
+                    Email::fromEmail('test@example.com'),
                 ),
-                HashedPassword::fromHash("1234abcdef"),
+                HashedPassword::fromHash('1234abcdef'),
                 AccountDetails::fromDetails(
-                    "username",
+                    'username',
                     true
                 )
             ),
@@ -114,14 +114,14 @@ class PrimaryEmailVerifiedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'changed_code_1234'
         );
         $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
             $aggregateId,
             27,
             VerifiedEmail::fromEmail(
-                Email::fromEmail("previous@example.com"),
+                Email::fromEmail('previous@example.com'),
             ),
             HashedPassword::fromHash('1234abcdef'),
             AccountDetails::fromDetails(
@@ -135,11 +135,11 @@ class PrimaryEmailVerifiedTest extends UnitTest
                 $aggregateId,
                 28,
                 VerifiedEmail::fromEmail(
-                    Email::fromEmail("previous@example.com"),
+                    Email::fromEmail('previous@example.com'),
                 ),
-                HashedPassword::fromHash("1234abcdef"),
+                HashedPassword::fromHash('1234abcdef'),
                 AccountDetails::fromDetails(
-                    "username",
+                    'username',
                     true
                 )
             ),
@@ -157,7 +157,7 @@ class PrimaryEmailVerifiedTest extends UnitTest
             Id::createNew(),
             Id::createNew(),
             new \DateTimeImmutable(),
-            ["metadataKey" => "123"],
+            ['metadataKey' => '123'],
             'changed_code_1234'
         );
         $transformedUser = $primaryEmailVerified->transformUser(User::fromProperties(
@@ -186,11 +186,11 @@ class PrimaryEmailVerifiedTest extends UnitTest
                 $aggregateId,
                 28,
                 VerifiedEmail::fromEmail(
-                    Email::fromEmail("requested@example.com"),
+                    Email::fromEmail('requested@example.com'),
                 ),
-                HashedPassword::fromHash("1234abcdef"),
+                HashedPassword::fromHash('1234abcdef'),
                 AccountDetails::fromDetails(
-                    "username",
+                    'username',
                     true
                 )
             ),

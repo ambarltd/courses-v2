@@ -7,7 +7,6 @@ namespace Tests\Galeas\Api\UnitAndIntegration;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-
 // Needed if we ever test controllers depending on commandHandlers & queryHandlers.
 // - Replace the SQLEventStore services in services_test.yaml with one that sends
 // events to all projectors and reactors after committing. Why? To simulate what
@@ -17,7 +16,8 @@ use Symfony\Component\HttpFoundation\Response;
 // of setUp and tearDown.
 abstract class ControllerIntegrationTest extends IntegrationTest
 {
-    protected function requestGet(string $url, array $parameters): array {
+    protected function requestGet(string $url, array $parameters): array
+    {
         $request = Request::create(
             $url,
             'GET',
@@ -30,8 +30,8 @@ abstract class ControllerIntegrationTest extends IntegrationTest
         $response = $this->kernelHandleRequest($request);
 
         return [
-            "content" => $response->getContent(),
-            "statusCode" => $response->getStatusCode(),
+            'content' => $response->getContent(),
+            'statusCode' => $response->getStatusCode(),
         ];
     }
 

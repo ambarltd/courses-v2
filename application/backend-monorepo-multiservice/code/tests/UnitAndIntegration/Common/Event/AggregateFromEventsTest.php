@@ -4,38 +4,22 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Common\Event;
 
-use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
-use Galeas\Api\BoundedContext\Security\Session\Aggregate\Session;
-use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
-use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
-use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
-use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionDetails;
-use Galeas\Api\BoundedContext\Security\Session\ValueObject\SessionIsSignedOut;
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\EventReflectionBaseClass;
-use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class AggregateFromEventsTest extends UnitTest {
+class AggregateFromEventsTest extends UnitTest
+{
     public function testAggregateFromEvents(): void
     {
         $userEvents = SampleEvents::userEvents();
         $sessionEvents = SampleEvents::sessionEvents();
         $productEvents = SampleEvents::creditCardProductEvents();
-        $this->runAssertions($userEvents, "createUser", "transformUser");
-        $this->runAssertions($sessionEvents, "createSession", "transformSession");
-        $this->runAssertions($productEvents, "createProduct", "transformProduct");
+        $this->runAssertions($userEvents, 'createUser', 'transformUser');
+        $this->runAssertions($sessionEvents, 'createSession', 'transformSession');
+        $this->runAssertions($productEvents, 'createProduct', 'transformProduct');
 
         $this->assertWeTestedAllRegisteredEvents(array_merge(
             $userEvents,
@@ -44,14 +28,14 @@ class AggregateFromEventsTest extends UnitTest {
         ));
     }
 
-    private function runAssertions(array $events, string $creationMethod, string $transformationMethod)
+    private function runAssertions(array $events, string $creationMethod, string $transformationMethod): void
     {
         $creationEvent = $events[0];
-        $transformationEvents = array_slice($events, 1);
+        $transformationEvents = \array_slice($events, 1);
 
-        $expectedAggregate = $creationEvent->$creationMethod();
+        $expectedAggregate = $creationEvent->{$creationMethod}();
         foreach ($transformationEvents as $event) {
-            $expectedAggregate = $event->$transformationMethod($expectedAggregate);
+            $expectedAggregate = $event->{$transformationMethod}($expectedAggregate);
         }
 
         $actualAggregate = AggregateFromEvents::aggregateFromEvents(
@@ -63,14 +47,12 @@ class AggregateFromEventsTest extends UnitTest {
             $expectedAggregate,
             $actualAggregate
         );
-
     }
 
-    private function assertWeTestedAllRegisteredEvents(array $events) {
+    private function assertWeTestedAllRegisteredEvents(array $events): void
+    {
         $testedClasses = array_map(
-            function ($event) {
-                return get_class($event);
-            },
+            static fn ($event) => $event::class,
             $events
         );
         sort($testedClasses);

@@ -8,13 +8,13 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 
 abstract class ProjectorAndReactorIntegrationTest extends IntegrationTest
 {
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->deleteProjectionAndReactionDatabases();
     }
 
-    public function tearDown(): void
+    protected function tearDown(): void
     {
         $this->deleteProjectionAndReactionDatabases();
         parent::tearDown();
@@ -37,7 +37,8 @@ abstract class ProjectorAndReactorIntegrationTest extends IntegrationTest
         $projectionDatabase = $projectionDocumentManager->getClient()
             ->selectDatabase(
                 $this->getContainer()->getParameter('mongodb_projection_database_name')
-            );
+            )
+        ;
         foreach ($projectionDatabase->listCollections() as $collection) {
             $projectionDatabase->selectCollection(
                 $collection->getName()
@@ -49,7 +50,8 @@ abstract class ProjectorAndReactorIntegrationTest extends IntegrationTest
         $reactionDatabase = $reactionDocumentManager->getClient()
             ->selectDatabase(
                 $this->getContainer()->getParameter('mongodb_reaction_database_name')
-            );
+            )
+        ;
         foreach ($reactionDatabase->listCollections() as $collection) {
             $reactionDatabase->selectCollection(
                 $collection->getName()

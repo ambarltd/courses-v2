@@ -33,7 +33,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
         $userIdFromSignInUsername = Id::createNew();
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 11]);
 
-        if (!is_string($hashedPassword)) {
+        if (!\is_string($hashedPassword)) {
             throw new \Exception();
         }
 
@@ -42,7 +42,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 UserIdFromSignInUsername::class,
                 'userIdFromSignInUsername',
-                function (string $username) use ($userIdFromSignInUsername): ?string {
+                static function (string $username) use ($userIdFromSignInUsername): ?string {
                     if ($username === ValidUsernames::listValidUsernames()[0]) {
                         return $userIdFromSignInUsername->id();
                     }
@@ -58,7 +58,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 HashedPasswordFromUserId::class,
                 'hashedPasswordFromUserId',
-                function (string $userId) use ($userIdFromSignInUsername, $hashedPassword): ?string {
+                static function (string $userId) use ($userIdFromSignInUsername, $hashedPassword): ?string {
                     if ($userId === $userIdFromSignInUsername->id()) {
                         return $hashedPassword;
                     }
@@ -80,18 +80,18 @@ class SignInHandlerUnitTest extends HandlerUnitTest
         /** @var SignedIn $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
 
-        $this->assertTrue(
+        self::assertTrue(
             password_verify(
                 $command->withPassword,
                 $storedEvent->withHashedPassword()
             )
         );
-        $this->assertTrue(
+        self::assertTrue(
             SessionTokenValidator::isValid(
                 $storedEvent->sessionTokenCreated()
             )
         );
-        $this->assertEquals(
+        self::assertSame(
             [
                 'sessionTokenCreated' => $storedEvent->sessionTokenCreated(),
             ],
@@ -113,7 +113,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
                 $storedEvent->withHashedPassword(),
                 $command->byDeviceLabel,
                 $command->withIp,
-                $storedEvent->sessionTokenCreated()
+                $storedEvent->sessionTokenCreated(),
             ],
             [
                 $storedEvent->eventId(),
@@ -139,7 +139,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
         $userIdFromSignInEmail = Id::createNew();
         $hashedPassword = password_hash(ValidPasswords::listValidPasswords()[0], PASSWORD_BCRYPT, ['cost' => 11]);
 
-        if (!is_string($hashedPassword)) {
+        if (!\is_string($hashedPassword)) {
             throw new \Exception();
         }
 
@@ -153,7 +153,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 UserIdFromSignInEmail::class,
                 'userIdFromSignInEmail',
-                function (string $username) use ($userIdFromSignInEmail): ?string {
+                static function (string $username) use ($userIdFromSignInEmail): ?string {
                     if ($username === ValidUsernames::listValidUsernames()[0]) {
                         return $userIdFromSignInEmail->id();
                     }
@@ -164,7 +164,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
             $this->mockForCommandHandlerWithCallback(
                 HashedPasswordFromUserId::class,
                 'hashedPasswordFromUserId',
-                function (string $userId) use ($userIdFromSignInEmail, $hashedPassword): ?string {
+                static function (string $userId) use ($userIdFromSignInEmail, $hashedPassword): ?string {
                     if ($userId === $userIdFromSignInEmail->id()) {
                         return $hashedPassword;
                     }
@@ -186,18 +186,18 @@ class SignInHandlerUnitTest extends HandlerUnitTest
         /** @var SignedIn $storedEvent */
         $storedEvent = $this->getInMemoryEventStore()->storedEvents()[0];
 
-        $this->assertTrue(
+        self::assertTrue(
             password_verify(
                 $command->withPassword,
                 $storedEvent->withHashedPassword()
             )
         );
-        $this->assertTrue(
+        self::assertTrue(
             SessionTokenValidator::isValid(
                 $storedEvent->sessionTokenCreated()
             )
         );
-        $this->assertEquals(
+        self::assertSame(
             [
                 'sessionTokenCreated' => $storedEvent->sessionTokenCreated(),
             ],
@@ -219,7 +219,7 @@ class SignInHandlerUnitTest extends HandlerUnitTest
                 $storedEvent->withHashedPassword(),
                 $command->byDeviceLabel,
                 $command->withIp,
-                $storedEvent->sessionTokenCreated()
+                $storedEvent->sessionTokenCreated(),
             ],
             [
                 $storedEvent->eventId(),

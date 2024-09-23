@@ -17,7 +17,8 @@ class UserIdFromSignInEmailTestAndReactor extends ProjectorAndReactorIntegration
     public function testUnverified(): void
     {
         $userIdFromEmailService = $this->getContainer()
-            ->get(UserIdFromSignInEmail::class);
+            ->get(UserIdFromSignInEmail::class)
+        ;
 
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('deF@galeas.com'));
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('xyZ@galeas.com'));
@@ -59,7 +60,8 @@ class UserIdFromSignInEmailTestAndReactor extends ProjectorAndReactorIntegration
     public function testVerified(): void
     {
         $userIdFromEmailService = $this->getContainer()
-            ->get(UserIdFromSignInEmail::class);
+            ->get(UserIdFromSignInEmail::class)
+        ;
 
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('aBc@galeas.com'));
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('uVw@galeas.com'));
@@ -101,7 +103,8 @@ class UserIdFromSignInEmailTestAndReactor extends ProjectorAndReactorIntegration
     public function testRequestedChange(): void
     {
         $userIdFromEmailService = $this->getContainer()
-            ->get(UserIdFromSignInEmail::class);
+            ->get(UserIdFromSignInEmail::class)
+        ;
 
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('aBc@galeas.com'));
         Assert::assertNull($userIdFromEmailService->userIdFromSignInEmail('uVw@galeas.com'));

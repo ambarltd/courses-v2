@@ -14,7 +14,8 @@ class IsUsernameTakenTestAndReactor extends ProjectorAndReactorIntegrationTest
     public function testIsUsernameTaken(): void
     {
         $isUsernameTakenService = $this->getContainer()
-            ->get(IsUsernameTaken::class);
+            ->get(IsUsernameTaken::class)
+        ;
 
         Assert::assertFalse($isUsernameTakenService->isUsernameTaken('test_username_1'));
         Assert::assertFalse($isUsernameTakenService->isUsernameTaken('test_username_2'));
@@ -41,7 +42,8 @@ class IsUsernameTakenTestAndReactor extends ProjectorAndReactorIntegrationTest
             ->createQueryBuilder(TakenUsername::class)
             ->field('id')->equals('user_id_1')
             ->getQuery()
-            ->getSingleResult();
+            ->getSingleResult()
+        ;
 
         if (false === ($takenUsername instanceof TakenUsername)) {
             throw new \Exception();

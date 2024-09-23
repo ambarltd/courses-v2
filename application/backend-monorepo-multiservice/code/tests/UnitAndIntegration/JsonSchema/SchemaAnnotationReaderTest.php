@@ -24,24 +24,55 @@ class SchemaAnnotationReaderTest extends UnitTest
         Assert::assertEquals('example5', $schemaAnnotationReader->getRequestSchema(RequestStub::class.'::requestExample5'));
         Assert::assertEquals('example6', $schemaAnnotationReader->getRequestSchema(RequestStub::class.'::requestExample6'));
 
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample');
         });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample2');
         });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample3');
         });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample4');
         });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample5');
         });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
             $schemaAnnotationReader->getRequestSchema(ResponseStub::class.'::requestExample6');
         });
+    }
+
+    public function testResponseAnnotationExtraction(): void
+    {
+        $schemaAnnotationReader = new SchemaAnnotationReader();
+
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample');
+        });
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample2');
+        });
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample3');
+        });
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample4');
+        });
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample5');
+        });
+        $this->assertAnnotationReaderFailedIsCalled(static function () use ($schemaAnnotationReader): void {
+            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample6');
+        });
+
+        Assert::assertEquals('example', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample'));
+        Assert::assertEquals('example2', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample2'));
+        Assert::assertEquals('example3', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample3'));
+        Assert::assertEquals('example4', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample4'));
+        Assert::assertEquals('example5', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample5'));
+        Assert::assertEquals('example6', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample6'));
     }
 
     private function assertAnnotationReaderFailedIsCalled(callable $callable): void
@@ -53,37 +84,6 @@ class SchemaAnnotationReaderTest extends UnitTest
             Assert::assertTrue(true);
         }
     }
-
-    public function testResponseAnnotationExtraction(): void
-    {
-        $schemaAnnotationReader = new SchemaAnnotationReader();
-
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample');
-        });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample2');
-        });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample3');
-        });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample4');
-        });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample5');
-        });
-        $this->assertAnnotationReaderFailedIsCalled(function () use ($schemaAnnotationReader): void {
-            $schemaAnnotationReader->getResponseSchema(RequestStub::class.'::requestExample6');
-        });
-
-        Assert::assertEquals('example', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample'));
-        Assert::assertEquals('example2', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample2'));
-        Assert::assertEquals('example3', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample3'));
-        Assert::assertEquals('example4', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample4'));
-        Assert::assertEquals('example5', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample5'));
-        Assert::assertEquals('example6', $schemaAnnotationReader->getResponseSchema(ResponseStub::class.'::responseExample6'));
-    }
 }
 
 class RequestStub
@@ -91,44 +91,32 @@ class RequestStub
     /**
      * @RequestSchema(name="example")
      */
-    public function requestExample(string $param1): void
-    {
-    }
+    public function requestExample(string $param1): void {}
 
     /**
      * @RequestSchema(name="example2", otherProperty="somethingElse")
      */
-    public function requestExample2(string $param1): void
-    {
-    }
+    public function requestExample2(string $param1): void {}
 
     /**
      * @RequestSchema ( name = "example3" otherProperty="other")
      */
-    public function requestExample3(string $param1): void
-    {
-    }
+    public function requestExample3(string $param1): void {}
 
     /**
      * @RequestSchema ( name = 'example4' otherProperty="other")
      */
-    public function requestExample4(string $param1): void
-    {
-    }
+    public function requestExample4(string $param1): void {}
 
     /**
      * @RequestSchema ( name = "example5" otherProperty= 'other')
      */
-    public function requestExample5(string $param1): void
-    {
-    }
+    public function requestExample5(string $param1): void {}
 
     /**
      * @RequestSchema (name='example6' otherProperty='other')
      */
-    public function requestExample6(string $param1): void
-    {
-    }
+    public function requestExample6(string $param1): void {}
 }
 
 class ResponseStub
@@ -136,42 +124,30 @@ class ResponseStub
     /**
      * @ResponseSchema(name="example")
      */
-    public function responseExample(string $param1): void
-    {
-    }
+    public function responseExample(string $param1): void {}
 
     /**
      * @ResponseSchema(name="example2", otherProperty="somethingElse")
      */
-    public function responseExample2(string $param1): void
-    {
-    }
+    public function responseExample2(string $param1): void {}
 
     /**
      * @ResponseSchema ( name = "example3" otherProperty="other")
      */
-    public function responseExample3(string $param1): void
-    {
-    }
+    public function responseExample3(string $param1): void {}
 
     /**
      * @ResponseSchema ( name = 'example4' otherProperty="other")
      */
-    public function responseExample4(string $param1): void
-    {
-    }
+    public function responseExample4(string $param1): void {}
 
     /**
      * @ResponseSchema ( name = "example5" otherProperty= 'other')
      */
-    public function responseExample5(string $param1): void
-    {
-    }
+    public function responseExample5(string $param1): void {}
 
     /**
      * @ResponseSchema (name='example6' otherProperty='other')
      */
-    public function responseExample6(string $param1): void
-    {
-    }
+    public function responseExample6(string $param1): void {}
 }

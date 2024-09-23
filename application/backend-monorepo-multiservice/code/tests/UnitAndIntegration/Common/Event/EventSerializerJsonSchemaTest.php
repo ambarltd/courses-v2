@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Common\Event;
 
-use Galeas\Api\Common\Event\EventDeserializer;
 use Galeas\Api\Common\Event\EventReflectionBaseClass;
 use Galeas\Api\Common\Event\EventSerializer;
 use Galeas\Api\JsonSchema\JsonSchemaFetcher;
@@ -16,7 +15,8 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class EventSerializerJsonSchemaTest extends UnitTest
 {
-    public function testSchemaMatching() {
+    public function testSchemaMatching(): void
+    {
         $events = array_merge(
             SampleEvents::userEvents(),
             SampleEvents::sessionEvents(),
@@ -34,7 +34,7 @@ class EventSerializerJsonSchemaTest extends UnitTest
             try {
                 $schema = $schemaFetcher->fetch('Event/'.$serializedEvent->eventName().'.json');
             } catch (\Throwable $exception) {
-                Assert::fail(sprintf(
+                Assert::fail(\sprintf(
                     'Cannot load a schema for %s. Exception :%s.',
                     $serializedEvent->eventName(),
                     $exception->getMessage()
@@ -46,7 +46,7 @@ class EventSerializerJsonSchemaTest extends UnitTest
             Assert::assertEquals(
                 [],
                 $errors,
-                sprintf(
+                \sprintf(
                     'Could not validate event against schema for event %s. Errors in json format: %s',
                     $serializedEvent->eventName(),
                     json_encode($errors)
@@ -57,11 +57,10 @@ class EventSerializerJsonSchemaTest extends UnitTest
         $this->assertWeTestedAllRegisteredEvents($events);
     }
 
-    private function assertWeTestedAllRegisteredEvents(array $events) {
+    private function assertWeTestedAllRegisteredEvents(array $events): void
+    {
         $testedClasses = array_map(
-            function ($event) {
-                return get_class($event);
-            },
+            static fn ($event) => $event::class,
             $events
         );
         sort($testedClasses);
