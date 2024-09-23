@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\ControllerForProjectionReaction;
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
+use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail\SentVerificationEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification\SendPrimaryEmailVerificationReactor;
@@ -19,17 +20,20 @@ class UserProjectionReactionController extends ProjectionReactionController
     private PrimaryEmailVerificationCodeProjector $primaryEmailVerificationCodeProjector;
     private TakenEmailProjector $takenEmailProjector;
     private TakenUsernameProjector $takenUsernameProjector;
+    private SentVerificationEmailProjector $sentVerificationEmailProjector;
     private SendPrimaryEmailVerificationReactor $sendPrimaryEmailVerificationReactor;
 
     public function __construct(
         PrimaryEmailVerificationCodeProjector $primaryEmailVerificationCodeProjector,
         TakenEmailProjector $takenEmailProjector,
         TakenUsernameProjector $takenUsernameProjector,
+        SentVerificationEmailProjector $sentVerificationEmailProjector,
         SendPrimaryEmailVerificationReactor $sendPrimaryEmailVerificationReactor
     ) {
         $this->primaryEmailVerificationCodeProjector = $primaryEmailVerificationCodeProjector;
         $this->takenEmailProjector = $takenEmailProjector;
         $this->takenUsernameProjector = $takenUsernameProjector;
+        $this->sentVerificationEmailProjector = $sentVerificationEmailProjector;
         $this->sendPrimaryEmailVerificationReactor = $sendPrimaryEmailVerificationReactor;
     }
 
@@ -59,6 +63,16 @@ class UserProjectionReactionController extends ProjectionReactionController
         return $this->jsonPostRequestJsonResponse(
             $request,
             $this->takenUsernameProjector,
+            200
+        );
+    }
+
+    #[Route('/projection/sent_verification_email', name: 'projection_sent_verification_email', methods: ['POST'])]
+    public function sentVerificationEmail(Request $request): Response
+    {
+        return $this->jsonPostRequestJsonResponse(
+            $request,
+            $this->sentVerificationEmailProjector,
             200
         );
     }

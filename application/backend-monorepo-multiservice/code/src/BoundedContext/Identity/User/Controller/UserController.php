@@ -10,6 +10,8 @@ use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\VerifyPrimaryEmailHandler;
+use Galeas\Api\BoundedContext\Identity\User\Query\ListSentVerificationEmailQuery;
+use Galeas\Api\BoundedContext\Identity\User\QueryHandler\ListSentVerificationEmailQueryHandler;
 use Galeas\Api\CommonController\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -88,4 +90,25 @@ class UserController extends BaseController
             Response::HTTP_OK
         );
     }
+
+
+    /**
+     * @RequestSchema(name="V1_Identity_User_ListSentVerificationEmail")
+     *
+     * @ResponseSchema(name="V1_Identity_User_ListSentVerificationEmail")
+     */
+    #[Route('/identity/user/list-sent-verification-emails', name: 'V1_Identity_User_ListSentVerificationEmails', methods: ['POST'])]
+    public function listSentVerificationEmails(Request $request): Response
+    {
+        return $this->jsonPostRequestJsonResponse(
+            $request,
+            'Request/V1_Identity_User_ListSentVerificationEmail.json',
+            'Response/V1_Identity_User_ListSentVerificationEmail.json',
+            ListSentVerificationEmailQuery::class,
+            $this->getService(ListSentVerificationEmailQueryHandler::class),
+            null,
+            Response::HTTP_OK
+        );
+    }
+
 }

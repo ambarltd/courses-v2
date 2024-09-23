@@ -28,6 +28,16 @@ resource "ambar_data_destination" "Identity_User_TakenUsername" {
   password             = "password"
 }
 
+resource "ambar_data_destination" "Identity_User_SentVerificationEmail" {
+  filter_ids = [
+    ambar_filter.identity_all.resource_id,
+  ]
+  description          = "Identity_User_SentVerificationEmail"
+  destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/identity/user/projection/sent_verification_email"
+  username             = "username"
+  password             = "password"
+}
+
 resource "ambar_data_destination" "Identity_User_SendPrimaryEmailVerification" {
   filter_ids = [
     ambar_filter.identity_all.resource_id,
