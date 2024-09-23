@@ -75,7 +75,6 @@ class BaseController extends AbstractController
             $json = $this->jsonPostRequestMapper
                 ->jsonBodyFromRequest($request)
             ;
-
             $requestSchema = $this->jsonSchemaFetcher->fetch($requestSchema);
 
             $errors = $this->jsonSchemaValidator
@@ -159,8 +158,8 @@ class BaseController extends AbstractController
 
             $response = json_encode([
                 'errors' => [],
-                'errorIdentifier' => 'invalid_response_against_json_schema',
-                'errorMessage' => 'Invalid Response Against Json Schema',
+                'errorIdentifier' => $exception::getErrorIdentifier(),
+                'errorMessage' => '',
             ]);
             if (false === $response) {
                 throw new \RuntimeException('error json_encode failed');

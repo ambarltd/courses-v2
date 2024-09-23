@@ -28,7 +28,7 @@
       }
     },
     "required": [
-      "id",
+      "userId",
       "verificationCodeSent",
       "toEmailAddress",
       "emailContents",
