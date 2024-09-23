@@ -34,7 +34,8 @@ class TestConnections extends Command
     {
         try {
             $this->setName('galeas:dbs:connection_tests')
-                ->setDescription('Test connections to databases and queues.');
+                ->setDescription('Test connections to databases and queues.')
+            ;
         } catch (\Throwable $throwable) {
             return;
         }
@@ -54,14 +55,13 @@ class TestConnections extends Command
             $output->writeln('Reaction DB OK');
 
             // EVENT STORE
-            $eventStoreStatus = $this->sqlEventStoreConnection->getConnection()->isConnected() ||
-                null !== $this->sqlEventStoreConnection->getConnection()->executeQuery("SELECT 1");
+            $eventStoreStatus = $this->sqlEventStoreConnection->getConnection()->isConnected()
+                || null !== $this->sqlEventStoreConnection->getConnection()->executeQuery('SELECT 1');
 
             if (true !== $eventStoreStatus) {
                 throw new \RuntimeException('Cannot connect to event store');
             }
             $output->writeln('EventStore DB OK');
-
         } catch (\Throwable $throwable) {
             $output->writeln('Error, could not verify all connections.');
             $output->writeln($throwable->getMessage());

@@ -29,7 +29,7 @@ class JsonSchemaValidator
         $returnedErrors = [];
         if (!$this->validator->isValid()) {
             foreach ($this->validator->getErrors() as $error) {
-                $returnedError = sprintf(
+                $returnedError = \sprintf(
                     '[%s] %s',
                     $error['property'],
                     $error['message']

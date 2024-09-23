@@ -26,7 +26,8 @@ class HashedPasswordFromUserId implements SIHashedPasswordFromUserId
             $queryBuilder = $this->projectionDocumentManager
                 ->createQueryBuilder(HashedPassword::class)
                 ->field('id')
-                ->equals($userId);
+                ->equals($userId)
+            ;
 
             $hashedPassword = $queryBuilder->getQuery()->getSingleResult();
 

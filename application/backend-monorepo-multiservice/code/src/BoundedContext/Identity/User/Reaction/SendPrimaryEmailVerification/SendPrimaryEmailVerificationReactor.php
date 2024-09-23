@@ -24,14 +24,15 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 
     private Emailer $emailer;
 
-    public function __construct(EventStore $eventStore, Emailer $emailer) {
+    public function __construct(EventStore $eventStore, Emailer $emailer)
+    {
         $this->eventStore = $eventStore;
         $this->emailer = $emailer;
     }
 
     /**
      * @throws PrimaryEmailVerificationAlreadySent
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function react(Event $event): void
     {
@@ -47,23 +48,23 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 
         $this->eventStore->beginTransaction();
         $newEventId = Id::createNewByHashing(
-            "Identity/User/PrimaryEmailVerificationSent:" . $event->eventId()->id()
+            'Identity/User/PrimaryEmailVerificationSent:'.$event->eventId()->id()
         );
         $existingReaction = $this->eventStore->findEvent($newEventId->id());
         if ($existingReaction instanceof Event) {
             throw new PrimaryEmailVerificationAlreadySent();
         }
 
-        $fromEmailAddress = "system.development-application.example.com";
-        $subjectLine = "Your Verification Code";
-        $emailContents = "This is your verification code: https://example.com/page/?verificationCode=" . $verificationCode;
-//        We're not sending emails for now
-//        $this->emailer->send(
-//            $sendToEmailAddress,
-//            $subjectLine,
-//            $emailContents,
-//            $fromEmailAddress
-//        );
+        $fromEmailAddress = 'system.development-application.example.com';
+        $subjectLine = 'Your Verification Code';
+        $emailContents = 'This is your verification code: https://example.com/page/?verificationCode='.$verificationCode;
+        //        We're not sending emails for now
+        //        $this->emailer->send(
+        //            $sendToEmailAddress,
+        //            $subjectLine,
+        //            $emailContents,
+        //            $fromEmailAddress
+        //        );
 
         $aggregateAndEventIds = $this->eventStore->find($event->aggregateId()->id());
         if (null === $aggregateAndEventIds) {
@@ -71,7 +72,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
         }
 
         $user = $aggregateAndEventIds->aggregate();
-        if (!($user instanceof User)) {
+        if (!$user instanceof User) {
             throw new NoUserFoundForCode();
         }
 
@@ -81,7 +82,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
             $user->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
             $aggregateAndEventIds->firstEventId(),
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             [],
             $verificationCode,
             $sendToEmailAddress,

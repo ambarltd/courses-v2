@@ -9,7 +9,7 @@ abstract class EmailVerificationCodeValidator
     public static function isValid(string $verificationCode): bool
     {
         // doing this before regex, avoids processing long strings
-        if (96 !== strlen($verificationCode)) {
+        if (96 !== \strlen($verificationCode)) {
             return false;
         }
 

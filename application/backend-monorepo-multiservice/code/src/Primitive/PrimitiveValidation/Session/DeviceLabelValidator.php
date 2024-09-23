@@ -8,10 +8,10 @@ abstract class DeviceLabelValidator
 {
     public static function isValid(string $deviceLabel): bool
     {
-        if (strlen($deviceLabel) > 64) {
+        if (\strlen($deviceLabel) > 64) {
             return false;
         }
-        if (strlen($deviceLabel) < 3) {
+        if (\strlen($deviceLabel) < 3) {
             return false;
         }
 

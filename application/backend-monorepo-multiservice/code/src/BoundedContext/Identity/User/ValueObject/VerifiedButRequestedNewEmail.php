@@ -41,7 +41,7 @@ class VerifiedButRequestedNewEmail
         Email $verifiedEmail,
         Email $requestedEmail,
         VerificationCode $verificationCode
-    ): VerifiedButRequestedNewEmail {
+    ): self {
         return new self(
             $verifiedEmail,
             $requestedEmail,

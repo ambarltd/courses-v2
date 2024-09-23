@@ -10,8 +10,8 @@ abstract class EmailValidator
     {
         // doing this before filter_var, avoids processing long strings
         if (
-            strlen($email) < 3 ||
-            strlen($email) > 320
+            \strlen($email) < 3
+            || \strlen($email) > 320
         ) {
             return false;
         }

@@ -12,7 +12,7 @@ abstract class BCryptPasswordHash
     ): ?string {
         $hash = password_hash($password, PASSWORD_BCRYPT, ['cost' => $bCryptCost]);
 
-        if (is_bool($hash)) {
+        if (\is_bool($hash)) {
             return null;
         }
 

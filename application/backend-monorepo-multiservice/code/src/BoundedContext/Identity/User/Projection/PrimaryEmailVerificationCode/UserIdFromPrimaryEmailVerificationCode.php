@@ -25,7 +25,8 @@ class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVe
                 ->field('primaryEmailVerificationCode')->equals($primaryEmailVerificationCode)
                 ->field('primaryEmailVerificationCode')->notEqual(null)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode) {
                 return $userIdToPrimaryEmailVerificationCode->getUserId();

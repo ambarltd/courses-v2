@@ -33,7 +33,7 @@ class SessionProjectorReactionController extends ProjectionReactionController
         $this->userWithUsernameProjector = $userWithUsernameProjector;
     }
 
-    #[Route('/projection/hashed_password', name: 'projection_hashed_password', methods: ['POST'] )]
+    #[Route('/projection/hashed_password', name: 'projection_hashed_password', methods: ['POST'])]
     public function hashedPassword(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -43,7 +43,7 @@ class SessionProjectorReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/session', name: 'projection_session', methods: ['POST'] )]
+    #[Route('/projection/session', name: 'projection_session', methods: ['POST'])]
     public function session(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -53,7 +53,7 @@ class SessionProjectorReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/user_with_email', name: 'projection_user_with_email', methods: ['POST'] )]
+    #[Route('/projection/user_with_email', name: 'projection_user_with_email', methods: ['POST'])]
     public function userWithEmail(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -63,7 +63,7 @@ class SessionProjectorReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/user_with_username', name: 'projection_user_with_username', methods: ['POST'] )]
+    #[Route('/projection/user_with_username', name: 'projection_user_with_username', methods: ['POST'])]
     public function userWithUsername(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

@@ -18,7 +18,7 @@ class HashedPassword
         return $this->hash;
     }
 
-    public static function fromHash(string $hash): HashedPassword
+    public static function fromHash(string $hash): self
     {
         return new self($hash);
     }

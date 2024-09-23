@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Common\Event;
 
+use Galeas\Api\BoundedContext\CreditCardProduct\Product;
 use Galeas\Api\BoundedContext\Identity\User;
 use Galeas\Api\BoundedContext\Security\Session;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product;
 use Galeas\Api\Common\Event\Exception as EventException;
 
-abstract class EventReflectionBaseClass {
+abstract class EventReflectionBaseClass
+{
     /**
      * @var array<string, string>
      */
@@ -46,70 +47,6 @@ abstract class EventReflectionBaseClass {
      */
     private static array $eventNamesToReflectionConstructorMethodsCache = [];
 
-    public static function allEventClasses(): array {
-        return array_values(self::$eventNamesToEventClasses);
-    }
-    /**
-     * @throws EventException\NoEventClassMappingFound
-     * @throws EventException\EventMappingReflectionError
-     */
-    protected static function eventClassToEventName(string $eventClass): string
-    {
-        self::setup();
-
-        if (array_key_exists($eventClass, self::$eventClassesToEventNames)) {
-            return self::$eventClassesToEventNames[$eventClass];
-        }
-
-        throw new EventException\NoEventClassMappingFound('No mapping found for class: '.$eventClass);
-    }
-
-
-    /**
-     * @throws EventException\NoEventReflectionClassMappingMethodFound
-     * @throws EventException\EventMappingReflectionError
-     */
-    protected static function eventNameToReflectionClassMethod(string $eventName): \ReflectionMethod
-    {
-        self::setup();
-
-        if (array_key_exists($eventName, self::$eventNamesToReflectionConstructorMethodsCache)) {
-            return self::$eventNamesToReflectionConstructorMethodsCache[$eventName];
-        }
-
-        throw new EventException\NoEventReflectionClassMappingMethodFound('No mapping found for event name '.$eventName);
-    }
-
-    /**
-     * @throws EventException\NoCreationMethodFound
-     * @throws EventException\EventMappingReflectionError
-     */
-    protected static function eventClassToCreationMethodName(string $eventClass): string
-    {
-        self::setup();
-
-        if (array_key_exists($eventClass, self::$eventClassesToCreationMethodNames)) {
-            return self::$eventClassesToCreationMethodNames[$eventClass];
-        }
-
-        throw new EventException\NoCreationMethodFound('No mapping found for class name '.$eventClass);
-    }
-
-    /**
-     * @throws EventException\NoTransformationMethodFound
-     * @throws EventException\EventMappingReflectionError
-     */
-    protected static function eventClassToTransformationMethodName(string $eventClass): string
-    {
-        self::setup();
-
-        if (array_key_exists($eventClass, self::$eventClassesToTransformationMethodNames)) {
-            return self::$eventClassesToTransformationMethodNames[$eventClass];
-        }
-
-        throw new EventException\NoTransformationMethodFound('No mapping found for class name '.$eventClass);
-    }
-
     /**
      * @throws EventException\EventMappingReflectionError
      */
@@ -118,7 +55,6 @@ abstract class EventReflectionBaseClass {
         try {
             if ([] === self::$eventClassesToEventNames) {
                 self::$eventClassesToEventNames = array_flip(self::$eventNamesToEventClasses);
-
 
                 foreach (self::$eventNamesToEventClasses as $eventName => $eventClass) {
                     $reflectionClass = new \ReflectionClass($eventClass);
@@ -143,10 +79,76 @@ abstract class EventReflectionBaseClass {
         }
     }
 
-    private static function findFirstMethodBeginningWith(\ReflectionClass $reflection, $beginningWith): ?string {
+    public static function allEventClasses(): array
+    {
+        return array_values(self::$eventNamesToEventClasses);
+    }
+
+    /**
+     * @throws EventException\NoEventClassMappingFound
+     * @throws EventException\EventMappingReflectionError
+     */
+    protected static function eventClassToEventName(string $eventClass): string
+    {
+        self::setup();
+
+        if (\array_key_exists($eventClass, self::$eventClassesToEventNames)) {
+            return self::$eventClassesToEventNames[$eventClass];
+        }
+
+        throw new EventException\NoEventClassMappingFound('No mapping found for class: '.$eventClass);
+    }
+
+    /**
+     * @throws EventException\NoEventReflectionClassMappingMethodFound
+     * @throws EventException\EventMappingReflectionError
+     */
+    protected static function eventNameToReflectionClassMethod(string $eventName): \ReflectionMethod
+    {
+        self::setup();
+
+        if (\array_key_exists($eventName, self::$eventNamesToReflectionConstructorMethodsCache)) {
+            return self::$eventNamesToReflectionConstructorMethodsCache[$eventName];
+        }
+
+        throw new EventException\NoEventReflectionClassMappingMethodFound('No mapping found for event name '.$eventName);
+    }
+
+    /**
+     * @throws EventException\NoCreationMethodFound
+     * @throws EventException\EventMappingReflectionError
+     */
+    protected static function eventClassToCreationMethodName(string $eventClass): string
+    {
+        self::setup();
+
+        if (\array_key_exists($eventClass, self::$eventClassesToCreationMethodNames)) {
+            return self::$eventClassesToCreationMethodNames[$eventClass];
+        }
+
+        throw new EventException\NoCreationMethodFound('No mapping found for class name '.$eventClass);
+    }
+
+    /**
+     * @throws EventException\NoTransformationMethodFound
+     * @throws EventException\EventMappingReflectionError
+     */
+    protected static function eventClassToTransformationMethodName(string $eventClass): string
+    {
+        self::setup();
+
+        if (\array_key_exists($eventClass, self::$eventClassesToTransformationMethodNames)) {
+            return self::$eventClassesToTransformationMethodNames[$eventClass];
+        }
+
+        throw new EventException\NoTransformationMethodFound('No mapping found for class name '.$eventClass);
+    }
+
+    private static function findFirstMethodBeginningWith(\ReflectionClass $reflection, $beginningWith): ?string
+    {
         $methods = $reflection->getMethods();
         foreach ($methods as $method) {
-            if (strpos($method->getName(), $beginningWith) === 0) {
+            if (str_starts_with($method->getName(), $beginningWith)) {
                 return $method->getName();
             }
         }

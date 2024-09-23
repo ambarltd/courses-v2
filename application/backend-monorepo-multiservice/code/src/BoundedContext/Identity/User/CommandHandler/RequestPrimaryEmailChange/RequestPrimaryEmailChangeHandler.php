@@ -9,8 +9,8 @@ use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
@@ -41,9 +41,9 @@ class RequestPrimaryEmailChangeHandler
      *
      * @see SignUpHandler
      *
-     * @throws UserNotFound|EmailIsNotChanging|PasswordDoesNotMatch
+     * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
      * @throws EmailIsTaken|InvalidEmail|InvalidId
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(RequestPrimaryEmailChange $command): void
     {
@@ -55,13 +55,13 @@ class RequestPrimaryEmailChangeHandler
         }
 
         $user = $aggregateAndEventIds->aggregate();
-        if (!($user instanceof User)) {
+        if (!$user instanceof User) {
             throw new NoUserFoundForCode();
         }
 
         if (
-            $user->primaryEmailStatus() instanceof UnverifiedEmail &&
-            AreEmailsEquivalent::areEmailsEquivalent(
+            $user->primaryEmailStatus() instanceof UnverifiedEmail
+            && AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->email()->email(),
                 $command->newEmailRequested
             )
@@ -70,8 +70,8 @@ class RequestPrimaryEmailChangeHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof VerifiedEmail &&
-            AreEmailsEquivalent::areEmailsEquivalent(
+            $user->primaryEmailStatus() instanceof VerifiedEmail
+            && AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->email()->email(),
                 $command->newEmailRequested
             )
@@ -80,8 +80,8 @@ class RequestPrimaryEmailChangeHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
-            AreEmailsEquivalent::areEmailsEquivalent(
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail
+            && AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->verifiedEmail()->email(),
                 $command->newEmailRequested
             )
@@ -90,8 +90,8 @@ class RequestPrimaryEmailChangeHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
-            AreEmailsEquivalent::areEmailsEquivalent(
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail
+            && AreEmailsEquivalent::areEmailsEquivalent(
                 $user->primaryEmailStatus()->requestedEmail()->email(),
                 $command->newEmailRequested
             )
@@ -117,7 +117,7 @@ class RequestPrimaryEmailChangeHandler
             $user->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
             $aggregateAndEventIds->firstEventId(),
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             $command->newEmailRequested,
             EmailVerificationCodeCreator::create(),

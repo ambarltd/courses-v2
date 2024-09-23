@@ -9,8 +9,8 @@ use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
@@ -39,8 +39,8 @@ class VerifyPrimaryEmailHandler
      * @see SignUpHandler
      * @see RequestPrimaryEmailChangeHandler
      *
-     * @throws NoUserFoundForCode|EmailIsAlreadyVerified|VerificationCodeDoesNotMatch|InvalidId
-     * @throws ProjectionCannotRead|EventStoreCannotRead|EventStoreCannotWrite
+     * @throws EmailIsAlreadyVerified|InvalidId|NoUserFoundForCode|VerificationCodeDoesNotMatch
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(VerifyPrimaryEmail $command): void
     {
@@ -58,7 +58,7 @@ class VerifyPrimaryEmailHandler
         }
 
         $user = $aggregateAndEventIds->aggregate();
-        if (!($user instanceof User)) {
+        if (!$user instanceof User) {
             throw new NoUserFoundForCode();
         }
 
@@ -67,15 +67,15 @@ class VerifyPrimaryEmailHandler
         }
 
         if (
-            $user->primaryEmailStatus() instanceof UnverifiedEmail &&
-            $command->verificationCode !== $user->primaryEmailStatus()->verificationCode()->verificationCode()
+            $user->primaryEmailStatus() instanceof UnverifiedEmail
+            && $command->verificationCode !== $user->primaryEmailStatus()->verificationCode()->verificationCode()
         ) {
             throw new VerificationCodeDoesNotMatch();
         }
 
         if (
-            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail &&
-            $command->verificationCode !== $user->primaryEmailStatus()->verificationCode()->verificationCode()
+            $user->primaryEmailStatus() instanceof VerifiedButRequestedNewEmail
+            && $command->verificationCode !== $user->primaryEmailStatus()->verificationCode()->verificationCode()
         ) {
             throw new VerificationCodeDoesNotMatch();
         }
@@ -86,7 +86,7 @@ class VerifyPrimaryEmailHandler
             $user->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
             $aggregateAndEventIds->firstEventId(),
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             $command->verificationCode
         );

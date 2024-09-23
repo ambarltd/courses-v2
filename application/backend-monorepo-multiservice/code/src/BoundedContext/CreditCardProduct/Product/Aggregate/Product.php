@@ -30,10 +30,10 @@ class Product implements Aggregate
         Id $aggregateId,
         int $aggregateVersion,
         string $name,
-        int $interestInBasisPoints, 
-        int $annualFeeInCents, 
-        PaymentCycle $paymentCycle, 
-        int $creditLimitInCents, 
+        int $interestInBasisPoints,
+        int $annualFeeInCents,
+        PaymentCycle $paymentCycle,
+        int $creditLimitInCents,
         int $maxBalanceTransferAllowedInCents,
         Reward $reward,
         string $cardBackgroundHex,
@@ -53,18 +53,15 @@ class Product implements Aggregate
         return $product;
     }
 
-
     public function name(): string
     {
         return $this->name;
     }
 
-
     public function interestInBasisPoints(): int
     {
         return $this->interestInBasisPoints;
     }
-
 
     public function annualFeeInCents(): int
     {
@@ -75,7 +72,6 @@ class Product implements Aggregate
     {
         return $this->paymentCycle;
     }
-
 
     public function creditLimitInCents(): int
     {
@@ -92,12 +88,10 @@ class Product implements Aggregate
         return $this->reward;
     }
 
-
     public function cardBackgroundHex(): string
     {
         return $this->cardBackgroundHex;
     }
-
 
     public function isActive(): bool
     {

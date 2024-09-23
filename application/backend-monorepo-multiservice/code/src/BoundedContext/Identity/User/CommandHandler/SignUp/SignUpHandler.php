@@ -36,7 +36,7 @@ class SignUpHandler
 
     /**
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
-     * @throws UsernameIsTaken|EmailIsTaken|CouldNotHashWithBCrypt
+     * @throws CouldNotHashWithBCrypt|EmailIsTaken|UsernameIsTaken
      * @throws EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(SignUp $command): array
@@ -77,7 +77,7 @@ class SignUpHandler
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             $command->primaryEmail,
             EmailVerificationCodeCreator::create(),

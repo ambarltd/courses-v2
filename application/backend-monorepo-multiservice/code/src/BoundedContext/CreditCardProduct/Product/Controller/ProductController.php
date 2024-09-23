@@ -26,9 +26,10 @@ class ProductController extends BaseController
 
     /**
      * @RequestSchema(name="V1_CreditCardProduct_Product_ListItems")
+     *
      * @ResponseSchema(name="V1_CreditCardProduct_Product_ListItems")
      */
-    #[Route('/credit_card_product/product/list-items', name: 'V1_CreditCardProduct_Product_ListItems', methods: ['POST'] )]
+    #[Route('/credit_card_product/product/list-items', name: 'V1_CreditCardProduct_Product_ListItems', methods: ['POST'])]
     public function listItems(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

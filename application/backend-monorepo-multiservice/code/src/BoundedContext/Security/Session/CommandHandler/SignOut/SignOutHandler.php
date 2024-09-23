@@ -35,8 +35,8 @@ class SignOutHandler
     }
 
     /**
-     * @throws NoSessionFound|SessionUserDoesNotMatch|SessionTokenDoesNotMatch|InvalidId
-     * @throws EventStoreCannotWrite|EventStoreCannotRead|ProjectionCannotRead
+     * @throws InvalidId|NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(SignOut $command): void
     {
@@ -57,7 +57,7 @@ class SignOutHandler
         }
 
         $session = $aggregateAndEventIds->aggregate();
-        if (!($session instanceof Session)) {
+        if (!$session instanceof Session) {
             throw new NoSessionFound();
         }
 
@@ -75,7 +75,7 @@ class SignOutHandler
             $session->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
             $aggregateAndEventIds->firstEventId(),
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             $command->withIp,
             $command->withSessionToken

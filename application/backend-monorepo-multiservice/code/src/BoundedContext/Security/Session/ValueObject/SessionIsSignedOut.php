@@ -16,9 +16,7 @@ class SessionIsSignedOut
      */
     private $withIp;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function withSessionToken(): string
     {

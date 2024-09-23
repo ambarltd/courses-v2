@@ -9,7 +9,7 @@ abstract class SessionTokenValidator
     public static function isValid(string $sesionToken): bool
     {
         // doing this before regex, avoids processing long strings
-        if (96 !== strlen($sesionToken)) {
+        if (96 !== \strlen($sesionToken)) {
             return false;
         }
 

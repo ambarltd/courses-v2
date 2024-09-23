@@ -40,36 +40,6 @@ trait EventTrait
         $this->metadata = $metadata;
     }
 
-    /**
-     * @throws \RuntimeException
-     */
-    private static function reflectionConstructor(
-        Id $eventId,
-        Id $aggregateId,
-        int $aggregateVersion,
-        Id $causationId,
-        Id $correlationId,
-        \DateTimeImmutable $recordedOn,
-        array $metadata,
-        array $extraPropertiesAndValues
-    ): self {
-        $event = new self(
-            $eventId,
-            $aggregateId,
-            $aggregateVersion,
-            $causationId,
-            $correlationId,
-            $recordedOn,
-            $metadata
-        );
-
-        foreach ($extraPropertiesAndValues as $property => $value) {
-            $event->$property = $value;
-        }
-
-        return $event;
-    }
-
     public function eventId(): Id
     {
         return $this->eventId;
@@ -103,5 +73,35 @@ trait EventTrait
     public function metadata(): array
     {
         return $this->metadata;
+    }
+
+    /**
+     * @throws \RuntimeException
+     */
+    private static function reflectionConstructor(
+        Id $eventId,
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        \DateTimeImmutable $recordedOn,
+        array $metadata,
+        array $extraPropertiesAndValues
+    ): self {
+        $event = new self(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            $recordedOn,
+            $metadata
+        );
+
+        foreach ($extraPropertiesAndValues as $property => $value) {
+            $event->{$property} = $value;
+        }
+
+        return $event;
     }
 }

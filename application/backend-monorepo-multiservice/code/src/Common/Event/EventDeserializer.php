@@ -8,7 +8,8 @@ use Galeas\Api\Common\Event\Exception as EventException;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 
-abstract class EventDeserializer extends EventReflectionBaseClass{
+abstract class EventDeserializer extends EventReflectionBaseClass
+{
     /**
      * @param SerializedEvent[] $serializedEvents
      *
@@ -21,10 +22,21 @@ abstract class EventDeserializer extends EventReflectionBaseClass{
     public static function serializedEventsToEvents(array $serializedEvents): array
     {
         return array_map(
-            function (SerializedEvent $serializedEvent): Event {
-                return self::serializedEventToEvent($serializedEvent);
-            },
+            static fn (SerializedEvent $serializedEvent): Event => self::serializedEventToEvent($serializedEvent),
             $serializedEvents
+        );
+    }
+
+    /**
+     * @throws InvalidId
+     */
+    public static function jsonPayloadToArrayPayload(string $jsonPayload): array
+    {
+        return self::serializedArrayPayloadToArrayPayload(
+            json_decode(
+                $jsonPayload,
+                true
+            )
         );
     }
 
@@ -49,27 +61,12 @@ abstract class EventDeserializer extends EventReflectionBaseClass{
             self::jsonPayloadToArrayPayload($serializedEvent->jsonPayload())
         );
 
-        if (!($event instanceof Event)) {
+        if (!$event instanceof Event) {
             throw new EventException\EventMappingReflectionError('Reflection method failure');
         }
 
         return $event;
     }
-
-    /**
-     * @throws InvalidId
-     */
-    public static function jsonPayloadToArrayPayload(string $jsonPayload): array
-    {
-        return self::serializedArrayPayloadToArrayPayload(
-            json_decode(
-                $jsonPayload,
-                true
-            )
-        );
-    }
-
-
 
     /**
      * @throws InvalidId
@@ -80,9 +77,9 @@ abstract class EventDeserializer extends EventReflectionBaseClass{
 
         foreach ($serializedArrayPayload as $propertyName => $value) {
             if (
-                is_array($value) &&
-                array_key_exists('type', $value) &&
-                'payload_datetime' === $value['type']
+                \is_array($value)
+                && \array_key_exists('type', $value)
+                && 'payload_datetime' === $value['type']
             ) {
                 $value = \DateTimeImmutable::createFromFormat(
                     'Y-m-d H:i:s.u',
@@ -91,9 +88,9 @@ abstract class EventDeserializer extends EventReflectionBaseClass{
                 );
             }
             if (
-                is_array($value) &&
-                array_key_exists('type', $value) &&
-                'payload_id' === $value['type']
+                \is_array($value)
+                && \array_key_exists('type', $value)
+                && 'payload_id' === $value['type']
             ) {
                 $value = Id::fromId(
                     $value['id']
@@ -101,8 +98,8 @@ abstract class EventDeserializer extends EventReflectionBaseClass{
             }
 
             if (
-                is_array($value) &&
-                (!array_key_exists('type', $value))
+                \is_array($value)
+                && (!\array_key_exists('type', $value))
             ) {
                 $value = self::serializedArrayPayloadToArrayPayload($value);
             }

@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Galeas\Api;
 
+use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\ODM\MongoDB\Types\Type;
 use Galeas\Api\Service\ODM\OverrideDateType;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+use Symfony\Component\Config\Exception\LoaderLoadException;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
@@ -16,7 +18,7 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+    public const CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
     public function getCacheDir(): string
     {
@@ -31,7 +33,7 @@ class Kernel extends BaseKernel
     /**
      * @return \Generator|iterable|\Symfony\Component\HttpKernel\Bundle\BundleInterface[]
      *
-     * @throws \Doctrine\ODM\MongoDB\Mapping\MappingException
+     * @throws MappingException
      */
     public function registerBundles(): iterable
     {
@@ -63,7 +65,7 @@ class Kernel extends BaseKernel
     }
 
     /**
-     * @throws \Symfony\Component\Config\Exception\LoaderLoadException
+     * @throws LoaderLoadException
      */
     protected function configureRoutes(RoutingConfigurator $routes): void
     {

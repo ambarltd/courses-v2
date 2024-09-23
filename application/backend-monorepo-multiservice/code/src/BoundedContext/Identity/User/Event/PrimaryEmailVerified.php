@@ -26,7 +26,7 @@ class PrimaryEmailVerified implements EventTransformedUser
         \DateTimeImmutable $recordedOn,
         array $metadata,
         string $verifiedWithCode
-    ): PrimaryEmailVerified {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,
@@ -62,7 +62,8 @@ class PrimaryEmailVerified implements EventTransformedUser
                 $user->hashedPassword(),
                 $user->accountDetails()
             );
-        } elseif ($user->primaryEmailStatus() instanceof VerifiedEmail) {
+        }
+        if ($user->primaryEmailStatus() instanceof VerifiedEmail) {
             return User::fromProperties(
                 $user->aggregateId(),
                 $this->aggregateVersion,
@@ -70,20 +71,6 @@ class PrimaryEmailVerified implements EventTransformedUser
                     Email::fromEmail(
                         $user->primaryEmailStatus()
                             ->email()
-                            ->email()
-                    )
-                ),
-                $user->hashedPassword(),
-                $user->accountDetails()
-            );
-        } else {
-            return User::fromProperties(
-                $user->aggregateId(),
-                $this->aggregateVersion,
-                VerifiedEmail::fromEmail(
-                    Email::fromEmail(
-                        $user->primaryEmailStatus()
-                            ->requestedEmail()
                             ->email()
                     )
                 ),
@@ -91,5 +78,19 @@ class PrimaryEmailVerified implements EventTransformedUser
                 $user->accountDetails()
             );
         }
+
+        return User::fromProperties(
+            $user->aggregateId(),
+            $this->aggregateVersion,
+            VerifiedEmail::fromEmail(
+                Email::fromEmail(
+                    $user->primaryEmailStatus()
+                        ->requestedEmail()
+                        ->email()
+                )
+            ),
+            $user->hashedPassword(),
+            $user->accountDetails()
+        );
     }
 }

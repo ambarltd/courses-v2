@@ -28,7 +28,8 @@ class SessionIdFromSessionToken implements RTSessionIdFromSessionToken, SOSessio
                 ->createQueryBuilder(Session::class)
                 ->field('sessionToken')->equals($sessionToken)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($session instanceof Session) {
                 return $session->getSessionId();

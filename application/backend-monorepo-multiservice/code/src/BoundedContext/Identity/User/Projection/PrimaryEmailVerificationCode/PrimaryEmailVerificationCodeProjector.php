@@ -38,11 +38,12 @@ class PrimaryEmailVerificationCodeProjector implements EventProjector
                 ->createQueryBuilder(PrimaryEmailVerificationCode::class)
                 ->field('id')->equals($event->aggregateId()->id())
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if (
-                null !== $userIdToPrimaryEmailVerificationCode &&
-                !($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode)
+                null !== $userIdToPrimaryEmailVerificationCode
+                && !($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode)
             ) {
                 throw new \Exception('Could not process event with id '.$event->eventId()->id());
             }

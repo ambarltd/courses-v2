@@ -36,7 +36,7 @@ class AccountDetails
     public static function fromDetails(
         string $username,
         bool $termsOfUseAccepted
-    ): AccountDetails {
+    ): self {
         return new self($username, $termsOfUseAccepted);
     }
 }

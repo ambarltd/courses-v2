@@ -18,7 +18,7 @@ class Email
         return $this->email;
     }
 
-    public static function fromEmail(string $email): Email
+    public static function fromEmail(string $email): self
     {
         return new self($email);
     }

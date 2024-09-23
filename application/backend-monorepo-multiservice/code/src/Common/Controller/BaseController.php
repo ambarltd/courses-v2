@@ -35,7 +35,7 @@ class BaseController extends AbstractController
         array $services
     ) {
         foreach ($services as $service) {
-            $this->services[get_class($service)] = $service;
+            $this->services[$service::class] = $service;
         }
     }
 
@@ -59,20 +59,6 @@ class BaseController extends AbstractController
         $this->phpOutLogger = $phpOutLogger;
     }
 
-    /**
-     * todo deal with stdclass and throw without breaking the build.
-     */
-    protected function getService(string $serviceKey): object
-    {
-        foreach ($this->services as $key => $service) {
-            if ($serviceKey === $key && is_object($service)) {
-                return $service;
-            }
-        }
-
-        return new \stdClass();
-    }
-
     public function jsonPostRequestJsonResponse(
         Request $request,
         string $requestSchema,
@@ -84,7 +70,8 @@ class BaseController extends AbstractController
     ): JsonResponse {
         try {
             $json = $this->jsonPostRequestMapper
-                ->jsonBodyFromRequest($request);
+                ->jsonBodyFromRequest($request)
+            ;
 
             $requestSchema = $this->jsonSchemaFetcher->fetch($requestSchema);
 
@@ -92,10 +79,12 @@ class BaseController extends AbstractController
                 ->validate(
                     $json,
                     $requestSchema
-                );
+                )
+            ;
 
             if (!empty($errors)) {
-                $this->phpOutLogger->warning("json_schema_validation_error");
+                $this->phpOutLogger->warning('json_schema_validation_error');
+
                 return JsonResponse::fromJsonString(
                     json_encode([
                         'errors' => $errors,
@@ -108,7 +97,7 @@ class BaseController extends AbstractController
 
             $command = $this->jsonPostRequestMapper->createCommandOrQueryFromEndUserRequest($request, $commandOrQueryClass);
 
-            if (is_callable($commandOrQueryModifier)) {
+            if (\is_callable($commandOrQueryModifier)) {
                 $commandOrQueryModifier($command);
             }
 
@@ -125,13 +114,15 @@ class BaseController extends AbstractController
             if ($this->shouldValidateResponseSchemas) {
                 $errors = $this->jsonSchemaValidator
                     ->validate(
-                        is_string($responseContent) ? $responseContent : '',
+                        \is_string($responseContent) ? $responseContent : '',
                         $responseSchema
-                    );
+                    )
+                ;
             }
 
             if (!empty($errors)) {
-                $this->phpOutLogger->warning("invalid_response_against_json_schema");
+                $this->phpOutLogger->warning('invalid_response_against_json_schema');
+
                 return JsonResponse::fromJsonString(
                     json_encode([
                         'errors' => $errors,
@@ -144,10 +135,10 @@ class BaseController extends AbstractController
 
             return $jsonResponse;
         } catch (BaseException $exception) {
-            $errorMessage = substr($exception->getMessage(), 0, 8192);
-            $stackTrace = substr($exception->getTraceAsString(), 0, 8192);
-            $this->phpOutLogger->warning(sprintf(
-                "BaseException caught, classFQN %s, message: %s, stack trace: %s",
+            $errorMessage = substr($exception->getMessage(), 0, 8_192);
+            $stackTrace = substr($exception->getTraceAsString(), 0, 8_192);
+            $this->phpOutLogger->warning(\sprintf(
+                'BaseException caught, classFQN %s, message: %s, stack trace: %s',
                 $exception::class,
                 $errorMessage,
                 $stackTrace
@@ -162,15 +153,14 @@ class BaseController extends AbstractController
                 $exception::getHttpCode()
             );
         } catch (\Throwable $throwable) {
-            $errorMessage = substr($throwable->getMessage(), 0, 8192);
-            $stackTrace = substr($throwable->getTraceAsString(), 0, 8192);
-            $this->phpOutLogger->warning(sprintf(
-                "Throwable caught, classFQN %s, message: %s, stack trace: %s",
+            $errorMessage = substr($throwable->getMessage(), 0, 8_192);
+            $stackTrace = substr($throwable->getTraceAsString(), 0, 8_192);
+            $this->phpOutLogger->warning(\sprintf(
+                'Throwable caught, classFQN %s, message: %s, stack trace: %s',
                 $throwable::class,
                 $errorMessage,
                 $stackTrace
             ));
-
 
             return JsonResponse::fromJsonString(
                 json_encode([
@@ -181,5 +171,19 @@ class BaseController extends AbstractController
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+
+    /**
+     * todo deal with stdclass and throw without breaking the build.
+     */
+    protected function getService(string $serviceKey): object
+    {
+        foreach ($this->services as $key => $service) {
+            if ($serviceKey === $key && \is_object($service)) {
+                return $service;
+            }
+        }
+
+        return new \stdClass();
     }
 }

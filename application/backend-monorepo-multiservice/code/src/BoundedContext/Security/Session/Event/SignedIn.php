@@ -15,9 +15,9 @@ class SignedIn implements EventCreatedSession
 
     private Id $asUser;
 
-    private string|null $withUsername;
+    private ?string $withUsername;
 
-    private string|null $withEmail;
+    private ?string $withEmail;
 
     private string $withHashedPassword;
 
@@ -77,7 +77,7 @@ class SignedIn implements EventCreatedSession
         string $byDeviceLabel,
         string $withIp,
         string $sessionTokenCreated
-    ): SignedIn {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,

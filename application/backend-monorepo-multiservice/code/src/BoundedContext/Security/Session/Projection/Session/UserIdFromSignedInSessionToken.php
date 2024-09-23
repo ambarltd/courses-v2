@@ -31,12 +31,13 @@ class UserIdFromSignedInSessionToken
                 ->createQueryBuilder(Session::class)
                 ->field('sessionToken')->equals($sessionToken)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if (
-                $session instanceof Session &&
-                $session->getTokenLastRefreshedAt() > $withTokenRefreshedAfterDate &&
-                false === $session->isSignedOut()
+                $session instanceof Session
+                && $session->getTokenLastRefreshedAt() > $withTokenRefreshedAfterDate
+                && false === $session->isSignedOut()
             ) {
                 return $session->getUserId();
             }

@@ -20,7 +20,7 @@ class Session implements Aggregate
 
     private SessionDetails $sessionDetails;
 
-    private ?SessionIsSignedOut$sessionIsSignedOut;
+    private ?SessionIsSignedOut $sessionIsSignedOut;
 
     public function sessionDetails(): SessionDetails
     {
@@ -33,9 +33,9 @@ class Session implements Aggregate
     }
 
     public static function fromProperties(
-        Id                  $aggregateId,
-        int                 $aggregateVersion,
-        SessionDetails      $sessionDetails,
+        Id $aggregateId,
+        int $aggregateVersion,
+        SessionDetails $sessionDetails,
         ?SessionIsSignedOut $sessionIsSignedOut,
     ): self {
         $session = new self($aggregateId, $aggregateVersion);

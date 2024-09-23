@@ -31,8 +31,8 @@ class UserWithUsernameProjector implements EventProjector
             }
 
             if (
-                null === $userId ||
-                null === $username
+                null === $userId
+                || null === $username
             ) {
                 return;
             }
@@ -41,7 +41,8 @@ class UserWithUsernameProjector implements EventProjector
                 ->createQueryBuilder(UserWithUsername::class)
                 ->field('id')->equals($userId)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($userWithUsername instanceof UserWithUsername) {
                 $userWithUsername->changeUsername($username);

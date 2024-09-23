@@ -117,11 +117,12 @@ class SessionProjector implements EventProjector
                 ->createQueryBuilder(Session::class)
                 ->field('id')->equals($sessionId)
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if (
-                null === $session ||
-                $session instanceof Session
+                null === $session
+                || $session instanceof Session
             ) {
                 return $session;
             }

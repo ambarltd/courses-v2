@@ -22,8 +22,7 @@ abstract class SessionTokenCreator
     {
         $base64String = base64_encode(random_bytes(72)); // 576 / 6 = 96 characters
         $urlSafeString = str_replace('+', 'A', $base64String);
-        $urlSafeString = str_replace('/', 'B', $urlSafeString);
 
-        return $urlSafeString;
+        return str_replace('/', 'B', $urlSafeString);
     }
 }

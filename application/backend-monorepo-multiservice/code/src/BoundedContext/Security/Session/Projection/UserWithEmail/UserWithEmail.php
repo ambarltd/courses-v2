@@ -12,23 +12,21 @@ class UserWithEmail
     private $id;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $canonicalVerifiedEmail;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $canonicalRequestedEmail;
 
     /**
-     * @var Unverified|Verified|RequestedChange
+     * @var RequestedChange|Unverified|Verified
      */
     private $status;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getUserId(): string
     {
@@ -46,7 +44,7 @@ class UserWithEmail
     }
 
     /**
-     * @return Unverified|Verified|RequestedChange
+     * @return RequestedChange|Unverified|Verified
      */
     public function getStatus()
     {
@@ -54,7 +52,7 @@ class UserWithEmail
     }
 
     /**
-     * @param Unverified|Verified|RequestedChange $status
+     * @param RequestedChange|Unverified|Verified $status
      *
      * @return $this
      */
@@ -67,10 +65,10 @@ class UserWithEmail
         $this->canonicalRequestedEmail = null;
         $this->status = $status;
 
-        if (is_string($verifiedEmail)) {
+        if (\is_string($verifiedEmail)) {
             $this->canonicalVerifiedEmail = strtolower($verifiedEmail);
         }
-        if (is_string($requestedEmail)) {
+        if (\is_string($requestedEmail)) {
             $this->canonicalRequestedEmail = strtolower($requestedEmail);
         }
 
@@ -78,7 +76,7 @@ class UserWithEmail
     }
 
     /**
-     * @param Unverified|Verified|RequestedChange $status
+     * @param RequestedChange|Unverified|Verified $status
      */
     public static function fromUserIdAndEmails(
         string $userId,
@@ -89,10 +87,10 @@ class UserWithEmail
         $takenEmail = new self();
         $takenEmail->id = $userId;
 
-        if (is_string($verifiedEmail)) {
+        if (\is_string($verifiedEmail)) {
             $takenEmail->canonicalVerifiedEmail = strtolower($verifiedEmail);
         }
-        if (is_string($requestedEmail)) {
+        if (\is_string($requestedEmail)) {
             $takenEmail->canonicalRequestedEmail = strtolower($requestedEmail);
         }
         $takenEmail->status = $status;

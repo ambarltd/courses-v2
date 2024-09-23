@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Common\Event;
 
-use Galeas\Api\BoundedContext\Identity\User;
-use Galeas\Api\BoundedContext\Security\Session;
 use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\Exception as EventException;
 
@@ -21,12 +19,12 @@ abstract class AggregateFromEvents extends EventReflectionBaseClass
         Event $creationEvent,
         array $transformationEvents
     ): Aggregate {
-        $creationMethod = self::eventClassToCreationMethodName(get_class($creationEvent));
-        $aggregate = $creationEvent->$creationMethod();
+        $creationMethod = self::eventClassToCreationMethodName($creationEvent::class);
+        $aggregate = $creationEvent->{$creationMethod}();
 
         foreach ($transformationEvents as $transformationEvent) {
-            $transformationMethod = self::eventClassToTransformationMethodName(get_class($transformationEvent));
-            $aggregate = $transformationEvent->$transformationMethod($aggregate);
+            $transformationMethod = self::eventClassToTransformationMethodName($transformationEvent::class);
+            $aggregate = $transformationEvent->{$transformationMethod}($aggregate);
         }
 
         return $aggregate;

@@ -28,9 +28,9 @@ class TakenEmailProjector implements EventProjector
     {
         try {
             if (
-                false === ($event instanceof SignedUp) &&
-                false === ($event instanceof PrimaryEmailVerified) &&
-                false === ($event instanceof PrimaryEmailChangeRequested)
+                false === ($event instanceof SignedUp)
+                && false === ($event instanceof PrimaryEmailVerified)
+                && false === ($event instanceof PrimaryEmailChangeRequested)
             ) {
                 return;
             }
@@ -39,7 +39,8 @@ class TakenEmailProjector implements EventProjector
                 ->createQueryBuilder(TakenEmail::class)
                 ->field('id')->equals($event->aggregateId()->id())
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($event instanceof SignedUp) {
                 // email used to sign up is taken
@@ -61,7 +62,7 @@ class TakenEmailProjector implements EventProjector
                     $event->newEmailRequested()
                 );
             } else {
-                throw new \Exception(sprintf('Could not process serialized event %s of class %s where TakenEmail for aggregateId %s was found', $event->eventId()->id(), get_class($event), $event->aggregateId()->id()));
+                throw new \Exception(\sprintf('Could not process serialized event %s of class %s where TakenEmail for aggregateId %s was found', $event->eventId()->id(), $event::class, $event->aggregateId()->id()));
             }
 
             $this->projectionDocumentManager->persist($takenEmail);

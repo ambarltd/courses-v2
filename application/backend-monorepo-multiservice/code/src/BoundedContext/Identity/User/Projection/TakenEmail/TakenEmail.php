@@ -12,18 +12,16 @@ class TakenEmail
     private $id;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $canonicalVerifiedEmail;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $canonicalRequestedEmail;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getUserId(): string
     {
@@ -50,19 +48,16 @@ class TakenEmail
         $this->canonicalVerifiedEmail = null;
         $this->canonicalRequestedEmail = null;
 
-        if (is_string($verifiedEmail)) {
+        if (\is_string($verifiedEmail)) {
             $this->canonicalVerifiedEmail = strtolower($verifiedEmail);
         }
-        if (is_string($requestedEmail)) {
+        if (\is_string($requestedEmail)) {
             $this->canonicalRequestedEmail = strtolower($requestedEmail);
         }
 
         return $this;
     }
 
-    /**
-     * @return TakenEmail
-     */
     public static function fromUserIdAndEmails(
         string $userId,
         ?string $verifiedEmail,
@@ -71,10 +66,10 @@ class TakenEmail
         $takenEmail = new self();
         $takenEmail->id = $userId;
 
-        if (is_string($verifiedEmail)) {
+        if (\is_string($verifiedEmail)) {
             $takenEmail->canonicalVerifiedEmail = strtolower($verifiedEmail);
         }
-        if (is_string($requestedEmail)) {
+        if (\is_string($requestedEmail)) {
             $takenEmail->canonicalRequestedEmail = strtolower($requestedEmail);
         }
 

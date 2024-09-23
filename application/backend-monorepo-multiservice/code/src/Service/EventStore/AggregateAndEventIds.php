@@ -15,8 +15,7 @@ class AggregateAndEventIds
 
     private Id $lastEventId;
 
-    private function __construct()
-    {}
+    private function __construct() {}
 
     public static function fromProperties(Aggregate $aggregate, Id $firstEventId, Id $lastEventId): self
     {
@@ -42,5 +41,4 @@ class AggregateAndEventIds
     {
         return $this->lastEventId;
     }
-
 }

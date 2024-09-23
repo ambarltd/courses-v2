@@ -8,7 +8,7 @@ abstract class BCryptHashValidator
 {
     public static function isValid(string $hash): bool
     {
-        if (60 !== strlen($hash)) {
+        if (60 !== \strlen($hash)) {
             return false;
         }
 
@@ -19,9 +19,9 @@ abstract class BCryptHashValidator
         $hashOnly = substr($hash, 29, 31);
 
         if (
-            '$' !== substr($hash, 0, 1) ||
-            '$' !== substr($hash, 3, 1) ||
-            '$' !== substr($hash, 6, 1)
+            '$' !== substr($hash, 0, 1)
+            || '$' !== substr($hash, 3, 1)
+            || '$' !== substr($hash, 6, 1)
         ) {
             return false;
         }
@@ -31,9 +31,9 @@ abstract class BCryptHashValidator
         }
 
         if (
-            false === ctype_digit($cost) ||
-            intval($cost) < 10 ||
-            intval($cost) > 31
+            false === ctype_digit($cost)
+            || (int) $cost < 10
+            || (int) $cost > 31
         ) {
             return false;
         }

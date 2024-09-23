@@ -27,7 +27,8 @@ class UserIdFromSignInUsername implements SIUserIdFromUsername
                 ->createQueryBuilder(UserWithUsername::class)
                 ->field('canonicalUsername')->equals(strtolower($username))
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($userWithUsername instanceof UserWithUsername) {
                 return $userWithUsername->getUserId();

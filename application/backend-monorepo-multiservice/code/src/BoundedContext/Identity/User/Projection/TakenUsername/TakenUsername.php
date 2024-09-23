@@ -16,9 +16,7 @@ class TakenUsername
      */
     private $canonicalUsername;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getUserId(): string
     {
@@ -40,9 +38,6 @@ class TakenUsername
         return $this;
     }
 
-    /**
-     * @return TakenUsername
-     */
     public static function fromUserIdAndUsername(string $userId, string $username): self
     {
         $takenUsername = new self();

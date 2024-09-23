@@ -18,7 +18,7 @@ class VerifiedEmail
         return $this->email;
     }
 
-    public static function fromEmail(Email $email): VerifiedEmail
+    public static function fromEmail(Email $email): self
     {
         return new self($email);
     }

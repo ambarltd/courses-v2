@@ -9,7 +9,7 @@ abstract class PrivateAndReservedIpV4AndV6Validator
     public static function isValid(string $ip): bool
     {
         // doing this before filter_var, avoids processing long strings
-        if (strlen($ip) > 100) {
+        if (\strlen($ip) > 100) {
             return false;
         }
 
@@ -33,8 +33,8 @@ abstract class PrivateAndReservedIpV4AndV6Validator
             }
             // current version of php is not doing FILTER_FLAG_NO_RES_RANGE correctly for ::ffff:0:0/96
             if (
-                inet_pton('0000:0000:0000:0000:0000:FFFF:0000:0000') <= $ipBytes &&
-                $ipBytes <= inet_pton('0000:0000:0000:0000:0000:FFFF:FFFF:FFFF')
+                inet_pton('0000:0000:0000:0000:0000:FFFF:0000:0000') <= $ipBytes
+                && $ipBytes <= inet_pton('0000:0000:0000:0000:0000:FFFF:FFFF:FFFF')
             ) {
                 return true;
             }

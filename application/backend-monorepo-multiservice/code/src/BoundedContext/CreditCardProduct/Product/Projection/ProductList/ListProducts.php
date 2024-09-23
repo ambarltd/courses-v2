@@ -7,28 +7,31 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection\Product
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
-class ListProducts {
+class ListProducts
+{
     private DocumentManager $projectionDocumentManager;
 
-    public function __constructor(DocumentManager $projectionDocumentManager)
+    public function __constructor(DocumentManager $projectionDocumentManager): void
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    public function list() {
+    public function list()
+    {
         try {
             /** @var ProductListItem[] $items */
             $items = $this->projectionDocumentManager
                 ->createQueryBuilder(ProductListItem::class)
                 ->getQuery()
-                ->getIterator();
+                ->getIterator()
+            ;
 
             $list = [];
             foreach ($items as $item) {
                 $list[] = [
-                    "id" => $item->id(),
-                    "name" => $item->name(),
-                    "isActive" => $item->isActive()
+                    'id' => $item->id(),
+                    'name' => $item->name(),
+                    'isActive' => $item->isActive(),
                 ];
             }
 

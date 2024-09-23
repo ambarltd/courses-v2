@@ -33,7 +33,7 @@ class Id
      *
      * @throws InvalidId
      */
-    public static function fromId(string $id): Id
+    public static function fromId(string $id): self
     {
         if (false === IdValidator::isValid($id)) {
             throw new InvalidId();
@@ -42,12 +42,12 @@ class Id
         return new self($id);
     }
 
-    public static function createNewByHashing(string $stringToHash): Id
+    public static function createNewByHashing(string $stringToHash): self
     {
         return new self(IdCreator::createByHashingString($stringToHash));
     }
 
-    public static function createNew(): Id
+    public static function createNew(): self
     {
         return new self(IdCreator::create());
     }

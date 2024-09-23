@@ -35,7 +35,8 @@ class TakenUsernameProjector implements EventProjector
                 ->createQueryBuilder(TakenUsername::class)
                 ->field('id')->equals($event->aggregateId()->id())
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($takenUsername instanceof TakenUsername) {
                 $takenUsername->changeUsername($username);

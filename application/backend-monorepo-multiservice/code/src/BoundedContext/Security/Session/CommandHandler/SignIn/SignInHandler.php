@@ -50,8 +50,8 @@ class SignInHandler
     }
 
     /**
-     * @throws UserNotFound|NoPasswordFound|InvalidPassword|InvalidDeviceLabel
-     * @throws InvalidIp|InvalidId|EventStoreCannotWrite|ProjectionCannotRead
+     * @throws InvalidDeviceLabel|InvalidPassword|NoPasswordFound|UserNotFound
+     * @throws EventStoreCannotWrite|InvalidId|InvalidIp|ProjectionCannotRead
      */
     public function handle(SignIn $command): array
     {
@@ -99,7 +99,7 @@ class SignInHandler
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             Id::fromId($userId),
             $withUsername,

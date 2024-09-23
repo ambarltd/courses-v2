@@ -6,8 +6,8 @@ namespace Galeas\Api\BoundedContext\Identity\User\Aggregate;
 
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\AccountDetails;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\HashedPassword;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Aggregate\AggregateTrait;
@@ -17,13 +17,13 @@ class User implements Aggregate
 {
     use AggregateTrait;
 
-    private VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail $primaryEmailStatus;
+    private UnverifiedEmail|VerifiedButRequestedNewEmail|VerifiedEmail $primaryEmailStatus;
 
     private HashedPassword $hashedPassword;
 
     private AccountDetails $accountDetails;
 
-    public function primaryEmailStatus(): VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail
+    public function primaryEmailStatus(): UnverifiedEmail|VerifiedButRequestedNewEmail|VerifiedEmail
     {
         return $this->primaryEmailStatus;
     }
@@ -39,12 +39,12 @@ class User implements Aggregate
     }
 
     public static function fromProperties(
-        Id                                                         $aggregateId,
-        int                                                        $aggregateVersion,
-        VerifiedEmail|UnverifiedEmail|VerifiedButRequestedNewEmail $primaryEmailStatus,
-        HashedPassword                                             $hashedPassword,
-        AccountDetails                                             $accountDetails
-    ): User {
+        Id $aggregateId,
+        int $aggregateVersion,
+        UnverifiedEmail|VerifiedButRequestedNewEmail|VerifiedEmail $primaryEmailStatus,
+        HashedPassword $hashedPassword,
+        AccountDetails $accountDetails
+    ): self {
         $user = new self($aggregateId, $aggregateVersion);
 
         $user->primaryEmailStatus = $primaryEmailStatus;

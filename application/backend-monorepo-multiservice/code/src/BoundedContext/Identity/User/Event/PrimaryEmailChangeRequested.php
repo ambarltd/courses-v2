@@ -6,9 +6,9 @@ namespace Galeas\Api\BoundedContext\Identity\User\Event;
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\Email;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerificationCode;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Event\EventTrait;
 use Galeas\Api\Common\Id\Id;
@@ -49,7 +49,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
         string $newEmailRequested,
         string $newVerificationCode,
         string $requestedWithHashedPassword
-    ): PrimaryEmailChangeRequested {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,
@@ -86,7 +86,8 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
                 $user->hashedPassword(),
                 $user->accountDetails()
             );
-        } elseif ($previousEmailStatus instanceof VerifiedEmail) {
+        }
+        if ($previousEmailStatus instanceof VerifiedEmail) {
             return User::fromProperties(
                 $user->aggregateId(),
                 $this->aggregateVersion,
@@ -104,24 +105,24 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
                 $user->hashedPassword(),
                 $user->accountDetails()
             );
-        } else {
-            return User::fromProperties(
-                $user->aggregateId(),
-                $this->aggregateVersion,
-                VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
-                    Email::fromEmail(
-                        $previousEmailStatus->verifiedEmail()->email()
-                    ),
-                    Email::fromEmail(
-                        $this->newEmailRequested
-                    ),
-                    VerificationCode::fromVerificationCode(
-                        $this->newVerificationCode
-                    )
-                ),
-                $user->hashedPassword(),
-                $user->accountDetails()
-            );
         }
+
+        return User::fromProperties(
+            $user->aggregateId(),
+            $this->aggregateVersion,
+            VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
+                Email::fromEmail(
+                    $previousEmailStatus->verifiedEmail()->email()
+                ),
+                Email::fromEmail(
+                    $this->newEmailRequested
+                ),
+                VerificationCode::fromVerificationCode(
+                    $this->newVerificationCode
+                )
+            ),
+            $user->hashedPassword(),
+            $user->accountDetails()
+        );
     }
 }

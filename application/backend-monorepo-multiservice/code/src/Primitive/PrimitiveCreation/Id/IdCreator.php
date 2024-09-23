@@ -22,10 +22,10 @@ abstract class IdCreator
     {
         $base64String = base64_encode(random_bytes(42)); // 336 / 6 = 56 characters
         $urlSafeString = str_replace('+', 'A', $base64String);
-        $urlSafeString = str_replace('/', 'B', $urlSafeString);
 
-        return $urlSafeString;
+        return str_replace('/', 'B', $urlSafeString);
     }
+
     public static function createByHashingString(string $string): string
     {
         $sha512 = hash('sha512', $string);
@@ -33,8 +33,7 @@ abstract class IdCreator
 
         $base64String = base64_encode($truncatedHash);
         $urlSafeString = str_replace('+', 'A', $base64String);
-        $urlSafeString = str_replace('/', 'B', $urlSafeString);
 
-        return $urlSafeString;
+        return str_replace('/', 'B', $urlSafeString);
     }
 }

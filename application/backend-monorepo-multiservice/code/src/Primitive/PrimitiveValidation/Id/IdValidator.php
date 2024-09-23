@@ -9,7 +9,7 @@ abstract class IdValidator
     public static function isValid(string $verificationCode): bool
     {
         // doing this before regex, avoids processing long strings
-        if (56 !== strlen($verificationCode)) {
+        if (56 !== \strlen($verificationCode)) {
             return false;
         }
 

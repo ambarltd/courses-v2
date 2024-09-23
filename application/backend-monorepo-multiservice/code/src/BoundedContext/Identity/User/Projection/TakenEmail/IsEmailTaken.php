@@ -25,7 +25,8 @@ class IsEmailTaken implements SUIsEmailTaken, RPECIsEmailTaken
     {
         try {
             $queryBuilder = $this->projectionDocumentManager
-                ->createQueryBuilder(TakenEmail::class);
+                ->createQueryBuilder(TakenEmail::class)
+            ;
 
             $queryBuilder->addOr(
                 $queryBuilder->expr()

@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1/identity/user')]
 class UserProjectionReactionController extends ProjectionReactionController
 {
-    private PrimaryEmailVerificationCodeProjector$primaryEmailVerificationCodeProjector;
+    private PrimaryEmailVerificationCodeProjector $primaryEmailVerificationCodeProjector;
     private TakenEmailProjector $takenEmailProjector;
     private TakenUsernameProjector $takenUsernameProjector;
     private SendPrimaryEmailVerificationReactor $sendPrimaryEmailVerificationReactor;
@@ -33,7 +33,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         $this->sendPrimaryEmailVerificationReactor = $sendPrimaryEmailVerificationReactor;
     }
 
-    #[Route('/projection/primary_email_verification_code', name: 'projection_primary_email_verification_code', methods: ['POST'] )]
+    #[Route('/projection/primary_email_verification_code', name: 'projection_primary_email_verification_code', methods: ['POST'])]
     public function signUp(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -43,7 +43,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/taken_email', name: 'projection_taken_email', methods: ['POST'] )]
+    #[Route('/projection/taken_email', name: 'projection_taken_email', methods: ['POST'])]
     public function takenEmail(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -53,7 +53,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/taken_username', name: 'projection_taken_username', methods: ['POST'] )]
+    #[Route('/projection/taken_username', name: 'projection_taken_username', methods: ['POST'])]
     public function takenUsername(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -63,7 +63,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/reaction/send_primary_email_verification', name: 'reaction_send_primary_email_verification', methods: ['POST'] )]
+    #[Route('/reaction/send_primary_email_verification', name: 'reaction_send_primary_email_verification', methods: ['POST'])]
     public function sendPrimaryEmailVerificationReactor(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

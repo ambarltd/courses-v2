@@ -35,7 +35,7 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
         string $emailContents,
         string $fromEmailAddress,
         string $subjectLine
-    ): PrimaryEmailVerificationCodeSent {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,

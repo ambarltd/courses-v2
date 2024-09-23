@@ -11,11 +11,11 @@ class JsonSchemaFetcher
      */
     public function fetch(string $schemaName): string
     {
-        $filePath = sprintf('file://%s/Schemas/%s', __DIR__, $schemaName);
+        $filePath = \sprintf('file://%s/Schemas/%s', __DIR__, $schemaName);
 
         $decodedJson = $this->decodedJsonFromFilePath($filePath);
 
-        if (is_object($decodedJson)) {
+        if (\is_object($decodedJson)) {
             $resolvedJson = $this->resolveDecodedJsonRefs($decodedJson);
         } else {
             $resolvedJson = $decodedJson;
@@ -23,7 +23,7 @@ class JsonSchemaFetcher
 
         $encoded = json_encode($resolvedJson);
 
-        if (is_string($encoded)) {
+        if (\is_string($encoded)) {
             return $encoded;
         }
 
@@ -33,7 +33,7 @@ class JsonSchemaFetcher
     /**
      * @param object $jsonObject
      *
-     * @return object|array|mixed
+     * @return array|mixed|object
      *
      * @throws CouldNotFetchJsonSchema
      */
@@ -42,16 +42,16 @@ class JsonSchemaFetcher
         $properties = array_keys(get_object_vars($jsonObject));
         foreach ($properties as $property) {
             $value = $jsonObject->{$property};
-            if ('$ref' === $property && is_string($value)) {
+            if ('$ref' === $property && \is_string($value)) {
                 $decodedJson = $this->decodedJsonFromFilePath($value);
-                if (is_object($decodedJson)) {
+                if (\is_object($decodedJson)) {
                     return $this->resolveDecodedJsonRefs($decodedJson);
-                } else {
-                    return $decodedJson;
                 }
+
+                return $decodedJson;
             }
 
-            if (is_object($value)) {
+            if (\is_object($value)) {
                 $newValue = $this->resolveDecodedJsonRefs($value);
                 $jsonObject->{$property} = $newValue;
             }
@@ -63,7 +63,7 @@ class JsonSchemaFetcher
     /**
      * @param string $filePath
      *
-     * @return object|array|mixed
+     * @return array|mixed|object
      *
      * @throws CouldNotFetchJsonSchema
      */
@@ -74,16 +74,16 @@ class JsonSchemaFetcher
             $pathIsRelative = 'file://' !== $startsWith;
 
             if ($pathIsRelative) {
-                $filePath = sprintf('file://%s/Schemas/%s', __DIR__, $filePath);
+                $filePath = \sprintf('file://%s/Schemas/%s', __DIR__, $filePath);
             }
 
             $json = file_get_contents($filePath);
 
-            if (is_string($json)) {
+            if (\is_string($json)) {
                 return json_decode($json);
-            } else {
-                throw new \RuntimeException();
             }
+
+            throw new \RuntimeException();
         } catch (\Throwable $exception) { // extra catch for file_get_contents errors
             throw new CouldNotFetchJsonSchema('Decoding error for file path '.$filePath);
         }

@@ -9,7 +9,7 @@ abstract class IpV4AndV6Validator
     public static function isValid(string $ip): bool
     {
         // doing this before filter_var, avoids processing long strings
-        if (strlen($ip) > 100) {
+        if (\strlen($ip) > 100) {
             return false;
         }
 

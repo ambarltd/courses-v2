@@ -6,8 +6,6 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
-use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotWrite;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 use Galeas\Api\Common\Id\Id;
@@ -17,7 +15,8 @@ class DefineProductHandler
 {
     private EventStore $eventStore;
 
-    public function __construct(EventStore $eventStore) {
+    public function __construct(EventStore $eventStore)
+    {
         $this->eventStore = $eventStore;
     }
 
@@ -33,6 +32,7 @@ class DefineProductHandler
 
         if ($alreadyDefined) {
             $this->eventStore->completeTransaction();
+
             return;
         }
 
@@ -44,7 +44,7 @@ class DefineProductHandler
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             [],
             $command->name,
             $command->interestInBasisPoints,

@@ -8,11 +8,11 @@ abstract class PasswordValidator
 {
     public static function isValid(string $password): bool
     {
-        if (strlen($password) < 10) {
+        if (\strlen($password) < 10) {
             return false;
         }
 
-        if (strlen($password) > 64) {
+        if (\strlen($password) > 64) {
             return false;
         }
 
@@ -22,10 +22,10 @@ abstract class PasswordValidator
         $noSpecialCharacters = '' === preg_replace('/[a-zA-Z0-9]/', '', $password);
 
         if (
-            $noLowercase ||
-            $noUppercase ||
-            $noNumber ||
-            $noSpecialCharacters
+            $noLowercase
+            || $noUppercase
+            || $noNumber
+            || $noSpecialCharacters
         ) {
             return false;
         }

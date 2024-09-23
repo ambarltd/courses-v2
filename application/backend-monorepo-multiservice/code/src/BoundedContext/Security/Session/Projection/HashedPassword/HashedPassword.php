@@ -16,9 +16,7 @@ class HashedPassword
      */
     private $id;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getHashedPassword(): string
     {

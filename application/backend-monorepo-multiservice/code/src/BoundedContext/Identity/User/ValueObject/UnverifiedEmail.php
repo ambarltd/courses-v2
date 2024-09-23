@@ -31,7 +31,7 @@ class UnverifiedEmail
     public static function fromEmailAndVerificationCode(
         Email $email,
         VerificationCode $verificationCode
-    ): UnverifiedEmail {
+    ): self {
         return new self(
             $email,
             $verificationCode

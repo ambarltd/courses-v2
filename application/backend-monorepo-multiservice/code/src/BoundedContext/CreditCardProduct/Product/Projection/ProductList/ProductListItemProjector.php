@@ -8,7 +8,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
-use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
@@ -69,8 +68,9 @@ class ProductListItemProjector implements EventProjector
             ->createQueryBuilder(ProductListItem::class)
             ->field('id')->equals($id)
             ->getQuery()
-            ->getSingleResult();
-        if ($productListItem === null) {
+            ->getSingleResult()
+        ;
+        if (null === $productListItem) {
             throw new \Exception();
         }
 

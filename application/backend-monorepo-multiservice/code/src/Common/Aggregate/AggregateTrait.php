@@ -12,7 +12,6 @@ trait AggregateTrait
 
     private int $aggregateVersion;
 
-
     private function __construct(Id $aggregateId, int $aggregateVersion)
     {
         $this->aggregateId = $aggregateId;

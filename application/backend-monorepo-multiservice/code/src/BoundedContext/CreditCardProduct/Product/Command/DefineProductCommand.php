@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Command;
 
-class DefineProductCommand {
+class DefineProductCommand
+{
     public string $productIdentifierForAggregateIdHash;
     public string $name;
     public int $interestInBasisPoints;
@@ -14,5 +15,4 @@ class DefineProductCommand {
     public int $maxBalanceTransferAllowedInCents;
     public string $reward;
     public string $cardBackgroundHex;
-
 }

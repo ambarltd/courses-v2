@@ -22,7 +22,7 @@ class HashedPasswordProjector implements EventProjector
     public function project(Event $event): void
     {
         try {
-            if (!($event instanceof SignedUp)) {
+            if (!$event instanceof SignedUp) {
                 return;
             }
 
@@ -32,7 +32,8 @@ class HashedPasswordProjector implements EventProjector
             $queryBuilder = $this->projectionDocumentManager
                 ->createQueryBuilder(HashedPassword::class)
                 ->field('id')
-                ->equals($userId);
+                ->equals($userId)
+            ;
 
             $hashedPasswordObject = $queryBuilder->getQuery()->getSingleResult();
 

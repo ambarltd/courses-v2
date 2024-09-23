@@ -30,23 +30,22 @@ class ProductDefined implements EventCreatedProduct
     private string $cardBackgroundHex;
 
     public static function new(
-        Id                 $eventId,
-        Id                 $aggregateId,
-        int                $aggregateVersion,
-        Id                 $causationId,
-        Id                 $correlationId,
+        Id $eventId,
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
         \DateTimeImmutable $recordedOn,
-        array              $metadata,
-        string             $name,
-        int                $interestInBasisPoints,
-        int                $annualFeeInCents,
-        string             $paymentCycle,
-        int                $creditLimitInCents,
-        int                $maxBalanceTransferAllowedInCents,
-        string             $reward,
-        string             $cardBackgroundHex,
-    ): ProductDefined
-    {
+        array $metadata,
+        string $name,
+        int $interestInBasisPoints,
+        int $annualFeeInCents,
+        string $paymentCycle,
+        int $creditLimitInCents,
+        int $maxBalanceTransferAllowedInCents,
+        string $reward,
+        string $cardBackgroundHex,
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,
@@ -73,14 +72,13 @@ class ProductDefined implements EventCreatedProduct
         return $this->name;
     }
 
-
     public function createProduct(): Product
     {
         $paymentCycle = match ($this->paymentCycle) {
-            "monthly" => PaymentCycle::fromProperties(
+            'monthly' => PaymentCycle::fromProperties(
                 Monthly::fromProperties()
             ),
-            "quarterly" => PaymentCycle::fromProperties(
+            'quarterly' => PaymentCycle::fromProperties(
                 Quarterly::fromProperties()
             ),
             default => PaymentCycle::fromProperties(
@@ -88,10 +86,10 @@ class ProductDefined implements EventCreatedProduct
             ),
         };
         $reward = match ($this->reward) {
-            "points" => Reward::fromProperties(
+            'points' => Reward::fromProperties(
                 Points::fromProperties()
             ),
-            "cashback" => Reward::fromProperties(
+            'cashback' => Reward::fromProperties(
                 Cashback::fromProperties()
             ),
             default => Reward::fromProperties(

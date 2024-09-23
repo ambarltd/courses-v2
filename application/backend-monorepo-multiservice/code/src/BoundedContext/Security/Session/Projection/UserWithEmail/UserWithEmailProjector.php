@@ -28,9 +28,9 @@ class UserWithEmailProjector implements EventProjector
     {
         try {
             if (
-                false === ($event instanceof SignedUp) &&
-                false === ($event instanceof PrimaryEmailVerified) &&
-                false === ($event instanceof PrimaryEmailChangeRequested)
+                false === ($event instanceof SignedUp)
+                && false === ($event instanceof PrimaryEmailVerified)
+                && false === ($event instanceof PrimaryEmailChangeRequested)
             ) {
                 return;
             }
@@ -39,7 +39,8 @@ class UserWithEmailProjector implements EventProjector
                 ->createQueryBuilder(UserWithEmail::class)
                 ->field('id')->equals($event->aggregateId()->id())
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($event instanceof SignedUp) {
                 $userWithEmail = UserWithEmail::fromUserIdAndEmails(
@@ -49,8 +50,8 @@ class UserWithEmailProjector implements EventProjector
                     Unverified::setStatus()
                 );
             } elseif (
-                $event instanceof PrimaryEmailVerified &&
-                $userWithEmail instanceof UserWithEmail
+                $event instanceof PrimaryEmailVerified
+                && $userWithEmail instanceof UserWithEmail
             ) {
                 if ($userWithEmail->getStatus() instanceof Unverified) {
                     $userWithEmail->changeEmails(
@@ -67,8 +68,8 @@ class UserWithEmailProjector implements EventProjector
                     );
                 }
             } elseif (
-                $event instanceof PrimaryEmailChangeRequested &&
-                $userWithEmail instanceof UserWithEmail
+                $event instanceof PrimaryEmailChangeRequested
+                && $userWithEmail instanceof UserWithEmail
             ) {
                 if ($userWithEmail->getStatus() instanceof Unverified) {
                     $userWithEmail->changeEmails(
@@ -90,7 +91,7 @@ class UserWithEmailProjector implements EventProjector
                     );
                 }
             } else {
-                throw new \Exception(sprintf('Could not process serialized event %s of class %s where UserWithEmail for userId %s was found', $event->eventId()->id(), get_class($event), $event->authenticatedUserId()->id()));
+                throw new \Exception(\sprintf('Could not process serialized event %s of class %s where UserWithEmail for userId %s was found', $event->eventId()->id(), $event::class, $event->authenticatedUserId()->id()));
             }
 
             $this->projectionDocumentManager->persist($userWithEmail);

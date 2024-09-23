@@ -18,7 +18,7 @@ class VerificationCode
         return $this->verificationCode;
     }
 
-    public static function fromVerificationCode(string $verificationCode): VerificationCode
+    public static function fromVerificationCode(string $verificationCode): self
     {
         return new self($verificationCode);
     }

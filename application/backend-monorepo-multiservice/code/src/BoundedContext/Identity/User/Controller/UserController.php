@@ -29,16 +29,17 @@ class UserController extends BaseController
             [
                 $signUpHandler,
                 $verifyPrimaryEmailHandler,
-                $requestPrimaryEmailChangeHandler
+                $requestPrimaryEmailChangeHandler,
             ]
         );
     }
 
     /**
      * @RequestSchema(name="V1_Identity_User_SignUp")
+     *
      * @ResponseSchema(name="V1_Identity_User_SignUp")
      */
-    #[Route('/identity/user/sign-up', name: 'V1_Identity_User_SignUp', methods: ['POST'] )]
+    #[Route('/identity/user/sign-up', name: 'V1_Identity_User_SignUp', methods: ['POST'])]
     public function signUp(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -54,9 +55,10 @@ class UserController extends BaseController
 
     /**
      * @RequestSchema(name="V1_Identity_User_VerifyPrimaryEmail")
+     *
      * @ResponseSchema(name="V1_Identity_User_VerifyPrimaryEmail")
      */
-    #[Route('/identity/user/verify-primary-email', name: 'V1_Identity_User_VerifyPrimaryEmail', methods: ['POST'] )]
+    #[Route('/identity/user/verify-primary-email', name: 'V1_Identity_User_VerifyPrimaryEmail', methods: ['POST'])]
     public function verifyPrimaryEmail(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -72,9 +74,10 @@ class UserController extends BaseController
 
     /**
      * @RequestSchema(name="V1_Identity_User_RequestPrimaryEmailChange")
+     *
      * @ResponseSchema(name="V1_Identity_User_RequestPrimaryEmailChange")
      */
-    #[Route('/identity/user/request-primary-email-change', name: 'V1_Identity_User_RequestPrimaryEmailChange', methods: ['POST'] )]
+    #[Route('/identity/user/request-primary-email-change', name: 'V1_Identity_User_RequestPrimaryEmailChange', methods: ['POST'])]
     public function requestPrimaryEmailChange(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

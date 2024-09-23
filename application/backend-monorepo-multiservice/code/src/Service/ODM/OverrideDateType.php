@@ -15,9 +15,9 @@ use Doctrine\ODM\MongoDB\Types\DateType;
 class OverrideDateType extends DateType
 {
     /**
-     * @param string|\DateTimeImmutable|null $value
+     * @param null|\DateTimeImmutable|string $value
      *
-     * @return string|null
+     * @return null|string
      *
      * @throws \Exception
      */
@@ -27,7 +27,7 @@ class OverrideDateType extends DateType
             return null;
         }
 
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $value = \DateTimeImmutable::createFromFormat(
                 'Y-m-d\TH:i:s.uP',
                 $value
@@ -40,7 +40,7 @@ class OverrideDateType extends DateType
                 $value->format('Y-m-d\TH:i:s.uP')
             );
 
-            if (is_bool($valueUTC)) {
+            if (\is_bool($valueUTC)) {
                 throw new \Exception('Doctrine Mapping Exception on OverrideDateType::getUTCDateString');
             }
             $valueUTC = $valueUTC->setTimezone(new \DateTimeZone('UTC'));
@@ -52,9 +52,9 @@ class OverrideDateType extends DateType
     }
 
     /**
-     * @param string|\DateTimeImmutable|null $value
+     * @param null|\DateTimeImmutable|string $value
      *
-     * @return \DateTimeImmutable|null
+     * @return null|\DateTimeImmutable
      *
      * @throws \Exception
      */
@@ -68,7 +68,7 @@ class OverrideDateType extends DateType
             return $value;
         }
 
-        if (is_string($value)) {
+        if (\is_string($value)) {
             $return = \DateTimeImmutable::createFromFormat(
                 'Y-m-d\TH:i:s.uP',
                 $value
@@ -87,9 +87,9 @@ class OverrideDateType extends DateType
     /**
      * Always stores in UTC for sortability.
      *
-     * @param string|\DateTimeImmutable|null $value
+     * @param null|\DateTimeImmutable|string $value
      *
-     * @return string|bool|null
+     * @return null|bool|string
      */
     public function convertToDatabaseValue($value)
     {
@@ -101,9 +101,9 @@ class OverrideDateType extends DateType
     }
 
     /**
-     * @param string|\DateTimeImmutable|null $value
+     * @param null|\DateTimeImmutable|string $value
      *
-     * @return \DateTimeImmutable|bool|null
+     * @return null|bool|\DateTimeImmutable
      */
     public function convertToPHPValue($value)
     {
@@ -116,11 +116,11 @@ class OverrideDateType extends DateType
 
     public function closureToMongo(): string
     {
-        return 'if ($value === null) { $return = null; } else { $return = \\'.get_class($this).'::getUTCDateString($value); }';
+        return 'if ($value === null) { $return = null; } else { $return = \\'.static::class.'::getUTCDateString($value); }';
     }
 
     public function closureToPHP(): string
     {
-        return 'if ($value === null) { $return = null; } else { $return = \\'.get_class($this).'::getDateTimeImmutable($value); }';
+        return 'if ($value === null) { $return = null; } else { $return = \\'.static::class.'::getDateTimeImmutable($value); }';
     }
 }

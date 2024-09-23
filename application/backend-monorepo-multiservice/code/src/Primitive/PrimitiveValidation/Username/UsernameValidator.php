@@ -12,8 +12,8 @@ abstract class UsernameValidator
         // username maximum is 32 characters
         // doing this before regex, avoids processing long strings
         if (
-            strlen($username) > 32 ||
-            strlen($username) < 3
+            \strlen($username) > 32
+            || \strlen($username) < 3
         ) {
             return false;
         }

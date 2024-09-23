@@ -10,9 +10,7 @@ class PrimaryEmailVerificationCode
 
     private ?string $primaryEmailVerificationCode;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getUserId(): string
     {

@@ -23,18 +23,17 @@ abstract class EmailVerificationCodeCreator
         // We are using 99,999,999  because it is less than (2^32)
         // In case we are in a 32 bit system
         return
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 8 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 16 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 24 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 32 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 40 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 48 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 56 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 64 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 72 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 80 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT). // 88 digits
-            str_pad(strval(random_int(0, 99999999)), 8, '0', STR_PAD_LEFT)  // 96 digits
-            ;
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 8 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 16 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 24 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 32 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 40 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 48 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 56 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 64 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 72 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 80 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT). // 88 digits
+            str_pad((string) random_int(0, 99_999_999), 8, '0', STR_PAD_LEFT);  // 96 digits
     }
 }

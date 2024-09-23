@@ -75,7 +75,7 @@ class SchemaController extends AbstractController
     {
         try {
             $path = $request->query->get('path');
-            $schemaName = $this->getRequestSchemaFromRoutePath(is_string($path) ? $path : '');
+            $schemaName = $this->getRequestSchemaFromRoutePath(\is_string($path) ? $path : '');
 
             if (null === $schemaName) {
                 return JsonResponse::fromJsonString(
@@ -110,7 +110,7 @@ class SchemaController extends AbstractController
     {
         try {
             $path = $request->query->get('path');
-            $schemaName = $this->getResponseSchemaNameFromRoutePath(is_string($path) ? $path : '');
+            $schemaName = $this->getResponseSchemaNameFromRoutePath(\is_string($path) ? $path : '');
 
             if (null === $schemaName) {
                 return JsonResponse::fromJsonString(
@@ -145,7 +145,7 @@ class SchemaController extends AbstractController
     {
         try {
             $path = $request->query->get('path');
-            $errorSchema = $this->getExceptionSchemaFromRoutePath(is_string($path) ? $path : '');
+            $errorSchema = $this->getExceptionSchemaFromRoutePath(\is_string($path) ? $path : '');
 
             if (null === $errorSchema) {
                 return JsonResponse::fromJsonString(
@@ -178,7 +178,7 @@ class SchemaController extends AbstractController
         $routes = $this->router->getRouteCollection()->all();
 
         $betterRoutes = array_map(
-            function (RouteNotAnnotation $route) use ($schemeAndHttpHost): array {
+            static function (RouteNotAnnotation $route) use ($schemeAndHttpHost): array {
                 return [
                     'path' => $schemeAndHttpHost.$route->getPath(),
                     'methods' => $route->getMethods(),
@@ -194,7 +194,7 @@ class SchemaController extends AbstractController
 
         $betterRoutes = array_filter(
             $betterRoutes,
-            function (array $route) use ($schemeAndHttpHost): bool {
+            static function (array $route) use ($schemeAndHttpHost): bool {
                 $notThesePaths = [
                     $schemeAndHttpHost.'/',
                     $schemeAndHttpHost.'/schema/list',
@@ -218,12 +218,9 @@ class SchemaController extends AbstractController
             }
         );
 
-
         usort(
             $betterRoutes,
-            function (array $routeA, array $routeB): bool {
-                return $routeA['path'] > $routeB['path'];
-            }
+            static fn (array $routeA, array $routeB): bool => $routeA['path'] > $routeB['path']
         );
 
         return $betterRoutes;

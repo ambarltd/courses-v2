@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\EventStore;
 
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\ExceptionBase\EventStoreCannotRead;
@@ -101,13 +100,13 @@ class InMemoryEventStore implements EventStore
             $transformationEvents = [];
             foreach ($this->storedEvents as $event) {
                 if (
-                    $event->aggregateId()->id() === $aggregateId &&
-                    null === $creationEvent
+                    $event->aggregateId()->id() === $aggregateId
+                    && null === $creationEvent
                 ) {
                     $creationEvent = $event;
                 } elseif (
-                    $event->aggregateId()->id() === $aggregateId &&
-                    null !== $creationEvent
+                    $event->aggregateId()->id() === $aggregateId
+                    && null !== $creationEvent
                 ) {
                     $transformationEvents[] = $event;
                 }
@@ -117,7 +116,8 @@ class InMemoryEventStore implements EventStore
                 return null;
             }
 
-            $count = count($transformationEvents);
+            $count = \count($transformationEvents);
+
             return AggregateAndEventIds::fromProperties(
                 AggregateFromEvents::aggregateFromEvents(
                     $creationEvent,
@@ -141,7 +141,6 @@ class InMemoryEventStore implements EventStore
 
         return null;
     }
-
 
     public function save(Event $event): void
     {

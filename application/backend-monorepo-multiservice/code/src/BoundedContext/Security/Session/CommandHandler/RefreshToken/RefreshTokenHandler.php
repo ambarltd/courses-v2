@@ -31,7 +31,7 @@ class RefreshTokenHandler
     }
 
     /**
-     * @throws NoSessionFound|SessionUserDoesNotMatch|SessionTokenDoesNotMatch|InvalidIp|InvalidId
+     * @throws InvalidId|InvalidIp|NoSessionFound|SessionTokenDoesNotMatch|SessionUserDoesNotMatch
      * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
      */
     public function handle(RefreshToken $command): array
@@ -53,7 +53,7 @@ class RefreshTokenHandler
         }
 
         $session = $aggregateAndEventIds->aggregate();
-        if (!($session instanceof Session)) {
+        if (!$session instanceof Session) {
             throw new NoSessionFound();
         }
 
@@ -79,7 +79,7 @@ class RefreshTokenHandler
             $session->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
             $aggregateAndEventIds->firstEventId(),
-            new \DateTimeImmutable("now"),
+            new \DateTimeImmutable('now'),
             $command->metadata,
             $command->withIp,
             $command->withSessionToken,

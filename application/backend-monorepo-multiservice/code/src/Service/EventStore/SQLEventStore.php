@@ -6,7 +6,6 @@ namespace Galeas\Api\Service\EventStore;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\Event\EventDeserializer;
@@ -78,15 +77,15 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare("SELECT * FROM ".$this->eventStoreTableName." WHERE aggregate_id = ? FOR UPDATE");
+            $statement = $this->connection->prepare('SELECT * FROM '.$this->eventStoreTableName.' WHERE aggregate_id = ? FOR UPDATE');
             $statement->bindValue(1, $aggregateId);
 
             $eventArrays = $statement->executeQuery()->fetchAllAssociative();
-            if (0 === count($eventArrays)) {
+            if (0 === \count($eventArrays)) {
                 return null;
             }
 
-            $aggregateEvents = array_map(function (array $eventArray) {
+            $aggregateEvents = array_map(static function (array $eventArray) {
                 return SerializedEvent::fromProperties(
                     $eventArray['event_id'],
                     $eventArray['aggregate_id'],
@@ -104,7 +103,8 @@ class SQLEventStore implements EventStore
             $creationEvent = EventDeserializer::serializedEventsToEvents([$creationEvent])[0];
             $transformationEvents = EventDeserializer::serializedEventsToEvents($aggregateEvents);
 
-            $count = count($transformationEvents);
+            $count = \count($transformationEvents);
+
             return AggregateAndEventIds::fromProperties(
                 AggregateFromEvents::aggregateFromEvents(
                     $creationEvent,
@@ -125,7 +125,7 @@ class SQLEventStore implements EventStore
                 throw new FindingAggregateRequiresActiveTransaction();
             }
 
-            $statement = $this->connection->prepare("SELECT * FROM ".$this->eventStoreTableName." WHERE event_id = ? FOR UPDATE");
+            $statement = $this->connection->prepare('SELECT * FROM '.$this->eventStoreTableName.' WHERE event_id = ? FOR UPDATE');
             $statement->bindValue(1, $eventId);
 
             $eventArray = $statement->executeQuery()->fetchAssociative();
@@ -160,7 +160,8 @@ class SQLEventStore implements EventStore
 
             $serializedEvent = EventSerializer::eventsToSerializedEvents([$event])[0];
 
-            $this->connection->insert($this->eventStoreTableName,
+            $this->connection->insert(
+                $this->eventStoreTableName,
                 [
                     'event_id' => $serializedEvent->eventId(),
                     'aggregate_id' => $serializedEvent->aggregateId(),

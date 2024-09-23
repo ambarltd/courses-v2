@@ -117,42 +117,36 @@ class SerializedEvent
         );
     }
 
-    public function toJson(): string {
+    public function toJson(): string
+    {
         return json_encode([
-            "eventId" => $this->eventId,
-            "aggregateId" => $this->aggregateId,
-            "aggregateVersion" => $this->aggregateVersion,
-            "causationId" => $this->causationId,
-            "correlationId" => $this->correlationId,
-            "recordedOn" => $this->recordedOn,
-            "eventName" => $this->eventName,
-            "jsonPayload" => json_decode($this->jsonPayload, false),
-            "jsonMetadata" => json_decode($this->jsonMetadata, false),
+            'eventId' => $this->eventId,
+            'aggregateId' => $this->aggregateId,
+            'aggregateVersion' => $this->aggregateVersion,
+            'causationId' => $this->causationId,
+            'correlationId' => $this->correlationId,
+            'recordedOn' => $this->recordedOn,
+            'eventName' => $this->eventName,
+            'jsonPayload' => json_decode($this->jsonPayload, false),
+            'jsonMetadata' => json_decode($this->jsonMetadata, false),
         ]);
     }
 
-    public static function fromJson(string $json): self {
+    public static function fromJson(string $json): self
+    {
         $jsonObject = json_decode($json);
 
         if (
-            isset($jsonObject->eventId) &&
-            isset($jsonObject->aggregateId) &&
-            isset($jsonObject->aggregateVersion) &&
-            isset($jsonObject->causationId) &&
-            isset($jsonObject->correlationId) &&
-            isset($jsonObject->recordedOn) &&
-            isset($jsonObject->eventName) &&
-            isset($jsonObject->jsonPayload) &&
-            isset($jsonObject->jsonMetadata) &&
-            is_string($jsonObject->eventId) &&
-            is_string($jsonObject->aggregateId) &&
-            is_int($jsonObject->aggregateVersion) &&
-            is_string($jsonObject->causationId) &&
-            is_string($jsonObject->correlationId) &&
-            is_string($jsonObject->recordedOn) &&
-            is_string($jsonObject->eventName) &&
-            is_object($jsonObject->jsonPayload) &&
-            is_object($jsonObject->jsonMetadata)
+            isset($jsonObject->eventId, $jsonObject->aggregateId, $jsonObject->aggregateVersion, $jsonObject->causationId, $jsonObject->correlationId, $jsonObject->recordedOn, $jsonObject->eventName, $jsonObject->jsonPayload, $jsonObject->jsonMetadata)
+            && \is_string($jsonObject->eventId)
+            && \is_string($jsonObject->aggregateId)
+            && \is_int($jsonObject->aggregateVersion)
+            && \is_string($jsonObject->causationId)
+            && \is_string($jsonObject->correlationId)
+            && \is_string($jsonObject->recordedOn)
+            && \is_string($jsonObject->eventName)
+            && \is_object($jsonObject->jsonPayload)
+            && \is_object($jsonObject->jsonMetadata)
         ) {
             return new self(
                 $jsonObject->eventId,
@@ -170,39 +164,40 @@ class SerializedEvent
         throw new FoundBadJsonForSerializedEvent();
     }
 
-    public static function fromAmbarJson(string $json): self {
+    public static function fromAmbarJson(string $json): self
+    {
         $json = json_decode($json, true);
 
         if (
-            array_key_exists("event_id", $json) &&
-            array_key_exists("aggregate_id", $json) &&
-            array_key_exists("aggregate_version", $json) &&
-            array_key_exists("causation_id", $json) &&
-            array_key_exists("correlation_id", $json) &&
-            array_key_exists("recorded_on", $json) &&
-            array_key_exists("event_name", $json) &&
-            array_key_exists("json_payload", $json) &&
-            array_key_exists("json_metadata", $json) &&
-            is_string($json["event_id"]) &&
-            is_string($json["aggregate_id"]) &&
-            is_int($json["aggregate_version"]) &&
-            is_string($json["causation_id"]) &&
-            is_string($json["correlation_id"]) &&
-            is_string($json["recorded_on"]) &&
-            is_string($json["event_name"]) &&
-            is_string($json["json_payload"]) &&
-            is_string($json["json_metadata"])
+            \array_key_exists('event_id', $json)
+            && \array_key_exists('aggregate_id', $json)
+            && \array_key_exists('aggregate_version', $json)
+            && \array_key_exists('causation_id', $json)
+            && \array_key_exists('correlation_id', $json)
+            && \array_key_exists('recorded_on', $json)
+            && \array_key_exists('event_name', $json)
+            && \array_key_exists('json_payload', $json)
+            && \array_key_exists('json_metadata', $json)
+            && \is_string($json['event_id'])
+            && \is_string($json['aggregate_id'])
+            && \is_int($json['aggregate_version'])
+            && \is_string($json['causation_id'])
+            && \is_string($json['correlation_id'])
+            && \is_string($json['recorded_on'])
+            && \is_string($json['event_name'])
+            && \is_string($json['json_payload'])
+            && \is_string($json['json_metadata'])
         ) {
             return new self(
-                $json["event_id"],
-                $json["aggregate_id"],
-                $json["aggregate_version"],
-                $json["causation_id"],
-                $json["correlation_id"],
-                $json["recorded_on"],
-                $json["event_name"],
-                $json["json_payload"],
-                $json["json_metadata"],
+                $json['event_id'],
+                $json['aggregate_id'],
+                $json['aggregate_version'],
+                $json['causation_id'],
+                $json['correlation_id'],
+                $json['recorded_on'],
+                $json['event_name'],
+                $json['json_payload'],
+                $json['json_metadata'],
             );
         }
 

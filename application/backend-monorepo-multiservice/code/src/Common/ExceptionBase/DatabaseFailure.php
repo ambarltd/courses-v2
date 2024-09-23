@@ -22,10 +22,10 @@ abstract class DatabaseFailure extends InternalServerErrorException
     {
         $twoNewLines = "\n\n";
         $message = $twoNewLines.$databaseException->getMessage().$twoNewLines;
-        $prunedStackTrace = $twoNewLines.substr($databaseException->getTraceAsString(), 0, 5000).$twoNewLines;
-        parent::__construct(sprintf(
+        $prunedStackTrace = $twoNewLines.substr($databaseException->getTraceAsString(), 0, 5_000).$twoNewLines;
+        parent::__construct(\sprintf(
             'Caught exception of class %s with message: %sThe corresponding stack trace (pruned to 5000 characters): %s',
-            get_class($databaseException),
+            $databaseException::class,
             $message,
             $prunedStackTrace
         ));

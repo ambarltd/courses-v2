@@ -18,9 +18,9 @@ class SignedUp implements EventCreatedUser
     use EventTrait;
 
     private string $primaryEmail;
-    
+
     private string $primaryEmailVerificationCode;
-    
+
     private string $hashedPassword;
 
     private string $username;
@@ -65,7 +65,7 @@ class SignedUp implements EventCreatedUser
         string $hashedPassword,
         string $username,
         bool $termsOfUseAccepted
-    ): SignedUp {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,

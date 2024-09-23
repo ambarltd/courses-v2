@@ -29,11 +29,11 @@ class JsonPostRequestMapper
         if (!is_numeric($sessionExpiresAfterSeconds)) {
             throw new \RuntimeException('Invalid sessionExpiresAfterSeconds: '.$sessionExpiresAfterSeconds);
         }
-        $this->sessionExpiresAfterSeconds = intval($sessionExpiresAfterSeconds);
+        $this->sessionExpiresAfterSeconds = (int) $sessionExpiresAfterSeconds;
     }
 
     /**
-     * @throws InvalidJson|InvalidContentType
+     * @throws InvalidContentType|InvalidJson
      */
     public function jsonBodyFromRequest(Request $request): string
     {
@@ -41,13 +41,13 @@ class JsonPostRequestMapper
 
         $return = json_encode($requestArray);
 
-        if (is_string($return)) {
+        if (\is_string($return)) {
             return $return;
         }
 
         throw new InvalidJson();
     }
-    
+
     /**
      * In Commands, the End User Requester can never set properties named "authenticatedUserId" or "withIp".
      *
@@ -62,27 +62,27 @@ class JsonPostRequestMapper
     {
         $requestArray = $this->requestJsonToRequestArray($request);
         $overridenArray = $this->overrideSensitiveFieldsInRequestArrayAndRemoveMetadata($requestArray, $request, $commandOrQueryClass);
-        $validatedMetadata = $this->metadataToValidatedMetadata($requestArray["metadata"], $request);
+        $validatedMetadata = $this->metadataToValidatedMetadata($requestArray['metadata'], $request);
 
         $safeArray = $overridenArray;
-        $safeArray["metadata"] = $validatedMetadata;
+        $safeArray['metadata'] = $validatedMetadata;
 
         return $this->safeArrayToCommandOrQuery($commandOrQueryClass, $safeArray);
     }
 
     /**
-     * @throws InvalidJson|InvalidContentType
+     * @throws InvalidContentType|InvalidJson
      */
     private function requestJsonToRequestArray(Request $request): array
     {
         $contentType = $request->headers->get('content-type');
 
-        if (!is_string($contentType)) {
+        if (!\is_string($contentType)) {
             throw new InvalidContentType();
         }
         if (
-            is_string($contentType) &&
-            'application/json' !== substr($contentType, 0, 16)
+            \is_string($contentType)
+            && 'application/json' !== substr($contentType, 0, 16)
         ) {
             throw new InvalidContentType();
         }
@@ -98,41 +98,42 @@ class JsonPostRequestMapper
             $requestArray = json_decode($content, true);
 
             if (JSON_ERROR_NONE !== json_last_error()) {
-                throw new InvalidJson(sprintf('%s is not in a valid JSON format', $content));
+                throw new InvalidJson(\sprintf('%s is not in a valid JSON format', $content));
             }
         }
 
         return $requestArray;
     }
-    
+
     private function overrideSensitiveFieldsInRequestArrayAndRemoveMetadata(
-        array $requestArray, 
-        Request $request, 
+        array $requestArray,
+        Request $request,
         string $commandOrQueryClass
     ): array {
-        $requestArray["authenticatedUserId"] = null;
-        $requestArray["withIp"] = null;
-        $requestArray["withSessionToken"] = null;
+        $requestArray['authenticatedUserId'] = null;
+        $requestArray['withIp'] = null;
+        $requestArray['withSessionToken'] = null;
 
         $withSessionToken = $request->headers->get('X-With-Session-Token', null);
-        if (is_array($withSessionToken)) {
+        if (\is_array($withSessionToken)) {
             $withSessionToken = array_values($withSessionToken)[0];
         }
         if (
-            array_key_exists('metadata', $requestArray) &&
-            array_key_exists('withSessionToken', $requestArray['metadata']) &&
-            (is_string($requestArray['metadata']['withSessionToken']) || is_null($requestArray['metadata']['withSessionToken']))
+            \array_key_exists('metadata', $requestArray)
+            && \array_key_exists('withSessionToken', $requestArray['metadata'])
+            && (\is_string($requestArray['metadata']['withSessionToken']) || null === $requestArray['metadata']['withSessionToken'])
         ) {
             $withSessionToken = $requestArray['metadata']['withSessionToken'];
         }
 
         try {
-            if (is_string($withSessionToken)) {
-                $requestArray["authenticatedUserId"] = $this->userIdFromSignedInSessionToken
+            if (\is_string($withSessionToken)) {
+                $requestArray['authenticatedUserId'] = $this->userIdFromSignedInSessionToken
                     ->userIdFromSignedInSessionToken(
                         $withSessionToken,
                         (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds')
-                    );
+                    )
+                ;
                 $requestArray['withSessionToken'] = $withSessionToken;
             }
         } catch (ProjectionCannotRead $exception) {
@@ -140,15 +141,15 @@ class JsonPostRequestMapper
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'authenticatedUserId') &&
-            null === $requestArray["authenticatedUserId"]
+            property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
+            && null === $requestArray['authenticatedUserId']
         ) {
             throw new MissingExpectedSessionToken();
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'withSessionToken') &&
-            null === $requestArray["withSessionToken"]
+            property_exists(new $commandOrQueryClass(), 'withSessionToken')
+            && null === $requestArray['withSessionToken']
         ) {
             throw new MissingExpectedSessionToken();
         }
@@ -158,9 +159,9 @@ class JsonPostRequestMapper
         ) {
             $requestArray['withIp'] = $request->server->get('REMOTE_ADDR');
         }
-        
-        unset($requestArray["metadata"]);
-        
+
+        unset($requestArray['metadata']);
+
         return $requestArray;
     }
 
@@ -168,93 +169,92 @@ class JsonPostRequestMapper
         array $metadata,
         Request $request
     ): array {
-
         $receivedEnvironment = null;
         if (
-            array_key_exists('environment', $metadata) &&
-            in_array($metadata['environment'], ['native', 'browser', 'other', 'unknown'], true)
+            \array_key_exists('environment', $metadata)
+            && \in_array($metadata['environment'], ['native', 'browser', 'other', 'unknown'], true)
         ) {
             $receivedEnvironment = $metadata['environment'];
         }
 
         $receivedDevicePlatform = null;
         if (
-            array_key_exists('devicePlatform', $metadata) &&
-            in_array($metadata['devicePlatform'], ['ios', 'android', 'mac', 'windows', 'linux', 'other', 'unknown'], true)
+            \array_key_exists('devicePlatform', $metadata)
+            && \in_array($metadata['devicePlatform'], ['ios', 'android', 'mac', 'windows', 'linux', 'other', 'unknown'], true)
         ) {
             $receivedDevicePlatform = $metadata['devicePlatform'];
         }
 
         $receivedDeviceModel = null;
         if (
-            array_key_exists('deviceModel', $metadata) &&
-            is_string($metadata['deviceModel']) &&
-            '' !== $metadata['deviceModel']
+            \array_key_exists('deviceModel', $metadata)
+            && \is_string($metadata['deviceModel'])
+            && '' !== $metadata['deviceModel']
         ) {
             $receivedDeviceModel = $metadata['deviceModel'];
         }
 
         $receivedDeviceOSVersion = null;
         if (
-            array_key_exists('deviceOSVersion', $metadata) &&
-            is_string($metadata['deviceOSVersion']) &&
-            '' !== $metadata['deviceOSVersion']
+            \array_key_exists('deviceOSVersion', $metadata)
+            && \is_string($metadata['deviceOSVersion'])
+            && '' !== $metadata['deviceOSVersion']
         ) {
             $receivedDeviceOSVersion = $metadata['deviceOSVersion'];
         }
 
         $receivedDeviceOrientation = null;
         if (
-            array_key_exists('deviceOrientation', $metadata) &&
-            is_string($metadata['deviceOrientation']) &&
-            in_array($metadata['deviceOrientation'], ['portrait', 'landscape', 'does_not_apply', 'other', 'unknown'], true)
+            \array_key_exists('deviceOrientation', $metadata)
+            && \is_string($metadata['deviceOrientation'])
+            && \in_array($metadata['deviceOrientation'], ['portrait', 'landscape', 'does_not_apply', 'other', 'unknown'], true)
         ) {
             $receivedDeviceOrientation = $metadata['deviceOrientation'];
         }
 
         $receivedUserAgent = $request->headers->get('User-Agent', null);
-        if (is_array($receivedUserAgent)) {
+        if (\is_array($receivedUserAgent)) {
             $receivedUserAgent = array_values($receivedUserAgent)[0];
         }
         if (
-            array_key_exists('userAgent', $metadata) &&
-            (is_string($metadata['userAgent']) || null == $metadata['userAgent'])
+            \array_key_exists('userAgent', $metadata)
+            && (\is_string($metadata['userAgent']) || null === $metadata['userAgent'])
         ) {
             $receivedUserAgent = $metadata['userAgent'];
         }
 
         $receivedReferer = $request->headers->get('Referer', null);
-        if (is_array($receivedReferer)) {
+        if (\is_array($receivedReferer)) {
             $receivedReferer = array_values($receivedReferer)[0];
         }
         if (
-            array_key_exists('referer', $metadata) &&
-            (is_string($metadata['referer']) || null == $metadata['referer'])
+            \array_key_exists('referer', $metadata)
+            && (\is_string($metadata['referer']) || null === $metadata['referer'])
         ) {
             $receivedReferer = $metadata['referer'];
         }
 
         $receivedSessionToken = null;
         if (
-            array_key_exists('withSessionToken', $metadata) &&
-            is_string($metadata['withSessionToken']) &&
-            '' !== $metadata['withSessionToken']
+            \array_key_exists('withSessionToken', $metadata)
+            && \is_string($metadata['withSessionToken'])
+            && '' !== $metadata['withSessionToken']
         ) {
             $receivedSessionToken = $metadata['withSessionToken'];
         }
 
         $receivedLatitude = null;
         if (
-            array_key_exists('latitude', $metadata) &&
-            (is_float($metadata['latitude']) || is_int($metadata['latitude']))
+            \array_key_exists('latitude', $metadata)
+            && (\is_float($metadata['latitude']) || \is_int($metadata['latitude']))
         ) {
             $receivedLatitude = $metadata['latitude'];
         }
 
         $receivedLongitude = null;
         if (
-            array_key_exists('longitude', $metadata) &&
-            (is_float($metadata['longitude']) || is_int($metadata['longitude']))
+            \array_key_exists('longitude', $metadata)
+            && (\is_float($metadata['longitude']) || \is_int($metadata['longitude']))
         ) {
             $receivedLongitude = $metadata['longitude'];
         }
@@ -281,7 +281,7 @@ class JsonPostRequestMapper
 
         foreach ($safeArray as $propertyName => $value) {
             if (property_exists($commandOrQueryClass, $propertyName)) {
-                $command->$propertyName = $value;
+                $command->{$propertyName} = $value;
             }
         }
 

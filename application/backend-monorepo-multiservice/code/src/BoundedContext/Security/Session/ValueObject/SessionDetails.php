@@ -14,12 +14,12 @@ class SessionDetails
     private $asUser;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $withUsername;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $withEmail;
 
@@ -43,26 +43,18 @@ class SessionDetails
      */
     private $withSessionToken;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function asUser(): Id
     {
         return $this->asUser;
     }
 
-    /**
-     * @return string
-     */
     public function withUsername(): ?string
     {
         return $this->withUsername;
     }
 
-    /**
-     * @return string
-     */
     public function withEmail(): ?string
     {
         return $this->withEmail;

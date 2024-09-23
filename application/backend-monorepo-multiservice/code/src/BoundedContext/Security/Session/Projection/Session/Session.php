@@ -12,7 +12,7 @@ class Session
     private $id;
 
     /**
-     * @var string|null
+     * @var null|string
      */
     private $userId;
 
@@ -31,9 +31,7 @@ class Session
      */
     private $tokenLastRefreshedAt;
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     public function getSessionId(): string
     {

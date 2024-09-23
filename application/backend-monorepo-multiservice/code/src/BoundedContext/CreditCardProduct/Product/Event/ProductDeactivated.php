@@ -13,16 +13,15 @@ class ProductDeactivated implements EventTransformedProduct
     use EventTrait;
 
     public static function new(
-        Id                 $eventId,
-        Id                 $aggregateId,
-        int                $aggregateVersion,
-        Id                 $causationId,
-        Id                 $correlationId,
+        Id $eventId,
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
         \DateTimeImmutable $recordedOn,
-        array              $metadata,
-    ): ProductDeactivated
-    {
-        $event = new self(
+        array $metadata,
+    ): self {
+        return new self(
             $eventId,
             $aggregateId,
             $aggregateVersion,
@@ -31,8 +30,6 @@ class ProductDeactivated implements EventTransformedProduct
             $recordedOn,
             $metadata
         );
-
-        return $event;
     }
 
     public function transformProduct(Product $product): Product

@@ -45,7 +45,7 @@ class TokenRefreshed implements EventTransformedSession
         string $withIp,
         string $withExistingSessionToken,
         string $refreshedSessionToken,
-    ): TokenRefreshed {
+    ): self {
         $event = new self(
             $eventId,
             $aggregateId,

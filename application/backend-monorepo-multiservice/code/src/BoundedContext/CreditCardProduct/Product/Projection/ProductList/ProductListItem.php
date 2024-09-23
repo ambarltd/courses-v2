@@ -29,13 +29,17 @@ class ProductListItem
     public function activate(): self
     {
         $this->isActive = true;
+
         return $this;
     }
+
     public function deactivate(): self
     {
         $this->isActive = false;
+
         return $this;
     }
+
     public static function fromProperties(
         string $productId,
         string $name,

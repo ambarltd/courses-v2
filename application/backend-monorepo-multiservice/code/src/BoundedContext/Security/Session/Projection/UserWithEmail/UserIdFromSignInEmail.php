@@ -24,7 +24,8 @@ class UserIdFromSignInEmail implements SIUserIdFromEmail
     {
         try {
             $queryBuilder = $this->projectionDocumentManager
-                ->createQueryBuilder(UserWithEmail::class);
+                ->createQueryBuilder(UserWithEmail::class)
+            ;
 
             $queryBuilder->addOr(
                 $queryBuilder->expr()->addAnd(

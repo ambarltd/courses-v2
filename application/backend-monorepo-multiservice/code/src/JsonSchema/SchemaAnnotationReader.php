@@ -35,7 +35,7 @@ class SchemaAnnotationReader
         try {
             $reflectionMethod = new \ReflectionMethod($controllerClassAndMethod);
             $annotation = $reflectionMethod->getDocComment();
-            if (!is_string($annotation)) {
+            if (!\is_string($annotation)) {
                 // The constructor for \ReflectionMethod is not interpreted as throwing \ReflectionException
                 // To avoid static code analyzers from misinterpreting this, the exception is also thrown
                 // when there is no annotation.
@@ -65,10 +65,10 @@ class SchemaAnnotationReader
 
         // Extracts the value of name
         if (
-            null !== $row &&
-            preg_match('/name=["\']([\w_,-]+)["\']/', $row, $matches)
+            null !== $row
+            && preg_match('/name=["\']([\w_,-]+)["\']/', $row, $matches)
         ) {
-            if (array_key_exists(1, $matches)) {
+            if (\array_key_exists(1, $matches)) {
                 return $matches[1];
             }
         }

@@ -27,7 +27,8 @@ class IsUsernameTaken implements SUIsUsernameTaken
                 ->createQueryBuilder(TakenUsername::class)
                 ->field('canonicalUsername')->equals(strtolower($username))
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($takenUsername instanceof TakenUsername) {
                 return true;
