@@ -46,6 +46,8 @@ services:
       args:
         SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
     command: [ "./run_in_local_test.sh" ]
+    volumes:
+      - ./../:/srv
     restart: always
     environment:
         EVENT_STORE_HOST: "172.30.0.102"
@@ -71,8 +73,6 @@ services:
         MONGODB_REACTION_DATABASE_PASSWORD: "my_mongo_password"
         SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
         SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
-    expose:
-      - 8080
     depends_on:
       - pg-event-store
       - mongo-projection-reaction
