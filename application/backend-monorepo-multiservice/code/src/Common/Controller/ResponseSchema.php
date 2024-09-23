@@ -14,8 +14,5 @@ namespace Galeas\Api\Common\Controller;
  */
 class ResponseSchema
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 }

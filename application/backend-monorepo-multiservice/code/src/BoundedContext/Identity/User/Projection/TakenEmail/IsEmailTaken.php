@@ -11,10 +11,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
 class IsEmailTaken implements SUIsEmailTaken, RPECIsEmailTaken
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

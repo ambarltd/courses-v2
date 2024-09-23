@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername;
 
 class TakenUsername
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var string
-     */
-    private $canonicalUsername;
+    private string $canonicalUsername;
 
     private function __construct() {}
 

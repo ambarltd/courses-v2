@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername
 
 class UserWithUsername
 {
-    /**
-     * @var string
-     */
-    private $canonicalUsername;
+    private string $canonicalUsername;
 
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
     private function __construct() {}
 

@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Security\Session\ValueObject;
 
 class SessionIsSignedOut
 {
-    /**
-     * @var string
-     */
-    private $withSessionToken;
+    private string $withSessionToken;
 
-    /**
-     * @var string
-     */
-    private $withIp;
+    private string $withIp;
 
     private function __construct() {}
 

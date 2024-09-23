@@ -10,10 +10,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
 class UserIdFromSignInUsername implements SIUserIdFromUsername
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

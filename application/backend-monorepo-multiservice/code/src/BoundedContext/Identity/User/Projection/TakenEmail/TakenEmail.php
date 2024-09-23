@@ -6,20 +6,11 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail;
 
 class TakenEmail
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var null|string
-     */
-    private $canonicalVerifiedEmail;
+    private ?string $canonicalVerifiedEmail;
 
-    /**
-     * @var null|string
-     */
-    private $canonicalRequestedEmail;
+    private ?string $canonicalRequestedEmail;
 
     private function __construct() {}
 

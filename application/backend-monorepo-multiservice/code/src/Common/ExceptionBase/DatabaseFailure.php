@@ -6,10 +6,7 @@ namespace Galeas\Api\Common\ExceptionBase;
 
 abstract class DatabaseFailure extends InternalServerErrorException
 {
-    /**
-     * @var \Throwable
-     */
-    private $databaseException;
+    private \Throwable $databaseException;
 
     /**
      * Provide a way to express database failure.

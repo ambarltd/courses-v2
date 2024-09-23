@@ -14,10 +14,7 @@ use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class TakenEmailProjector implements EventProjector
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

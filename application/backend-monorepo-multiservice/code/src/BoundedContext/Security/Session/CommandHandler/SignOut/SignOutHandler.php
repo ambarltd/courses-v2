@@ -16,15 +16,9 @@ use Galeas\Api\Service\EventStore\EventStore;
 
 class SignOutHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var SessionIdFromSessionToken
-     */
-    private $sessionIdFromSessionToken;
+    private SessionIdFromSessionToken $sessionIdFromSessionToken;
 
     public function __construct(
         EventStore $eventStore,

@@ -9,10 +9,7 @@ use Galeas\Api\Primitive\PrimitiveValidation\Id\IdValidator;
 
 class Id
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
     private function __construct(string $id)
     {

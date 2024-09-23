@@ -10,10 +10,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
 class IsUsernameTaken implements SUIsUsernameTaken
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

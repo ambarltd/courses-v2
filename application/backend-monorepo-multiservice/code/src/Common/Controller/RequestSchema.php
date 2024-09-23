@@ -14,8 +14,5 @@ namespace Galeas\Api\Common\Controller;
  */
 class RequestSchema
 {
-    /**
-     * @var string
-     */
-    public $name;
+    public string $name;
 }

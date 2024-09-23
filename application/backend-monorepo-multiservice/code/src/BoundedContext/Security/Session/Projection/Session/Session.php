@@ -6,30 +6,15 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
 
 class Session
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var null|string
-     */
-    private $userId;
+    private ?string $userId;
 
-    /**
-     * @var string
-     */
-    private $sessionToken;
+    private string $sessionToken;
 
-    /**
-     * @var bool
-     */
-    private $signedOut;
+    private bool $signedOut;
 
-    /**
-     * @var \DateTimeImmutable
-     */
-    private $tokenLastRefreshedAt;
+    private \DateTimeImmutable $tokenLastRefreshedAt;
 
     private function __construct() {}
 

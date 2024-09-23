@@ -6,25 +6,13 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail;
 
 class UserWithEmail
 {
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
-    /**
-     * @var null|string
-     */
-    private $canonicalVerifiedEmail;
+    private ?string $canonicalVerifiedEmail;
 
-    /**
-     * @var null|string
-     */
-    private $canonicalRequestedEmail;
+    private ?string $canonicalRequestedEmail;
 
-    /**
-     * @var RequestedChange|Unverified|Verified
-     */
-    private $status;
+    private RequestedChange|Unverified|Verified $status;
 
     private function __construct() {}
 

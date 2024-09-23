@@ -17,10 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 abstract class HandlerUnitTest extends TestCase
 {
-    /**
-     * @var InMemoryEventStore
-     */
-    private $inMemoryEventStore;
+    private InMemoryEventStore $inMemoryEventStore;
 
     protected function setUp(): void
     {

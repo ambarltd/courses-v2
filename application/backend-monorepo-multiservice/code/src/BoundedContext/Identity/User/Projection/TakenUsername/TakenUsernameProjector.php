@@ -12,10 +12,7 @@ use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class TakenUsernameProjector implements EventProjector
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

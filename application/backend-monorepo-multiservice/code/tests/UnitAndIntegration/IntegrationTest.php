@@ -11,15 +11,9 @@ use Symfony\Component\DependencyInjection\Container;
 // todo??? make the event store pass any saved events to all projection handlers?
 abstract class IntegrationTest extends TestCase
 {
-    /**
-     * @var Kernel
-     */
-    private $kernel;
+    private Kernel $kernel;
 
-    /**
-     * @var Container
-     */
-    private $container;
+    private Container $container;
 
     protected function setUp(): void
     {

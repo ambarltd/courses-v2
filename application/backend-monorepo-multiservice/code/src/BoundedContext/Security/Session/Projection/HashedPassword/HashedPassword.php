@@ -6,15 +6,9 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword;
 
 class HashedPassword
 {
-    /**
-     * @var string
-     */
-    private $hashedPassword;
+    private string $hashedPassword;
 
-    /**
-     * @var string
-     */
-    private $id;
+    private string $id;
 
     private function __construct() {}
 

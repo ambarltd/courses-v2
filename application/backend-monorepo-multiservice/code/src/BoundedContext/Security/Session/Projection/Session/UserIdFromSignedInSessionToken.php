@@ -9,10 +9,7 @@ use Galeas\Api\Common\ExceptionBase\ProjectionCannotRead;
 
 class UserIdFromSignedInSessionToken
 {
-    /**
-     * @var DocumentManager
-     */
-    private $projectionDocumentManager;
+    private DocumentManager $projectionDocumentManager;
 
     public function __construct(DocumentManager $projectionDocumentManager)
     {

@@ -17,25 +17,13 @@ use Galeas\Api\Service\EventStore\EventStore;
 
 class SignInHandler
 {
-    /**
-     * @var EventStore
-     */
-    private $eventStore;
+    private EventStore $eventStore;
 
-    /**
-     * @var UserIdFromSignInUsername
-     */
-    private $userIdFromSignInUsername;
+    private UserIdFromSignInUsername $userIdFromSignInUsername;
 
-    /**
-     * @var UserIdFromSignInEmail
-     */
-    private $userIdFromSignInEmail;
+    private UserIdFromSignInEmail $userIdFromSignInEmail;
 
-    /**
-     * @var HashedPasswordFromUserId
-     */
-    private $hashedPasswordFromUserId;
+    private HashedPasswordFromUserId $hashedPasswordFromUserId;
 
     public function __construct(
         EventStore $eventStore,

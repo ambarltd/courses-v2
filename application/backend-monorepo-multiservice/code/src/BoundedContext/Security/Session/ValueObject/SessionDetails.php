@@ -8,40 +8,19 @@ use Galeas\Api\Common\Id\Id;
 
 class SessionDetails
 {
-    /**
-     * @var Id
-     */
-    private $asUser;
+    private Id $asUser;
 
-    /**
-     * @var null|string
-     */
-    private $withUsername;
+    private ?string $withUsername;
 
-    /**
-     * @var null|string
-     */
-    private $withEmail;
+    private ?string $withEmail;
 
-    /**
-     * @var string
-     */
-    private $withHashedPassword;
+    private string $withHashedPassword;
 
-    /**
-     * @var string
-     */
-    private $byDeviceLabel;
+    private string $byDeviceLabel;
 
-    /**
-     * @var string
-     */
-    private $withIp;
+    private string $withIp;
 
-    /**
-     * @var string
-     */
-    private $withSessionToken;
+    private string $withSessionToken;
 
     private function __construct() {}
 
