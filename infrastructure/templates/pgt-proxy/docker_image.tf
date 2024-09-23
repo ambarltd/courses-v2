@@ -15,7 +15,7 @@ resource "random_id" "image_tag" {
     docker_registry_url : local.docker_registry_url
     docker_repository_name : local.docker_repository_name
     dockerfile_hash : filemd5("${path.module}/Dockerfile")
-    force_redeploy : "green" # alternate between blue/green to force redeploy
+    force_redeploy : "blue" # alternate between blue/green to force redeploy
   }
 }
 

@@ -20,6 +20,7 @@ module "application" {
   git_commit_hash                            = var.git_commit_hash
   vpc_connector_subnetwork_name              = module.networking.vpc_connector_name
   event_store_database_name                  = module.event_store.database_name
+  event_store_table_name                     = "event_store"
   event_store_host                           = module.event_store.database_private_ip_address
   event_store_password                       = module.event_store.database_admin_password
   event_store_port                           = module.event_store.database_port

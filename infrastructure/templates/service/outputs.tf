@@ -7,6 +7,10 @@ output "connection_outputs" {
     event_store_password                       = module.event_store.database_admin_password
     event_store_port                           = module.event_store.database_port
     event_store_user                           = module.event_store.database_admin_username
+    event_store_table_name                     = module.application.event_store_table_name
+    event_store_replication_username           = module.application.event_store_replication_username
+    event_store_replication_password           = module.application.event_store_replication_password
+    event_store_replication_publication_name   = module.application.event_store_replication_publication_name
     event_store_proxy_endpoint                 = module.pgt_proxy.public_ip
     event_store_proxy_endpoint_domain          = var.pgt_proxy_cert_common_name
     mongodb_projection_authentication_database = module.projection_and_reaction_store.authentication_database

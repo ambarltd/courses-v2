@@ -1,0 +1,127 @@
+services:
+  pg-event-store:
+    build:
+      context:
+        ./pg-event-store
+    container_name: pg-event-store
+    restart: always
+    volumes:
+      - ./data/event-store/pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: my_es_username
+      POSTGRES_DB: my_es_database
+      POSTGRES_PASSWORD: my_es_password
+    command: >
+      postgres -c wal_level=logical
+               -c ssl=on
+               -c ssl_cert_file=/var/lib/postgresql/certs/server.crt
+               -c ssl_key_file=/var/lib/postgresql/certs/server.key
+    expose:
+      - 5432
+    networks:
+      galeasTest:
+        ipv4_address: 172.30.0.102
+
+  mongo-projection-reaction:
+    build:
+      context:
+        ./mongo-projection-reaction
+    container_name: mongo-projection-reaction
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: my_mongo_username
+      MONGO_INITDB_ROOT_PASSWORD: my_mongo_password
+    volumes:
+      - ./data/mongo-projection-reaction/db-data:/data/db
+    expose:
+      - 27017
+    networks:
+      galeasTest:
+        ipv4_address: 172.30.0.103
+
+  php-all-services-test:
+    container_name: php-all-services-test
+    build:
+      context: ./../../../backend-monorepo-multiservice
+      args:
+        SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
+    command: [ "./run_in_local_test.sh" ]
+    volumes:
+      - ./../:/srv
+    restart: always
+    environment:
+        EVENT_STORE_HOST: "172.30.0.102"
+        EVENT_STORE_PORT: 5432
+        EVENT_STORE_DATABASE_NAME: "my_es_database"
+        EVENT_STORE_USER: "my_es_username"
+        EVENT_STORE_PASSWORD: "my_es_password"
+        EVENT_STORE_CREATE_TABLE_WITH_NAME: "event_store_test"
+        EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME: "replication_username_test"
+        EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD: "replication_password_test"
+        EVENT_STORE_CREATE_REPLICATION_PUBLICATION: "replication_publication_test"
+        MONGODB_PROJECTION_HOST: "172.30.0.103"
+        MONGODB_PROJECTION_PORT: 27017
+        MONGODB_PROJECTION_AUTHENTICATION_DATABASE: "admin"
+        MONGODB_PROJECTION_DATABASE_NAME: "projections_test"
+        MONGODB_PROJECTION_DATABASE_USERNAME: "my_mongo_username"
+        MONGODB_PROJECTION_DATABASE_PASSWORD: "my_mongo_password"
+        MONGODB_REACTION_HOST: "172.30.0.103"
+        MONGODB_REACTION_PORT: 27017
+        MONGODB_REACTION_AUTHENTICATION_DATABASE: "admin"
+        MONGODB_REACTION_DATABASE_NAME: "reactions_test"
+        MONGODB_REACTION_DATABASE_USERNAME: "my_mongo_username"
+        MONGODB_REACTION_DATABASE_PASSWORD: "my_mongo_password"
+        SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
+        SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
+    depends_on:
+      - pg-event-store
+      - mongo-projection-reaction
+    networks:
+      galeasTest:
+        ipv4_address: 172.30.0.104
+
+  php-all-services:
+    container_name: php-all-services
+    build:
+      context: ./../../../backend-monorepo-multiservice
+      args:
+        SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
+    command: [ "./run_in_local.sh" ]
+    restart: always
+    environment:
+        EVENT_STORE_HOST: "172.30.0.102"
+        EVENT_STORE_PORT: 5432
+        EVENT_STORE_DATABASE_NAME: "my_es_database"
+        EVENT_STORE_USER: "my_es_username"
+        EVENT_STORE_PASSWORD: "my_es_password"
+        EVENT_STORE_CREATE_TABLE_WITH_NAME: "event_store"
+        EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME: "replication_username"
+        EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD: "replication_password"
+        EVENT_STORE_CREATE_REPLICATION_PUBLICATION: "replication_publication"
+        MONGODB_PROJECTION_HOST: "172.30.0.103"
+        MONGODB_PROJECTION_PORT: 27017
+        MONGODB_PROJECTION_AUTHENTICATION_DATABASE: "admin"
+        MONGODB_PROJECTION_DATABASE_NAME: "projections"
+        MONGODB_PROJECTION_DATABASE_USERNAME: "my_mongo_username"
+        MONGODB_PROJECTION_DATABASE_PASSWORD: "my_mongo_password"
+        MONGODB_REACTION_HOST: "172.30.0.103"
+        MONGODB_REACTION_PORT: 27017
+        MONGODB_REACTION_AUTHENTICATION_DATABASE: "admin"
+        MONGODB_REACTION_DATABASE_NAME: "reactions"
+        MONGODB_REACTION_DATABASE_USERNAME: "my_mongo_username"
+        MONGODB_REACTION_DATABASE_PASSWORD: "my_mongo_password"
+        SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
+        SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
+    depends_on:
+      - pg-event-store
+      - mongo-projection-reaction
+    networks:
+      galeasTest:
+        ipv4_address: 172.30.0.105
+
+networks:
+    galeasTest:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.30.0.0/24

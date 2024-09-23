@@ -1,0 +1,94 @@
+deptrac:
+    paths:
+        - ./src
+
+    layers:
+        - name: BoundedContext
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*
+        - name: Common
+          collectors:
+              - type: bool
+                must:
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\.*
+                must_not:
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Event\\EventDeserializer$
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Event\\AggregateFromEvents$
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Event\\EventSerializer$
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Event\\EventReflectionBaseClass$
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Controller\\ProjectionReactionController$
+                  - type: classLike
+                    value: ^Galeas\\Api\\Common\\Controller\\BaseController$
+        - name: CommonController
+          collectors:
+              - type: bool
+                must:
+                  - type: classLike
+                    value: ^Galeas\\Api\\CommonController\\.*
+        - name: CommonException
+          collectors:
+              - type: bool
+                must:
+                  - type: classLike
+                    value: ^Galeas\\Api\\CommonException\\.*
+        - name: Console
+          collectors:
+              - type: bool
+                must:
+                  - type: classLike
+                    value: ^Galeas\\Api\\Console\\.*
+        - name: Primitive
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\Primitive\\.*
+        - name: Service
+          collectors:
+              - type: bool
+                must:
+                  - type: classLike
+                    value: ^Galeas\\Api\\Service\\.*
+                must_not:
+                  - type: classLike
+                    value: ^Galeas\\Api\\Service\\RequestMapper\\JsonPostRequestMapper.*
+        - name: JsonSchema
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\JsonSchema\\.*
+    ruleset:
+        BoundedContext:
+            - Common
+            - CommonController
+            - CommonException
+            - Primitive
+            - JsonSchema
+            - Service # todo - change? place interfaces in bounded context?
+        Common:
+            - CommonException
+            - Primitive
+        CommonController:
+            - Common
+            - CommonException
+            - JsonSchema
+            - Service
+        CommonException:
+        Console:
+            - BoundedContext
+            - CommonException
+            - Primitive
+            - Service
+        JsonSchema:
+            - CommonException
+        Primitive:
+            - CommonException
+        Service:
+            - Common
+            - CommonException
+            - Primitive
+

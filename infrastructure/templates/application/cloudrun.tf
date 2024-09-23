@@ -30,6 +30,22 @@ resource "google_cloud_run_service" "application" {
           value = var.event_store_password
         }
         env {
+          name  = "EVENT_STORE_CREATE_TABLE_WITH_NAME"
+          value = var.event_store_table_name
+        }
+        env {
+          name  = "EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME"
+          value = local.replication_username
+        }
+        env {
+          name  = "EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD"
+          value = random_password.replication_password.result
+        }
+        env {
+          name  = "EVENT_STORE_CREATE_REPLICATION_PUBLICATION"
+          value = local.replication_publication_name
+        }
+        env {
           name  = "MONGODB_PROJECTION_HOST"
           value = var.mongodb_projection_host
         }
@@ -81,11 +97,16 @@ resource "google_cloud_run_service" "application" {
           name  = "SESSION_TOKENS_EXPIRE_AFTER_SECONDS"
           value = var.session_tokens_expire_after_seconds
         }
+        env {
+          name  = "SERVICE_NAME_IN_LOWERCASE"
+          value = var.full_service_name_in_lowercase
+        }
       }
     }
     metadata {
       annotations = {
         "run.googleapis.com/vpc-access-connector" = var.vpc_connector_subnetwork_name
+        "autoscaling.knative.dev/minScale" = 1
       }
     }
   }
@@ -96,6 +117,16 @@ resource "google_cloud_run_service" "application" {
   }
 
   depends_on = [null_resource.push_app_image]
+}
+
+locals {
+  replication_username = "ambar_user"
+  replication_publication_name = "ambar_publication"
+}
+
+resource "random_password" "replication_password" {
+  length  = 15
+  special = false
 }
 
 resource "google_cloud_run_service_iam_policy" "public_policy" {

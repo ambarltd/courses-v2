@@ -1,5 +1,4 @@
-FROM ambarltd/pgt-proxy:latest
-
+FROM ambarltd/pgt-proxy:v1.1
 
 COPY trust_this_ca.pem /etc/pgt_proxy/client_tls/custom_cas/
 COPY tls_private_key.pem /etc/pgt_proxy/server_tls/key.pem

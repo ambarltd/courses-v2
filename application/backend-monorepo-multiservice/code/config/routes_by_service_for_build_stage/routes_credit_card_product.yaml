@@ -1,0 +1,7 @@
+schema_controller:
+  resource: ../src/JsonSchema/Controller/
+  type: attribute
+
+creditcardproduct_product_controller:
+  resource: ../src/BoundedContext/CreditCardProduct/Product
+  type: attribute

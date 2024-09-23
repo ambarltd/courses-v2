@@ -21,3 +21,7 @@ variable "domain_identity" {
 variable "domain_security" {
   type = string
 }
+
+variable "domain_credit_card_product" {
+  type = string
+}

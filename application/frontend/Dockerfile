@@ -11,6 +11,7 @@ COPY ./src /app/src
 
 ENV DOMAIN_IDENTITY="https://placeholder.com"
 ENV DOMAIN_SECURITY="https://placeholder.com"
+ENV DOMAIN_CREDIT_CARD_PRODUCT="https://placeholder.com"
 
 EXPOSE 8080
 CMD [ "node", "src/main.js" ]

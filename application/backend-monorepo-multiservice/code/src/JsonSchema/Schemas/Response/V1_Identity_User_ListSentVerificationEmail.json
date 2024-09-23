@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "userId": {
+        "type": "string"
+      },
+      "verificationCodeSent": {
+        "type": "string"
+      },
+      "toEmailAddress": {
+        "type": "string"
+      },
+      "emailContents": {
+        "type": "string"
+      },
+      "fromEmailAddress": {
+        "type": "string"
+      },
+      "subjectLine": {
+        "type": "string"
+      },
+      "sentAt": {
+        "type": "string"
+      }
+    },
+    "required": [
+      "userId",
+      "verificationCodeSent",
+      "toEmailAddress",
+      "emailContents",
+      "fromEmailAddress",
+      "subjectLine",
+      "sentAt"
+    ]
+  }
+}

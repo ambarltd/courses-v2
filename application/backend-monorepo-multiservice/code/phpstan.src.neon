@@ -1,0 +1,13 @@
+parameters:
+    paths:
+        - src/BoundedContext
+        - src/Common
+        - src/Console
+        - src/JsonSchema
+        - src/Primitive
+        - src/Service
+    exceptions:
+        reportUncheckedExceptionDeadCatch: false
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true

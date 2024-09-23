@@ -1,0 +1,87 @@
+framework:
+    secret: '%env(API_SYMFONY_SECRET)%'
+    #default_locale: en
+    #csrf_protection: ~
+    #http_method_override: true
+    #trusted_hosts: ~
+    # https://symfony.com/doc/current/reference/configuration/framework.html#handler-id
+    #session:
+    #    # The native PHP session handler will be used
+    #    handler_id: ~
+    #esi: ~
+    #fragments: ~
+    php_errors:
+        log: true
+    router:
+        strict_requirements: ~
+
+doctrine_mongodb:
+    auto_generate_proxy_classes: '%kernel.debug%'
+    auto_generate_hydrator_classes: '%kernel.debug%'
+    connections:
+        projection:
+            server: 'mongodb://%mongodb_projection_host%'
+            options:
+                username: '%mongodb_projection_username%'
+                password: '%mongodb_projection_password%'
+                db: '%mongodb_projection_database_name%'
+                authSource: '%mongodb_projection_authentication_database%'
+        reaction:
+            server: 'mongodb://%mongodb_reaction_host%'
+            options:
+                username: '%mongodb_reaction_username%'
+                password: '%mongodb_reaction_password%'
+                db: '%mongodb_reaction_database_name%'
+                authSource: '%mongodb_reaction_authentication_database%'
+    document_managers:
+        projection:
+            connection: projection
+            database: '%mongodb_projection_database_name%'
+            mappings:
+                Galeas\Api\BoundedContext\Identity\User\Projection:
+                    type: xml
+                    is_bundle: false
+                    prefix: Galeas\Api\BoundedContext\Identity\User\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/Identity/User/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\Identity\User\Projection
+                Galeas\Api\BoundedContext\Security\Session\Projection:
+                    type: xml
+                    is_bundle: false
+                    prefix: Galeas\Api\BoundedContext\Security\Session\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/Security/Session/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\Security\Session\Projection
+                Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection:
+                    type: xml
+                    is_bundle: false
+                    prefix: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/Product/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
+        reaction:
+            connection: reaction
+            database: '%mongodb_reaction_database_name%'
+            mappings:
+
+parameters:
+    event_store_database_host: '%env(EVENT_STORE_HOST)%'
+    event_store_database_port: '%env(EVENT_STORE_PORT)%'
+    event_store_database_name: '%env(EVENT_STORE_DATABASE_NAME)%'
+    event_store_database_user: '%env(EVENT_STORE_USER)%'
+    event_store_database_password: '%env(EVENT_STORE_PASSWORD)%'
+    event_store_create_event_table_with_name: '%env(EVENT_STORE_CREATE_TABLE_WITH_NAME)%'
+    event_store_create_replication_user_with_username: '%env(EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME)%'
+    event_store_create_replication_user_with_password: '%env(EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD)%'
+    event_store_create_replication_publication: '%env(EVENT_STORE_CREATE_REPLICATION_PUBLICATION)%'
+    mongodb_projection_host: '%env(MONGODB_PROJECTION_HOST)%'
+    mongodb_projection_port: '%env(MONGODB_PROJECTION_PORT)%'
+    mongodb_projection_authentication_database: '%env(MONGODB_PROJECTION_AUTHENTICATION_DATABASE)%'
+    mongodb_projection_database_name: '%env(MONGODB_PROJECTION_DATABASE_NAME)%'
+    mongodb_projection_username: '%env(MONGODB_PROJECTION_DATABASE_USERNAME)%'
+    mongodb_projection_password: '%env(MONGODB_PROJECTION_DATABASE_PASSWORD)%'
+    mongodb_reaction_host: '%env(MONGODB_REACTION_HOST)%'
+    mongodb_reaction_port: '%env(MONGODB_REACTION_PORT)%'
+    mongodb_reaction_authentication_database: '%env(MONGODB_REACTION_AUTHENTICATION_DATABASE)%'
+    mongodb_reaction_database_name: '%env(MONGODB_REACTION_DATABASE_NAME)%'
+    mongodb_reaction_username: '%env(MONGODB_REACTION_DATABASE_USERNAME)%'
+    mongodb_reaction_password: '%env(MONGODB_REACTION_DATABASE_PASSWORD)%'
+    session_tokens_expire_after_seconds: '%env(SESSION_TOKENS_EXPIRE_AFTER_SECONDS)%'
+    service_name_in_lowercase: '%env(SERVICE_NAME_IN_LOWERCASE)%'

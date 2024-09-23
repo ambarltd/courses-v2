@@ -1,0 +1,87 @@
+deptrac:    
+    paths:
+        - ./src
+    
+    layers:
+        - name: Aggregate
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Aggregate\\.*
+        - name: Command
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Command\\.*
+        - name: CommandHandler
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\CommandHandler\\.*
+        - name: Controller
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Controller\\.*
+        - name: ControllerForProjectionReaction
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\ControllerForProjectionReaction\\.*
+        - name: Event
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Event\\.*
+        - name: Projection
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Projection\\.*
+        - name: Reaction
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Reaction\\.*
+        - name: Query
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\Query\\.*
+        - name: QueryHandler
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\QueryHandler\\.*
+        - name: ValueObject
+          collectors:
+              - type: classLike
+                value: ^Galeas\\Api\\BoundedContext\\.*\\ValueObject\\.*
+
+    ruleset:
+        Aggregate:
+            - ValueObject
+        Command: []
+        CommandHandler:
+            - Aggregate
+            - Command
+            - Event
+            - ValueObject
+        Controller:
+            - Command
+            - Query
+            - CommandHandler
+            - QueryHandler
+        ControllerForProjectionReaction:
+            - Projection
+            - Reaction
+            - Service
+        Event:
+            - Aggregate
+            - ValueObject
+        Projection:
+            - Event
+            - CommandHandler # interface implementation
+            - QueryHandler # interface implementation
+        Reaction:
+            - Aggregate
+            - Event
+            - CommandHandler # interface implementation
+            - QueryHandler # interface implementation
+        Query: []
+        QueryHandler:
+            - Aggregate
+            - Query
+            - Event
+            - ValueObject
+            - Projection

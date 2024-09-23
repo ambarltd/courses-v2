@@ -1,0 +1,15 @@
+schema_controller:
+  resource: ../src/JsonSchema/Controller/
+  type: attribute
+
+identity_user_controller:
+  resource: ../src/BoundedContext/Identity/User/Controller/
+  type: attribute
+
+security_session_controller:
+  resource: ../src/BoundedContext/Security/Session/Controller/
+  type: attribute
+
+creditcardproduct_product_controller:
+  resource: ../src/BoundedContext/CreditCardProduct/Product
+  type: attribute

@@ -5,7 +5,7 @@ then
   source .env
 fi
 
-[ "$1" = "apply" ] && TERRAFORM_COMMAND="apply -auto-approve" || TERRAFORM_COMMAND="plan"
+[ "$1" = "apply" ] && TERRAFORM_COMMAND="apply -auto-approve -parallelism=25" || TERRAFORM_COMMAND="plan"
 GIT_COMMIT=$(git log -1 --pretty=format:"%H")
 
 docker build -t drew/terraform-runner --file .github/workflows/.terraform.Dockerfile .github/workflows
@@ -59,4 +59,4 @@ docker run \
   --volume /var/run/docker.sock:/var/run/docker.sock \
   drew/terraform-runner output -json public_domains
 
-echo "\n==================\nSEE ABOVE FOR YOUR PUBLIC DOMAINS\n==================\n"
+echo "================== SEE ABOVE FOR YOUR PUBLIC DOMAINS =================="

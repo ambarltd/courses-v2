@@ -1,0 +1,84 @@
+{
+    "name": "galeas/galeas-api",
+    "license": "Proprietary",
+    "type": "project",
+    "description": "API - depends on Symfony. nette/di is forced to version 2 because it breaks PHPStan's integration with Symfony.",
+    "minimum-stability": "beta",
+    "require": {
+        "php": "^8.2",
+        "ext-ctype": "*",
+        "ext-iconv": "*",
+        "alcaeus/mongo-php-adapter": "^1.1.3",
+        "doctrine/dbal": "^4.1",
+        "doctrine/mongodb-odm": "^2.8.2",
+        "doctrine/mongodb-odm-bundle": "^5.0.1",
+        "justinrainbow/json-schema": "^5.2",
+        "monolog/monolog": "^3.7",
+        "ocramius/proxy-manager": "2.2.*",
+        "symfony/console": "7.1.*",
+        "symfony/flex": "^1.1",
+        "symfony/framework-bundle": "7.1.*",
+        "symfony/yaml": "7.1.*"
+    },
+    "require-dev": {
+        "behat/behat": "^3.0.5",
+        "friendsofphp/php-cs-fixer": "^3.64",
+        "guzzlehttp/guzzle": "~6.0",
+        "nette/bootstrap": "^2.4",
+        "nette/di": "^2.4.7",
+        "phpstan/phpstan": "^1.12.3",
+        "phpstan/phpstan-symfony": "^1.4.9",
+        "phpunit/phpunit": "~11.3",
+        "qossmic/deptrac": "^2.0.1"
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/doctrine/mongodb-odm.git"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/doctrine/DoctrineMongoDBBundle"
+        }
+    ],
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true,
+        "allow-plugins": {
+            "symfony/flex": true
+        }
+    },
+    "replace": {
+        "paragonie/random_compat": "2.*",
+        "symfony/polyfill-ctype": "*",
+        "symfony/polyfill-iconv": "*",
+        "symfony/polyfill-php71": "*",
+        "symfony/polyfill-php70": "*",
+        "symfony/polyfill-php56": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Galeas\\Api\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\Galeas\\Api\\": "tests/"
+        }
+    },
+    "scripts": {},
+    "conflict": {
+        "symfony/symfony": "*"
+    },
+    "extra": {
+        "symfony": {
+            "allow-contrib": false,
+            "require": "7.1.*"
+        }
+    },
+    "provide": {
+        "ext-mongo": "1.6.14"
+    }
+}
