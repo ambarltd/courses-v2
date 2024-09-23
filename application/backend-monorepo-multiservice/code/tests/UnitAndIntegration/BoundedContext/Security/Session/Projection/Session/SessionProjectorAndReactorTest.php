@@ -55,7 +55,7 @@ class SessionProjectorAndReactorTest extends ProjectorAndReactorIntegrationTest
         self::assertFalse(
             $sessions[0]->isSignedOut()
         );
-        self::assertSame(
+        self::assertEquals(
             $signedIn->recordedOn(),
             $sessions[0]->getTokenLastRefreshedAt()
         );

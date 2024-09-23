@@ -8,9 +8,9 @@ class UserWithEmail
 {
     private string $id;
 
-    private ?string $canonicalVerifiedEmail;
+    private ?string $canonicalVerifiedEmail = null;
 
-    private ?string $canonicalRequestedEmail;
+    private ?string $canonicalRequestedEmail = null;
 
     private RequestedChange|Unverified|Verified $status;
 
