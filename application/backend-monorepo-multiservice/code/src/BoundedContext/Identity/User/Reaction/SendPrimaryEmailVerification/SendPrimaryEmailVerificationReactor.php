@@ -29,7 +29,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
     /**
      * @throws PrimaryEmailVerificationAlreadySent
      * @throws EventStoreCannotRead|EventStoreCannotWrite
-     * @throws NoUserFoundForCode|NoRandomnessAvailable
+     * @throws NoRandomnessAvailable|NoUserFoundForCode
      */
     public function react(Event $event): void
     {

@@ -149,7 +149,7 @@ class SerializedEvent
         $jsonObject = json_decode($json);
 
         if (
-            is_object($jsonObject)
+            \is_object($jsonObject)
             && isset($jsonObject->eventId, $jsonObject->aggregateId, $jsonObject->aggregateVersion, $jsonObject->causationId, $jsonObject->correlationId, $jsonObject->recordedOn, $jsonObject->eventName, $jsonObject->jsonPayload, $jsonObject->jsonMetadata)
             && \is_string($jsonObject->eventId)
             && \is_string($jsonObject->aggregateId)
@@ -166,6 +166,7 @@ class SerializedEvent
             if (!\is_string($payload) || !\is_string($metadata)) {
                 throw new FoundBadJsonForSerializedEvent();
             }
+
             return new self(
                 $jsonObject->eventId,
                 $jsonObject->aggregateId,

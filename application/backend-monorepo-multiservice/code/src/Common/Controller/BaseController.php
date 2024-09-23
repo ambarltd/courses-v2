@@ -96,6 +96,7 @@ class BaseController extends AbstractController
                 if (false === $response) {
                     throw new \RuntimeException('error json_encode failed');
                 }
+
                 return JsonResponse::fromJsonString(
                     $response,
                     Response::HTTP_BAD_REQUEST
@@ -138,6 +139,7 @@ class BaseController extends AbstractController
                 if (false === $response) {
                     throw new \RuntimeException('error json_encode failed');
                 }
+
                 return JsonResponse::fromJsonString(
                     $response,
                     Response::HTTP_INTERNAL_SERVER_ERROR
@@ -163,6 +165,7 @@ class BaseController extends AbstractController
             if (false === $response) {
                 throw new \RuntimeException('error json_encode failed');
             }
+
             return JsonResponse::fromJsonString(
                 $response,
                 $exception::getHttpCode()
@@ -185,6 +188,7 @@ class BaseController extends AbstractController
             if (false === $response) {
                 throw new \RuntimeException('error json_encode failed');
             }
+
             return JsonResponse::fromJsonString(
                 $response,
                 Response::HTTP_INTERNAL_SERVER_ERROR

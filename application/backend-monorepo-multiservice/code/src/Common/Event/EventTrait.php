@@ -20,7 +20,7 @@ trait EventTrait
 
     private \DateTimeImmutable $recordedOn;
 
-    /** @var array<string, mixed>  */
+    /** @var array<string, mixed> */
     private array $metadata;
 
     /**
