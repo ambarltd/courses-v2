@@ -17,6 +17,10 @@ resource "google_cloud_run_service" "application" {
           name  = "DOMAIN_SECURITY"
           value = var.domain_security
         }
+        env {
+          name  = "DOMAIN_CREDIT_CARD_PRODUCT"
+          value = var.domain_security
+        }
       }
     }
     metadata {

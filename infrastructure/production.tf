@@ -58,6 +58,7 @@ module "production_frontend" {
   service_name = "fro"
   domain_identity = module.production_identity.public_domain
   domain_security = module.production_security.public_domain
+  domain_credit_card_product = module.production_credit_card_product.public_domain
 
   providers = {
     google = google.production

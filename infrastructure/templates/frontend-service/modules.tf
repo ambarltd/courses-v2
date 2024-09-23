@@ -14,4 +14,5 @@ module "frontend_application" {
   vpc_connector_subnetwork_name              = module.networking.vpc_connector_name
   domain_identity                            = var.domain_identity
   domain_security                            = var.domain_security
+  domain_credit_card_product                 = var.domain_credit_card_product
 }
