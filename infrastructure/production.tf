@@ -18,8 +18,6 @@ module "production_identity" {
   }
 }
 
-#
-
 module "production_security" {
   source                     = "./templates/service"
   environment_uuid           = "b${random_id.production_uuid.hex}-pro"
