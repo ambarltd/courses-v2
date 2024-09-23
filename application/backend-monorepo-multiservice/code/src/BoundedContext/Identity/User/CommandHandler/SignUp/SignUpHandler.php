@@ -40,7 +40,7 @@ class SignUpHandler
      *
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
      * @throws CouldNotHashWithBCrypt|EmailIsTaken|UsernameIsTaken
-     * @throws EventStoreCannotWrite|ProjectionCannotRead|NoRandomnessAvailable
+     * @throws EventStoreCannotWrite|NoRandomnessAvailable|ProjectionCannotRead
      */
     public function handle(SignUp $command): array
     {
