@@ -32,12 +32,15 @@ class AggregateFromEventsTest extends UnitTest {
     {
         $userEvents = SampleEvents::userEvents();
         $sessionEvents = SampleEvents::sessionEvents();
+        $productEvents = SampleEvents::creditCardProductEvents();
         $this->runAssertions($userEvents, "createUser", "transformUser");
         $this->runAssertions($sessionEvents, "createSession", "transformSession");
+        $this->runAssertions($productEvents, "createProduct", "transformProduct");
 
         $this->assertWeTestedAllRegisteredEvents(array_merge(
             $userEvents,
-            $sessionEvents
+            $sessionEvents,
+            $productEvents
         ));
     }
 

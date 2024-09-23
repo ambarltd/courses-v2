@@ -20,6 +20,7 @@ class EventSerializerJsonSchemaTest extends UnitTest
         $events = array_merge(
             SampleEvents::userEvents(),
             SampleEvents::sessionEvents(),
+            SampleEvents::creditCardProductEvents(),
         );
 
         $jsonSchemaValidator = new Validator();

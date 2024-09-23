@@ -22,12 +22,12 @@ abstract class ProjectorAndReactorIntegrationTest extends IntegrationTest
 
     protected function getProjectionDocumentManager(): DocumentManager
     {
-        return $this->getContainer()->get('@doctrine_mongodb.odm.projection_document_manager');
+        return $this->getContainer()->get('doctrine_mongodb.odm.projection_document_manager');
     }
 
     protected function getReactionDocumentManager(): DocumentManager
     {
-        return $this->getContainer()->get('@doctrine_mongodb.odm.reaction_document_manager');
+        return $this->getContainer()->get('doctrine_mongodb.odm.reaction_document_manager');
     }
 
     private function deleteProjectionAndReactionDatabases(): void

@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Util;
 
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Aggregate\Product;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerificationCodeSent;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
@@ -237,6 +241,87 @@ abstract class SampleEvents {
             self::sampleMetadata($existingSessionToken),
             self::thirdSampleIp(),
             $existingSessionToken,
+        );
+    }
+
+    public static function creditCardProductEvents(): array
+    {
+        $productDefined = self::productDefined();
+        $productActivated = self::productActivated(
+            $productDefined->aggregateId(),
+            2,
+            $productDefined->eventId(),
+            $productDefined->eventId()
+        );
+        $productDeactivated = self::productDeactivated(
+            $productDefined->aggregateId(),
+            3,
+            $productActivated->eventId(),
+            $productDefined->eventId()
+        );
+        return [
+            $productDefined,
+            $productActivated,
+            $productDeactivated
+        ];
+    }
+
+    private static function productDefined(): ProductDefined
+    {
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNew();
+        return ProductDefined::new(
+            $eventId,
+            $aggregateId,
+            1,
+            $eventId,
+            $eventId,
+            new \DateTimeImmutable("now"),
+            self::sampleMetadata(null),
+            "Cool-Card",
+            1200,
+            5000,
+            "monthly",
+            50000,
+            0,
+            "none",
+            "#7fffd4"
+        );
+    }
+
+    private static function productActivated(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId
+    ): ProductActivated {
+        $eventId = Id::createNew();
+        return ProductActivated::new(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("now"),
+            self::sampleMetadata(null)
+        );
+    }
+
+    private static function productDeactivated(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId
+    ): ProductDeactivated {
+        $eventId = Id::createNew();
+        return ProductDeactivated::new(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable("now"),
+            self::sampleMetadata(null)
         );
     }
 

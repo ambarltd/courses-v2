@@ -17,6 +17,7 @@ class SerializationAndDeserializationTest extends UnitTest
         $events = array_merge(
             SampleEvents::userEvents(),
             SampleEvents::sessionEvents(),
+            SampleEvents::creditCardProductEvents(),
         );
 
         $serializedEvents = EventSerializer::eventsToSerializedEvents($events);
