@@ -42,11 +42,15 @@ class SchemaController extends AbstractController
         $this->controllerExceptionsSerializer = $controllerExceptionsSerializer;
     }
 
+    /**
+     * @throws \Exception
+     */
     #[Route('/', name: 'root', methods: ['GET'])]
     public function root(Request $request): Response
     {
+        $jsonResponse = json_encode(new \stdClass());
         $response = JsonResponse::fromJsonString(
-            json_encode(new \stdClass()),
+            false !== $jsonResponse ? $jsonResponse : throw new \Exception(),
             Response::HTTP_OK
         );
         $response->setEncodingOptions(JSON_PRETTY_PRINT + JSON_UNESCAPED_SLASHES);

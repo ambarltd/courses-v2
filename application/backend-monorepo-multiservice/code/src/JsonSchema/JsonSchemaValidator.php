@@ -16,7 +16,7 @@ class JsonSchemaValidator
     }
 
     /**
-     * @return array (list of errors)
+     * @return array<string>
      */
     public function validate(string $json, string $jsonSchema): array
     {

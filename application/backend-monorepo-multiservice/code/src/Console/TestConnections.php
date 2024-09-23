@@ -55,12 +55,7 @@ class TestConnections extends Command
             $output->writeln('Reaction DB OK');
 
             // EVENT STORE
-            $eventStoreStatus = $this->sqlEventStoreConnection->getConnection()->isConnected()
-                || null !== $this->sqlEventStoreConnection->getConnection()->executeQuery('SELECT 1');
-
-            if (true !== $eventStoreStatus) {
-                throw new \RuntimeException('Cannot connect to event store');
-            }
+            $this->sqlEventStoreConnection->getConnection()->executeQuery('SELECT 1');
             $output->writeln('EventStore DB OK');
         } catch (\Throwable $throwable) {
             $output->writeln('Error, could not verify all connections.');

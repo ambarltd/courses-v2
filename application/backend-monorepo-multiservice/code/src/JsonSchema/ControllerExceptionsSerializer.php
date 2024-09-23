@@ -10,6 +10,8 @@ class ControllerExceptionsSerializer
 {
     /**
      * @throws ExceptionSerializerFailed
+     *
+     * @return array<string, mixed>
      */
     public function getSerializedExceptionsFromControllerClassAndMethod(string $controllerClassAndMethod): array
     {
@@ -18,7 +20,7 @@ class ControllerExceptionsSerializer
         $serializedThrownClasses = [];
         foreach ($thrownClasses as $class) {
             if (
-                \array_key_exists(BaseException::class, class_parents($class))
+                \array_key_exists(BaseException::class, class_parents($class) !== false ? class_parents($class) : [])
                 && \is_callable($class.'::getErrorIdentifier')
                 && \is_callable($class.'::getHttpCode')
             ) {
@@ -165,6 +167,8 @@ class ControllerExceptionsSerializer
 
     /**
      * @throws ExceptionSerializerFailed
+     *
+     * @return class-string
      */
     private function locateHandlerServiceFromControllerClassAndMethod(string $controllerClassAndMethod): string
     {
@@ -266,6 +270,8 @@ class ControllerExceptionsSerializer
      *   Eg: %throws Exception1|Exception2
      *
      * @throws ExceptionSerializerFailed
+     *
+     * @return string[]
      */
     private function thrownExceptionAnnotationsInClassName(string $handlerService): array
     {
@@ -307,8 +313,12 @@ class ControllerExceptionsSerializer
 
     /**
      * @throws ExceptionSerializerFailed
+     *
+     * @param array<string> $annotationClassNames
+     * @param class-string $occurringInClassName
+     * @return array<class-string>
      */
-    private function resolveClassNamesFromAnnotationClassNames(array $annotationClassNames, string $occurringInClassName, string $additonalErrorMessage)
+    private function resolveClassNamesFromAnnotationClassNames(array $annotationClassNames, string $occurringInClassName, string $additonalErrorMessage): array
     {
         $classNames = [];
         $useStatements = $this->useStatementsInClassName($occurringInClassName);
@@ -339,6 +349,10 @@ class ControllerExceptionsSerializer
 
     /**
      * @throws ExceptionSerializerFailed
+     *
+     * @param class-string $className
+     *
+     * @return array<string>
      */
     private function useStatementsInClassName(string $className): array
     {
@@ -389,6 +403,8 @@ class ControllerExceptionsSerializer
 
     /**
      * @throws ExceptionSerializerFailed
+     *
+     * @param class-string $className
      */
     private function namespaceFromClassName(string $className): string
     {

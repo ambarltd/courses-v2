@@ -61,6 +61,9 @@ class DBMigration extends Command
         }
     }
 
+    /**
+     * @throws \Doctrine\DBAL\Exception
+     */
     protected function execute(
         InputInterface $input,
         OutputInterface $output
@@ -110,7 +113,7 @@ class DBMigration extends Command
             $this->sqlEventStoreConnection->getConnection()
                 ->executeStatement($statement)
             ;
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->phpOutLogger->warning($e::class);
             $this->phpOutLogger->warning($e->getMessage());
             $this->phpOutLogger->warning($e->getTraceAsString());

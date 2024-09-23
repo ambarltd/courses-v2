@@ -1,6 +1,8 @@
 parameters:
     paths:
         - src/BoundedContext
+        - src/Console
+        - src/JsonSchema
     exceptions:
         reportUncheckedExceptionDeadCatch: false
         check:
