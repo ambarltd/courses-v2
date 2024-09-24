@@ -16,9 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends AbstractController
 {
-    /**
-     * @var object[]
-     */
     protected array $services = [];
 
     private JsonPostRequestMapper $jsonPostRequestMapper;
@@ -30,17 +27,6 @@ class BaseController extends AbstractController
     private PhpOutLogger $phpOutLogger;
 
     private bool $shouldValidateResponseSchemas = false;
-
-    /**
-     * @param array<object> $services
-     */
-    public function __construct(
-        array $services
-    ) {
-        foreach ($services as $service) {
-            $this->services[$service::class] = $service;
-        }
-    }
 
     public function setJsonPostRequestMapper(JsonPostRequestMapper $jsonPostRequestMapper): void
     {
