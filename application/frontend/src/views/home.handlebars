@@ -7,11 +7,7 @@
 <body>
 
 <div style="min-height: 100vh; display:flex; flex-flow: column">
-  <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-      <a href="/logout" class="text-sm font-semibold leading-6 text-gray-900">Log out <span aria-hidden="true">→</span></a>
-    </div>
-  </nav>
+  {{>navbar}}
 
   <div class="relative isolate bg-gray-900 py-24 sm:py-32" style="
       flex-grow: 1;
