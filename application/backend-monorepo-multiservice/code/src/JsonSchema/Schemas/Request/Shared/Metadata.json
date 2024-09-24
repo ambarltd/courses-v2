@@ -34,12 +34,6 @@
       "maxLength": 4096,
       "description": "Overrides the 'User-Agent' http header."
     },
-    "withSessionToken": {
-      "type": ["string", "null"],
-      "minLength": 96,
-      "maxLength": 96,
-      "description": "Overrides the 'X-With-Session-Token' http header."
-    },
     "latitude": {
       "type": ["number", "null"],
       "multipleOf": 0.0000000001,
