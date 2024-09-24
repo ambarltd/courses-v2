@@ -9,3 +9,4 @@ infrastructure/templates/pgt-proxy/*.resolved
 infrastructure/templates/pgt-proxy/docker_image_builder_*
 infrastructure/templates/application/docker_image_builder_*
 application/frontend/node_modules
+application/frontend/run.sh
