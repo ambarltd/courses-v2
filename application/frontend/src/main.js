@@ -71,7 +71,7 @@ app.set('views', `${__dirname}/views`);
 app.get('/sign-in', unauthenticated, render("sign-in"))
 app.get('/sign-up', unauthenticated, render("sign-up"))
 app.get('/sign-up-success', unauthenticated, render("sign-up-success"))
-app.get('/user/details', /*authenticated,*/ render("details", "main"))
+app.get('/user/details', authenticated, routeUserDetails)
 app.get('/logout', authenticated, routeLogout)
 app.get('/', authenticated, render("home", "main"))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
@@ -86,6 +86,15 @@ const metadata = {
   deviceOSVersion: "unknown",
   deviceOrientation: "unknown"
 };
+
+function routeUserDetails(req, res) {
+  res.render("details", {
+    layout: "main",
+    locals: {
+      email: req.session.email
+    }
+  });
+}
 
 async function routeVerifyEmail(req,res) {
   const verificationCode = req.query.code;
