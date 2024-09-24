@@ -40,7 +40,7 @@ class JsonPostRequestMapper
     {
         $requestArray = $this->requestJsonToRequestArray($request);
 
-        if (is_array($requestArray) && empty($requestArray)) {
+        if (\is_array($requestArray) && empty($requestArray)) {
             return '{}';
         }
 
