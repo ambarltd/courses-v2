@@ -112,6 +112,14 @@ async function routeVerifyEmail(req,res) {
 async function routeSignIn(req, res) {
   const { email, password } = req.body;
 
+  // temporary hack
+  {
+    req.session.token = "temp token"
+    req.session.email = email;
+    res.redirect("/");
+    return;
+  }
+
   const contents = {
     withUsernameOrEmail: email,
     withPassword: password,
