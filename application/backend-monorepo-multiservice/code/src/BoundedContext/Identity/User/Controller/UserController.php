@@ -20,18 +20,21 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1')]
 class UserController extends BaseController
 {
+    private SignUpHandler $signUpHandler;
+    private VerifyPrimaryEmailHandler $verifyPrimaryEmailHandler;
+    private RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler;
+    private ListSentVerificationEmailQueryHandler $listSentVerificationEmailQueryHandler;
+
     public function __construct(
         SignUpHandler $signUpHandler,
         VerifyPrimaryEmailHandler $verifyPrimaryEmailHandler,
-        RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler
+        RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler,
+        ListSentVerificationEmailQueryHandler $listSentVerificationEmailQueryHandler
     ) {
-        parent::__construct(
-            [
-                $signUpHandler,
-                $verifyPrimaryEmailHandler,
-                $requestPrimaryEmailChangeHandler,
-            ]
-        );
+        $this->signUpHandler = $signUpHandler;
+        $this->verifyPrimaryEmailHandler = $verifyPrimaryEmailHandler;
+        $this->requestPrimaryEmailChangeHandler = $requestPrimaryEmailChangeHandler;
+        $this->listSentVerificationEmailQueryHandler = $listSentVerificationEmailQueryHandler;
     }
 
     /**
@@ -47,7 +50,7 @@ class UserController extends BaseController
             'Request/V1_Identity_User_SignUp.json',
             'Response/V1_Identity_User_SignUp.json',
             SignUp::class,
-            $this->getService(SignUpHandler::class),
+            $this->signUpHandler,
             null,
             Response::HTTP_OK
         );
@@ -66,7 +69,7 @@ class UserController extends BaseController
             'Request/V1_Identity_User_VerifyPrimaryEmail.json',
             'Response/V1_Identity_User_VerifyPrimaryEmail.json',
             VerifyPrimaryEmail::class,
-            $this->getService(VerifyPrimaryEmailHandler::class),
+            $this->verifyPrimaryEmailHandler,
             null,
             Response::HTTP_OK
         );
@@ -85,7 +88,7 @@ class UserController extends BaseController
             'Request/V1_Identity_User_RequestPrimaryEmailChange.json',
             'Response/V1_Identity_User_RequestPrimaryEmailChange.json',
             RequestPrimaryEmailChange::class,
-            $this->getService(RequestPrimaryEmailChangeHandler::class),
+            $this->requestPrimaryEmailChangeHandler,
             null,
             Response::HTTP_OK
         );
@@ -104,7 +107,7 @@ class UserController extends BaseController
             'Request/V1_Identity_User_ListSentVerificationEmail.json',
             'Response/V1_Identity_User_ListSentVerificationEmail.json',
             ListSentVerificationEmailQuery::class,
-            $this->getService(ListSentVerificationEmailQueryHandler::class),
+            $this->listSentVerificationEmailQueryHandler,
             null,
             Response::HTTP_OK
         );

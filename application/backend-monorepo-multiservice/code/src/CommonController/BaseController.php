@@ -67,7 +67,7 @@ class BaseController extends AbstractController
         string $requestSchema,
         string $responseSchema,
         string $commandOrQueryClass,
-        object $commandOrQueryHandler,
+        ?object $commandOrQueryHandler,
         ?callable $commandOrQueryModifier,
         int $successStatusCode
     ): JsonResponse {
@@ -193,19 +193,5 @@ class BaseController extends AbstractController
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    /**
-     * todo deal with stdclass and throw without breaking the build.
-     */
-    protected function getService(string $serviceKey): object
-    {
-        foreach ($this->services as $key => $service) {
-            if ($serviceKey === $key && \is_object($service)) {
-                return $service;
-            }
-        }
-
-        return new \stdClass();
     }
 }

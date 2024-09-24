@@ -6,10 +6,22 @@ identity_user_controller:
   resource: ../src/BoundedContext/Identity/User/Controller/
   type: attribute
 
+identity_user_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/Identity/User/ControllerForProjectionReaction/
+  type: attribute
+
 security_session_controller:
   resource: ../src/BoundedContext/Security/Session/Controller/
   type: attribute
 
+security_session_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/Security/Session/ControllerForProjectionReaction/
+  type: attribute
+
 creditcardproduct_product_controller:
-  resource: ../src/BoundedContext/CreditCardProduct/Product
+  resource: ../src/BoundedContext/CreditCardProduct/Product/Controller/
+  type: attribute
+
+creditcardproduct_product_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/CreditCardProduct/Product/ControllerForProjectionReaction
   type: attribute

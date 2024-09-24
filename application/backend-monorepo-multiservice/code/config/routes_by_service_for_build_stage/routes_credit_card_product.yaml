@@ -1,7 +1,7 @@
-schema_controller:
-  resource: ../src/JsonSchema/Controller/
+creditcardproduct_product_controller:
+  resource: ../src/BoundedContext/CreditCardProduct/Product/Controller/
   type: attribute
 
-creditcardproduct_product_controller:
-  resource: ../src/BoundedContext/CreditCardProduct/Product
+creditcardproduct_product_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/CreditCardProduct/Product/ControllerForProjectionReaction
   type: attribute

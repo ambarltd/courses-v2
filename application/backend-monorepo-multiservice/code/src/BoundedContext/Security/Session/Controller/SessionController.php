@@ -18,18 +18,18 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1')]
 class SessionController extends BaseController
 {
+    private SignInHandler $signInHandler;
+    private RefreshTokenHandler $refreshTokenHandler;
+    private SignOutHandler $signOutHandler;
+
     public function __construct(
         SignInHandler $signInHandler,
         RefreshTokenHandler $refreshTokenHandler,
         SignOutHandler $signOutHandler
     ) {
-        parent::__construct(
-            [
-                $signInHandler,
-                $refreshTokenHandler,
-                $signOutHandler,
-            ]
-        );
+        $this->signInHandler = $signInHandler;
+        $this->refreshTokenHandler = $refreshTokenHandler;
+        $this->signOutHandler = $signOutHandler;
     }
 
     /**
@@ -45,7 +45,7 @@ class SessionController extends BaseController
             'Request/V1_Security_Session_SignIn.json',
             'Response/V1_Security_Session_SignIn.json',
             SignIn::class,
-            $this->getService(SignInHandler::class),
+            $this->signInHandler,
             null,
             Response::HTTP_OK
         );
@@ -64,7 +64,7 @@ class SessionController extends BaseController
             'Request/V1_Security_Session_RefreshToken.json',
             'Response/V1_Security_Session_RefreshToken.json',
             RefreshToken::class,
-            $this->getService(RefreshTokenHandler::class),
+            $this->refreshTokenHandler,
             null,
             Response::HTTP_OK
         );
@@ -83,7 +83,7 @@ class SessionController extends BaseController
             'Request/V1_Security_Session_SignOut.json',
             'Response/V1_Security_Session_SignOut.json',
             SignOut::class,
-            $this->getService(SignOutHandler::class),
+            $this->signOutHandler,
             null,
             Response::HTTP_OK
         );

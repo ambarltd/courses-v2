@@ -5,3 +5,7 @@ schema_controller:
 security_session_controller:
   resource: ../src/BoundedContext/Security/Session/Controller/
   type: attribute
+
+security_session_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/Security/Session/ControllerForProjectionReaction/
+  type: attribute
