@@ -57,9 +57,9 @@ function unauthenticate(req) {
   delete req.session.token;
 }
 
-function render(template) {
+function render(template, layout = false) {
   return function (_, res) {
-    return res.render(template, { layout: false });
+    return res.render(template, { layout });
   }
 }
 // Setup templating
@@ -71,7 +71,7 @@ app.set('views', `${__dirname}/views`);
 app.get('/sign-in', unauthenticated, render("sign-in"))
 app.get('/sign-up', unauthenticated, render("sign-up"))
 app.get('/sign-up-success', unauthenticated, render("sign-up-success"))
-app.get('/home', /*authenticated,*/ render("home"))
+app.get('/home', /*authenticated,*/ render("home", "main"))
 app.get('/logout', authenticated, routeLogout)
 app.get('/', authenticated, render("home"))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
