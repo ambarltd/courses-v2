@@ -1,0 +1,47 @@
+services:
+  pg-event-store:
+    build:
+      context:
+        ./pg-event-store
+    container_name: pg-event-store
+    restart: always
+    volumes:
+      - ./data/event-store/pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: my_es_username
+      POSTGRES_DB: my_es_database
+      POSTGRES_PASSWORD: my_es_password
+    command: >
+      postgres -c wal_level=logical
+               -c ssl=on
+               -c ssl_cert_file=/var/lib/postgresql/certs/server.crt
+               -c ssl_key_file=/var/lib/postgresql/certs/server.key
+    expose:
+      - 5432
+    networks:
+      TestNetwork:
+        ipv4_address: 172.30.0.102
+
+  mongo-projection-reaction:
+    build:
+      context:
+        ./mongo-projection-reaction
+    container_name: mongo-projection-reaction
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: my_mongo_username
+      MONGO_INITDB_ROOT_PASSWORD: my_mongo_password
+    volumes:
+      - ./data/mongo-projection-reaction/db-data:/data/db
+    expose:
+      - 27017
+    networks:
+      TestNetwork:
+        ipv4_address: 172.30.0.103
+
+networks:
+    TestNetwork:
+        driver: bridge
+        ipam:
+            config:
+                - subnet: 172.30.0.0/24
