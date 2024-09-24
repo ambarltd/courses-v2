@@ -71,7 +71,8 @@ app.set('views', `${__dirname}/views`);
 app.get('/sign-in', unauthenticated, render("sign-in"))
 app.get('/sign-up', unauthenticated, render("sign-up"))
 app.get('/sign-up-success', unauthenticated, render("sign-up-success"))
-app.get('/home', authenticated, render("home"))
+app.get('/home', /*authenticated,*/ render("home"))
+app.get('/logout', authenticated, routeLogout)
 app.get('/', authenticated, render("home"))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
@@ -198,6 +199,31 @@ async function routeSignUp(req, res) {
   }
 
   res.send(`Unexpected response. ${JSON.stringify(r)}`);
+}
+
+async function routeLogout(req, res) {
+  unauthenticate(req);
+  const contents = { metadata }
+
+  const response = await fetch(endpoints["sign-out"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {'Content-Type': 'application/json'}
+  });
+
+  const r = await response.json()
+
+  if (!response.ok) {
+    const error = getError(r);
+    errorPage(res, error);
+    return;
+  }
+
+  res.redirect("/sign-in");
+}
+
+function errorPage(res, error) {
+  res.send(error);
 }
 
 app.listen(port, () => {
