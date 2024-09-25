@@ -230,7 +230,8 @@ async function routeSignUp(req, res) {
 }
 
 async function routeLogout(req, res) {
-  const contents = { metadata,  withSessionToken: req.session.token };
+  const token = req.session.token;
+  const contents = { metadata };
   unauthenticate(req);
 
   const response = await fetch(endpoints["sign-out"], {
@@ -238,7 +239,7 @@ async function routeLogout(req, res) {
       body: JSON.stringify(contents, null, 2),
       headers: {
         'Content-Type': 'application/json',
-        'X-session-Token': req.session.token
+        'X-With-Session-Token': token
       }
   });
 
