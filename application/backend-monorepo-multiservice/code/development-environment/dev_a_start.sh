@@ -3,7 +3,7 @@ set -e
 
 cd ../
 docker run --rm -v $(pwd):/app composer:2.2.24 install --ignore-platform-reqs
-cp ../config/routes_by_service_for_build_stage/routes_all_for_local_development.yaml ../config/routes.yaml
+cp config/routes_by_service_for_build_stage/routes_all_for_local_development.yaml config/routes.yaml
 cd development-environment
 docker compose down
 docker compose up -d --build --force-recreate
