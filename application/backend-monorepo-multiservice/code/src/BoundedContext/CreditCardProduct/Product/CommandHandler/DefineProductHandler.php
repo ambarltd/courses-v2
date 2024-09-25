@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotRead;
@@ -23,6 +25,7 @@ class DefineProductHandler
 
     /**
      * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
+     * @throws InvalidPaymentCycle|InvalidReward
      */
     public function handle(DefineProductCommand $command): void
     {
@@ -37,7 +40,14 @@ class DefineProductHandler
             return;
         }
 
-        // maybe add validation later, but right now it's a script, so it's okay without it
+        if (!in_array($command->paymentCycle, ['monthly', 'quarterly'])) {
+            throw new InvalidPaymentCycle();
+        }
+
+        if (!in_array($command->reward, ['points', 'cashback', 'no_reward'])) {
+            throw new InvalidReward();
+        }
+
         $aggregateId = Id::createNew();
         $event = ProductDefined::new(
             $eventId,

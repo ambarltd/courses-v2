@@ -11,7 +11,7 @@ class ListProducts
 {
     private DocumentManager $projectionDocumentManager;
 
-    public function __constructor(DocumentManager $projectionDocumentManager): void
+    public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
