@@ -19,3 +19,6 @@ else
     echo "The container 'php-all-services-test' is not running."
     docker logs php-all-services-test | tail -n 500
 fi
+
+echo "If you reached this point, you have started the local environment (what you can see above = logs)."
+echo "Ready to proceed with the CI/CD pipeline, or use the local environment."

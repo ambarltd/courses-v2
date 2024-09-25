@@ -53,28 +53,28 @@ class SchemaControllerTest extends ControllerIntegrationTest
             );
 
             // Commenting this out while we sort out the way to find this class in ControllerExceptionSchemaSchemaGenerator
-            //            $errorSchemaPath = str_replace('http://localhost', '', $routeData->schema->error);
-            //            $pathAndParameterString = explode('?', $errorSchemaPath);
-            //            $response = $this->requestGet(
-            //                $pathAndParameterString[0],
-            //                [
-            //                    'path' => str_replace('path=', '', $pathAndParameterString[1]),
-            //                ]
-            //            );
-            //            if (200 !== $response['statusCode']) {
-            //                var_dump($response);
-            //
-            //                exit;
-            //            }
-            //            Assert::assertEquals(
-            //                200,
-            //                $response['statusCode'],
-            //                \sprintf(
-            //                    'Could not find request schema %s with contents: %s',
-            //                    $errorSchemaPath,
-            //                    $response['contents']
-            //                )
-            //            );
+            $errorSchemaPath = str_replace('http://localhost', '', $routeData->schema->error);
+            $pathAndParameterString = explode('?', $errorSchemaPath);
+            $response = $this->requestGet(
+                $pathAndParameterString[0],
+                [
+                    'path' => str_replace('path=', '', $pathAndParameterString[1]),
+                ]
+            );
+            if (200 !== $response['statusCode']) {
+                var_dump($response);
+
+                exit;
+            }
+            Assert::assertEquals(
+                200,
+                $response['statusCode'],
+                \sprintf(
+                    'Could not find request schema %s with contents: %s',
+                    $errorSchemaPath,
+                    $response['contents']
+                )
+            );
         }
     }
 }
