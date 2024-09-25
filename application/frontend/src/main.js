@@ -244,7 +244,10 @@ async function routeLogout(req, res) {
   const response = await fetch(endpoints["sign-out"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
-      headers: {'Content-Type': 'application/json'}
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Session-Token': req.session.token
+      }
   });
 
   const r = await response.json()
