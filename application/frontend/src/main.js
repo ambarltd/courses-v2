@@ -46,7 +46,7 @@ function unauthenticated(req, res, next) {
   if (!req.session.token) {
     return next();
   }
-  return res.redirect("/sign-in");
+  return res.redirect("/home");
 }
 
 function authenticate(req, token) {
