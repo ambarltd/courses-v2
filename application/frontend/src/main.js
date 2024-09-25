@@ -1,7 +1,7 @@
 import Express from "express";
 import fetch from "node-fetch"
 import { engine } from 'express-handlebars';
-import { dirname } from 'path';
+import * as path from 'path';
 import { fileURLToPath } from 'url';
 import Session from "express-session";
 
@@ -63,10 +63,14 @@ function render(template, layout = false) {
   }
 }
 // Setup templating
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
-app.set('views', `${__dirname}/views`);
+app.set('views', path.join(__dirname, "views"));
+
+// Serve static files
+const static_dir = path.join(path.dirname(__dirname), 'assets');
+app.use("/assets", Express.static(static_dir))
 
 app.get('/sign-in', unauthenticated, render("sign-in"))
 app.get('/sign-up', unauthenticated, render("sign-up"))
