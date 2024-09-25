@@ -2,11 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2;
 
 class SentVerificationEmail
 {
     private string $id;
+    private string $userId;
 
     private string $verificationCodeSent;
 
@@ -25,6 +26,11 @@ class SentVerificationEmail
     public function getId(): string
     {
         return $this->id;
+    }
+
+    public function getUserId(): string
+    {
+        return $this->userId;
     }
 
     public function getVerificationCodeSent(): string
@@ -58,6 +64,7 @@ class SentVerificationEmail
     }
 
     public static function fromProperties(
+        string $eventId,
         string $userId,
         string $verificationCodeSent,
         string $toEmailAddress,
@@ -67,7 +74,8 @@ class SentVerificationEmail
         \DateTimeImmutable $sentAt
     ): self {
         $sentVerificationEmail = new self();
-        $sentVerificationEmail->id = $userId;
+        $sentVerificationEmail->id = $eventId;
+        $sentVerificationEmail->userId = $userId;
         $sentVerificationEmail->verificationCodeSent = $verificationCodeSent;
         $sentVerificationEmail->toEmailAddress = $toEmailAddress;
         $sentVerificationEmail->emailContents = $emailContents;

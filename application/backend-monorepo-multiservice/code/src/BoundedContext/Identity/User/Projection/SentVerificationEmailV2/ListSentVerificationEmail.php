@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\CommonException\ProjectionCannotRead;
@@ -34,7 +34,8 @@ class ListSentVerificationEmail
             $list = [];
             foreach ($items as $item) {
                 $list[] = [
-                    'userId' => $item->getId(),
+                    'eventId' => $item->getId(),
+                    'userId' => $item->getUserId(),
                     'verificationCodeSent' => $item->getVerificationCodeSent(),
                     'toEmailAddress' => $item->getToEmailAddress(),
                     'emailContents' => $item->getEmailContents(),

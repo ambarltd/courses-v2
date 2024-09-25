@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerificationCodeSent;
@@ -39,6 +39,7 @@ class SentVerificationEmailProjector implements EventProjector
             }
 
             $sentVerificationEmail = SentVerificationEmail::fromProperties(
+                $event->eventId()->id(),
                 $event->aggregateId()->id(),
                 $event->verificationCodeSent(),
                 $event->toEmailAddress(),
