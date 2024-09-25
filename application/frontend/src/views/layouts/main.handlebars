@@ -3,14 +3,25 @@
 <head>
   <title>{{locals.title}}</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="/assets/images/favicon.webp">
 </head>
 <body>
 
-<div style="min-height: 100vh; display:flex; flex-flow: column">
-  {{>navbar}}
+<div style="min-height: 100vh">
+  <div style="max-width: 900px; margin: auto">
+    {{>navbar}}
+  </div>
 
-  <div class="relative isolate py-10" style="flex-grow: 1; background-color: #EEE">
+  <div class="relative isolate py-10" style="flex-grow: 1">
+
+  <div class="relative" style="z-index:-1">
+    <div aria-hidden="true" class="absolute inset-0 grid grid-cols-2 -space-x-52 opacity-80 dark:opacity-20">
+        <div class="blur-[106px] h-56 bg-gradient-to-br from-purple-100 to-purple-400 dark:from-blue-700"></div>
+        <div class="blur-[106px] h-32 bg-gradient-to-r from-cyan-400 to-sky-300 dark:to-indigo-600"></div>
+    </div>
+  </div>
+
+  <div style="max-width: 900px; margin: auto">
     {{{body}}}
   </div>
 </div>
