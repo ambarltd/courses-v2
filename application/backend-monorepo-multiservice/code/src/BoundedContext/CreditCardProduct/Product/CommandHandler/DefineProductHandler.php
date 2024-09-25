@@ -40,11 +40,11 @@ class DefineProductHandler
             return;
         }
 
-        if (!in_array($command->paymentCycle, ['monthly', 'quarterly'])) {
+        if (!\in_array($command->paymentCycle, ['monthly', 'quarterly'], true)) {
             throw new InvalidPaymentCycle();
         }
 
-        if (!in_array($command->reward, ['points', 'cashback', 'no_reward'])) {
+        if (!\in_array($command->reward, ['points', 'cashback', 'no_reward'], true)) {
             throw new InvalidReward();
         }
 

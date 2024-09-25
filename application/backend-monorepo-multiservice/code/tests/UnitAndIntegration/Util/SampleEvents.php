@@ -279,7 +279,7 @@ abstract class SampleEvents
         ];
     }
 
-    private static function productDefined(): ProductDefined
+    public static function productDefined(): ProductDefined
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -303,7 +303,7 @@ abstract class SampleEvents
         );
     }
 
-    private static function productActivated(
+    public static function productActivated(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -322,7 +322,7 @@ abstract class SampleEvents
         );
     }
 
-    private static function productDeactivated(
+    public static function productDeactivated(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,

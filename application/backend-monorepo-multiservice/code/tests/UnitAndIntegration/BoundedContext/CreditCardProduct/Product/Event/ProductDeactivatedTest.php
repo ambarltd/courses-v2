@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\CreditCardProduct\Product\Event;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Aggregate\Product;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\Monthly;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\ValueObject\PaymentCycle;
@@ -15,7 +16,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProductDeactivatedTest extends TestCase
 {
-    public function testNewProductActivatedEvent()
+    public function testNewProductActivatedEvent(): void
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -43,7 +44,7 @@ class ProductDeactivatedTest extends TestCase
                 $causationId,
                 $correlationId,
                 $recordedOn,
-                $metadata
+                $metadata,
             ],
             [
                 $event->eventId(),
@@ -52,12 +53,12 @@ class ProductDeactivatedTest extends TestCase
                 $event->causationId(),
                 $event->correlationId(),
                 $event->recordedOn(),
-                $event->metadata()
+                $event->metadata(),
             ]
         );
     }
 
-    public function testTransformProduct()
+    public function testTransformProduct(): void
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -81,11 +82,11 @@ class ProductDeactivatedTest extends TestCase
             $aggregateId,
             1,
             'Test Product',
-            1500,
-            5000,
+            1_500,
+            5_000,
             PaymentCycle::fromProperties(Monthly::fromProperties()),
-            100000,
-            50000,
+            100_000,
+            50_000,
             Reward::fromProperties(Points::fromProperties()),
             '#FFFFFF',
             true
@@ -105,7 +106,7 @@ class ProductDeactivatedTest extends TestCase
                 $product->maxBalanceTransferAllowedInCents(),
                 $product->reward(),
                 $product->cardBackgroundHex(),
-                false
+                false,
             ],
             [
                 $transformedProduct->aggregateId(),
@@ -118,7 +119,7 @@ class ProductDeactivatedTest extends TestCase
                 $transformedProduct->maxBalanceTransferAllowedInCents(),
                 $transformedProduct->reward(),
                 $transformedProduct->cardBackgroundHex(),
-                $transformedProduct->isActive()
+                $transformedProduct->isActive(),
             ]
         );
     }

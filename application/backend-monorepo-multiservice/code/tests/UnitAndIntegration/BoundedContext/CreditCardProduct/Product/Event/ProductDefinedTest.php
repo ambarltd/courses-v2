@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\CreditCardProduct\Product\Event;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
@@ -13,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 
 class ProductDefinedTest extends TestCase
 {
-    public function testNewProductDefinedEvent()
+    public function testNewProductDefinedEvent(): void
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -21,13 +23,13 @@ class ProductDefinedTest extends TestCase
         $causationId = Id::createNew();
         $correlationId = Id::createNew();
         $recordedOn = new \DateTimeImmutable();
-        $metadata = ['bla'=>'ble'];
+        $metadata = ['bla' => 'ble'];
         $name = 'Test Product';
-        $interestInBasisPoints = 1500;
-        $annualFeeInCents = 5000;
+        $interestInBasisPoints = 1_500;
+        $annualFeeInCents = 5_000;
         $paymentCycle = 'monthly';
-        $creditLimitInCents = 100000;
-        $maxBalanceTransferAllowedInCents = 50000;
+        $creditLimitInCents = 100_000;
+        $maxBalanceTransferAllowedInCents = 50_000;
         $reward = 'points';
         $cardBackgroundHex = '#FFFFFF';
 
@@ -64,7 +66,7 @@ class ProductDefinedTest extends TestCase
                 $creditLimitInCents,
                 $maxBalanceTransferAllowedInCents,
                 $reward,
-                $cardBackgroundHex
+                $cardBackgroundHex,
             ],
             [
                 $event->eventId(),
@@ -81,12 +83,12 @@ class ProductDefinedTest extends TestCase
                 $event->creditLimitInCents(),
                 $event->maxBalanceTransferAllowedInCents(),
                 $event->reward(),
-                $event->cardBackgroundHex()
+                $event->cardBackgroundHex(),
             ]
         );
     }
 
-    public function testCreateProduct()
+    public function testCreateProduct(): void
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -96,11 +98,11 @@ class ProductDefinedTest extends TestCase
         $recordedOn = new \DateTimeImmutable();
         $metadata = [];
         $name = 'Test Product';
-        $interestInBasisPoints = 1500;
-        $annualFeeInCents = 5000;
+        $interestInBasisPoints = 1_500;
+        $annualFeeInCents = 5_000;
         $paymentCycle = 'monthly';
-        $creditLimitInCents = 100000;
-        $maxBalanceTransferAllowedInCents = 50000;
+        $creditLimitInCents = 100_000;
+        $maxBalanceTransferAllowedInCents = 50_000;
         $reward = 'points';
         $cardBackgroundHex = '#FFFFFF';
 
@@ -136,7 +138,7 @@ class ProductDefinedTest extends TestCase
                 $maxBalanceTransferAllowedInCents,
                 Reward::fromProperties(Points::fromProperties()),
                 $cardBackgroundHex,
-                false
+                false,
             ],
             [
                 $product->aggregateId(),
@@ -149,7 +151,7 @@ class ProductDefinedTest extends TestCase
                 $product->maxBalanceTransferAllowedInCents(),
                 $product->reward(),
                 $product->cardBackgroundHex(),
-                $product->isActive()
+                $product->isActive(),
             ]
         );
     }

@@ -44,7 +44,7 @@ class UserDetailsProjector implements EventProjector
                 ->getSingleResult()
             ;
 
-            if ($userDetails instanceof UserDetails && $event instanceof SignedUp) {
+            if (null === $userDetails && $event instanceof SignedUp) {
                 $userDetails = UserDetails::fromProperties($userId, UnverifiedEmail::fromProperties(
                     $event->primaryEmail()
                 ));

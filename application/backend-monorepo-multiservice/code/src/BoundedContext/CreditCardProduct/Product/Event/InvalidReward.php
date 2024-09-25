@@ -6,8 +6,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\Event;
 
 use Galeas\Api\CommonException\BadRequestException;
 
-class
-InvalidReward extends BadRequestException
+class InvalidReward extends BadRequestException
 {
     public static function getErrorIdentifier(): string
     {

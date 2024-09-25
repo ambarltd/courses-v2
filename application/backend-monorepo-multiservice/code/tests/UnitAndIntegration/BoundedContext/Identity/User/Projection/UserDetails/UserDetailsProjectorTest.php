@@ -24,12 +24,10 @@ class UserDetailsProjectorTest extends ProjectionAndReactionIntegrationTest
         $UserDetailsProjectorService->project($signedUp);
 
         Assert::assertEquals(
-            [
-                UserDetails::fromProperties(
-                    $userId,
-                    UnverifiedEmail::fromProperties($signedUp->primaryEmail())
-                ),
-            ],
+            UserDetails::fromProperties(
+                $userId,
+                UnverifiedEmail::fromProperties($signedUp->primaryEmail())
+            ),
             $this->findUserDetails($userId)
         );
     }
