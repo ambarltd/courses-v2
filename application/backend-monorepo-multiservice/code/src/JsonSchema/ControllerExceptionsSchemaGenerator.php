@@ -236,6 +236,7 @@ class ControllerExceptionsSchemaGenerator
             throw new ExceptionSerializerFailed('Reflection exception when accessing property '.$matchingProperty.' in '.$controllerClassAndMethod);
         }
 
+        // @var class-string $className
         return $className;
     }
 
@@ -286,6 +287,8 @@ class ControllerExceptionsSchemaGenerator
                 if (!\is_array($newThrows)) {
                     throw new ExceptionSerializerFailed('Could not explode throws in '.$handlerService);
                 }
+
+                /** @var array<class-string> $allThrows */
                 $allThrows = array_merge(
                     $allThrows,
                     $newThrows
