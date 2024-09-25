@@ -7,7 +7,7 @@ cd development-environment
 docker compose down
 docker compose up -d --build --force-recreate
 echo "Waiting for containers to start"
-sleep 5
+sleep 30
 docker ps
 
 
