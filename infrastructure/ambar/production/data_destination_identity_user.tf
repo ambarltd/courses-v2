@@ -28,17 +28,17 @@ resource "ambar_data_destination" "Identity_User_TakenUsername" {
   password             = "password"
 }
 
-resource "ambar_data_destination" "Identity_User_SentVerificationEmail" {
+resource "ambar_data_destination" "Identity_User_SentVerificationEmail_V2" {
   filter_ids = [
     ambar_filter.identity_all.resource_id,
   ]
-  description          = "Identity_User_SentVerificationEmail"
-  destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/identity/user/projection/sent_verification_email"
+  description          = "Identity_User_SentVerificationEmail_V2"
+  destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/identity/user/projection/sent_verification_email_v2"
   username             = "username"
   password             = "password"
 }
 
-resource "ambar_data_destination" "Identity_User_UserDetails" {
+resource "ambar_data_destination" "Identity_User_UserDetails_V2" {
   filter_ids = [
     ambar_filter.identity_all.resource_id,
   ]
