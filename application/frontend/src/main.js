@@ -57,11 +57,23 @@ function unauthenticate(req) {
   delete req.session.token;
 }
 
-function render(template, layout = false) {
+const layouts = {
+  signedOut: "signed-out",
+  main: "main"
+}
+
+function render(template, locals) {
   return function (_, res) {
-    return res.render(template, { layout });
+    return res.render(template, { layout: layouts.main, locals });
   }
 }
+
+function renderSignedOut(template, locals) {
+  return function (_, res) {
+    return res.render(template, { layout: layouts.signedOut, locals });
+  }
+}
+
 // Setup templating
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 app.engine('handlebars', engine());
@@ -72,12 +84,12 @@ app.set('views', path.join(__dirname, "views"));
 const static_dir = path.join(path.dirname(__dirname), 'assets');
 app.use("/assets", Express.static(static_dir))
 
-app.get('/sign-in', unauthenticated, render("sign-in"))
-app.get('/sign-up', unauthenticated, render("sign-up"))
-app.get('/sign-up-success', unauthenticated, render("sign-up-success"))
+app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign in" }))
+app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign-up" }))
+app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign-up success" }))
 app.get('/user/details', authenticated, routeUserDetails)
 app.get('/logout', authenticated, routeLogout)
-app.get('/', authenticated, render("home", "main"))
+app.get('/', authenticated, render("home", { title: "Home" }))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
@@ -93,8 +105,9 @@ const metadata = {
 
 function routeUserDetails(req, res) {
   res.render("details", {
-    layout: "main",
+    layout: layouts.main,
     locals: {
+      title: "Details",
       email: req.session.email
     }
   });
@@ -113,13 +126,16 @@ async function routeVerifyEmail(req,res) {
   if (!response.ok) {
     const error = getError(r);
     res.render("verify-email", {
-      layout: false,
-      error,
+      layout: layouts.signedOut,
+      locals: { title: "Verify email", error },
     });
     return;
   }
 
-  res.render(`verify-email`, { layout: false })
+  res.render(`verify-email`, {
+    layout: layouts.signedOut,
+    locals: { title: "Verify email" },
+  })
 }
 
 async function routeSignIn(req, res) {
@@ -154,8 +170,8 @@ async function routeSignIn(req, res) {
       : rawError
 
     res.render("sign-in", {
-      layout: false,
-      error,
+      layout: layouts.signedOut,
+      locals: { title: "Sign in", error },
     });
     return;
   }
@@ -207,10 +223,8 @@ async function routeSignUp(req, res) {
       : rawError;
 
     res.render("sign-up", {
-      layout: false,
-      error,
-      username,
-      email,
+      layout: layouts.signedOut,
+      locals: { title: "Sign-up", error, username, email }
     });
     return;
   }
