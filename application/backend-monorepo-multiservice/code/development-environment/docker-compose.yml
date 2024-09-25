@@ -21,6 +21,11 @@ services:
     networks:
       galeasTest:
         ipv4_address: 172.30.0.102
+    deploy:
+      resources:
+        limits:
+          cpus: '0.500'
+          memory: 1024M
 
   mongo-projection-reaction:
     build:
@@ -38,6 +43,11 @@ services:
     networks:
       galeasTest:
         ipv4_address: 172.30.0.103
+    deploy:
+      resources:
+        limits:
+          cpus: '0.500'
+          memory: 1024M
 
   php-all-services-test:
     container_name: php-all-services-test
@@ -79,6 +89,11 @@ services:
     networks:
       galeasTest:
         ipv4_address: 172.30.0.104
+    deploy:
+      resources:
+        limits:
+          cpus: '0.500'
+          memory: 1024M
 
   php-all-services:
     container_name: php-all-services
@@ -118,6 +133,11 @@ services:
     networks:
       galeasTest:
         ipv4_address: 172.30.0.105
+    deploy:
+      resources:
+        limits:
+          cpus: '0.500'
+          memory: 1024M
 
 networks:
     galeasTest:
