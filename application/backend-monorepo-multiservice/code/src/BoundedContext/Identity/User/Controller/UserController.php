@@ -10,7 +10,9 @@ use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\VerifyPrimaryEmailHandler;
+use Galeas\Api\BoundedContext\Identity\User\Query\GetUserDetailsQuery;
 use Galeas\Api\BoundedContext\Identity\User\Query\ListSentVerificationEmailQuery;
+use Galeas\Api\BoundedContext\Identity\User\QueryHandler\GetUserDetailsQueryHandler;
 use Galeas\Api\BoundedContext\Identity\User\QueryHandler\ListSentVerificationEmailQueryHandler;
 use Galeas\Api\CommonController\BaseController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,17 +26,20 @@ class UserController extends BaseController
     private VerifyPrimaryEmailHandler $verifyPrimaryEmailHandler;
     private RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler;
     private ListSentVerificationEmailQueryHandler $listSentVerificationEmailQueryHandler;
+    private GetUserDetailsQueryHandler $getUserDetailsQueryHandler;
 
     public function __construct(
         SignUpHandler $signUpHandler,
         VerifyPrimaryEmailHandler $verifyPrimaryEmailHandler,
         RequestPrimaryEmailChangeHandler $requestPrimaryEmailChangeHandler,
-        ListSentVerificationEmailQueryHandler $listSentVerificationEmailQueryHandler
+        ListSentVerificationEmailQueryHandler $listSentVerificationEmailQueryHandler,
+        GetUserDetailsQueryHandler $getUserDetailsQueryHandler
     ) {
         $this->signUpHandler = $signUpHandler;
         $this->verifyPrimaryEmailHandler = $verifyPrimaryEmailHandler;
         $this->requestPrimaryEmailChangeHandler = $requestPrimaryEmailChangeHandler;
         $this->listSentVerificationEmailQueryHandler = $listSentVerificationEmailQueryHandler;
+        $this->getUserDetailsQueryHandler = $getUserDetailsQueryHandler;
     }
 
     /**
@@ -108,6 +113,25 @@ class UserController extends BaseController
             'Response/V1_Identity_User_ListSentVerificationEmail.json',
             ListSentVerificationEmailQuery::class,
             $this->listSentVerificationEmailQueryHandler,
+            null,
+            Response::HTTP_OK
+        );
+    }
+
+    /**
+     * @RequestSchema(name="V1_Identity_User_Details")
+     *
+     * @ResponseSchema(name="V1_Identity_User_Details")
+     */
+    #[Route('/identity/user/details', name: 'V1_Identity_User_Details', methods: ['POST'])]
+    public function getUserDetails(Request $request): Response
+    {
+        return $this->jsonPostRequestJsonResponse(
+            $request,
+            'Request/V1_Identity_User_Details.json',
+            'Response/V1_Identity_User_Details.json',
+            GetUserDetailsQuery::class,
+            $this->getUserDetailsQueryHandler,
             null,
             Response::HTTP_OK
         );
