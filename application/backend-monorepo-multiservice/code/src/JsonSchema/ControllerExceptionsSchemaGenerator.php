@@ -236,8 +236,11 @@ class ControllerExceptionsSchemaGenerator
             throw new ExceptionSerializerFailed('Reflection exception when accessing property '.$matchingProperty.' in '.$controllerClassAndMethod);
         }
 
-        // @var class-string $className
-        return $className;
+        if (class_exists($className)) {
+            return $className;
+        }
+
+        throw new ExceptionSerializerFailed(\sprintf('Class %s does not exist in %s', $className, $controllerClassAndMethod));
     }
 
     /**
