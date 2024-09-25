@@ -107,7 +107,7 @@ function routeUserDetails(req, res) {
   res.render("details", {
     layout: layouts.main,
     locals: {
-      title: "Details",
+      title: "User details",
       email: req.session.email
     }
   });
