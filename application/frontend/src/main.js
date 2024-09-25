@@ -265,6 +265,8 @@ function errorPage(res, error) {
   res.send(error);
 }
 
+app.get("*", authenticated, render("404", { title: "Not Found" }))
+
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
