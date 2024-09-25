@@ -100,10 +100,17 @@ class PrimaryEmailVerificationCodeSentTest extends UnitTest
                 true
             )
         );
+        $expectedUser = User::fromProperties(
+            $user->aggregateId(),
+            1_432,
+            $user->primaryEmailStatus(),
+            $user->hashedPassword(),
+            $user->accountDetails()
+        );
         $transformedUser = $primaryEmailChangeRequested->transformUser($user);
 
         Assert::assertEquals(
-            $user,
+            $expectedUser,
             $transformedUser
         );
     }
