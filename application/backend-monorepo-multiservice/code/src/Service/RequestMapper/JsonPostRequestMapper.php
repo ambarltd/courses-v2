@@ -68,7 +68,12 @@ class JsonPostRequestMapper
     {
         $requestArray = $this->requestJsonToRequestArray($request);
         $overridenArray = $this->overrideSensitiveFieldsInRequestArrayAndRemoveMetadata($requestArray, $request, $commandOrQueryClass);
-        $validatedMetadata = $this->metadataToValidatedMetadata(\is_array($requestArray['metadata']) ? $requestArray['metadata'] : [], $request);
+        $validatedMetadata = $this->metadataToValidatedMetadata(
+            \is_array($requestArray['metadata']) ? $requestArray['metadata'] : [],
+            \is_string($overridenArray['withSessionToken']) ? $overridenArray['withSessionToken'] : null,
+            \is_string($overridenArray['authenticatedUserId']) ? $overridenArray['authenticatedUserId'] : null,
+            $request
+        );
 
         $safeArray = $overridenArray;
         $safeArray['metadata'] = $validatedMetadata;
@@ -131,16 +136,13 @@ class JsonPostRequestMapper
     ): array {
         $requestArray['authenticatedUserId'] = null;
         $requestArray['withIp'] = null;
-        $requestArray['withSessionToken'] = null;
 
         $withSessionToken = $request->headers->get('X-With-Session-Token');
         if (
-            \array_key_exists('metadata', $requestArray)
-            && \is_array($requestArray['metadata'])
-            && \array_key_exists('withSessionToken', $requestArray['metadata'])
-            && (\is_string($requestArray['metadata']['withSessionToken']) || null === $requestArray['metadata']['withSessionToken'])
+            \array_key_exists('withSessionToken', $requestArray)
+            && \is_string($requestArray['withSessionToken'])
         ) {
-            $withSessionToken = $requestArray['metadata']['withSessionToken'];
+            $withSessionToken = $requestArray['withSessionToken'];
         }
 
         try {
@@ -195,6 +197,8 @@ class JsonPostRequestMapper
      */
     private function metadataToValidatedMetadata(
         array $metadata,
+        ?string $withSessionToken,
+        ?string $authenticatedUserId,
         Request $request
     ): array {
         $receivedEnvironment = null;
@@ -256,15 +260,6 @@ class JsonPostRequestMapper
             $receivedReferer = $metadata['referer'];
         }
 
-        $receivedSessionToken = null;
-        if (
-            \array_key_exists('withSessionToken', $metadata)
-            && \is_string($metadata['withSessionToken'])
-            && '' !== $metadata['withSessionToken']
-        ) {
-            $receivedSessionToken = $metadata['withSessionToken'];
-        }
-
         $receivedLatitude = null;
         if (
             \array_key_exists('latitude', $metadata)
@@ -283,6 +278,7 @@ class JsonPostRequestMapper
 
         // Override metadata such that only allow listed fields can be passed by the end user.
         return [
+            'authenticatedUserId' => $authenticatedUserId,
             'environment' => $receivedEnvironment,
             'devicePlatform' => $receivedDevicePlatform,
             'deviceModel' => $receivedDeviceModel,
@@ -293,7 +289,7 @@ class JsonPostRequestMapper
             'ipAddress' => $request->server->get('REMOTE_ADDR'),
             'userAgent' => $receivedUserAgent,
             'referer' => $receivedReferer,
-            'withSessionToken' => $receivedSessionToken,
+            'withSessionToken' => $withSessionToken,
         ];
     }
 

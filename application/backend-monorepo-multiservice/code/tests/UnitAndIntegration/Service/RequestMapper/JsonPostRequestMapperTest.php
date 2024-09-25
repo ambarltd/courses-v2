@@ -111,9 +111,9 @@ class JsonPostRequestMapperTest extends UnitTest
                 $this->jsonEncodeOrThrowException([
                     'authenticatedUserId' => 'hackAuthenticatedUserId',
                     'withIp' => 'hackIpAddress',
-                    'withSessionToken' => 'hackWithSessionToken',
+                    'withSessionToken' => 'token_123',
                     'metadata' => [
-                        'withSessionToken' => 'token_123',
+                        'withSessionToken' => 'hackWithSessionToken',
                         'latitude' => 51.507_4,
                         'longitude' => 0.127_8,
                         'devicePlatform' => 'linux',
@@ -149,6 +149,7 @@ class JsonPostRequestMapperTest extends UnitTest
         Assert::assertEquals('Test_UserAgent', $command->metadata['userAgent']);
         Assert::assertEquals('example.com', $command->metadata['referer']);
         Assert::assertEquals('token_123', $command->metadata['withSessionToken']);
+        Assert::assertEquals('user_id_123', $command->metadata['authenticatedUserId']);
         Assert::assertArrayNotHasKey('hack', $command->metadata);
         Assert::assertObjectNotHasProperty('hack', $command);
     }
