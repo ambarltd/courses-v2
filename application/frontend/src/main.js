@@ -230,15 +230,15 @@ async function routeSignUp(req, res) {
 }
 
 async function routeLogout(req, res) {
+  const contents = { metadata :Object.assign(metadata, { withSessionToken: req.session.token }) };
   unauthenticate(req);
-  const contents = { metadata }
 
   const response = await fetch(endpoints["sign-out"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {
         'Content-Type': 'application/json',
-        'X-Session-Token': req.session.token
+        'X-SESSION-TOKEN': req.session.token
       }
   });
 
