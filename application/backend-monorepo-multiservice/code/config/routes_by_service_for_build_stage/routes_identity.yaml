@@ -2,6 +2,10 @@ schema_controller:
   resource: ../src/JsonSchema/Controller/
   type: attribute
 
+authentication_all_services:
+  resource: ../src/BoundedContext/AuthenticationAllServices/ControllerForProjectionReaction/
+  type: attribute
+
 identity_user_controller:
   resource: ../src/BoundedContext/Identity/User/Controller/
   type: attribute

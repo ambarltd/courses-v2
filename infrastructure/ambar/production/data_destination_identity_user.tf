@@ -1,8 +1,8 @@
-resource "ambar_data_destination" "Identity_User_Authentication" {
+resource "ambar_data_destination" "Identity_User_Authentication_Session" {
   filter_ids = [
     ambar_filter.security_all.resource_id,
   ]
-  description          = "Identity_User_Authentication"
+  description          = "Identity_User_Authentication_Session"
   destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/authentication_all_services/projection/session"
   username             = "username"
   password             = "password"
