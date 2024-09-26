@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\Session;
+namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\AuthenticationAllServices\Projection\Session;
 
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
+use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\Session;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 
@@ -41,36 +41,6 @@ class SessionTest extends UnitTest
             $lastRefreshedAt,
             $session->getTokenLastRefreshedAt()
         );
-
-        $lastRefreshedAt = new \DateTimeImmutable();
-        $session = Session::fromProperties(
-            'session_id',
-            null,
-            'session_token',
-            true,
-            $lastRefreshedAt
-        );
-
-        Assert::assertEquals(
-            'session_id',
-            $session->getSessionId()
-        );
-        Assert::assertEquals(
-            null,
-            $session->getUserId()
-        );
-        Assert::assertEquals(
-            'session_token',
-            $session->getSessionToken()
-        );
-        Assert::assertEquals(
-            true,
-            $session->isSignedOut()
-        );
-        Assert::assertEquals(
-            $lastRefreshedAt,
-            $session->getTokenLastRefreshedAt()
-        );
     }
 
     public function testChangeProperties(): void
@@ -85,7 +55,6 @@ class SessionTest extends UnitTest
         );
         $changedLastRefreshedAt = new \DateTimeImmutable('+ 5 minutes');
         $session->changeProperties(
-            'changed_user_id',
             'changed_session_token',
             true,
             $changedLastRefreshedAt
@@ -94,10 +63,6 @@ class SessionTest extends UnitTest
         Assert::assertEquals(
             'session_id',
             $session->getSessionId()
-        );
-        Assert::assertEquals(
-            'changed_user_id',
-            $session->getUserId()
         );
         Assert::assertEquals(
             'changed_session_token',
@@ -113,7 +78,6 @@ class SessionTest extends UnitTest
         );
 
         $session->changeProperties(
-            'changed_user_id',
             'changed_session_token',
             false,
             $changedLastRefreshedAt

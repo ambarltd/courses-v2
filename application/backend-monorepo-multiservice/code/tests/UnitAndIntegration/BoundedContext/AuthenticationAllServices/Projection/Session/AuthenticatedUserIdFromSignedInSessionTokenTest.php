@@ -2,19 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\Session;
+namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\AuthenticationAllServices\Projection\Session;
 
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
+use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
+use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\Session;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
 
-class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegrationTest
+class AuthenticatedUserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegrationTest
 {
     public function testUserIdFromSignedInSessionToken(): void
     {
-        $userIdFromSignedInSessionToken = $this->getContainer()
-            ->get(UserIdFromSignedInSessionToken::class)
+        /** @var AuthenticatedUserIdFromSignedInSessionToken $authenticatedUserIdFromSignedInSessionToken */
+        $authenticatedUserIdFromSignedInSessionToken = $this->getContainer()
+            ->get(AuthenticatedUserIdFromSignedInSessionToken::class)
         ;
 
         $tokenLastRefreshedAt = \DateTimeImmutable::createFromFormat(
@@ -36,28 +37,28 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
@@ -78,28 +79,28 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             'user_id_123',
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
@@ -120,28 +121,28 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             'user_id_123',
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             'user_id_1234',
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_1234',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
@@ -150,8 +151,8 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
     public function testUserIdFromSignedInSessionTokenWithSignedOutTrue(): void
     {
-        $userIdFromSignedInSessionToken = $this->getContainer()
-            ->get(UserIdFromSignedInSessionToken::class)
+        $authenticatedUserIdFromSignedInSessionToken = $this->getContainer()
+            ->get(AuthenticatedUserIdFromSignedInSessionToken::class)
         ;
 
         $tokenLastRefreshedAt = \DateTimeImmutable::createFromFormat(
@@ -173,14 +174,14 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )
@@ -201,14 +202,14 @@ class UserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegratio
 
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAt
             )
         );
         Assert::assertEquals(
             null,
-            $userIdFromSignedInSessionToken->userIdFromSignedInSessionToken(
+            $authenticatedUserIdFromSignedInSessionToken->authenticatedUserIdFromSignedInSessionToken(
                 'session_token_123',
                 $tokenLastRefreshedAtMinusOneMicrosecond
             )

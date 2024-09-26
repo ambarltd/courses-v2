@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
+namespace Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session;
 
 class Session
 {
     private string $id;
 
-    private ?string $userId;
+    private string $userId;
 
     private string $sessionToken;
 
@@ -23,7 +23,7 @@ class Session
         return $this->id;
     }
 
-    public function getUserId(): ?string
+    public function getUserId(): string
     {
         return $this->userId;
     }
@@ -44,12 +44,10 @@ class Session
     }
 
     public function changeProperties(
-        ?string $userId,
         string $sessionToken,
         bool $signedOut,
         \DateTimeImmutable $tokenLastRefreshedAt
     ): self {
-        $this->userId = $userId;
         $this->sessionToken = $sessionToken;
         $this->signedOut = $signedOut;
         $this->tokenLastRefreshedAt = $tokenLastRefreshedAt;
@@ -59,7 +57,7 @@ class Session
 
     public static function fromProperties(
         string $sessionId,
-        ?string $userId,
+        string $userId,
         string $sessionToken,
         bool $signedOut,
         \DateTimeImmutable $tokenLastRefreshedAt

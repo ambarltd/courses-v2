@@ -10,7 +10,7 @@ use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionTok
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionUserDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SignOutHandler;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionIdFromSessionToken;
+use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\SessionIdFromSessionToken;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;

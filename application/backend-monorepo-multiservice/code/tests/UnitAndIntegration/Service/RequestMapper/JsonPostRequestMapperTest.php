@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Service\RequestMapper;
 
+use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Security\Session\Command\RefreshToken;
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
 use Galeas\Api\Service\RequestMapper\JsonPostRequestMapper;
@@ -23,8 +23,8 @@ class JsonPostRequestMapperTest extends UnitTest
     protected function setUp(): void
     {
         parent::setUp();
-        $userIdFromSignedInSessionToken = $this->createMock(UserIdFromSignedInSessionToken::class);
-        $userIdFromSignedInSessionToken->method('userIdFromSignedInSessionToken')
+        $authenticatedUserIdFromSignedInSessionToken = $this->createMock(AuthenticatedUserIdFromSignedInSessionToken::class);
+        $authenticatedUserIdFromSignedInSessionToken->method('authenticatedUserIdFromSignedInSessionToken')
             ->with(
                 self::equalTo('token_123'),
                 self::anything()
@@ -32,7 +32,7 @@ class JsonPostRequestMapperTest extends UnitTest
             ->willReturn('user_id_123')
         ;
         $this->jsonPostRequestMapper = new JsonPostRequestMapper(
-            $userIdFromSignedInSessionToken,
+            $authenticatedUserIdFromSignedInSessionToken,
             '7200'
         );
     }

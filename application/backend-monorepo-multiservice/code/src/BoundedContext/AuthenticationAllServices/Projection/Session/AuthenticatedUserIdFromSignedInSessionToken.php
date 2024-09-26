@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
+namespace Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
-class SessionIdFromSessionToken
+class AuthenticatedUserIdFromSignedInSessionToken
 {
     private DocumentManager $projectionDocumentManager;
 
@@ -19,8 +19,10 @@ class SessionIdFromSessionToken
     /**
      * @throws ProjectionCannotRead
      */
-    public function sessionIdFromSessionToken(string $sessionToken): ?string
-    {
+    public function authenticatedUserIdFromSignedInSessionToken(
+        string $sessionToken,
+        \DateTimeImmutable $withTokenRefreshedAfterDate
+    ): ?string {
         try {
             $session = $this->projectionDocumentManager
                 ->createQueryBuilder(Session::class)
@@ -29,8 +31,16 @@ class SessionIdFromSessionToken
                 ->getSingleResult()
             ;
 
+            if (
+                $session instanceof Session
+                && $session->getTokenLastRefreshedAt() > $withTokenRefreshedAfterDate
+                && false === $session->isSignedOut()
+            ) {
+                return $session->getUserId();
+            }
+
             if ($session instanceof Session) {
-                return $session->getSessionId();
+                return null;
             }
 
             if (null === $session) {

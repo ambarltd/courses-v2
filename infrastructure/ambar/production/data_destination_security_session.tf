@@ -8,12 +8,12 @@ resource "ambar_data_destination" "Security_Session_HashedPassword" {
   password             = "password"
 }
 
-resource "ambar_data_destination" "Security_Session_Session" {
+resource "ambar_data_destination" "Security_SessionV2_Session" {
   filter_ids = [
     ambar_filter.security_all.resource_id,
   ]
-  description          = "Security_Session_Session"
-  destination_endpoint = "${var.data_destination_security.endpoint_prefix}/api/v1/security/session/projection/session"
+  description          = "Security_SessionV2_Session"
+  destination_endpoint = "${var.data_destination_security.endpoint_prefix}/api/v1/security/session/projection/session_v2"
   username             = "username"
   password             = "password"
 }

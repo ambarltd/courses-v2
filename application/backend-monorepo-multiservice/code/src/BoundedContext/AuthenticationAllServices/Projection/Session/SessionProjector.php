@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
+namespace Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\MongoDBException;
@@ -26,26 +26,13 @@ class SessionProjector implements EventProjector
     {
         try {
             if ($event instanceof SignedIn) {
-                $session = $this->getSessionById(
-                    $event->aggregateId()->id()
+                $session = Session::fromProperties(
+                    $event->aggregateId()->id(),
+                    $event->asUser()->id(),
+                    $event->sessionTokenCreated(),
+                    false,
+                    $event->recordedOn()
                 );
-
-                if ($session instanceof Session) {
-                    $session->changeProperties(
-                        $event->asUser()->id(),
-                        $event->sessionTokenCreated(),
-                        false,
-                        $event->recordedOn()
-                    );
-                } else {
-                    $session = Session::fromProperties(
-                        $event->aggregateId()->id(),
-                        $event->asUser()->id(),
-                        $event->sessionTokenCreated(),
-                        false,
-                        $event->recordedOn()
-                    );
-                }
 
                 $this->persistAndFlushSession($session);
             } elseif ($event instanceof TokenRefreshed) {
@@ -55,19 +42,12 @@ class SessionProjector implements EventProjector
 
                 if ($session instanceof Session) {
                     $session->changeProperties(
-                        $session->getUserId(),
                         $event->refreshedSessionToken(),
                         false,
                         $event->recordedOn()
                     );
                 } else {
-                    $session = Session::fromProperties(
-                        $event->aggregateId()->id(),
-                        null,
-                        $event->refreshedSessionToken(),
-                        false,
-                        $event->recordedOn()
-                    );
+                    return;
                 }
 
                 $this->persistAndFlushSession($session);
@@ -76,19 +56,12 @@ class SessionProjector implements EventProjector
 
                 if ($session instanceof Session) {
                     $session->changeProperties(
-                        $session->getUserId(),
-                        $event->withSessionToken(),
+                        $session->getSessionToken(),
                         true,
                         $session->getTokenLastRefreshedAt()
                     );
                 } else {
-                    $session = Session::fromProperties(
-                        $event->aggregateId()->id(),
-                        null,
-                        $event->withSessionToken(),
-                        true,
-                        $event->recordedOn()
-                    );
+                    return;
                 }
 
                 $this->persistAndFlushSession($session);

@@ -38,6 +38,12 @@ doctrine_mongodb:
             connection: projection
             database: '%mongodb_projection_database_name%'
             mappings:
+                Galeas\Api\BoundedContext\AuthenticationAllServices\Projection:
+                    type: xml
+                    is_bundle: false
+                    prefix: Galeas\Api\BoundedContext\AuthenticationAllServices\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/AuthenticationAllServices/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\AuthenticationAllServices\Projection
                 Galeas\Api\BoundedContext\Identity\User\Projection:
                     type: xml
                     is_bundle: false
