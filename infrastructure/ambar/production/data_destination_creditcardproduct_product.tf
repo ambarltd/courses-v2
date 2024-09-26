@@ -1,3 +1,14 @@
+resource "ambar_data_destination" "CreditCardProduct_Authentication" {
+  filter_ids = [
+    ambar_filter.security_all.resource_id,
+  ]
+  description          = "CreditCardProduct_Authentication"
+  destination_endpoint = "${var.data_destination_security.endpoint_prefix}/api/v1/authentication_all_services/projection/session"
+  username             = "username"
+  password             = "password"
+}
+
+
 resource "ambar_data_destination" "CreditCardProduct_Product_ProductListItem" {
   filter_ids = [
     ambar_filter.credit_card_product.resource_id,
