@@ -190,7 +190,9 @@ class JsonPostRequestMapper
             $requestArray['withIp'] = $request->server->get('REMOTE_ADDR');
         }
 
-        unset($requestArray['metadata']);
+        if (\array_key_exists('metadata', $requestArray)) {
+            unset($requestArray['metadata']);
+        }
 
         return $requestArray;
     }
