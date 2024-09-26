@@ -144,7 +144,9 @@ function routeUserDetails(req, res) {
     layout: layouts.main,
     locals: {
       title: "User details",
-      email: req.session.email
+      email: req.session.email,
+      userId: req.session.userId,
+      verified: req.session.verified,
     }
   });
 }
