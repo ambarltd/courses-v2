@@ -18,6 +18,7 @@ const endpoints = {
   "sign-up": domains.identity + "/user/sign-up",
   "user-details": domains.identity + "/user/details",
   "verify-primary-email": domains.identity + "/user/verify-primary-email",
+  "list-sent-verification-emails": domains.identity + "user/list-sent-verification-emails",
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out"
@@ -78,6 +79,27 @@ function renderSignedOut(template, locals) {
   }
 }
 
+// Setup templating
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', path.join(__dirname, "views"));
+
+// Serve static files
+const static_dir = path.join(path.dirname(__dirname), 'assets');
+app.use("/assets", Express.static(static_dir))
+
+app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign in" }))
+app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign-up" }))
+app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign-up success" }))
+app.get('/user/details', authenticated, routeUserDetails)
+app.get('/logout', authenticated, routeLogout)
+app.get('/', authenticated, render("home", { title: "Home" }))
+app.get('/verify-email', unauthenticated, routeVerifyEmail);
+app.post('/sign-in', unauthenticated, routeSignIn);
+app.post('/sign-up', unauthenticated,  routeSignUp);
+app.get('/verification-emails', authenticated, routeVerificationEmails);
+
 async function userDetails(token) {
   const response = await fetch(endpoints["user-details"], {
       method: "POST",
@@ -107,25 +129,6 @@ async function userDetails(token) {
   return { userId, email, verified };
 }
 
-// Setup templating
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.engine('handlebars', engine());
-app.set('view engine', 'handlebars');
-app.set('views', path.join(__dirname, "views"));
-
-// Serve static files
-const static_dir = path.join(path.dirname(__dirname), 'assets');
-app.use("/assets", Express.static(static_dir))
-
-app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign in" }))
-app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign-up" }))
-app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign-up success" }))
-app.get('/user/details', authenticated, routeUserDetails)
-app.get('/logout', authenticated, routeLogout)
-app.get('/', authenticated, render("home", { title: "Home" }))
-app.get('/verify-email', unauthenticated, routeVerifyEmail);
-app.post('/sign-in', unauthenticated, routeSignIn);
-app.post('/sign-up', unauthenticated,  routeSignUp);
 
 // Default metadata for requests.
 const metadata = {
@@ -292,6 +295,27 @@ async function routeLogout(req, res) {
 
 function errorPage(res, error) {
   res.send(error);
+}
+
+async function routeVerificationEmails(req, res) {
+  const contents = { metadata };
+
+  const response = await fetch(endpoints["sign-out"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': req.session.token
+      }
+  });
+  const r = await response.json()
+  if (!response.ok) {
+    const error = getError(r);
+    errorPage(res, error);
+    return;
+  }
+
+  res.json(r);
 }
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
