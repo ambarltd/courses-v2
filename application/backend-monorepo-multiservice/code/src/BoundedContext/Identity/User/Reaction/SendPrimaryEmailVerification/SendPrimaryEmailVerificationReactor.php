@@ -12,7 +12,6 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
-use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 use Galeas\Api\Service\QueueProcessor\EventReactor;
 
