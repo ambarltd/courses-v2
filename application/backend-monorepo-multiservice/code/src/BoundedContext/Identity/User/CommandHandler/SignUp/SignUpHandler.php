@@ -6,6 +6,8 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
+use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\IsEmailTaken;
+use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\CommonException\ProjectionCannotRead;

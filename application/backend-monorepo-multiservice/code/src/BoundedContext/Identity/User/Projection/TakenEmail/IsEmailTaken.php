@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\IsEmailTaken as RPECIsEmailTaken;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\IsEmailTaken as SUIsEmailTaken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
-class IsEmailTaken implements SUIsEmailTaken, RPECIsEmailTaken
+class IsEmailTaken
 {
     private DocumentManager $projectionDocumentManager;
 

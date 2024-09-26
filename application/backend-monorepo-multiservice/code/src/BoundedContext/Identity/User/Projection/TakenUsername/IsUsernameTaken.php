@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\IsUsernameTaken as SUIsUsernameTaken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
-class IsUsernameTaken implements SUIsUsernameTaken
+class IsUsernameTaken
 {
     private DocumentManager $projectionDocumentManager;
 

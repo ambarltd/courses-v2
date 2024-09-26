@@ -56,6 +56,7 @@ deptrac:
             - Aggregate
             - Command
             - Event
+            - Projection
             - ValueObject
         Controller:
             - Command
@@ -71,13 +72,9 @@ deptrac:
             - ValueObject
         Projection:
             - Event
-            - CommandHandler # interface implementation
-            - QueryHandler # interface implementation
         Reaction:
             - Aggregate
             - Event
-            - CommandHandler # interface implementation
-            - QueryHandler # interface implementation
         Query: []
         QueryHandler:
             - Aggregate
