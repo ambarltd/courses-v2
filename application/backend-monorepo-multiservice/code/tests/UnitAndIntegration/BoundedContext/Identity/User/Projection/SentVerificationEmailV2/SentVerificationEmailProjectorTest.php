@@ -19,26 +19,48 @@ class SentVerificationEmailProjectorTest extends ProjectionAndReactionIntegratio
             ->get(SentVerificationEmailProjector::class)
         ;
 
-        $primaryEmailVerificationCodeSent = SampleEvents::primaryEmailVerificationCodeSent(
+        $primaryEmailVerificationCodeSent1 = SampleEvents::primaryEmailVerificationCodeSent(
             Id::createNew(),
             5,
             Id::createNew(),
             Id::createNew(),
         );
-        $processorService->project($primaryEmailVerificationCodeSent);
+        $processorService->project($primaryEmailVerificationCodeSent1);
+
+        $primaryEmailVerificationCodeSent2 = SampleEvents::primaryEmailVerificationCodeSent(
+            Id::createNew(),
+            5,
+            Id::createNew(),
+            Id::createNew(),
+        );
+        $processorService->project($primaryEmailVerificationCodeSent2);
 
         Assert::assertEquals(
             SentVerificationEmail::fromProperties(
-                $primaryEmailVerificationCodeSent->eventId()->id(),
-                $primaryEmailVerificationCodeSent->aggregateId()->id(),
-                $primaryEmailVerificationCodeSent->verificationCodeSent(),
-                $primaryEmailVerificationCodeSent->toEmailAddress(),
-                $primaryEmailVerificationCodeSent->emailContents(),
-                $primaryEmailVerificationCodeSent->fromEmailAddress(),
-                $primaryEmailVerificationCodeSent->subjectLine(),
-                $primaryEmailVerificationCodeSent->recordedOn()
+                $primaryEmailVerificationCodeSent1->eventId()->id(),
+                $primaryEmailVerificationCodeSent1->aggregateId()->id(),
+                $primaryEmailVerificationCodeSent1->verificationCodeSent(),
+                $primaryEmailVerificationCodeSent1->toEmailAddress(),
+                $primaryEmailVerificationCodeSent1->emailContents(),
+                $primaryEmailVerificationCodeSent1->fromEmailAddress(),
+                $primaryEmailVerificationCodeSent1->subjectLine(),
+                $primaryEmailVerificationCodeSent1->recordedOn()
             ),
-            $this->findSentVerificationEmail($primaryEmailVerificationCodeSent->eventId()->id())
+            $this->findSentVerificationEmail($primaryEmailVerificationCodeSent1->eventId()->id())
+        );
+
+        Assert::assertEquals(
+            SentVerificationEmail::fromProperties(
+                $primaryEmailVerificationCodeSent2->eventId()->id(),
+                $primaryEmailVerificationCodeSent2->aggregateId()->id(),
+                $primaryEmailVerificationCodeSent2->verificationCodeSent(),
+                $primaryEmailVerificationCodeSent2->toEmailAddress(),
+                $primaryEmailVerificationCodeSent2->emailContents(),
+                $primaryEmailVerificationCodeSent2->fromEmailAddress(),
+                $primaryEmailVerificationCodeSent2->subjectLine(),
+                $primaryEmailVerificationCodeSent2->recordedOn()
+            ),
+            $this->findSentVerificationEmail($primaryEmailVerificationCodeSent2->eventId()->id())
         );
     }
 
