@@ -1,3 +1,5 @@
+# Doing all events for now, for simplicity
+
 resource "ambar_filter" "identity_all" {
   data_source_id  = ambar_data_source.identity_event_store.resource_id
   description     = "identity_all"
