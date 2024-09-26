@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionIdFromSessionToken as RTSessionIdFromSessionToken;
-use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionIdFromSessionToken as SOSessionIdFromSessionToken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
-class SessionIdFromSessionToken implements RTSessionIdFromSessionToken, SOSessionIdFromSessionToken
+class SessionIdFromSessionToken
 {
     private DocumentManager $projectionDocumentManager;
 

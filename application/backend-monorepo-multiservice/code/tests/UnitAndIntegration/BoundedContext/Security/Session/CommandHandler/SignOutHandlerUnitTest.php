@@ -6,11 +6,11 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Co
 
 use Galeas\Api\BoundedContext\Security\Session\Command\SignOut;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\NoSessionFound;
-use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionIdFromSessionToken;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionTokenDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SessionUserDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignOut\SignOutHandler;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedOut;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionIdFromSessionToken;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Primitive\PrimitiveValidation\Ip\ValidIpsV4AndV6;

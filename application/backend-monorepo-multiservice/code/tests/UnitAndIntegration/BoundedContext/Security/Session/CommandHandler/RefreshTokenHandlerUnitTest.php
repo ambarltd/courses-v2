@@ -9,10 +9,10 @@ use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\Alrea
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\InvalidIp;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\NoSessionFound;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\RefreshTokenHandler;
-use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionIdFromSessionToken;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionTokenDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\CommandHandler\RefreshToken\SessionUserDoesNotMatch;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionIdFromSessionToken;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
