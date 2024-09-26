@@ -175,7 +175,6 @@ async function routeUserDetailsPost(req, res) {
 
   if (!response.ok) {
     const error = getError(r);
-    console.log("Rendering failure");
     return renderUserDetails(req, res, { failureMessage: error });
   }
 
@@ -184,7 +183,6 @@ async function routeUserDetailsPost(req, res) {
     const { email, userId, verified } = await userDetails(token);
     authenticate(req, { token, email, userId, verified });
   }
-  console.log("Rendering success");
   return renderUserDetails(req, res, { successMessage: "Details changed successfully" });
 }
 
@@ -249,9 +247,11 @@ async function routeSignIn(req, res) {
     return;
   }
 
-  {
+  try {
     const { email, userId, verified } = await userDetails(token);
     authenticate(req, { token, email, userId, verified });
+  } catch (e) {
+    errorPage(res, e);
   }
   res.redirect("/");
 };
