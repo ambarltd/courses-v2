@@ -1,6 +1,6 @@
-package cloud.ambar.creditCardProduct.common.models;
+package cloud.ambar.common.models;
 
-import cloud.ambar.creditCardProduct.common.exceptions.InvalidEventException;
+import cloud.ambar.common.exceptions.InvalidEventException;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,17 +13,15 @@ import java.util.Objects;
 public abstract class Aggregate {
 
     protected String id;
-    protected String type;
     protected long version;
+    // TBD if this is needed?
     protected final List<Event> changes = new ArrayList<>();
 
-    public Aggregate(final String id, final String aggregateType) {
+    public Aggregate(final String id) {
         this.id = id;
-        this.type = aggregateType;
     }
 
-
-    public abstract void when(final Event event);
+    public abstract void transform(final Event event);
 
     public void load(final List<Event> events) {
         events.forEach(event -> {
@@ -32,23 +30,9 @@ public abstract class Aggregate {
             this.version++;
         });
     }
-
-    public void apply(final Event event) {
-        this.validateEvent(event);
-        event.setAggregateType(this.type);
-
-        when(event);
-        changes.add(event);
-
-        this.version++;
-        event.setVersion(this.version);
-    }
-
     public void raiseEvent(final Event event) {
         this.validateEvent(event);
-
-        event.setAggregateType(this.type);
-        when(event);
+        transform(event);
 
         this.version++;
     }

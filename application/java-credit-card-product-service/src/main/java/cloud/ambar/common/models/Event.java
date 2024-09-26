@@ -1,4 +1,4 @@
-package cloud.ambar.creditCardProduct.common.models;
+package cloud.ambar.common.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,7 +21,6 @@ public class Event {
     private byte[] data;
     private byte[] metaData;
     private LocalDateTime timeStamp;
-
 
     public Event(String eventType, String aggregateType) {
         this.id = UUID.randomUUID();

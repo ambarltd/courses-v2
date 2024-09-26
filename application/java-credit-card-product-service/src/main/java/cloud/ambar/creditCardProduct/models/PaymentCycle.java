@@ -1,4 +1,4 @@
-package cloud.ambar.creditCardProduct.common.models;
+package cloud.ambar.creditCardProduct.models;
 
 public enum PaymentCycle {
     MONTHLY,

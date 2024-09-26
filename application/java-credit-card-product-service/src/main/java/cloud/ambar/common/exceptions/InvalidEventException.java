@@ -1,4 +1,4 @@
-package cloud.ambar.creditCardProduct.common.exceptions;
+package cloud.ambar.common.exceptions;
 
 public class InvalidEventException extends RuntimeException {
     public InvalidEventException(String msg) {
