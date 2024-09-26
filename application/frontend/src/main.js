@@ -93,6 +93,7 @@ app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign i
 app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign-up" }))
 app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign-up success" }))
 app.get('/user/details', authenticated, routeUserDetails)
+app.post('/user/details', authenticated, routeUserDetailsPost)
 app.get('/logout', authenticated, routeLogout)
 app.get('/', authenticated, render("home", { title: "Home" }))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
@@ -123,7 +124,7 @@ async function userDetails(token) {
     : ("verifiedEmail" in primaryEmailStatus)
     ? { email: primaryEmailStatus.verifiedEmail.email, verified: true }
     : ("verifiedButRequestedNewEmail" in primaryEmailStatus)
-    ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.verifiedEmail, verified: true }
+    ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.requestedEmail, verified: false }
     : new Error(`Unknown state of primaryEmailStatus. ${JSON.stringify(primaryEmailStatus)}`);
 
   return { userId, email, verified };
@@ -139,7 +140,7 @@ const metadata = {
   deviceOrientation: "unknown"
 };
 
-function routeUserDetails(req, res) {
+function renderUserDetails(req, res, { successMessage, failureMessage }) {
   res.render("details", {
     layout: layouts.main,
     locals: {
@@ -147,8 +148,44 @@ function routeUserDetails(req, res) {
       email: req.session.email,
       userId: req.session.userId,
       verified: req.session.verified,
+      successMessage,
+      failureMessage
     }
   });
+}
+function routeUserDetails(req, res) {
+  return renderUserDetails(req, res, {});
+}
+
+async function routeUserDetailsPost(req, res) {
+  const token = req.session.token;
+  const { password, newEmailRequested } = req.body;
+  const contents = { metadata, password, newEmailRequested };
+
+  const response = await fetch(endpoints["request-primary-email-change"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': token
+      }
+  });
+
+  const r = await response.json()
+
+  if (!response.ok) {
+    const error = getError(r);
+    console.log("Rendering failure");
+    return renderUserDetails(req, res, { failureMessage: error });
+  }
+
+
+  { // update user details.
+    const { email, userId, verified } = await userDetails(token);
+    authenticate(req, { token, email, userId, verified });
+  }
+  console.log("Rendering success");
+  return renderUserDetails(req, res, { successMessage: "Details changed successfully" });
 }
 
 async function routeVerifyEmail(req,res) {
