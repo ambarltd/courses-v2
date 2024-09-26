@@ -74,7 +74,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
         }
 
         $newEvent = PrimaryEmailVerificationCodeSent::new(
-            Id::createNew(),
+            $newEventId,
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),
