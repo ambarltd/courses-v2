@@ -6,6 +6,8 @@ namespace Galeas\Api\Console;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefineProductHandler;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
@@ -41,7 +43,7 @@ class DefineCreditCardProducts extends Command
     }
 
     /**
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|InvalidPaymentCycle|InvalidReward|NoRandomnessAvailable
      */
     protected function execute(
         InputInterface $input,

@@ -16,6 +16,9 @@ class UserIdFromPrimaryEmailVerificationCode
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function userIdFromPrimaryEmailVerificationCode(string $primaryEmailVerificationCode): ?string
     {
         try {

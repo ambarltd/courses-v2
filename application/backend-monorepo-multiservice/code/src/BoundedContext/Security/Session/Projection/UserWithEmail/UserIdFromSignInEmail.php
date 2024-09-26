@@ -16,6 +16,9 @@ class UserIdFromSignInEmail
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function userIdFromSignInEmail(string $email): ?string
     {
         try {

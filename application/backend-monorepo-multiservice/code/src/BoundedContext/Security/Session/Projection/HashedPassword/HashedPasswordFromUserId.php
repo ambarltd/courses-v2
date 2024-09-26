@@ -16,6 +16,9 @@ class HashedPasswordFromUserId
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function hashedPasswordFromUserId(string $userId): ?string
     {
         try {

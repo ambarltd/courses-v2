@@ -16,6 +16,9 @@ class IsEmailTaken
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function isEmailTaken(string $email): bool
     {
         try {

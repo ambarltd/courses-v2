@@ -16,6 +16,9 @@ class IsUsernameTaken
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function isUsernameTaken(string $username): bool
     {
         try {

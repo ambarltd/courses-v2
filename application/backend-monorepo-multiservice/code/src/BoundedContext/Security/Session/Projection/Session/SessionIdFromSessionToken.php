@@ -16,6 +16,9 @@ class SessionIdFromSessionToken
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function sessionIdFromSessionToken(string $sessionToken): ?string
     {
         try {
