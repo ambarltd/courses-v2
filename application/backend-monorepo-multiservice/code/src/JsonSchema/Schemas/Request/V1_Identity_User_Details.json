@@ -7,7 +7,5 @@
       "$ref": "Request/Shared/StringSessionToken.json"
     }
   },
-  "required": [
-    "withSessionToken"
-  ]
+  "required": []
 }
