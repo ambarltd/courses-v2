@@ -93,6 +93,7 @@ async function userDetails(token) {
     const error = getError(r);
     throw new Error(error);
   }
+
   const { userId, primaryEmailStatus } = r;
   const { email, verified } =
     ("unverifiedEmail" in primaryEmailStatus)
@@ -207,7 +208,7 @@ async function routeSignIn(req, res) {
   }
 
   {
-    const { email, userId, verified } = userDetails(token);
+    const { email, userId, verified } = await userDetails(token);
     authenticate(req, { token, email, userId, verified });
   }
   res.redirect("/");
