@@ -16,6 +16,7 @@ const domains = {
 const endpoints = {
   "request-primary-email-change": domains.identity + "/user/request-primary-email-change",
   "sign-up": domains.identity + "/user/sign-up",
+  "user-details": domains.identity + "/user/details",
   "verify-primary-email": domains.identity + "/user/verify-primary-email",
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
@@ -49,8 +50,11 @@ function unauthenticated(req, res, next) {
   return res.redirect("/home");
 }
 
-function authenticate(req, token) {
+function authenticate(req, { token, userId, email, verified }) {
   req.session.token = token;
+  req.session.email = email;
+  req.session.userId = userId;
+  req.session.verified = verified;
 }
 
 function unauthenticate(req) {
@@ -72,6 +76,34 @@ function renderSignedOut(template, locals) {
   return function (_, res) {
     return res.render(template, { layout: layouts.signedOut, locals });
   }
+}
+
+async function userDetails(token) {
+  const response = await fetch(endpoints["user-details"], {
+      method: "POST",
+      body: '{}',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': token
+      }
+  });
+
+  const r = await response.json();
+  if (!response.ok) {
+    const error = getError(r);
+    throw new Error(error);
+  }
+  const { userId, primaryEmailStatus } = r;
+  const { email, verified } =
+    ("unverifiedEmail" in primaryEmailStatus)
+    ? { email: primaryEmailStatus.unverifiedEmail.email, verified: false }
+    : ("verifiedEmail" in primaryEmailStatus)
+    ? { email: primaryEmailStatus.verifiedEmail.email, verified: true }
+    : ("verifiedButRequestedNewEmail" in primaryEmailStatus)
+    ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.verifiedEmail, verified: true }
+    : new Error(`Unknown state of primaryEmailStatus. ${JSON.stringify(primaryEmailStatus)}`);
+
+  return { userId, email, verified };
 }
 
 // Setup templating
@@ -169,13 +201,16 @@ async function routeSignIn(req, res) {
   }
 
   const token = r.sessionTokenCreated;
-  if (typeof token === "string") {
-    authenticate(req, token);
-    res.redirect("/");
-    return;
-  } else {
+  if (typeof token !== "string") {
     res.send(`Failure. ${JSON.stringify(r)}`);
+    return;
   }
+
+  {
+    const { email, userId, verified } = userDetails(token);
+    authenticate(req, { token, email, userId, verified });
+  }
+  res.redirect("/");
 };
 
 // Parse error from a failure response
