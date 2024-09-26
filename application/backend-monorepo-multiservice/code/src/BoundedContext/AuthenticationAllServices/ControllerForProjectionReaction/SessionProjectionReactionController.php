@@ -29,5 +29,4 @@ class SessionProjectionReactionController extends ProjectionReactionController
             200
         );
     }
-
 }
