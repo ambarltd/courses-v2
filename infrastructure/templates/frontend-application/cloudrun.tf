@@ -39,7 +39,7 @@ resource "google_cloud_run_service" "application" {
 
   lifecycle {
     ignore_changes = [
-      metadata.0.annotations
+      template.0.metadata.0.annotations,
     ]
   }
 }

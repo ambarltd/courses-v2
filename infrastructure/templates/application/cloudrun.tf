@@ -116,6 +116,12 @@ resource "google_cloud_run_service" "application" {
     latest_revision = true
   }
 
+  lifecycle {
+    ignore_changes = [
+      template.0.metadata.0.annotations,
+    ]
+  }
+
   depends_on = [null_resource.push_app_image]
 }
 
