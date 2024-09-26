@@ -145,6 +145,7 @@ class JsonPostRequestMapper
         ) {
             $withSessionToken = $requestArray['withSessionToken'];
         }
+        $requestArray['withSessionToken'] = $withSessionToken;
 
         try {
             $withTokenRefreshedAfterDate = (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds');
@@ -152,39 +153,33 @@ class JsonPostRequestMapper
             throw new InternalDateHandlingError();
         }
 
+        $authenticatedUserId = null;
+
         try {
             if (\is_string($withSessionToken)) {
-                $requestArray['authenticatedUserId'] = $this->authenticatedUserIdFromSignedInSessionToken
+                $authenticatedUserId = $this->authenticatedUserIdFromSignedInSessionToken
                     ->authenticatedUserIdFromSignedInSessionToken(
                         $withSessionToken,
                         $withTokenRefreshedAfterDate
                     )
                 ;
-                $requestArray['withSessionToken'] = $withSessionToken;
+                $requestArray['authenticatedUserId'] = $authenticatedUserId;
             }
         } catch (ProjectionCannotRead $exception) {
             throw new CannotResolveAuthorizerFromSessionTokenDatabase();
         }
 
         if (
-            null !== $requestArray['withSessionToken']
-            && null === $requestArray['authenticatedUserId']
+            null !== $withSessionToken
+            && null === $authenticatedUserId
             && property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
         ) {
             throw new ExpiredOrNonExistentSessionToken();
         }
 
         if (
-            null === $requestArray['withSessionToken']
-            && null === $requestArray['authenticatedUserId']
-            && property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
-        ) {
-            throw new MissingExpectedSessionToken();
-        }
-
-        if (
-            null === $requestArray['withSessionToken']
-            && property_exists(new $commandOrQueryClass(), 'withSessionToken')
+            null === $withSessionToken
+            && (property_exists(new $commandOrQueryClass(), 'authenticatedUserId') || property_exists(new $commandOrQueryClass(), 'withSessionToken'))
         ) {
             throw new MissingExpectedSessionToken();
         }
