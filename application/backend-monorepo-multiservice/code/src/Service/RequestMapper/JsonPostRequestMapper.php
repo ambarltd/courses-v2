@@ -7,6 +7,7 @@ namespace Galeas\Api\Service\RequestMapper;
 use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
+use Galeas\Api\Service\RequestMapper\Exception\ExpiredOrNonExistentSessionToken;
 use Galeas\Api\Service\RequestMapper\Exception\InternalDateHandlingError;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
@@ -62,7 +63,7 @@ class JsonPostRequestMapper
      *
      * @throws InvalidContentType|InvalidJson
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
-     * @throws InternalDateHandlingError
+     * @throws ExpiredOrNonExistentSessionToken|InternalDateHandlingError
      */
     public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
     {
@@ -127,7 +128,7 @@ class JsonPostRequestMapper
      * @return array<string, mixed>
      *
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
-     * @throws InternalDateHandlingError
+     * @throws ExpiredOrNonExistentSessionToken|InternalDateHandlingError
      */
     private function overrideSensitiveFieldsInRequestArrayAndRemoveMetadata(
         array $requestArray,
@@ -166,15 +167,24 @@ class JsonPostRequestMapper
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
+            null !== $requestArray['withSessionToken']
             && null === $requestArray['authenticatedUserId']
+            && property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
+        ) {
+            throw new ExpiredOrNonExistentSessionToken();
+        }
+
+        if (
+            null === $requestArray['withSessionToken']
+            && null === $requestArray['authenticatedUserId']
+            && property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
         ) {
             throw new MissingExpectedSessionToken();
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'withSessionToken')
-            && null === $requestArray['withSessionToken']
+            null === $requestArray['withSessionToken']
+            && property_exists(new $commandOrQueryClass(), 'withSessionToken')
         ) {
             throw new MissingExpectedSessionToken();
         }
