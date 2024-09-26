@@ -6,6 +6,9 @@ namespace Galeas\Api\BoundedContext\Security\Session\CommandHandler\SignIn;
 
 use Galeas\Api\BoundedContext\Security\Session\Command\SignIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
+use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordFromUserId;
+use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserIdFromSignInEmail;
+use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserIdFromSignInUsername;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\Common\Id\InvalidId;
 use Galeas\Api\CommonException\EventStoreCannotWrite;

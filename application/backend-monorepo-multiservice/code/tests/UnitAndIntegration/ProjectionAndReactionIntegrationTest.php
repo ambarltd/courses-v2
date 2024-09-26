@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Galeas\Api\Service\EventStore\SQLEventStore;
+use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
 
 abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
 {
@@ -18,6 +20,11 @@ abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
     {
         $this->deleteProjectionAndReactionDatabases();
         parent::tearDown();
+    }
+
+    protected function getSQLEventStore(): SQLEventStore
+    {
+        return $this->getContainer()->get(SQLEventStore::class);
     }
 
     protected function getProjectionDocumentManager(): DocumentManager
@@ -57,5 +64,10 @@ abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
                 $collection->getName()
             )->deleteMany([]);
         }
+
+        /** @var SQLEventStoreConnection $connection */
+        $connection = $this->getContainer()->get(SQLEventStoreConnection::class);
+        $connection = $connection->getConnection();
+        $connection->executeStatement('TRUNCATE TABLE '.$this->getContainer()->getParameter('event_store_create_event_table_with_name').';');
     }
 }

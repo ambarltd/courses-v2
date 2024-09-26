@@ -449,6 +449,23 @@ class MockException extends InternalServerErrorException
 
 class MockController extends BaseController
 {
+    private MockCommandHandler $mockCommandHandler;
+    private MockQueryHandler $mockQueryHandler;
+    private MockCommandHandlerWithoutAnnotation $mockCommandHandlerWithoutAnnotation;
+    private MockCommandHandlerWithNonBaseException $mockCommandHandlerWithNonBaseException;
+
+    public function __construct(
+        MockCommandHandler $mockCommandHandler,
+        MockQueryHandler $mockQueryHandler,
+        MockCommandHandlerWithoutAnnotation $mockCommandHandlerWithoutAnnotation,
+        MockCommandHandlerWithNonBaseException $mockCommandHandlerWithNonBaseException
+    ) {
+        $this->mockCommandHandler = $mockCommandHandler;
+        $this->mockQueryHandler = $mockQueryHandler;
+        $this->mockCommandHandlerWithoutAnnotation = $mockCommandHandlerWithoutAnnotation;
+        $this->mockCommandHandlerWithNonBaseException = $mockCommandHandlerWithNonBaseException;
+    }
+
     public function commandHandler(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -456,7 +473,7 @@ class MockController extends BaseController
             'Request/Mock.json',
             'Response/Mock.json',
             MockCommand::class,
-            $this->getService(MockCommandHandler::class),
+            $this->mockCommandHandler,
             null,
             Response::HTTP_OK
         );
@@ -469,7 +486,7 @@ class MockController extends BaseController
             'Request/Mock.json',
             'Response/Mock.json',
             MockQuery::class,
-            $this->getService(MockQueryHandler::class),
+            $this->mockQueryHandler,
             null,
             Response::HTTP_OK
         );
@@ -487,7 +504,7 @@ class MockController extends BaseController
             'Request/Mock.json',
             'Response/Mock.json',
             MockCommand::class,
-            $this->getService(MockCommandHandlerWithoutAnnotation::class),
+            $this->mockCommandHandlerWithoutAnnotation,
             null,
             Response::HTTP_OK
         );
@@ -500,7 +517,7 @@ class MockController extends BaseController
             'Request/Mock.json',
             'Response/Mock.json',
             MockCommand::class,
-            $this->getService(MockCommandHandlerWithNonBaseException::class),
+            $this->mockCommandHandlerWithNonBaseException,
             null,
             Response::HTTP_OK
         );

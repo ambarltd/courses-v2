@@ -5,6 +5,9 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+      "eventId": {
+        "type": "string"
+      },
       "userId": {
         "type": "string"
       },
@@ -28,6 +31,7 @@
       }
     },
     "required": [
+      "eventId",
       "userId",
       "verificationCodeSent",
       "toEmailAddress",

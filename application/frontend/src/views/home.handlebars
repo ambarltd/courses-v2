@@ -1,32 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Home</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body>
+{{>blur-background}}
 
-<div style="min-height: 100vh; display:flex; flex-flow: column">
-  <nav class="flex items-center justify-between p-6 lg:px-8" aria-label="Global">
-    <div class="hidden lg:flex lg:flex-1 lg:justify-end">
-      <a href="#" onclick="logout()" class="text-sm font-semibold leading-6 text-gray-900">Log out <span aria-hidden="true">→</span></a>
-    </div>
-  </nav>
+<div class="mx-auto max-w-7xl px-6 pt-20 flex md:flex-row flex-col align-start">
+  <div class="mx-auto max-w-2xl lg:mx-0">
+    <h2 class="text-4xl font-bold tracking-tight sm:text-6xl text-gray-700">Home
 
-  <div class="relative isolate bg-gray-900 py-24 sm:py-32" style="
-      flex-grow: 1;
-      background-image: url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&crop=focalpoint&fp-y=.8&w=2830&h=1500&q=80&blend=111827&sat=-100&exp=15&blend-mode=multiply');
-      background-size: cover;
-      background-position: center;
-    ">
-    <div class="mx-auto max-w-7xl px-6 lg:px-8">
-      <div class="mx-auto max-w-2xl lg:mx-0">
-        <h2 class="text-4xl font-bold tracking-tight text-white sm:text-6xl">Application Home</h2>
-        <p class="mt-6 text-lg leading-8 text-gray-300">Ambar's example application home.</p>
-      </div>
-    </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        class="w-6 h-6 text-secondary"
+        style="display: inline-block; transform: translate(-10px, -23px); fill: #ff9800">
+        <path fill-rule="evenodd" d="M9 4.5a.75.75 0 01.721.544l.813 2.846a3.75 3.75 0 002.576 2.576l2.846.813a.75.75 0 010 1.442l-2.846.813a3.75 3.75 0 00-2.576 2.576l-.813 2.846a.75.75 0 01-1.442 0l-.813-2.846a3.75 3.75 0 00-2.576-2.576l-2.846-.813a.75.75 0 010-1.442l2.846-.813A3.75 3.75 0 007.466 7.89l.813-2.846A.75.75 0 019 4.5zM18 1.5a.75.75 0 01.728.568l.258 1.036c.236.94.97 1.674 1.91 1.91l1.036.258a.75.75 0 010 1.456l-1.036.258c-.94.236-1.674.97-1.91 1.91l-.258 1.036a.75.75 0 01-1.456 0l-.258-1.036a2.625 2.625 0 00-1.91-1.91l-1.036-.258a.75.75 0 010-1.456l1.036-.258a2.625 2.625 0 001.91-1.91l.258-1.036A.75.75 0 0118 1.5zM16.5 15a.75.75 0 01.712.513l.394 1.183c.15.447.5.799.948.948l1.183.395a.75.75 0 010 1.422l-1.183.395c-.447.15-.799.5-.948.948l-.395 1.183a.75.75 0 01-1.422 0l-.395-1.183a1.5 1.5 0 00-.948-.948l-1.183-.395a.75.75 0 010-1.422l1.183-.395c.447-.15.799-.5.948-.948l.395-1.183A.75.75 0 0116.5 15z" clip-rule="evenodd"></path>
+      </svg>
+
+
+    </h2>
+    <p class="mt-6 text-lg leading-8 text-gray-500">Ambar's example application illustrating a message-driven distributed system.</p>
   </div>
-</div>
 
-</body>
-</html>
+  <img src="/assets/images/illustration-1.png" width="400px">
+</div>

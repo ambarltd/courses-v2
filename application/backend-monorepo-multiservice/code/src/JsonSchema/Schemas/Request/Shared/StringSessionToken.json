@@ -1,0 +1,6 @@
+{
+  "type": ["string", "null"],
+  "minLength": 96,
+  "maxLength": 96,
+  "description": "The session token is expected in the header X-With-Session-Token. This field overrides the 'X-With-Session-Token' http header if non-null."
+}

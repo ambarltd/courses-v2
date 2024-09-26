@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\UserIdFromPrimaryEmailVerificationCode as UserIdFromPrimaryEmailVerificationCodeVPE;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
-class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVerificationCodeVPE
+class UserIdFromPrimaryEmailVerificationCode
 {
     private DocumentManager $projectionDocumentManager;
 
@@ -17,6 +16,9 @@ class UserIdFromPrimaryEmailVerificationCode implements UserIdFromPrimaryEmailVe
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
+    /**
+     * @throws ProjectionCannotRead
+     */
     public function userIdFromPrimaryEmailVerificationCode(string $primaryEmailVerificationCode): ?string
     {
         try {

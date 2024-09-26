@@ -93,15 +93,6 @@ class JsonSchemaFetcherTest extends UnitTest
                                 "maxLength": 4096,
                                 "description": "Overrides the \'User-Agent\' http header."
                             },
-                            "withSessionToken": {
-                                "type": [
-                                    "string",
-                                    "null"
-                                ],
-                                "minLength": 96,
-                                "maxLength": 96,
-                                "description": "Overrides the \'X-With-Session-Token\' http header."
-                            },
                             "latitude": {
                                 "type": [
                                     "number",
@@ -133,6 +124,12 @@ class JsonSchemaFetcherTest extends UnitTest
                             "deviceOSVersion",
                             "deviceOrientation"
                         ]
+                    },
+                    "withSessionToken": {
+                        "type": ["string", "null"],
+                        "minLength": 96,
+                        "maxLength": 96,
+                        "description": "The session token is expected in the header X-With-Session-Token. This field overrides the \'X-With-Session-Token\' http header if non-null."
                     }
                 },
                 "required": [

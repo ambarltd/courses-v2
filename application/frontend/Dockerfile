@@ -8,6 +8,7 @@ COPY yarn.lock /app
 RUN yarn install
 
 COPY ./src /app/src
+COPY ./assets /app/assets
 
 ENV DOMAIN_IDENTITY="https://placeholder.com"
 ENV DOMAIN_SECURITY="https://placeholder.com"

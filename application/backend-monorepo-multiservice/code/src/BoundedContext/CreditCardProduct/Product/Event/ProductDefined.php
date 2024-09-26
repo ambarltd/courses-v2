@@ -75,6 +75,41 @@ class ProductDefined implements EventCreatedProduct
         return $this->name;
     }
 
+    public function interestInBasisPoints(): int
+    {
+        return $this->interestInBasisPoints;
+    }
+
+    public function annualFeeInCents(): int
+    {
+        return $this->annualFeeInCents;
+    }
+
+    public function paymentCycle(): string
+    {
+        return $this->paymentCycle;
+    }
+
+    public function creditLimitInCents(): int
+    {
+        return $this->creditLimitInCents;
+    }
+
+    public function maxBalanceTransferAllowedInCents(): int
+    {
+        return $this->maxBalanceTransferAllowedInCents;
+    }
+
+    public function reward(): string
+    {
+        return $this->reward;
+    }
+
+    public function cardBackgroundHex(): string
+    {
+        return $this->cardBackgroundHex;
+    }
+
     public function createProduct(): Product
     {
         $paymentCycle = match ($this->paymentCycle) {

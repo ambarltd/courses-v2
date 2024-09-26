@@ -71,7 +71,7 @@ abstract class SampleEvents
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             self::sampleEmail(),
             self::sampleVerificationCode(),
@@ -87,7 +87,7 @@ abstract class SampleEvents
         Id $causationId,
         Id $correlationId,
     ): PrimaryEmailVerificationCodeSent {
-        $eventId = Id::createNew();
+        $eventId = Id::createNewByHashing('Identity/User/PrimaryEmailVerificationSent:'.$causationId->id());
 
         return PrimaryEmailVerificationCodeSent::new(
             $eventId,
@@ -95,7 +95,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             self::sampleVerificationCode(),
             self::sampleEmail(),
@@ -119,7 +119,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             self::sampleVerificationCode(),
         );
@@ -139,7 +139,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             self::secondSampleEmail(),
             self::secondSampleVerificationCode(),
@@ -158,7 +158,7 @@ abstract class SampleEvents
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::anotherSampleMetadata(null),
             self::anotherSampleEmail(),
             self::anotherSampleVerificationCode(),
@@ -199,7 +199,7 @@ abstract class SampleEvents
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             $asUser,
             null,
@@ -226,7 +226,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata($existingSessionToken),
             self::secondSampleIp(),
             $existingSessionToken,
@@ -249,7 +249,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata($existingSessionToken),
             self::thirdSampleIp(),
             $existingSessionToken,
@@ -279,7 +279,7 @@ abstract class SampleEvents
         ];
     }
 
-    private static function productDefined(): ProductDefined
+    public static function productDefined(): ProductDefined
     {
         $eventId = Id::createNew();
         $aggregateId = Id::createNew();
@@ -290,7 +290,7 @@ abstract class SampleEvents
             1,
             $eventId,
             $eventId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null),
             'Cool-Card',
             1_200,
@@ -303,7 +303,7 @@ abstract class SampleEvents
         );
     }
 
-    private static function productActivated(
+    public static function productActivated(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -317,12 +317,12 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null)
         );
     }
 
-    private static function productDeactivated(
+    public static function productDeactivated(
         Id $aggregateId,
         int $aggregateVersion,
         Id $causationId,
@@ -336,7 +336,7 @@ abstract class SampleEvents
             $aggregateVersion,
             $causationId,
             $correlationId,
-            new \DateTimeImmutable('now'),
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
             self::sampleMetadata(null)
         );
     }

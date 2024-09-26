@@ -39,7 +39,7 @@ class ProductDeactivated implements EventTransformedProduct
     {
         return Product::fromProperties(
             $product->aggregateId(),
-            $product->aggregateVersion() + 1,
+            $this->aggregateVersion(),
             $product->name(),
             $product->interestInBasisPoints(),
             $product->annualFeeInCents(),

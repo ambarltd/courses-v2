@@ -16,9 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BaseController extends AbstractController
 {
-    /**
-     * @var object[]
-     */
     protected array $services = [];
 
     private JsonPostRequestMapper $jsonPostRequestMapper;
@@ -30,17 +27,6 @@ class BaseController extends AbstractController
     private PhpOutLogger $phpOutLogger;
 
     private bool $shouldValidateResponseSchemas = false;
-
-    /**
-     * @param array<object> $services
-     */
-    public function __construct(
-        array $services
-    ) {
-        foreach ($services as $service) {
-            $this->services[$service::class] = $service;
-        }
-    }
 
     public function setJsonPostRequestMapper(JsonPostRequestMapper $jsonPostRequestMapper): void
     {
@@ -67,7 +53,7 @@ class BaseController extends AbstractController
         string $requestSchema,
         string $responseSchema,
         string $commandOrQueryClass,
-        object $commandOrQueryHandler,
+        ?object $commandOrQueryHandler,
         ?callable $commandOrQueryModifier,
         int $successStatusCode
     ): JsonResponse {
@@ -193,19 +179,5 @@ class BaseController extends AbstractController
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
-    }
-
-    /**
-     * todo deal with stdclass and throw without breaking the build.
-     */
-    protected function getService(string $serviceKey): object
-    {
-        foreach ($this->services as $key => $service) {
-            if ($serviceKey === $key && \is_object($service)) {
-                return $service;
-            }
-        }
-
-        return new \stdClass();
     }
 }

@@ -146,19 +146,18 @@ class ControllerExceptionsSchemaGenerator
     }
 
     /**
-     * @return string[]
+     * @return array<class-string>
      *
      * @throws ExceptionSerializerFailed
      */
     private function retrieveThrownClassesFromControllerClassAndMethod(string $controllerClassAndMethod): array
     {
-        $handlerServiceClass = $this->locateHandlerServiceFromControllerClassAndMethod($controllerClassAndMethod);
+        $handlerServiceClass = $this->handlerServiceClassFromControllerClassAndMethod($controllerClassAndMethod);
         $allThrownExceptionAnnotationsInHandler = $this->thrownExceptionAnnotationsInClassName($handlerServiceClass);
 
         $thrownClasses = $this->resolveClassNamesFromAnnotationClassNames(
             $allThrownExceptionAnnotationsInHandler,
-            $handlerServiceClass,
-            \sprintf('Error occurred while resolving exceptions from %s', $controllerClassAndMethod)
+            $handlerServiceClass
         );
 
         if ([] === $thrownClasses) {
@@ -171,37 +170,6 @@ class ControllerExceptionsSchemaGenerator
     /**
      * @return class-string
      *
-     * @throws ExceptionSerializerFailed
-     */
-    private function locateHandlerServiceFromControllerClassAndMethod(string $controllerClassAndMethod): string
-    {
-        $unresolvedHandlerServiceClass = $this->handlerServiceClassFromControllerClassAndMethod($controllerClassAndMethod);
-
-        try {
-            $reflectionMethod = new \ReflectionMethod($controllerClassAndMethod);
-            $controllerClass = $reflectionMethod->getDeclaringClass()->getName();
-            if (!\is_string($controllerClass)) {
-                throw new \ReflectionException();
-            }
-        } catch (\ReflectionException $reflectionException) {
-            throw new ExceptionSerializerFailed('Could not build reflection method for '.$controllerClassAndMethod);
-        }
-
-        $resolveClassErrorMessage = \sprintf('Error occurred while resolving service class from %s', $controllerClassAndMethod);
-        $resolvedClasses = $this->resolveClassNamesFromAnnotationClassNames(
-            [$unresolvedHandlerServiceClass],
-            $controllerClass,
-            $resolveClassErrorMessage
-        );
-
-        if (!\is_array($resolvedClasses) || !\array_key_exists(0, $resolvedClasses) || !\is_string($resolvedClasses[0])) {
-            throw new ExceptionSerializerFailed($resolveClassErrorMessage);
-        }
-
-        return $resolvedClasses[0];
-    }
-
-    /**
      * @throws ExceptionSerializerFailed
      */
     private function handlerServiceClassFromControllerClassAndMethod(string $controllerClassAndMethod): string
@@ -243,22 +211,36 @@ class ControllerExceptionsSchemaGenerator
                 break;
             }
         }
-
         if (null === $matchingLine) {
             throw new ExceptionSerializerFailed('Cannot find line which might have a handler service class in '.$controllerClassAndMethod);
         }
 
-        $matches = [];
-        preg_match('/getService\(([\w_\-\d]+)\:\:class\)/', $matchingLine, $matches);
-        $handlerServiceClass = null;
-        if (\array_key_exists(1, $matches)) {
-            $handlerServiceClass = $matches[1];
-        }
-        if (!\is_string($handlerServiceClass)) {
-            throw new ExceptionSerializerFailed('Cannot find service class after finding a line which might have had a handler service class in '.$controllerClassAndMethod);
+        $matchingProperty = str_replace(['$', 'this->', ','], '', $matchingLine);
+
+        try {
+            $reflectionClass = $reflectionMethod->getDeclaringClass();
+
+            if (!$reflectionClass->hasProperty($matchingProperty)) {
+                throw new ExceptionSerializerFailed('Cannot find property '.$matchingProperty.' in '.$controllerClassAndMethod);
+            }
+
+            $reflectionProperty = $reflectionClass->getProperty($matchingProperty);
+            $propertyType = $reflectionProperty->getType();
+
+            if (!$propertyType instanceof \ReflectionNamedType) {
+                throw new ExceptionSerializerFailed('Cannot get type of property '.$matchingProperty.' in '.$controllerClassAndMethod);
+            }
+
+            $className = $propertyType->getName();
+        } catch (\ReflectionException $e) {
+            throw new ExceptionSerializerFailed('Reflection exception when accessing property '.$matchingProperty.' in '.$controllerClassAndMethod);
         }
 
-        return $handlerServiceClass;
+        if (class_exists($className)) {
+            return $className;
+        }
+
+        throw new ExceptionSerializerFailed(\sprintf('Class %s does not exist in %s', $className, $controllerClassAndMethod));
     }
 
     /**
@@ -272,7 +254,7 @@ class ControllerExceptionsSchemaGenerator
      * Collects from multiple definition in a single statement
      *   Eg: %throws Exception1|Exception2
      *
-     * @return string[]
+     * @return array<class-string>
      *
      * @throws ExceptionSerializerFailed
      */
@@ -308,6 +290,8 @@ class ControllerExceptionsSchemaGenerator
                 if (!\is_array($newThrows)) {
                     throw new ExceptionSerializerFailed('Could not explode throws in '.$handlerService);
                 }
+
+                /** @var array<class-string> $allThrows */
                 $allThrows = array_merge(
                     $allThrows,
                     $newThrows
@@ -326,7 +310,7 @@ class ControllerExceptionsSchemaGenerator
      *
      * @throws ExceptionSerializerFailed
      */
-    private function resolveClassNamesFromAnnotationClassNames(array $annotationClassNames, string $occurringInClassName, string $additonalErrorMessage): array
+    private function resolveClassNamesFromAnnotationClassNames(array $annotationClassNames, string $occurringInClassName): array
     {
         $classNames = [];
         $useStatements = $this->useStatementsInClassName($occurringInClassName);

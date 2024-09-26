@@ -112,7 +112,7 @@ class PrimaryEmailChangeRequested implements EventTransformedUser
 
         return User::fromProperties(
             $user->aggregateId(),
-            $this->aggregateVersion,
+            $this->aggregateVersion(),
             VerifiedButRequestedNewEmail::fromEmailsAndVerificationCode(
                 Email::fromEmail(
                     $previousEmailStatus->verifiedEmail()->email()

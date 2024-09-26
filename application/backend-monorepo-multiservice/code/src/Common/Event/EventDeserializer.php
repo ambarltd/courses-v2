@@ -29,9 +29,9 @@ abstract class EventDeserializer extends EventReflectionBaseClass
     }
 
     /**
-     * @throws EventException\UnrecoverableDeserializationError
-     *
      * @return array<string,mixed>
+     *
+     * @throws EventException\UnrecoverableDeserializationError
      */
     public static function jsonPayloadToArrayPayload(string $jsonPayload): array
     {
@@ -43,6 +43,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
         if (null === $arrayPayload) {
             throw new EventException\UnrecoverableDeserializationError('Could not recover for: '.$jsonPayload);
         }
+
         return self::serializedArrayPayloadToArrayPayload(
             $arrayPayload
         );
@@ -127,6 +128,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
         } catch (\Throwable $exception) {
             $jsonPayload = json_encode($serializedArrayPayload);
             $jsonPayload = false === $jsonPayload ? 'Could not encode failed payload' : $jsonPayload;
+
             throw new EventException\UnrecoverableDeserializationError('Unrecoverable for:'.$jsonPayload);
         }
 

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification;
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerificationCodeSent;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
@@ -13,7 +12,6 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
-use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Service\EventStore\EventStore;
 use Galeas\Api\Service\QueueProcessor\EventReactor;
 
@@ -29,7 +27,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
     /**
      * @throws PrimaryEmailVerificationAlreadySent
      * @throws EventStoreCannotRead|EventStoreCannotWrite
-     * @throws NoRandomnessAvailable|NoUserFoundForCode
+     * @throws NoUserFoundForEventAggregateId
      */
     public function react(Event $event): void
     {
@@ -65,16 +63,16 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 
         $aggregateAndEventIds = $this->eventStore->find($event->aggregateId()->id());
         if (null === $aggregateAndEventIds) {
-            throw new NoUserFoundForCode();
+            throw new NoUserFoundForEventAggregateId();
         }
 
         $user = $aggregateAndEventIds->aggregate();
         if (!$user instanceof User) {
-            throw new NoUserFoundForCode();
+            throw new NoUserFoundForEventAggregateId();
         }
 
         $newEvent = PrimaryEmailVerificationCodeSent::new(
-            Id::createNew(),
+            $newEventId,
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
             $aggregateAndEventIds->lastEventId(),

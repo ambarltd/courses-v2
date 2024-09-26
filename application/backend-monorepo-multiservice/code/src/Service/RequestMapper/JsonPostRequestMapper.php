@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\RequestMapper;
 
-use Galeas\Api\BoundedContext\Security\Session\Projection\Session\UserIdFromSignedInSessionToken;
+use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
+use Galeas\Api\Service\RequestMapper\Exception\ExpiredOrNonExistentSessionToken;
 use Galeas\Api\Service\RequestMapper\Exception\InternalDateHandlingError;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidContentType;
 use Galeas\Api\Service\RequestMapper\Exception\InvalidJson;
@@ -15,7 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class JsonPostRequestMapper
 {
-    private UserIdFromSignedInSessionToken $userIdFromSignedInSessionToken;
+    private AuthenticatedUserIdFromSignedInSessionToken $authenticatedUserIdFromSignedInSessionToken;
 
     private int $sessionExpiresAfterSeconds;
 
@@ -23,10 +24,10 @@ class JsonPostRequestMapper
      * @throws \RuntimeException
      */
     public function __construct(
-        UserIdFromSignedInSessionToken $userIdFromSignedInSessionToken,
+        AuthenticatedUserIdFromSignedInSessionToken $authenticatedUserIdFromSignedInSessionToken,
         string $sessionExpiresAfterSeconds
     ) {
-        $this->userIdFromSignedInSessionToken = $userIdFromSignedInSessionToken;
+        $this->authenticatedUserIdFromSignedInSessionToken = $authenticatedUserIdFromSignedInSessionToken;
         if (!is_numeric($sessionExpiresAfterSeconds)) {
             throw new \RuntimeException('Invalid sessionExpiresAfterSeconds: '.$sessionExpiresAfterSeconds);
         }
@@ -40,7 +41,7 @@ class JsonPostRequestMapper
     {
         $requestArray = $this->requestJsonToRequestArray($request);
 
-        if (is_array($requestArray) && empty($requestArray)) {
+        if (\is_array($requestArray) && empty($requestArray)) {
             return '{}';
         }
 
@@ -62,13 +63,18 @@ class JsonPostRequestMapper
      *
      * @throws InvalidContentType|InvalidJson
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
-     * @throws InternalDateHandlingError
+     * @throws ExpiredOrNonExistentSessionToken|InternalDateHandlingError
      */
     public function createCommandOrQueryFromEndUserRequest(Request $request, string $commandOrQueryClass): object
     {
         $requestArray = $this->requestJsonToRequestArray($request);
         $overridenArray = $this->overrideSensitiveFieldsInRequestArrayAndRemoveMetadata($requestArray, $request, $commandOrQueryClass);
-        $validatedMetadata = $this->metadataToValidatedMetadata(\is_array($requestArray['metadata']) ? $requestArray['metadata'] : [], $request);
+        $validatedMetadata = $this->metadataToValidatedMetadata(
+            \is_array($requestArray['metadata']) ? $requestArray['metadata'] : [],
+            \is_string($overridenArray['withSessionToken']) ? $overridenArray['withSessionToken'] : null,
+            \is_string($overridenArray['authenticatedUserId']) ? $overridenArray['authenticatedUserId'] : null,
+            $request
+        );
 
         $safeArray = $overridenArray;
         $safeArray['metadata'] = $validatedMetadata;
@@ -122,7 +128,7 @@ class JsonPostRequestMapper
      * @return array<string, mixed>
      *
      * @throws CannotResolveAuthorizerFromSessionTokenDatabase|MissingExpectedSessionToken
-     * @throws InternalDateHandlingError
+     * @throws ExpiredOrNonExistentSessionToken|InternalDateHandlingError
      */
     private function overrideSensitiveFieldsInRequestArrayAndRemoveMetadata(
         array $requestArray,
@@ -131,17 +137,15 @@ class JsonPostRequestMapper
     ): array {
         $requestArray['authenticatedUserId'] = null;
         $requestArray['withIp'] = null;
-        $requestArray['withSessionToken'] = null;
 
         $withSessionToken = $request->headers->get('X-With-Session-Token');
         if (
-            \array_key_exists('metadata', $requestArray)
-            && \is_array($requestArray['metadata'])
-            && \array_key_exists('withSessionToken', $requestArray['metadata'])
-            && (\is_string($requestArray['metadata']['withSessionToken']) || null === $requestArray['metadata']['withSessionToken'])
+            \array_key_exists('withSessionToken', $requestArray)
+            && \is_string($requestArray['withSessionToken'])
         ) {
-            $withSessionToken = $requestArray['metadata']['withSessionToken'];
+            $withSessionToken = $requestArray['withSessionToken'];
         }
+        $requestArray['withSessionToken'] = $withSessionToken;
 
         try {
             $withTokenRefreshedAfterDate = (new \DateTimeImmutable())->modify('-'.$this->sessionExpiresAfterSeconds.' seconds');
@@ -149,30 +153,33 @@ class JsonPostRequestMapper
             throw new InternalDateHandlingError();
         }
 
+        $authenticatedUserId = null;
+
         try {
             if (\is_string($withSessionToken)) {
-                $requestArray['authenticatedUserId'] = $this->userIdFromSignedInSessionToken
-                    ->userIdFromSignedInSessionToken(
+                $authenticatedUserId = $this->authenticatedUserIdFromSignedInSessionToken
+                    ->authenticatedUserIdFromSignedInSessionToken(
                         $withSessionToken,
                         $withTokenRefreshedAfterDate
                     )
                 ;
-                $requestArray['withSessionToken'] = $withSessionToken;
+                $requestArray['authenticatedUserId'] = $authenticatedUserId;
             }
         } catch (ProjectionCannotRead $exception) {
             throw new CannotResolveAuthorizerFromSessionTokenDatabase();
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
-            && null === $requestArray['authenticatedUserId']
+            null !== $withSessionToken
+            && null === $authenticatedUserId
+            && property_exists(new $commandOrQueryClass(), 'authenticatedUserId')
         ) {
-            throw new MissingExpectedSessionToken();
+            throw new ExpiredOrNonExistentSessionToken();
         }
 
         if (
-            property_exists(new $commandOrQueryClass(), 'withSessionToken')
-            && null === $requestArray['withSessionToken']
+            null === $withSessionToken
+            && (property_exists(new $commandOrQueryClass(), 'authenticatedUserId') || property_exists(new $commandOrQueryClass(), 'withSessionToken'))
         ) {
             throw new MissingExpectedSessionToken();
         }
@@ -183,7 +190,9 @@ class JsonPostRequestMapper
             $requestArray['withIp'] = $request->server->get('REMOTE_ADDR');
         }
 
-        unset($requestArray['metadata']);
+        if (\array_key_exists('metadata', $requestArray)) {
+            unset($requestArray['metadata']);
+        }
 
         return $requestArray;
     }
@@ -195,6 +204,8 @@ class JsonPostRequestMapper
      */
     private function metadataToValidatedMetadata(
         array $metadata,
+        ?string $withSessionToken,
+        ?string $authenticatedUserId,
         Request $request
     ): array {
         $receivedEnvironment = null;
@@ -256,15 +267,6 @@ class JsonPostRequestMapper
             $receivedReferer = $metadata['referer'];
         }
 
-        $receivedSessionToken = null;
-        if (
-            \array_key_exists('withSessionToken', $metadata)
-            && \is_string($metadata['withSessionToken'])
-            && '' !== $metadata['withSessionToken']
-        ) {
-            $receivedSessionToken = $metadata['withSessionToken'];
-        }
-
         $receivedLatitude = null;
         if (
             \array_key_exists('latitude', $metadata)
@@ -283,6 +285,7 @@ class JsonPostRequestMapper
 
         // Override metadata such that only allow listed fields can be passed by the end user.
         return [
+            'authenticatedUserId' => $authenticatedUserId,
             'environment' => $receivedEnvironment,
             'devicePlatform' => $receivedDevicePlatform,
             'deviceModel' => $receivedDeviceModel,
@@ -293,7 +296,7 @@ class JsonPostRequestMapper
             'ipAddress' => $request->server->get('REMOTE_ADDR'),
             'userAgent' => $receivedUserAgent,
             'referer' => $receivedReferer,
-            'withSessionToken' => $receivedSessionToken,
+            'withSessionToken' => $withSessionToken,
         ];
     }
 

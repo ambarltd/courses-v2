@@ -5,6 +5,9 @@
   "properties": {
     "metadata": {
       "$ref": "Request/Shared/Metadata.json"
+    },
+    "withSessionToken": {
+      "$ref": "Request/Shared/StringSessionToken.json"
     }
   },
   "required": [

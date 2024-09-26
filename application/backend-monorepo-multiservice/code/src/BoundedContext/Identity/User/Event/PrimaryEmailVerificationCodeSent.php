@@ -84,6 +84,12 @@ class PrimaryEmailVerificationCodeSent implements EventTransformedUser
 
     public function transformUser(User $user): User
     {
-        return $user;
+        return User::fromProperties(
+            $user->aggregateId(),
+            $this->aggregateVersion(),
+            $user->primaryEmailStatus(),
+            $user->hashedPassword(),
+            $user->accountDetails()
+        );
     }
 }

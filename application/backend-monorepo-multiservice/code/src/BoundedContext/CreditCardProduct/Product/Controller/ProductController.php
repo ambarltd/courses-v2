@@ -14,14 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/api/v1')]
 class ProductController extends BaseController
 {
+    private ListProductsQueryHandler $listProductsQueryHandler;
+
     public function __construct(
         ListProductsQueryHandler $listProductsQueryHandler,
     ) {
-        parent::__construct(
-            [
-                $listProductsQueryHandler,
-            ]
-        );
+        $this->listProductsQueryHandler = $listProductsQueryHandler;
     }
 
     /**
@@ -37,7 +35,7 @@ class ProductController extends BaseController
             'Request/V1_CreditCardProduct_Product_ListItems.json',
             'Response/V1_CreditCardProduct_Product_ListItems.json',
             ListProductsQuery::class,
-            $this->getService(ListProductsQueryHandler::class),
+            $this->listProductsQueryHandler,
             null,
             Response::HTTP_OK
         );

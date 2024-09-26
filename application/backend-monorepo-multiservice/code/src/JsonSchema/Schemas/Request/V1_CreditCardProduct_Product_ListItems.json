@@ -2,12 +2,6 @@
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "additionalProperties": false,
-  "properties": {
-    "metadata": {
-      "$ref": "Request/Shared/Metadata.json"
-    }
-  },
-  "required": [
-    "metadata"
-  ]
+  "properties": {},
+  "required": []
 }

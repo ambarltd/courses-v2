@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "userId": {
+      "type": "string"
+    },
+    "primaryEmailStatus": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "unverifiedEmail": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "email": {
+                  "type": "string"
+                }
+              },
+              "required": ["email"]
+            }
+          },
+          "required": ["unverifiedEmail"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verifiedEmail": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "email": {
+                  "type": "string"
+                }
+              },
+              "required": ["email"]
+            }
+          },
+          "required": ["verifiedEmail"]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "verifiedButRequestedNewEmail": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "verifiedEmail": {
+                  "type": "string"
+                },
+                "requestedEmail": {
+                  "type": "string"
+                }
+              },
+              "required": ["verifiedEmail", "requestedEmail"]
+            }
+          },
+          "required": ["verifiedButRequestedNewEmail"]
+        }
+      ]
+    }
+  },
+  "required": [
+    "userId",
+    "primaryEmailStatus"
+  ]
+}
