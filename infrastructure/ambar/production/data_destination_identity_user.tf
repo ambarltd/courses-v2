@@ -48,12 +48,12 @@ resource "ambar_data_destination" "Identity_User_SentVerificationEmail_V2" {
   password             = "password"
 }
 
-resource "ambar_data_destination" "Identity_User_UserDetails_V2" {
+resource "ambar_data_destination" "Identity_User_UserDetailsV2" {
   filter_ids = [
     ambar_filter.identity_all.resource_id,
   ]
-  description          = "Identity_User_UserDetails"
-  destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/identity/user/projection/user_details"
+  description          = "Identity_User_UserDetails_V2"
+  destination_endpoint = "${var.data_destination_identity.endpoint_prefix}/api/v1/identity/user/projection/user_details_v2"
   username             = "username"
   password             = "password"
 }

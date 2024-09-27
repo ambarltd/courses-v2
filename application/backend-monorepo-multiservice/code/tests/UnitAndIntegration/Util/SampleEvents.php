@@ -147,6 +147,50 @@ abstract class SampleEvents
         );
     }
 
+    public static function primaryEmailChangeRequestedAgain(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId
+    ): PrimaryEmailChangeRequested {
+        $eventId = Id::createNew();
+
+        return PrimaryEmailChangeRequested::new(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
+            self::sampleMetadata(null),
+            self::thirdSampleEmail(),
+            self::thirdSampleVerificationCode(),
+            self::sampleHashedPassword()
+        );
+    }
+
+    public static function primaryEmailChangeRequestedAgainAgain(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId
+    ): PrimaryEmailChangeRequested {
+        $eventId = Id::createNew();
+
+        return PrimaryEmailChangeRequested::new(
+            $eventId,
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
+            self::sampleMetadata(null),
+            self::fourthSampleEmail(),
+            self::fourthSampleVerificationCode(),
+            self::sampleHashedPassword()
+        );
+    }
+
     public static function anotherSignedUp(): SignedUp
     {
         $eventId = Id::createNew();
@@ -385,6 +429,16 @@ abstract class SampleEvents
         return 'proof@galeas2.net';
     }
 
+    private static function thirdSampleEmail(): string
+    {
+        return 'proof123123@example-example.net';
+    }
+
+    private static function fourthSampleEmail(): string
+    {
+        return 'fourth@example-example.net';
+    }
+
     private static function anotherSampleEmail(): string
     {
         return 'anotherEmail@gmail.com';
@@ -423,6 +477,16 @@ abstract class SampleEvents
     private static function secondSampleVerificationCode(): string
     {
         return 'SecondVerificationCode';
+    }
+
+    private static function thirdSampleVerificationCode(): string
+    {
+        return 'ThirdVerificationCode';
+    }
+
+    private static function fourthSampleVerificationCode(): string
+    {
+        return 'FourthVerificationCode';
     }
 
     private static function anotherSampleVerificationCode(): string
