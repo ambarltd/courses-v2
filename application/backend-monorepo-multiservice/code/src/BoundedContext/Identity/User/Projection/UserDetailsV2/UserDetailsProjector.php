@@ -66,9 +66,6 @@ class UserDetailsProjector implements EventProjector
         }
     }
 
-    /**
-     * @throws \InvalidArgumentException
-     */
     private function getPrimaryEmailStatusFromEvent(
         Event $event,
         null|UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $currentStatus = null
