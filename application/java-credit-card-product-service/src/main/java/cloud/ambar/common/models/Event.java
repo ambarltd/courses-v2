@@ -14,10 +14,13 @@ import java.util.UUID;
 @Builder
 public class Event {
     private UUID id;
-    private String aggregateId;
+    private UUID aggregateId;
+    private UUID causationID;
+    private UUID correlationId;
     private String eventType;
     private String aggregateType;
     private long version;
+    // TBD do we need both of these byte arrays?
     private byte[] data;
     private byte[] metaData;
     private LocalDateTime timeStamp;
