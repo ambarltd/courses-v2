@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject;
 
-class UnverifiedEmail
+class VerifiedEmail
 {
     private string $email;
 

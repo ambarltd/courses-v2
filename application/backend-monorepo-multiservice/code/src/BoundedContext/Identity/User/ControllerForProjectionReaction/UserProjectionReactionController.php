@@ -8,7 +8,7 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationC
 use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\SentVerificationEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\UserDetailsProjector;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\UserDetailsProjector;
 use Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification\SendPrimaryEmailVerificationReactor;
 use Galeas\Api\CommonController\ProjectionReactionController;
 use Symfony\Component\HttpFoundation\Request;
@@ -81,7 +81,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/user_details', name: 'projection_user_details', methods: ['POST'])]
+    #[Route('/projection/user_details_v2', name: 'projection_user_details_v2', methods: ['POST'])]
     public function userDetails(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

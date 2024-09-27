@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\UnverifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmailButRequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmailButRequestedNewEmail;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
@@ -70,14 +70,17 @@ class UserDetailsProjector implements EventProjector
         Event $event,
         null|UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $currentStatus = null
     ): UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail {
+        if ($event instanceof PrimaryEmailChangeRequested && $currentStatus instanceof UnverifiedEmail) {
+            return UnverifiedEmail::fromProperties($event->newEmailRequested());
+        }
         if ($event instanceof PrimaryEmailVerified && $currentStatus instanceof UnverifiedEmail) {
             return VerifiedEmail::fromProperties($currentStatus->getEmail());
         }
+        if ($event instanceof PrimaryEmailChangeRequested && $currentStatus instanceof VerifiedEmail) {
+            return VerifiedEmailButRequestedNewEmail::fromProperties($currentStatus->getEmail(), $event->newEmailRequested());
+        }
         if ($event instanceof PrimaryEmailVerified && $currentStatus instanceof VerifiedEmailButRequestedNewEmail) {
             return VerifiedEmail::fromProperties($currentStatus->getRequestedEmail());
-        }
-        if ($event instanceof PrimaryEmailChangeRequested && $currentStatus instanceof UnverifiedEmail) {
-            return UnverifiedEmail::fromProperties($event->newEmailRequested());
         }
         if ($event instanceof PrimaryEmailChangeRequested && $currentStatus instanceof VerifiedEmailButRequestedNewEmail) {
             return VerifiedEmailButRequestedNewEmail::fromProperties($currentStatus->getVerifiedEmail(), $event->newEmailRequested());
