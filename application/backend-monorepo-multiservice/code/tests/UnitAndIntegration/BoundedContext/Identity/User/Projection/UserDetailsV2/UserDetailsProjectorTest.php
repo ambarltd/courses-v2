@@ -24,6 +24,7 @@ class UserDetailsProjectorTest extends ProjectionAndReactionIntegrationTest
         $signedUp = SampleEvents::signedUp();
         $userId = $signedUp->aggregateId()->id();
         $projector->project($signedUp);
+        $projector->project($signedUp); // testing idempotence is fine
         Assert::assertEquals(
             UserDetails::fromProperties(
                 $userId,

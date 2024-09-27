@@ -51,9 +51,12 @@ class UserDetailsProjector implements EventProjector
             } elseif ($userDetails instanceof UserDetails) {
                 $currentStatus = $userDetails->getPrimaryEmailStatus();
                 $newStatus = $this->getPrimaryEmailStatusFromEvent($event, $currentStatus);
-                $userDetails->changePrimaryEmailStatus($newStatus);
+                if (null !== $newStatus) {
+                    $userDetails->changePrimaryEmailStatus($newStatus);
+                }
             } else {
-                throw new \InvalidArgumentException('Unsupported operation');
+                // e.g., repeats
+                return;
             }
 
             $this->projectionDocumentManager->persist($userDetails);
@@ -69,7 +72,7 @@ class UserDetailsProjector implements EventProjector
     private function getPrimaryEmailStatusFromEvent(
         Event $event,
         null|UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $currentStatus = null
-    ): UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail {
+    ): null|UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail {
         if ($event instanceof PrimaryEmailChangeRequested && $currentStatus instanceof UnverifiedEmail) {
             return UnverifiedEmail::fromProperties($event->newEmailRequested());
         }
@@ -86,6 +89,6 @@ class UserDetailsProjector implements EventProjector
             return VerifiedEmailButRequestedNewEmail::fromProperties($currentStatus->getVerifiedEmail(), $event->newEmailRequested());
         }
 
-        throw new \InvalidArgumentException('Unsupported operation');
+        return null; // e.g. repeated events
     }
 }
