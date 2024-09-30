@@ -1,4 +1,4 @@
-package cloud.ambar.creditCardProduct.util;
+package cloud.ambar.common.util;
 
 public class Constants {
     public static String EVENT_STORE_HOST_ENV_KEY = "EVENT_STORE_HOST";

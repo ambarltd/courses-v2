@@ -1,5 +1,8 @@
 package cloud.ambar.common.models;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +15,10 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
+@Table(name = "event_store")
 public class Event {
+    @Id
     private UUID id;
     private UUID aggregateId;
     private UUID causationID;
