@@ -2,7 +2,6 @@ package cloud.ambar.common.components;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
@@ -18,23 +17,26 @@ import org.springframework.stereotype.Component;
 public class EventStoreInitializer {
     private static final Logger log = LogManager.getLogger(EventStoreInitializer.class);
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    @Value("${spring.datasource.table.name}")
+    @Value("${EVENT_STORE_CREATE_TABLE_WITH_NAME}")
     private String eventStoreTableName;
 
-    @Value("${spring.datasource.replica.username}")
+    @Value("${EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME}")
     private String eventStoreCreateReplicationUserWithUsername;
 
-    @Value("${spring.datasource.replica.password}")
+    @Value("${EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD}")
     private String eventStoreCreateReplicationUserWithPassword;
 
-    @Value("${spring.datasource.database.name}")
+    @Value("${EVENT_STORE_DATABASE_NAME}")
     private String eventStoreDatabaseName;
 
-    @Value("${spring.datasource.replica.publication}")
+    @Value("${EVENT_STORE_CREATE_REPLICATION_PUBLICATION}")
     private String eventStoreCreateReplicationPublication;
+
+    public EventStoreInitializer(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     @Bean
     ApplicationRunner initDatabase() {
