@@ -52,6 +52,11 @@ class SQLEventStore implements EventStore
             }
 
             $this->connection->commit();
+            // Add an arbitrary delay to let projections & reactions catch up.
+            // This was useful in this project, because we had to hack together a frontend quickly.
+            // In a real world project, your frontend would be more sophisticated,
+            // and wouldn't need this backend "hack".
+            usleep(250_000); // Could be way smaller, but playing it extra safe.
         } catch (\Throwable $exception) {
             throw new EventStoreCannotWrite($exception);
         }
