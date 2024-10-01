@@ -21,19 +21,19 @@ public class EventStoreInitializer {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Value("spring.datasource.table.name")
+    @Value("${spring.datasource.table.name}")
     private String eventStoreTableName;
 
-    @Value("spring.datasource.replica.username")
+    @Value("${spring.datasource.replica.username}")
     private String eventStoreCreateReplicationUserWithUsername;
 
-    @Value("spring.datasource.replica.password")
+    @Value("${spring.datasource.replica.password}")
     private String eventStoreCreateReplicationUserWithPassword;
 
-    @Value("spring.datasource.database.name")
+    @Value("${spring.datasource.database.name}")
     private String eventStoreDatabaseName;
 
-    @Value("spring.datasource.replica.publication")
+    @Value("${spring.datasource.replica.publication}")
     private String eventStoreCreateReplicationPublication;
 
     @Bean
