@@ -40,20 +40,23 @@ public class EventStoreInitializer {
     ApplicationRunner initDatabase() {
         return args -> {
             // Create table
-            log.info("Creating table");
-            jdbcTemplate.execute(String.format("CREATE TABLE IF NOT EXISTS %s (\n" +
-                    "id BIGSERIAL NOT NULL,\n" +
-                    "event_id TEXT NOT NULL UNIQUE,\n" +
-                    "aggregate_id TEXT NOT NULL,\n" +
-                    "aggregate_version BIGINT NOT NULL,\n" +
-                    "causation_id TEXT NOT NULL,\n" +
-                    "correlation_id TEXT NOT NULL,\n" +
-                    "recorded_on TEXT NOT NULL,\n" +
-                    "event_name TEXT NOT NULL,\n" +
-                    "json_payload TEXT NOT NULL,\n" +
-                    "json_metadata TEXT NOT NULL,\n" +
-                    "PRIMARY KEY (id)\n" +
-                    ");", eventStoreTableName));
+            log.info("Creating table " + eventStoreTableName);
+            jdbcTemplate.execute(
+                    String.format("""
+                        CREATE TABLE IF NOT EXISTS %s (
+                        id BIGSERIAL NOT NULL,
+                        event_id TEXT NOT NULL UNIQUE,
+                        aggregate_id TEXT NOT NULL,
+                        aggregate_version BIGINT NOT NULL,
+                        causation_id TEXT NOT NULL,
+                        correlation_id TEXT NOT NULL,
+                        recorded_on TEXT NOT NULL,
+                        event_name TEXT NOT NULL,
+                        json_payload TEXT NOT NULL,
+                        json_metadata TEXT NOT NULL,
+                        PRIMARY KEY (id));""",
+                        eventStoreTableName)
+            );
 
             // Create user
             log.info("Creating replication user");
