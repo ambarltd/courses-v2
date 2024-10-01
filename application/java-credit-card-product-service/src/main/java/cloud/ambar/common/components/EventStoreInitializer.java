@@ -43,7 +43,7 @@ public class EventStoreInitializer {
         return args -> {
             // Create table
             log.info("Creating table " + eventStoreTableName);
-            jdbcTemplate.execute(
+            executeStatementIgnoreErrors(
                     String.format("""
                         CREATE TABLE IF NOT EXISTS %s (
                         id BIGSERIAL NOT NULL,
@@ -62,7 +62,7 @@ public class EventStoreInitializer {
 
             // Create user
             log.info("Creating replication user");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE USER %s REPLICATION LOGIN PASSWORD '%s';",
                     eventStoreCreateReplicationUserWithUsername,
                     eventStoreCreateReplicationUserWithPassword
@@ -70,14 +70,14 @@ public class EventStoreInitializer {
 
             // Grant permissions to user
             log.info("Grating permissions to replication user");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "GRANT CONNECT ON DATABASE \"%s\" TO %s;",
                     eventStoreDatabaseName,
                     eventStoreCreateReplicationUserWithUsername
             ));
 
             log.info("Granting select to replication user");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "GRANT SELECT ON TABLE %s TO %s;",
                     eventStoreTableName,
                     eventStoreCreateReplicationUserWithUsername
@@ -85,7 +85,7 @@ public class EventStoreInitializer {
 
             // Create publication
             log.info("Creating publication for table");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE PUBLICATION %s FOR TABLE %s;",
                     eventStoreCreateReplicationPublication,
                     eventStoreTableName
@@ -93,30 +93,40 @@ public class EventStoreInitializer {
 
             // Create indices
             log.info("Creating aggregate index");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE UNIQUE INDEX event_store_idx_event_aggregate_id_version ON %s(aggregate_id, aggregate_version);",
                     eventStoreTableName
             ));
             log.info("Creating causation index");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE INDEX event_store_idx_event_causation_id ON %s(causation_id);",
                     eventStoreTableName
             ));
             log.info("Creating correlation index");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE INDEX event_store_idx_event_correlation_id ON %s(correlation_id);",
                     eventStoreTableName
             ));
             log.info("Creating recording index");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE INDEX event_store_idx_occurred_on ON %s(recorded_on);",
                     eventStoreTableName
             ));
             log.info("Creating event name index");
-            jdbcTemplate.execute(String.format(
+            executeStatementIgnoreErrors(String.format(
                     "CREATE INDEX event_store_idx_event_name ON %s(event_name);",
                     eventStoreTableName
             ));
         };
+    }
+
+    private void executeStatementIgnoreErrors(final String sqlStatement) {
+        try {
+            log.info("Executing SQL: " + sqlStatement);
+            jdbcTemplate.execute(sqlStatement);
+        } catch (Exception e) {
+            log.warn("Caught exception when executing SQL statement.");
+            log.warn(e);
+        }
     }
 }
