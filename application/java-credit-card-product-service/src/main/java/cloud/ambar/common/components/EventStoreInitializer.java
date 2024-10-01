@@ -127,6 +127,9 @@ public class EventStoreInitializer {
         } catch (Exception e) {
             log.warn("Caught exception when executing SQL statement.");
             log.warn(e);
+            log.warn(e.getMessage());
+            log.warn(e.getCause());
+            log.warn(e.getStackTrace());
         }
     }
 }
