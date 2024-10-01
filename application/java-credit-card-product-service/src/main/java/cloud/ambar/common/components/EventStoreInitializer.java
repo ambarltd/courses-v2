@@ -69,7 +69,7 @@ public class EventStoreInitializer {
             ));
 
             // Grant permissions to user
-            log.info("Grating permissions to replication user");
+            log.info("Granting permissions to replication user");
             executeStatementIgnoreErrors(String.format(
                     "GRANT CONNECT ON DATABASE \"%s\" TO %s;",
                     eventStoreDatabaseName,
