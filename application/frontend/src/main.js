@@ -10,7 +10,8 @@ const app = Express()
 
 const domains = {
   identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
-  security: process.env.DOMAIN_SECURITY + "/api/v1/security"
+  security: process.env.DOMAIN_SECURITY + "/api/v1/security",
+  card_product: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card_product"
 }
 
 const endpoints = {

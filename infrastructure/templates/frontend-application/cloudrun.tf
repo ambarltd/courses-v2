@@ -19,7 +19,7 @@ resource "google_cloud_run_service" "application" {
         }
         env {
           name  = "DOMAIN_CREDIT_CARD_PRODUCT"
-          value = var.domain_security
+          value = var.domain_credit_card_product
         }
       }
     }
