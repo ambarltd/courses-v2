@@ -9,7 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * By making this a component, we tell Sptring to initialize this class and make it available to the Application Context
+ * By making this a component, we tell Spring to initialize this class and make it available to the Application Context
  * by doing this, along with ApplicationRunner bean, we can have this code run on startup of the application and ensure
  * that our event store is ready for us.
  */
