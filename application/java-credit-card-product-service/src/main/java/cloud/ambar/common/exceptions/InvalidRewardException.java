@@ -3,8 +3,8 @@ package cloud.ambar.common.exceptions;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class InvalidEventException extends RuntimeException {
-    public InvalidEventException(String msg) {
+public class InvalidRewardException extends RuntimeException {
+    public InvalidRewardException(String msg) {
         super(msg);
     }
 }

@@ -1,7 +1,9 @@
 package cloud.ambar.common.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,32 +11,37 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "event_store")
+@Table(name = "event_store", indexes = {
+        @Index(name = "event_store_idx_event_aggregate_id_version", columnList = "aggregate_id, aggregate_version", unique = true),
+        @Index(name = "event_store_idx_event_causation_id", columnList = "causation_id", unique = true),
+        @Index(name = "event_store_idx_event_correlation_id", columnList = "correlation_id"),
+        @Index(name = "event_store_idx_occurred_on", columnList = "recorded_on")
+})
 public class Event {
     @Id
-    private UUID id;
-    private UUID aggregateId;
-    private UUID causationID;
-    private UUID correlationId;
-    private String eventType;
-    private String aggregateType;
+    private Long id;
+    @Column(name="event_id")
+    private String eventId;
+    @Column(name="aggregate_id")
+    private String aggregateId;
+    @Column(name="causation_id")
+    private String causationID;
+    @Column(name="correlation_id")
+    private String correlationId;
+    @Column(name="aggregate_version")
     private long version;
-    // TBD do we need both of these byte arrays?
+    @Column(name="json_payload")
     private byte[] data;
-    private byte[] metaData;
+    @Column(name="json_metadata")
+    private byte[] metadata;
+    @Column(name="recorded_on")
     private LocalDateTime timeStamp;
-
-    public Event(String eventType, String aggregateType) {
-        this.id = UUID.randomUUID();
-        this.eventType = eventType;
-        this.aggregateType = aggregateType;
-        this.timeStamp = LocalDateTime.now();
-    }
+    @Column(name="event_name")
+    private String eventName;
 }
