@@ -10,7 +10,8 @@ const app = Express()
 
 const domains = {
   identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
-  security: process.env.DOMAIN_SECURITY + "/api/v1/security"
+  security: process.env.DOMAIN_SECURITY + "/api/v1/security",
+  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card_product"
 }
 
 const endpoints = {
@@ -21,7 +22,8 @@ const endpoints = {
   "list-sent-verification-emails": domains.identity + "user/list-sent-verification-emails",
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
-  "sign-out": domains.security + "/session/sign-out"
+  "sign-out": domains.security + "/session/sign-out",
+  "list-credit-card-products": domains.card + "/product/list-items"
 }
 
 // Accept JSON bodies
@@ -100,6 +102,7 @@ app.get('/verify-email', unauthenticated, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', authenticated, routeVerificationEmails);
+app.get('/card/products', authenticated, routeCardProducts);
 
 async function userDetails(token) {
   const response = await fetch(endpoints["user-details"], {
@@ -355,6 +358,32 @@ async function routeVerificationEmails(req, res) {
   }
 
   res.json(r);
+}
+async function routeCardProducts(req, res) {
+  const contents = {};
+
+  const response = await fetch(endpoints["list-credit-card-products"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': req.session.token
+      }
+  });
+  const r = await response.json()
+  if (!response.ok) {
+    const error = getError(r);
+    errorPage(res, error);
+    return;
+  }
+
+  return res.render("card/products", {
+    layout: layouts.main,
+    locals: {
+      title: "Card Products",
+      products: r
+    }
+  });
 }
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
