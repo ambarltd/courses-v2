@@ -44,7 +44,7 @@ class DefineProductHandler
             throw new InvalidPaymentCycle();
         }
 
-        if (!\in_array($command->reward, ['points', 'cashback', 'no_reward'], true)) {
+        if (!\in_array($command->reward, ['points', 'cashback', 'no_reward', 'none'], true)) {
             throw new InvalidReward();
         }
 
