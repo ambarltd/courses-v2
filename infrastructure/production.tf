@@ -4,7 +4,7 @@ resource "random_id" "production_uuid" {
 
 module "production_identity" {
   source                     = "./templates/service"
-  environment_uuid           = "b${random_id.production_uuid.hex}-pro"
+  environment_uuid           = "c${random_id.production_uuid.hex}-pro"
   service_name               = "ide"
   git_commit_hash            = var.git_commit_hash
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
@@ -20,7 +20,7 @@ module "production_identity" {
 
 module "production_security" {
   source                     = "./templates/service"
-  environment_uuid           = "b${random_id.production_uuid.hex}-pro"
+  environment_uuid           = "c${random_id.production_uuid.hex}-pro"
   service_name               = "sec"
   git_commit_hash            = var.git_commit_hash
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
@@ -36,7 +36,7 @@ module "production_security" {
 
 module "production_credit_card_product" {
   source                     = "./templates/service"
-  environment_uuid           = "b${random_id.production_uuid.hex}-pro"
+  environment_uuid           = "c${random_id.production_uuid.hex}-pro"
   service_name               = "ccp"
   git_commit_hash            = var.git_commit_hash
   pgt_proxy_cert_common_name = local.credentials["pgt_proxy_certificate_common_name"]
@@ -53,7 +53,7 @@ module "production_credit_card_product" {
 module "production_frontend" {
   source = "./templates/frontend-service"
   application_directory_name = "frontend"
-  environment_uuid           = "b${random_id.production_uuid.hex}-pro"
+  environment_uuid           = "c${random_id.production_uuid.hex}-pro"
   git_commit_hash = var.git_commit_hash
   service_name = "fro"
   domain_identity = module.production_identity.public_domain
