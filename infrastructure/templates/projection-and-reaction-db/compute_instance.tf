@@ -40,7 +40,17 @@ resource "google_compute_instance" "vm_instance" {
 
     # Create a mount point for the attached disk
     sudo mkdir -p /mnt/disks/data-disk
+
+    # Check if the disk is already formatted, if not format it
+    if ! blkid /dev/disk/by-id/google-mydisk; then
+      sudo mkfs.ext4 /dev/disk/by-id/google-mydisk
+    fi
+
+    # Mount the disk
     sudo mount /dev/disk/by-id/google-mydisk /mnt/disks/data-disk
+
+    # Ensure the disk will be remounted on reboot
+    echo "/dev/disk/by-id/google-mydisk /mnt/disks/data-disk ext4 defaults 0 0" | sudo tee -a /etc/fstab
 
     # Create a subdirectory for MongoDB data
     sudo mkdir -p /mnt/disks/data-disk/mongodb-data
@@ -58,4 +68,9 @@ resource "google_compute_instance" "vm_instance" {
   allow_stopping_for_update = true
 
   deletion_protection = false
+}
+
+resource "time_sleep" "wait_for_database_setup" {
+  create_duration = "90s"
+  depends_on = [google_compute_instance.vm_instance, google_compute_disk.persistent_disk]
 }
