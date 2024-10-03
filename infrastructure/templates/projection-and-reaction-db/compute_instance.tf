@@ -61,8 +61,7 @@ resource "google_compute_instance" "vm_instance" {
     sudo docker run -d -p 27017:27017 \
       --env MONGO_INITDB_ROOT_USERNAME=admin_username \
       --env MONGO_INITDB_ROOT_PASSWORD=${random_password.admin_user.result} \
-      -v /mnt/disks/data-disk/mongodb-data:/data/db \
-      mongo
+      -v /mnt/disks/data-disk/mongodb-data:/data/db mongo
   EOT
 
   allow_stopping_for_update = true
