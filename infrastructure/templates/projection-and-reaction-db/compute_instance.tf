@@ -1,4 +1,5 @@
 resource "google_compute_instance" "vm_instance" {
+  # doesn't seem to work
   name         = local.mongo_instance_name
   machine_type = "e2-micro"
   zone         = "${local.gcp_default_region}-a"
@@ -42,7 +43,8 @@ resource "google_compute_instance" "vm_instance" {
 
 locals {
   # The disk stays stable, but if we change the startup script, we want to make sure that we restart the clock
-  # on the setup wait time, so we'll create a new instance
+  # on the setup wait time, so we'll create a new instance altogether, which will trigger the
+  # time_sleep.
   mongo_instance_name = "${var.resource_id_prefix}-prdb-${substr(md5(local.mongo_startup_script), 0, 6)}"
   mongo_startup_script = <<-EOT
     #!/bin/bash
@@ -79,4 +81,9 @@ locals {
 resource "time_sleep" "wait_for_database_setup" {
   create_duration = "600s" # Wait 10 minutes to be sure mongo has downloaded, and not have superfluous failed builds
   depends_on = [google_compute_instance.vm_instance, google_compute_disk.persistent_disk]
+
+  triggers = {
+    instance_name = google_compute_instance.vm_instance.name
+    instance_recreation = google_compute_instance.vm_instance.network_interface[0].network_ip
+  }
 }
