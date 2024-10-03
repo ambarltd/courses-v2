@@ -1,5 +1,5 @@
 resource "google_compute_instance" "vm_instance" {
-  name         = "${var.resource_id_prefix}-prdb"
+  name         = local.mongo_instance_name
   machine_type = "e2-micro"
   zone         = "${local.gcp_default_region}-a"
 
@@ -33,7 +33,18 @@ resource "google_compute_instance" "vm_instance" {
 
   tags = []
 
-  metadata_startup_script = <<-EOT
+  metadata_startup_script = local.mongo_startup_script
+
+  allow_stopping_for_update = true
+
+  deletion_protection = false
+}
+
+locals {
+  # The disk stays stable, but if we change the startup script, we want to make sure that we restart the clock
+  # on the setup wait time, so we'll create a new instance
+  mongo_instance_name = "${var.resource_id_prefix}-prdb-${substr(md5(local.mongo_startup_script), 0, 6)}"
+  mongo_startup_script = <<-EOT
     #!/bin/bash
     sudo apt-get update
     sudo apt-get install -y docker.io
@@ -63,10 +74,6 @@ resource "google_compute_instance" "vm_instance" {
       --env MONGO_INITDB_ROOT_PASSWORD=${random_password.admin_user.result} \
       -v /mnt/disks/data-disk/mongodb-data:/data/db mongo
   EOT
-
-  allow_stopping_for_update = true
-
-  deletion_protection = false
 }
 
 resource "time_sleep" "wait_for_database_setup" {
