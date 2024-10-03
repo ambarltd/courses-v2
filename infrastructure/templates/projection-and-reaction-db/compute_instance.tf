@@ -11,6 +11,7 @@ resource "google_compute_instance" "vm_instance" {
 
   attached_disk {
     source = google_compute_disk.persistent_disk.id
+    device_name = "mydisk"
   }
 
   network_interface {
@@ -32,13 +33,26 @@ resource "google_compute_instance" "vm_instance" {
 
   tags = []
 
-  # Adding a Docker container
   metadata_startup_script = <<-EOT
     #!/bin/bash
     sudo apt-get update
     sudo apt-get install -y docker.io
+
+    # Create a mount point for the attached disk
+    sudo mkdir -p /mnt/disks/data-disk
+    sudo mount /dev/disk/by-id/mydisk /mnt/disks/data-disk
+
+    # Create a subdirectory for MongoDB data
+    sudo mkdir -p /mnt/disks/data-disk/mongodb-data
+    sudo chmod 777 /mnt/disks/data-disk/mongodb-data
+
+    # Pull and run the MongoDB container with volume mapping
     sudo docker pull mongo
-    sudo docker run -d -p 27017:27017 --env MONGO_INITDB_ROOT_USERNAME=admin_username --env MONGO_INITDB_ROOT_PASSWORD=${random_password.admin_user.result} mongo
+    sudo docker run -d -p 27017:27017 \
+      --env MONGO_INITDB_ROOT_USERNAME=admin_username \
+      --env MONGO_INITDB_ROOT_PASSWORD=${random_password.admin_user.result} \
+      -v /mnt/disks/data-disk/mongodb-data:/data/db \
+      mongo
   EOT
 
   allow_stopping_for_update = true
