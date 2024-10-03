@@ -1,6 +1,6 @@
 resource "google_compute_instance" "vm_instance" {
   name         = "${var.resource_id_prefix}-prdb"
-  machine_type = "e2-standard-2"
+  machine_type = "e2-micro"
   zone         = "${local.gcp_default_region}-a"
 
   boot_disk {
