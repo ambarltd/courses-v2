@@ -71,6 +71,6 @@ resource "google_compute_instance" "vm_instance" {
 }
 
 resource "time_sleep" "wait_for_database_setup" {
-  create_duration = "90s"
+  create_duration = "600s" # Wait 10 minutes to be sure mongo has downloaded, and not have superfluous failed builds
   depends_on = [google_compute_instance.vm_instance, google_compute_disk.persistent_disk]
 }
