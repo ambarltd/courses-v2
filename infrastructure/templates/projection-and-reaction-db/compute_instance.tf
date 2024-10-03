@@ -40,7 +40,7 @@ resource "google_compute_instance" "vm_instance" {
 
     # Create a mount point for the attached disk
     sudo mkdir -p /mnt/disks/data-disk
-    sudo mount /dev/disk/by-id/mydisk /mnt/disks/data-disk
+    sudo mount /dev/disk/by-id/google-mydisk /mnt/disks/data-disk
 
     # Create a subdirectory for MongoDB data
     sudo mkdir -p /mnt/disks/data-disk/mongodb-data
