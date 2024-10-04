@@ -19,7 +19,7 @@ const endpoints = {
   "sign-up": domains.identity + "/user/sign-up",
   "user-details": domains.identity + "/user/details",
   "verify-primary-email": domains.identity + "/user/verify-primary-email",
-  "list-sent-verification-emails": domains.identity + "user/list-sent-verification-emails",
+  "list-sent-verification-emails": domains.identity + "/user/list-sent-verification-emails",
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
@@ -101,7 +101,7 @@ app.get('/', authenticated, render("home", { title: "Home" }))
 app.get('/verify-email', unauthenticated, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
-app.get('/verification-emails', authenticated, routeVerificationEmails);
+app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
 
 async function userDetails(token) {
@@ -340,23 +340,22 @@ function errorPage(res, error) {
 }
 
 async function routeVerificationEmails(req, res) {
-  const contents = { metadata };
 
-  const response = await fetch(endpoints["sign-out"], {
+  const response = await fetch(endpoints["list-sent-verification-emails"], {
       method: "POST",
-      body: JSON.stringify(contents, null, 2),
+      body: '{}',
       headers: {
         'Content-Type': 'application/json',
-        'X-With-Session-Token': req.session.token
       }
   });
-  const r = await response.json()
   if (!response.ok) {
+    console.log(response)
     const error = getError(r);
     errorPage(res, error);
     return;
   }
 
+  const r = await response.json()
   res.json(r);
 }
 async function routeCardProducts(req, res) {
