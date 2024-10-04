@@ -18,12 +18,14 @@ output "connection_outputs" {
     mongodb_projection_database_password       = module.projection_and_reaction_store.admin_password
     mongodb_projection_database_username       = module.projection_and_reaction_store.admin_username
     mongodb_projection_host                    = module.projection_and_reaction_store.database_public_ip
+    mongodb_projection_private_ip              = module.projection_and_reaction_store.database_private_ip
     mongodb_projection_port                    = module.projection_and_reaction_store.database_port
     mongodb_reaction_authentication_database   = module.projection_and_reaction_store.authentication_database
     mongodb_reaction_database_name             = module.application.reaction_database_name
     mongodb_reaction_database_password         = module.projection_and_reaction_store.admin_password
     mongodb_reaction_database_username         = module.projection_and_reaction_store.admin_username
     mongodb_reaction_host                      = module.projection_and_reaction_store.database_public_ip
+    mongodb_reaction_private_ip                = module.projection_and_reaction_store.database_private_ip
     mongodb_reaction_port                      = module.projection_and_reaction_store.database_port
     session_tokens_expire_after_seconds        = 72000
   }
