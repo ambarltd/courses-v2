@@ -1,16 +1,15 @@
 package cloud.ambar.common.models;
 
 import cloud.ambar.common.exceptions.InvalidEventException;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Objects;
 
+@Getter
 public abstract class AggregateTraits implements Aggregate {
 
-    private String aggregateId;
+    private final String aggregateId;
     private long aggregateVersion;
 
     public AggregateTraits(String aggregateId, long aggregateVersion) {
@@ -18,14 +17,7 @@ public abstract class AggregateTraits implements Aggregate {
         this.aggregateVersion = aggregateVersion;
     }
 
-    public void load(final List<Event> events) {
-        events.forEach(event -> {
-            this.validateEvent(event);
-            this.raiseEvent(event);
-            this.aggregateVersion++;
-        });
-    }
-    public void raiseEvent(final Event event) {
+    public void apply(final Event event) {
         this.validateEvent(event);
         transform(event);
 

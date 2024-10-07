@@ -11,7 +11,6 @@ import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
 import cloud.ambar.creditCardProduct.models.PaymentCycle;
-import cloud.ambar.creditCardProduct.models.Product;
 import cloud.ambar.creditCardProduct.models.RewardsType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

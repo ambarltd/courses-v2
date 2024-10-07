@@ -8,20 +8,22 @@ import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
 import cloud.ambar.creditCardProduct.models.PaymentCycle;
 import cloud.ambar.creditCardProduct.models.RewardsType;
 import lombok.Builder;
+import lombok.Getter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@Getter
 public class ProductAggregate extends AggregateTraits {
     private static final Logger log = LogManager.getLogger(ProductAggregate.class);
-    private String name;
-    private int interestInBasisPoints;
-    private int annualFeeInCents;
-    private PaymentCycle paymentCycle;
-    private int creditLimitInCents;
-    private int maxBalanceTransferAllowedInCents;
-    private RewardsType reward;
-    private String cardBackgroundHex;
-    private boolean active;
+    private final String name;
+    private final int interestInBasisPoints;
+    private final int annualFeeInCents;
+    private final PaymentCycle paymentCycle;
+    private final int creditLimitInCents;
+    private final int maxBalanceTransferAllowedInCents;
+    private final RewardsType reward;
+    private final String cardBackgroundHex;
+    private final Boolean active;
 
     @Builder
     public ProductAggregate(String aggregateId, long aggregateVersion, String name, int interestInBasisPoints, int annualFeeInCents, PaymentCycle paymentCycle, int creditLimitInCents, int maxBalanceTransferAllowedInCents, RewardsType reward, String cardBackgroundHex, boolean active) {
