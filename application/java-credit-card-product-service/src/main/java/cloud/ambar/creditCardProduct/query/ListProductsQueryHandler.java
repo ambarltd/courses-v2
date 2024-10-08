@@ -16,12 +16,8 @@ public class ListProductsQueryHandler {
     @Autowired
     private ReadModelRepository readModelRepository;
 
-    public ProductListItem getProductListItem(final String id) {
-        return readModelRepository.getItem(id);
-    }
-
-    public List<ProductListItem> scanProductListItems() {
-        return new ArrayList<>();
+    public List<ProductListItem> getAllProductListItems() {
+        return readModelRepository.getAllItems();
     }
 
 }
