@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 public class QueryController {
     private static final Logger log = LogManager.getLogger(QueryController.class);
-    
+
     private final ListProductsQueryHandler listProductsQueryHandler;
 
     private final ObjectMapper objectMapper;
@@ -35,8 +35,7 @@ public class QueryController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/list-items")
-    public String listItems(HttpRequest request) throws JsonProcessingException {
-        log.debug(request);
+    public String listItems() throws JsonProcessingException {
         List<ProductListItem> products = listProductsQueryHandler.getAllProductListItems();
         // Todo: Create the response shape and serialize it.
         return objectMapper.writeValueAsString(products);
