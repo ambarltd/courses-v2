@@ -1,6 +1,5 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.creditCardProduct.commandHandlers.ProductHandler;
 import cloud.ambar.creditCardProduct.commandHandlers.ProductService;
 import cloud.ambar.creditCardProduct.models.projection.ProductListItem;
 import cloud.ambar.creditCardProduct.query.ListProductsQueryHandler;
@@ -13,21 +12,25 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.http.HttpRequest;
 import java.util.List;
 
+/**
+ * This controller will handle endpoints related to querying details about products for the front end.
+ * These endpoints do not handle any commands and just return things back from the ReadModelRepository as
+ * written by projections and reactions.
+ * This is the Read side of our application
+ * Requests to handle:
+ *  - ListProducts
+ */
 @RestController
-public class ProductController {
-    private static final Logger log = LogManager.getLogger(ProductController.class);
-
-    private final ProductService productService;
+public class QueryController {
+    private static final Logger log = LogManager.getLogger(QueryController.class);
 
     private final ListProductsQueryHandler listProductsQueryHandler;
 
     @Autowired
-    public ProductController(ProductService productService, ListProductsQueryHandler listProductsQueryHandler) {
-        this.productService = productService;
+    public QueryController(ListProductsQueryHandler listProductsQueryHandler) {
         this.listProductsQueryHandler = listProductsQueryHandler;
     }
 
-    private ListProductsQueryHandler listProductsHandler;
     @PostMapping(value = "/api/v1/credit_card_product/product/list-items")
     public String listItems(HttpRequest request) {
         log.debug(request);
