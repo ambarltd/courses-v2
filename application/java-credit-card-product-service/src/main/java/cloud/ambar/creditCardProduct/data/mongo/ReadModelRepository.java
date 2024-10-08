@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface ReadModelRepository extends MongoRepository<ProductListItem, String> {
-    List<ProductListItem> getAllItems();
-
+    List<ProductListItem> getAll();
     void putItem(String id, String name, boolean active);
 }

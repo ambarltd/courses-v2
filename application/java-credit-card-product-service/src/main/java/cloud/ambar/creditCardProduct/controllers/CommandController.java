@@ -1,6 +1,6 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.creditCardProduct.commandHandlers.ProductService;
+import cloud.ambar.creditCardProduct.commandHandlers.ProductCommandService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 public class CommandController {
     private static final Logger log = LogManager.getLogger(CommandController.class);
 
-    private final ProductService productService;
+    private final ProductCommandService productService;
 
     @Autowired
-    public CommandController(final ProductService productService) {
+    public CommandController(final ProductCommandService productService) {
         this.productService = productService;
     }
 

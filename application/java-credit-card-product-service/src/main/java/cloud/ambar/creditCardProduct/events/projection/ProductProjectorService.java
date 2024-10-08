@@ -1,19 +1,28 @@
 package cloud.ambar.creditCardProduct.events.projection;
 
 import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.data.mongo.ReadModelRepository;
 import cloud.ambar.creditCardProduct.events.EventProjector;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
-import cloud.ambar.creditCardProduct.models.projection.ProductListItem;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.stereotype.Service;
 
 /**
  * Takes aggregates and projects them into a list of products for querying later.
  */
-public class ProductListItemProjector implements EventProjector {
-    private static final Logger log = LogManager.getLogger(ProductListItemProjector.class);
+@Service
+public class ProductProjectorService implements EventProjector {
+    private static final Logger log = LogManager.getLogger(ProductProjectorService.class);
+
+    private final ReadModelRepository readModelRepository;
+
+    public ProductProjectorService(final ReadModelRepository readModelRepository) {
+        this.readModelRepository = readModelRepository;
+    }
+
     @Override
     public void project(Event event) {
         switch (event.getEventName()) {
@@ -29,7 +38,4 @@ public class ProductListItemProjector implements EventProjector {
         }
     }
 
-    private ProductListItem findItem(final String aggregateId) {
-        return null;
-    }
 }

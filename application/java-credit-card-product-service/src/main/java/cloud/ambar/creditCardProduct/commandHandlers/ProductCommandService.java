@@ -29,8 +29,8 @@ import java.util.UUID;
 @Service
 // TBD needed?
 @Transactional
-public class ProductHandler implements ProductService {
-    private static final Logger log = LogManager.getLogger(ProductHandler.class);
+public class ProductCommandService implements CommandService {
+    private static final Logger log = LogManager.getLogger(ProductCommandService.class);
 
     private final EventRepository eventStore;
 

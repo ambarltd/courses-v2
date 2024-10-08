@@ -2,12 +2,11 @@ package cloud.ambar.creditCardProduct.controllers;
 
 import cloud.ambar.common.ambar.AmbarEvent;
 import cloud.ambar.common.ambar.ErrorMustRetry;
-import cloud.ambar.creditCardProduct.data.mongo.ReadModelRepository;
+import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,19 +22,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class EventController {
     private static final Logger log = LogManager.getLogger(EventController.class);
 
-    private final ReadModelRepository readModelRepository;
+    private final ProductProjectorService productProjectorService;
 
     private final ObjectMapper objectMapper;
 
-    @Autowired
-    public EventController(final ReadModelRepository readModelRepository) {
-        this.readModelRepository = readModelRepository;
+    public EventController(final ProductProjectorService productProjectorService) {
+        this.productProjectorService = productProjectorService;
         this.objectMapper = new ObjectMapper();
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product")
     public String handleEvent(AmbarEvent event) throws JsonProcessingException {
         log.info(event);
+        // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
+        //        projector service handle it.
         return objectMapper.writeValueAsString(new ErrorMustRetry());
     }
 

@@ -24,12 +24,11 @@ import java.util.List;
 @RestController
 public class QueryController {
     private static final Logger log = LogManager.getLogger(QueryController.class);
-
+    
     private final ListProductsQueryHandler listProductsQueryHandler;
 
     private final ObjectMapper objectMapper;
 
-    @Autowired
     public QueryController(ListProductsQueryHandler listProductsQueryHandler) {
         this.listProductsQueryHandler = listProductsQueryHandler;
         this.objectMapper = new ObjectMapper();
