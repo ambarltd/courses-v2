@@ -7,11 +7,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class ListProductsQueryHandler {
+public class QueryService {
 
     private final ProjectionRepository projectionRepository;
 
-    public ListProductsQueryHandler(final ProjectionRepository projectionRepository) {
+    public QueryService(final ProjectionRepository projectionRepository) {
         this.projectionRepository = projectionRepository;
     }
 

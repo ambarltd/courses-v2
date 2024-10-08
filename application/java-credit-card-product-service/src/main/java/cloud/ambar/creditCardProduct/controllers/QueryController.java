@@ -1,16 +1,14 @@
 package cloud.ambar.creditCardProduct.controllers;
 
 import cloud.ambar.creditCardProduct.models.projection.ProductListItem;
-import cloud.ambar.creditCardProduct.query.ListProductsQueryHandler;
+import cloud.ambar.creditCardProduct.query.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.http.HttpRequest;
 import java.util.List;
 
 /**
@@ -25,18 +23,19 @@ import java.util.List;
 public class QueryController {
     private static final Logger log = LogManager.getLogger(QueryController.class);
 
-    private final ListProductsQueryHandler listProductsQueryHandler;
+    private final QueryService queryService;
 
     private final ObjectMapper objectMapper;
 
-    public QueryController(ListProductsQueryHandler listProductsQueryHandler) {
-        this.listProductsQueryHandler = listProductsQueryHandler;
+    public QueryController(QueryService queryService) {
+        this.queryService = queryService;
         this.objectMapper = new ObjectMapper();
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/list-items")
     public String listItems() throws JsonProcessingException {
-        List<ProductListItem> products = listProductsQueryHandler.getAllProductListItems();
+        log.info("Listing all products from ProjectionRepository");
+        List<ProductListItem> products = queryService.getAllProductListItems();
         // Todo: Create the response shape and serialize it.
         return objectMapper.writeValueAsString(products);
     }
