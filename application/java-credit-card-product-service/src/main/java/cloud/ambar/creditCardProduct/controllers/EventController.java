@@ -7,7 +7,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,12 +33,14 @@ public class EventController {
         this.objectMapper = new ObjectMapper();
     }
 
-    @PostMapping(value = "/api/v1/credit_card_product/product/projection")
-    public String handleEvent(AmbarEvent event) throws JsonProcessingException {
-        log.info(event);
+    @PostMapping(value = "/api/v1/credit_card_product/product/projection", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ErrorMustRetry handleEvent(AmbarEvent event) {
+        log.info("Got event" + event);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
         //        projector service handle it.
-        return objectMapper.writeValueAsString(new ErrorMustRetry());
+        final ErrorMustRetry retry = new ErrorMustRetry();
+        log.info("Returning canned retry response: " + retry);
+        return retry;
     }
 
 }
