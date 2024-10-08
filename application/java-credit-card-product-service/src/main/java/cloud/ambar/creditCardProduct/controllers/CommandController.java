@@ -1,10 +1,19 @@
 package cloud.ambar.creditCardProduct.controllers;
 
 import cloud.ambar.creditCardProduct.commandHandlers.ProductCommandService;
+import cloud.ambar.creditCardProduct.commands.DefineProductCommand;
+import cloud.ambar.creditCardProduct.commands.ProductActivatedCommand;
+import cloud.ambar.creditCardProduct.commands.ProductDeactivatedCommand;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * This controller will handle requests from the frontend which are commands that result in events written
@@ -17,7 +26,8 @@ import org.springframework.web.bind.annotation.RestController;
  *  - ActivateProduct
  *  - DeactivateProduct
  */
-@RestController
+@Controller
+@RequestMapping("/api/v1/credit_card_product/product")
 public class CommandController {
     private static final Logger log = LogManager.getLogger(CommandController.class);
 
@@ -28,12 +38,23 @@ public class CommandController {
         this.productService = productService;
     }
 
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void defineProduct(@RequestBody DefineProductCommand defineProductCommand) {
+        log.info("Got request to define product.");
+        productService.handle(defineProductCommand);
+    }
 
-    /**
-     * Todo: Handle posts to:
-     * - Define a product
-     * - Activate a product
-     * - Deactivate a product
-     */
+    @PostMapping("/activate/{aggregateId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void activateProduct(@PathVariable String aggregateId) {
+        productService.handle(new ProductActivatedCommand(aggregateId));
+    }
+
+    @PostMapping("/deactivate/{aggregateId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deactivateProduct(@PathVariable String aggregateId) {
+        productService.handle(new ProductDeactivatedCommand(aggregateId));
+    }
 
 }

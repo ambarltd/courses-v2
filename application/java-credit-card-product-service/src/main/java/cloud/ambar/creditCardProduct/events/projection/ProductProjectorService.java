@@ -1,7 +1,7 @@
 package cloud.ambar.creditCardProduct.events.projection;
 
 import cloud.ambar.common.models.Event;
-import cloud.ambar.creditCardProduct.data.mongo.ReadModelRepository;
+import cloud.ambar.creditCardProduct.data.mongo.ProjectionRepository;
 import cloud.ambar.creditCardProduct.events.EventProjector;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
@@ -17,10 +17,10 @@ import org.springframework.stereotype.Service;
 public class ProductProjectorService implements EventProjector {
     private static final Logger log = LogManager.getLogger(ProductProjectorService.class);
 
-    private final ReadModelRepository readModelRepository;
+    private final ProjectionRepository projectionRepository;
 
-    public ProductProjectorService(final ReadModelRepository readModelRepository) {
-        this.readModelRepository = readModelRepository;
+    public ProductProjectorService(final ProjectionRepository projectionRepository) {
+        this.projectionRepository = projectionRepository;
     }
 
     @Override
