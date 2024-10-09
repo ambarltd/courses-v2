@@ -33,7 +33,9 @@ public class EventController {
         this.objectMapper = new ObjectMapper();
     }
 
-    @PostMapping(value = "/api/v1/credit_card_product/product/projection")
+    @PostMapping(value = "/api/v1/credit_card_product/product/projection",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     public String handleEvent(@RequestBody AmbarEvent event) throws JsonProcessingException {
         log.info("Got event: " + event);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
