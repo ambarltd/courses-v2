@@ -95,7 +95,7 @@ public class EventController {
             result.write(buffer, 0, length);
         }
 
-        return objectMapper.convertValue(result, AmbarEvent.class);
+        return objectMapper.convertValue(result.toString(), AmbarEvent.class);
     }
 
 }

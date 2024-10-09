@@ -17,7 +17,7 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 -H "Content-Type: application/json" \
 -d '{
-  "productIdentifierForAggregateIdHash": "PLATINUM_CREDIT_CARD_2",
+  "productIdentifierForAggregateIdHash": "PLATINUM_CREDIT_CARD_3",
   "name": "Platinum",
   "interestInBasisPoints": 300,
   "annualFeeInCents": 50000,
