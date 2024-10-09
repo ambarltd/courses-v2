@@ -49,6 +49,12 @@ public class EventController {
             final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
             log.info("Got event: " + ambarEvent);
 
+
+//            final String cleaned = ambarEvent.getPayload().replace("\\", "");
+//            final String cleaned2 = cleaned.replace("\"{", "{");
+//            final String cleaned3 = cleaned2.replace("}\"", "}");
+//            log.info("Cleaned message: "  + cleaned3);
+
             final Payload eventPayload = objectMapper.convertValue(ambarEvent.getPayload(), Payload.class);
 
             productProjectorService.project(eventPayload);
@@ -56,6 +62,7 @@ public class EventController {
         } catch (Exception e) {
             log.error("Failed to process projection event!");
             log.error(e);
+            log.error(e.getMessage());
             return retryResponse(e.getMessage());
         }
     }
@@ -96,11 +103,11 @@ public class EventController {
         }
 
         log.info("Got message: " + result);
-        final String cleaned = result.toString().replace("\\", "");
-        final String cleaned2 = cleaned.replace("\"{", "{");
-        final String cleaned3 = cleaned2.replace("}\"", "}");
-        log.info("Cleaned message: "  + cleaned3);
+//        final String cleaned = result.toString().replace("\\", "");
+//        final String cleaned2 = cleaned.replace("\"{", "{");
+//        final String cleaned3 = cleaned2.replace("}\"", "}");
+//        log.info("Cleaned message: "  + cleaned3);
 
-        return objectMapper.convertValue(cleaned3, AmbarEvent.class);
+        return objectMapper.convertValue(result, AmbarEvent.class);
     }
 }
