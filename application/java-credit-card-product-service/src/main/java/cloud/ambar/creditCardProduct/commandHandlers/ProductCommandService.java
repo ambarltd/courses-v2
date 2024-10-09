@@ -88,8 +88,8 @@ public class ProductCommandService implements CommandService {
                 ))
                 .build();
 
-        log.info("Would have saved: " + objectMapper.writeValueAsString(event));
-        //eventStore.save(event);
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
         log.info("Successfully handled " + ProductDefinedEvent.EVENT_NAME + " command.");
     }
 

@@ -9,7 +9,6 @@ import lombok.Data;
 public class ProductDefinedEvent {
     public static final String EVENT_NAME = "CreditCardProduct_Product_ProductDefined";
 
-
     // Below are the product details for the event, to be returned as the serialized data of the event
     private String name;
     private int interestInBasisPoints;
