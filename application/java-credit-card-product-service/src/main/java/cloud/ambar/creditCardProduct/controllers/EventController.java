@@ -1,8 +1,8 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.common.ambar.AmbarEvent;
-import cloud.ambar.common.ambar.ErrorMustRetry;
+import cloud.ambar.common.ambar.ErrorKeepGoing;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,13 +32,13 @@ public class EventController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ErrorMustRetry handleEvent(String event) {
-        log.info("Got event" + event);
+    public String handleEvent(String event) throws JsonProcessingException {
+        log.info("Got event: " + event);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
         //        projector service handle it.
-        final ErrorMustRetry retry = new ErrorMustRetry();
+        final ErrorKeepGoing retry = new ErrorKeepGoing();
         log.info("Returning canned retry response: " + retry);
-        return retry;
+        return objectMapper.writeValueAsString(retry);
     }
 
 }

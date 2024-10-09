@@ -40,9 +40,9 @@ public class Event {
     @Column(name="aggregate_version")
     private long version;
     @Column(name="json_payload")
-    private byte[] data;
+    private String data;
     @Column(name="json_metadata")
-    private byte[] metadata;
+    private String metadata;
     @Column(name="recorded_on")
     private LocalDateTime timeStamp;
     @Column(name="event_name")
