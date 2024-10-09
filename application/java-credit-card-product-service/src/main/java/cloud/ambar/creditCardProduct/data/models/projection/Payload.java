@@ -29,7 +29,7 @@ public class Payload {
     private long version;
 
     @JsonProperty("json_payload")
-    private JsonNode data;
+    private String data;
 
     @JsonProperty("event_name")
     private String eventName;

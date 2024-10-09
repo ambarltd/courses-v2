@@ -8,6 +8,7 @@ import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
 import cloud.ambar.creditCardProduct.data.models.projection.Product;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,12 +33,12 @@ public class ProductProjectorService implements EventProjector {
     }
 
     @Override
-    public void project(Payload event) {
+    public void project(Payload event) throws JsonProcessingException {
         final Product product;
         switch (event.getEventName()) {
             case ProductDefinedEvent.EVENT_NAME -> {
                 log.info("Handling projection for ProductDefinedEvent");
-                product = objectMapper.convertValue(event.getData(), Product.class);
+                product = objectMapper.readValue(event.getData(), Product.class);
             }
             case ProductActivatedEvent.EVENT_NAME -> {
                 log.info("Handling projection for ProductActivatedEvent");

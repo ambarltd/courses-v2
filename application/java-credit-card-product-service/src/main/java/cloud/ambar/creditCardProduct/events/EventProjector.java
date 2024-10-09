@@ -2,7 +2,8 @@ package cloud.ambar.creditCardProduct.events;
 
 import cloud.ambar.common.models.Event;
 import cloud.ambar.creditCardProduct.data.models.projection.Payload;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public interface EventProjector {
-    public void project(Payload eventPayload);
+    public void project(Payload eventPayload) throws JsonProcessingException;
 }
