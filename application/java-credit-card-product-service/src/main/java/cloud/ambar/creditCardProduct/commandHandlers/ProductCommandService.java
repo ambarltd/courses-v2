@@ -64,8 +64,6 @@ public class ProductCommandService implements CommandService {
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
         // the resultant event with related details (product definition) and write this to our event store.
-        // Todo: Modeling things wrong, this needs clean up.
-        // We should be modeling an Event, where the json_payload is the event_type specific properties
         final String aggregateId = UUID.randomUUID().toString();
         final Event event = Event.builder()
                 .eventName(ProductDefinedEvent.EVENT_NAME)
@@ -90,7 +88,8 @@ public class ProductCommandService implements CommandService {
                 ))
                 .build();
 
-        eventStore.save(event);
+        log.info("Would have saved: " + objectMapper.writeValueAsString(event));
+        //eventStore.save(event);
         log.info("Successfully handled " + ProductDefinedEvent.EVENT_NAME + " command.");
     }
 

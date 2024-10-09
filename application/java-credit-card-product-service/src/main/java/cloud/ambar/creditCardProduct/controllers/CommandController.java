@@ -42,6 +42,7 @@ public class CommandController {
     @ResponseStatus(HttpStatus.OK)
     public void defineProduct(@RequestBody DefineProductCommand defineProductCommand) {
         log.info("Got request to define product.");
+        // Todo: Validate the request (Required args present, etc)
         productService.handle(defineProductCommand);
     }
 
