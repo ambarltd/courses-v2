@@ -9,12 +9,18 @@ import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.util.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -42,8 +48,7 @@ public class EventController {
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
             consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String handleEvent(HttpServletRequest httpServletRequest) throws JsonProcessingException {
-        // log.info("Got event: " + event);
+    public String handleEvent(HttpServletRequest httpServletRequest) throws IOException {
         ServletInputStream inputStream;
 
         try {
@@ -52,10 +57,15 @@ public class EventController {
             throw new RuntimeException(e);
         }
 
-        String str = inputStream.toString();
+        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        for (int length; (length = inputStream.read(buffer)) != -1; ) {
+            result.write(buffer, 0, length);
+        }
+
+        String str = result.toString();
         log.info("Got event: " + str);
-        // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
-        //        projector service handle it.
+
         final ErrorKeepGoing error = new ErrorKeepGoing();
         log.info("Returning canned retry response: " + error);
         return objectMapper.writeValueAsString(error);
