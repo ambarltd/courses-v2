@@ -33,10 +33,10 @@ public class Payload {
     private long version;
 
     @JsonProperty("json_payload")
-    private JsonNode data;
+    private String data;
 
     @JsonProperty("json_metadata")
-    private JsonNode metadata;
+    private String metadata;
 
     @JsonProperty("recorded_on")
     private LocalDateTime timeStamp;
