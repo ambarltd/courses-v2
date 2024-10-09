@@ -73,6 +73,7 @@ public class ProductCommandService implements CommandService {
                 .aggregateId(aggregateId)
                 .version(1)
                 .timeStamp(LocalDateTime.now())
+                .metadata("")
                 .data(objectMapper.writeValueAsString(
                     ProductDefinedEvent.builder()
                         .name(command.getName())
