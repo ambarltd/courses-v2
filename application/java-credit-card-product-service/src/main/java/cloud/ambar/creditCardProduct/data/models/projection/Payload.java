@@ -7,10 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Payload {
@@ -34,9 +31,6 @@ public class Payload {
 
     @JsonProperty("json_payload")
     private JsonNode data;
-
-    @JsonProperty("recorded_on")
-    private LocalDateTime timeStamp;
 
     @JsonProperty("event_name")
     private String eventName;
