@@ -1,4 +1,4 @@
-set endpoint="your-endpoint-from-github-action"
+endpoint="https://c101175e46b7f-pro-ccp-app-app-sigx6aiy5q-nw.a.run.app"
 
 curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 -H "Content-Type: application/json" \

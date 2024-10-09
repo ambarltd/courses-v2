@@ -1,16 +1,10 @@
 package cloud.ambar.creditCardProduct.events;
 
-import cloud.ambar.common.models.Event;
-import cloud.ambar.creditCardProduct.aggregate.ICreateProduct;
-import cloud.ambar.creditCardProduct.aggregate.ProductAggregate;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import lombok.Data;
 
 
-
+@Data
 @Builder
 public class ProductDefinedEvent {
     public static final String EVENT_NAME = "CreditCardProduct_Product_ProductDefined";
