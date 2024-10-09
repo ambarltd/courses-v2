@@ -96,7 +96,9 @@ public class EventController {
         }
 
         log.info("Got message: " + result);
+        final String cleaned = result.toString().replace("\\", "");
+        log.info("Cleaned message: "  + cleaned);
 
-        return objectMapper.convertValue(result.toString(), AmbarEvent.class);
+        return objectMapper.convertValue(cleaned, AmbarEvent.class);
     }
 }
