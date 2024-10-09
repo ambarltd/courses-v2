@@ -34,7 +34,7 @@ public class EventController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
-            consumes = MediaType.TEXT_PLAIN_VALUE,
+            consumes = MediaType.ALL_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public String handleEvent(@RequestBody AmbarEvent event) throws JsonProcessingException {
         log.info("Got event: " + event);
