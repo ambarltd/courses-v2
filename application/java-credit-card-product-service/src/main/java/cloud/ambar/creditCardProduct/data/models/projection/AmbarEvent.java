@@ -1,12 +1,13 @@
-package cloud.ambar.common.ambar;
+package cloud.ambar.creditCardProduct.data.models.projection;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class AmbarEvent {
     @JsonProperty("data_source_id")
     private String dataSourceId;
@@ -17,5 +18,5 @@ public class AmbarEvent {
     @JsonProperty("data_destination_description")
     private String dataDestinationDescription;
     @JsonProperty("payload")
-    private JsonNode payload;
+    private Payload payload;
 }

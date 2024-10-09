@@ -1,12 +1,12 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.common.ambar.AmbarEvent;
 import cloud.ambar.common.ambar.AmbarResponse;
 import cloud.ambar.common.ambar.Error;
 import cloud.ambar.common.ambar.ErrorPolicy;
 import cloud.ambar.common.ambar.Result;
 import cloud.ambar.common.ambar.Success;
-import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.data.models.projection.AmbarEvent;
+import cloud.ambar.creditCardProduct.data.models.projection.Payload;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletInputStream;
@@ -49,9 +49,9 @@ public class EventController {
             final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
             log.info("Got event: " + ambarEvent);
 
-            final Event event = objectMapper.convertValue(ambarEvent.getPayload(), Event.class);
+            final Payload eventPayload = objectMapper.convertValue(ambarEvent.getPayload(), Payload.class);
 
-            productProjectorService.project(event);
+            productProjectorService.project(eventPayload);
             return successResponse();
         } catch (Exception e) {
             log.error("Failed to process projection event!");

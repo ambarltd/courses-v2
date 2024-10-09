@@ -1,6 +1,7 @@
 package cloud.ambar.creditCardProduct.events.projection;
 
 import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.data.models.projection.Payload;
 import cloud.ambar.creditCardProduct.data.mongo.ProjectionRepository;
 import cloud.ambar.creditCardProduct.events.EventProjector;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
@@ -31,7 +32,7 @@ public class ProductProjectorService implements EventProjector {
     }
 
     @Override
-    public void project(Event event) {
+    public void project(Payload event) {
         final Product product;
         switch (event.getEventName()) {
             case ProductDefinedEvent.EVENT_NAME -> {
@@ -57,7 +58,7 @@ public class ProductProjectorService implements EventProjector {
         projectionRepository.save(product);
     }
 
-    private Product getProductOrThrow(Event event) {
+    private Product getProductOrThrow(Payload event) {
         Optional<Product> product = projectionRepository.findById(event.getAggregateId());
         if (product.isEmpty()) {
             final String msg = "Unable to find Product in projection repository for aggregate: " + event.getAggregateId();
