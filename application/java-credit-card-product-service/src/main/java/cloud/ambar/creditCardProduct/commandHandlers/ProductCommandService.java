@@ -40,7 +40,7 @@ public class ProductCommandService implements CommandService {
 
     public void handle(DefineProductCommand command) {
         log.info("Handling " + ProductDefinedEvent.EVENT_NAME + " command.");
-        final String eventId = command.getProductIdentifierForAggregateIdHash();
+        final String eventId = UUID.nameUUIDFromBytes(command.getProductIdentifierForAggregateIdHash().getBytes()).toString();
         // First part of validation is to check if this event has already been processed. We expect to create a new
         // unique aggregate from this and subsequent events. If it is already present, then we are processing a duplicate
         // event.
@@ -64,7 +64,7 @@ public class ProductCommandService implements CommandService {
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
         // the resultant event with related details (product definition) and write this to our event store.
-        final String aggregateId = UUID.nameUUIDFromBytes(eventId.getBytes()).toString();
+        final String aggregateId = UUID.randomUUID().toString();
         final Event event = Event.builder()
                 .eventName(ProductDefinedEvent.EVENT_NAME)
                 .eventId(eventId)
