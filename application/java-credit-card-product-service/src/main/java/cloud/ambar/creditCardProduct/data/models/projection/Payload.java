@@ -35,9 +35,6 @@ public class Payload {
     @JsonProperty("json_payload")
     private JsonNode data;
 
-    @JsonProperty("json_metadata")
-    private JsonNode metadata;
-
     @JsonProperty("recorded_on")
     private LocalDateTime timeStamp;
 
