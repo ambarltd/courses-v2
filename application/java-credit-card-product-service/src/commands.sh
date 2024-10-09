@@ -13,3 +13,17 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
   "reward": "none",
   "cardBackgroundHex": "#7fffd4"
 }'
+
+curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
+-H "Content-Type: application/json" \
+-d '{
+  "productIdentifierForAggregateIdHash": "PLATINUM_CREDIT_CARD",
+  "name": "Platinum",
+  "interestInBasisPoints": 300,
+  "annualFeeInCents": 50000,
+  "paymentCycle": "monthly",
+  "creditLimitInCents": 500000,
+  "maxBalanceTransferAllowedInCents": 100000,
+  "reward": "points",
+  "cardBackgroundHex": "#E5E4E2"
+}'

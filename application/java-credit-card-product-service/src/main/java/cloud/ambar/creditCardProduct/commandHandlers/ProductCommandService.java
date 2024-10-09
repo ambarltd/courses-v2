@@ -64,7 +64,7 @@ public class ProductCommandService implements CommandService {
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
         // the resultant event with related details (product definition) and write this to our event store.
-        final String aggregateId = UUID.fromString(eventId).toString();
+        final String aggregateId = UUID.nameUUIDFromBytes(eventId.getBytes()).toString();
         final Event event = Event.builder()
                 .eventName(ProductDefinedEvent.EVENT_NAME)
                 .eventId(eventId)
