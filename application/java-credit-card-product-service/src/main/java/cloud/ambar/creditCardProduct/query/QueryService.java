@@ -1,7 +1,7 @@
 package cloud.ambar.creditCardProduct.query;
 
 import cloud.ambar.creditCardProduct.data.mongo.ProjectionRepository;
-import cloud.ambar.creditCardProduct.models.projection.ProductListItem;
+import cloud.ambar.creditCardProduct.data.models.projection.Product;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class QueryService {
         this.projectionRepository = projectionRepository;
     }
 
-    public List<ProductListItem> getAllProductListItems() {
+    public List<Product> getAllProductListItems() {
         return projectionRepository.findAll();
     }
 

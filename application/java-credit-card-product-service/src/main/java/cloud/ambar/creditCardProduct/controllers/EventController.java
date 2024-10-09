@@ -1,28 +1,24 @@
 package cloud.ambar.creditCardProduct.controllers;
 
 import cloud.ambar.common.ambar.AmbarEvent;
-import cloud.ambar.common.ambar.ErrorKeepGoing;
+import cloud.ambar.common.ambar.AmbarResponse;
+import cloud.ambar.common.ambar.Error;
+import cloud.ambar.common.ambar.ErrorPolicy;
+import cloud.ambar.common.ambar.Result;
+import cloud.ambar.common.ambar.Success;
+import cloud.ambar.common.models.Event;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.util.IOUtils;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 /**
  * This controller is responsible for updating the read models from events written to the eventstore (postgre).
@@ -48,8 +44,44 @@ public class EventController {
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
             consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String handleEvent(HttpServletRequest httpServletRequest) throws IOException {
-        ServletInputStream inputStream;
+    public AmbarResponse handleEvent(HttpServletRequest httpServletRequest) throws IOException {
+        final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
+        log.info("Got event: " + ambarEvent);
+
+        final Event event = objectMapper.convertValue(ambarEvent.getPayload(), Event.class);
+
+        try {
+            productProjectorService.project(event);
+            return successResponse();
+        } catch (Exception e) {
+            log.error("Failed to process projection event: " + event);
+            log.error(e);
+            return retryResponse(e.getMessage());
+        }
+    }
+
+    private AmbarResponse retryResponse(String err) {
+        return AmbarResponse.builder()
+                .result(Result.builder()
+                        .error(Error.builder()
+                                .policy(ErrorPolicy.MUST_RETRY.toString())
+                                .description(err)
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private AmbarResponse successResponse() {
+        return AmbarResponse.builder()
+                .result(Result.builder()
+                        .success(new Success())
+                        .build())
+                .build();
+    }
+
+    // Pulls the Ambar event as a string from the request.
+    private AmbarEvent extractEvent(HttpServletRequest httpServletRequest) throws IOException {
+        final ServletInputStream inputStream;
 
         try {
             inputStream = httpServletRequest.getInputStream();
@@ -57,18 +89,13 @@ public class EventController {
             throw new RuntimeException(e);
         }
 
-        ByteArrayOutputStream result = new ByteArrayOutputStream();
+        final ByteArrayOutputStream result = new ByteArrayOutputStream();
         byte[] buffer = new byte[1024];
         for (int length; (length = inputStream.read(buffer)) != -1; ) {
             result.write(buffer, 0, length);
         }
 
-        String str = result.toString();
-        log.info("Got event: " + str);
-
-        final ErrorKeepGoing error = new ErrorKeepGoing();
-        log.info("Returning canned retry response: " + error);
-        return objectMapper.writeValueAsString(error);
+        return objectMapper.convertValue(result, AmbarEvent.class);
     }
 
 }
