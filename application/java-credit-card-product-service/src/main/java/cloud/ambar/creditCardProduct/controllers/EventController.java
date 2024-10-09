@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This controller is responsible for updating the read models from events written to the eventstore (postgre).
@@ -95,11 +96,7 @@ public class EventController {
         }
 
         log.info("Got message: " + result);
-        final String removeEscapes = result.toString().replace("\\", "");
-        final String fixLeftBrackets = removeEscapes.replace("\"{", "{");
-        final String fixRightBrackets = fixLeftBrackets.replace("}\"", "}");
-        log.info("Cleaned message: "  + fixRightBrackets);
 
-        return objectMapper.convertValue(fixRightBrackets, AmbarEvent.class);
+        return objectMapper.readValue(result.toString(StandardCharsets.UTF_8), AmbarEvent.class);
     }
 }

@@ -18,8 +18,10 @@ public class Product {
     @Id
     @JsonProperty("aggregate_id")
     private String id;
+
     @Column(name = "name")
     private String name;
+
     @Column(name = "active")
     private boolean active;
 }
