@@ -1,6 +1,7 @@
 package cloud.ambar.common.ambar;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -16,5 +17,5 @@ public class AmbarEvent {
     @JsonProperty("data_destination_description")
     private String dataDestinationDescription;
     @JsonProperty("payload")
-    private String payload;
+    private JsonNode payload;
 }

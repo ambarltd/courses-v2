@@ -44,17 +44,17 @@ public class EventController {
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
             consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public AmbarResponse handleEvent(HttpServletRequest httpServletRequest) throws IOException {
-        final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
-        log.info("Got event: " + ambarEvent);
-
-        final Event event = objectMapper.convertValue(ambarEvent.getPayload(), Event.class);
-
+    public AmbarResponse handleEvent(HttpServletRequest httpServletRequest) {
         try {
+            final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
+            log.info("Got event: " + ambarEvent);
+
+            final Event event = objectMapper.convertValue(ambarEvent.getPayload(), Event.class);
+
             productProjectorService.project(event);
             return successResponse();
         } catch (Exception e) {
-            log.error("Failed to process projection event: " + event);
+            log.error("Failed to process projection event!");
             log.error(e);
             return retryResponse(e.getMessage());
         }
@@ -95,7 +95,8 @@ public class EventController {
             result.write(buffer, 0, length);
         }
 
+        log.info("Got message: " + result);
+
         return objectMapper.convertValue(result.toString(), AmbarEvent.class);
     }
-
 }
