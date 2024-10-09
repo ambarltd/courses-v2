@@ -5,12 +5,16 @@ import cloud.ambar.common.ambar.ErrorKeepGoing;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.ServletInputStream;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -36,10 +40,20 @@ public class EventController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+            consumes = MediaType.APPLICATION_OCTET_STREAM_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public String handleEvent(@RequestBody AmbarEvent event) throws JsonProcessingException {
-        log.info("Got event: " + event);
+    public String handleEvent(HttpServletRequest httpServletRequest) throws JsonProcessingException {
+        // log.info("Got event: " + event);
+        ServletInputStream inputStream;
+
+        try {
+            inputStream = httpServletRequest.getInputStream();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        String str = inputStream.toString();
+        log.info("Got event: " + str);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
         //        projector service handle it.
         final ErrorKeepGoing error = new ErrorKeepGoing();
