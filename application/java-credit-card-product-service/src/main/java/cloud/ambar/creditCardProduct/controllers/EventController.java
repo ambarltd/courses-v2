@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 /**
  * This controller is responsible for updating the read models from events written to the eventstore (postgre).
  * It is notified of new events on an endpoint, and then will perform any necessary actions to retrieve
@@ -34,7 +36,7 @@ public class EventController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection",
-            consumes = MediaType.ALL_VALUE,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public String handleEvent(@RequestBody AmbarEvent event) throws JsonProcessingException {
         log.info("Got event: " + event);
