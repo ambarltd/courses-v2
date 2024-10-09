@@ -108,6 +108,6 @@ public class EventController {
 //        final String cleaned3 = cleaned2.replace("}\"", "}");
 //        log.info("Cleaned message: "  + cleaned3);
 
-        return objectMapper.convertValue(result, AmbarEvent.class);
+        return objectMapper.convertValue(result.toString(), AmbarEvent.class);
     }
 }
