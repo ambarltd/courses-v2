@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AmbarEvent {
     @JsonProperty("data_source_id")
@@ -20,5 +19,5 @@ public class AmbarEvent {
     @JsonProperty("data_destination_description")
     private String dataDestinationDescription;
     @JsonProperty("payload")
-    private String payload;
+    private Payload payload;
 }
