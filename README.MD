@@ -1,6 +1,6 @@
 # Notes
 
-Another Small change!
+
 
 ## Preparation Steps
 
