@@ -3,13 +3,11 @@ package cloud.ambar.creditCardProduct.controllers;
 import cloud.ambar.common.ambar.AmbarEvent;
 import cloud.ambar.common.ambar.ErrorMustRetry;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -34,7 +32,7 @@ public class EventController {
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ErrorMustRetry handleEvent(AmbarEvent event) {
+    public ErrorMustRetry handleEvent(String event) {
         log.info("Got event" + event);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
         //        projector service handle it.
