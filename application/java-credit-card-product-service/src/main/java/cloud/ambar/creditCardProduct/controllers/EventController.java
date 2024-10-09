@@ -1,5 +1,6 @@
 package cloud.ambar.creditCardProduct.controllers;
 
+import cloud.ambar.common.ambar.AmbarEvent;
 import cloud.ambar.common.ambar.ErrorKeepGoing;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,14 +33,14 @@ public class EventController {
         this.objectMapper = new ObjectMapper();
     }
 
-    @PostMapping(value = "/api/v1/credit_card_product/product/projection", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String handleEvent(String event) throws JsonProcessingException {
+    @PostMapping(value = "/api/v1/credit_card_product/product/projection")
+    public String handleEvent(@RequestBody AmbarEvent event) throws JsonProcessingException {
         log.info("Got event: " + event);
         // Todo:  Deserialize the AmbarEvent and get the payload into an internal event before having the
         //        projector service handle it.
-        final ErrorKeepGoing retry = new ErrorKeepGoing();
-        log.info("Returning canned retry response: " + retry);
-        return objectMapper.writeValueAsString(retry);
+        final ErrorKeepGoing error = new ErrorKeepGoing();
+        log.info("Returning canned retry response: " + error);
+        return objectMapper.writeValueAsString(error);
     }
 
 }
