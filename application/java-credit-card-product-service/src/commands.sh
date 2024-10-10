@@ -32,3 +32,10 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 
 # To list the current card products
 curl -X POST "${endpoint}/api/v1/credit_card_product/product/list-items" | jq .
+
+productId=""
+# Activate a product
+curl -X POST "${endpoint}/api/v1/credit_card_product/product/activate/${productId}"
+
+#Deactivate a product
+curl -X POST "${endpoint}/api/v1/credit_card_product/product/deactivate/${productId}"

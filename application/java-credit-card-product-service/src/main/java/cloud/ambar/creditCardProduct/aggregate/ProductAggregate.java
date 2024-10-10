@@ -32,6 +32,10 @@ public class ProductAggregate extends AggregateTraits {
     private String cardBackgroundHex;
     private boolean active;
 
+    public ProductAggregate(String aggregateId, long aggregateVersion) {
+        super(aggregateId, aggregateVersion);
+    }
+
     @Override
     public void transform(Event event) {
         switch(event.getEventName()) {

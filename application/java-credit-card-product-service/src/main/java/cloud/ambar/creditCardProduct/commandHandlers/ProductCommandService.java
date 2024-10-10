@@ -179,7 +179,7 @@ public class ProductCommandService implements CommandService {
 
     private ProductAggregate hydrateAggregateForId(String id) {
         final List<Event> productEvents = eventStore.findAllByAggregateId(id);
-        final ProductAggregate aggregate = new ProductAggregate();
+        final ProductAggregate aggregate = new ProductAggregate(id, 0);
         if (productEvents.isEmpty()) {
             final String msg = "Unable to find a product with id: " + id;
             throw new NoSuchProductException(msg);

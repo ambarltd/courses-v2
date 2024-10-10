@@ -58,5 +58,4 @@ public class CommandController {
     public void deactivateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
         productService.handle(new ProductDeactivatedCommand(aggregateId));
     }
-
 }

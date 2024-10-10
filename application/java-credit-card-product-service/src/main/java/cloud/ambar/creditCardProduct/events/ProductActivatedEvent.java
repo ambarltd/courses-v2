@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ProductActivatedEvent {
     public static final String EVENT_NAME = "CreditCardProduct_Product_ProductActivated";
-
     private String aggregateId;
-
 }
