@@ -49,7 +49,7 @@ public class CommandController {
 
     @PostMapping("/activate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void activateProduct(@PathVariable String aggregateId) {
+    public void activateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
         productService.handle(new ProductActivatedCommand(aggregateId));
     }
 

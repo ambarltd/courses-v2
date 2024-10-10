@@ -3,13 +3,15 @@ package cloud.ambar.creditCardProduct.aggregate;
 import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
 import cloud.ambar.creditCardProduct.events.Event;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Data
+@NoArgsConstructor
 public abstract class AggregateTraits implements Aggregate {
 
-    private final String aggregateId;
+    private String aggregateId;
     private long aggregateVersion;
 
     public AggregateTraits(String aggregateId, long aggregateVersion) {

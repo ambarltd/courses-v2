@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductDeactivatedCommand {
-    private String productIdentifierForAggregateIdHash;
+    private String id;
 }

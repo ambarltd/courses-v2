@@ -1,5 +1,7 @@
 package cloud.ambar.creditCardProduct.commandHandlers;
 
+import cloud.ambar.creditCardProduct.aggregate.ProductAggregate;
+import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
 import cloud.ambar.creditCardProduct.exceptions.InvalidPaymentCycleException;
 import cloud.ambar.creditCardProduct.exceptions.InvalidRewardException;
 import cloud.ambar.creditCardProduct.events.Event;
@@ -12,6 +14,7 @@ import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
 import cloud.ambar.creditCardProduct.data.models.PaymentCycle;
 import cloud.ambar.creditCardProduct.data.models.RewardsType;
+import cloud.ambar.creditCardProduct.exceptions.NoSuchProductException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -93,15 +97,54 @@ public class ProductCommandService implements CommandService {
     }
 
     @Override
-    public void handle(ProductActivatedCommand command) {
+    public void handle(ProductActivatedCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductActivatedEvent.EVENT_NAME + " command.");
-        // Todo:
+
         //  1. Hydrate the Aggregate
+        List<Event> productEvents = eventStore.findAllByAggregateId(command.getId());
+        if (productEvents.isEmpty()) {
+            final String msg = "Unable to find a product with id: " + command.getId();
+            throw new NoSuchProductException(msg);
+        }
+
+        ProductAggregate aggregate = new ProductAggregate();
+        for (Event event: productEvents) {
+            aggregate.apply(event);
+        }
+        log.info("Hydrated Aggregate: " + aggregate);
+
         //  2. Validate the command
         //    -> card currently inactive
         //       This can be done with either a query to the projection DB (async)
         //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
+        if (aggregate.isActive()) {
+            final String msg = "Product " + command.getId() + " is already active!";
+            throw new InvalidEventException(msg);
+        }
+        log.info("Product is currently inactive, updating to active!");
+
         //  3. Update the aggregate (write new event to store)
+        final String eventId = UUID.randomUUID().toString();
+        final String aggregateId = command.getId();
+        final Event event = Event.builder()
+                .eventName(ProductActivatedEvent.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(1)
+                .timeStamp(LocalDateTime.now())
+                .metadata("")
+                .data(objectMapper.writeValueAsString(
+                        ProductActivatedEvent.builder()
+                                .aggregateId(aggregateId)
+                                .build()
+                ))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductDefinedEvent.EVENT_NAME + " command.");
     }
 
     @Override

@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class ProductActivatedEvent {
     public static final String EVENT_NAME = "CreditCardProduct_Product_ProductActivated";
 
-    private String productIdentifierForAggregateIdHash;
+    private String aggregateId;
 
 }
