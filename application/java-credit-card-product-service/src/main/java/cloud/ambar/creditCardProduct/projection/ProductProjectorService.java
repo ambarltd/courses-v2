@@ -1,4 +1,4 @@
-package cloud.ambar.creditCardProduct.events.projection;
+package cloud.ambar.creditCardProduct.projection;
 
 import cloud.ambar.creditCardProduct.data.models.projection.Payload;
 import cloud.ambar.creditCardProduct.data.mongo.ProjectionRepository;

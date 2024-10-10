@@ -6,7 +6,7 @@ import cloud.ambar.creditCardProduct.data.models.ambar.ErrorPolicy;
 import cloud.ambar.creditCardProduct.data.models.ambar.Result;
 import cloud.ambar.creditCardProduct.data.models.ambar.Success;
 import cloud.ambar.creditCardProduct.data.models.projection.AmbarEvent;
-import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
+import cloud.ambar.creditCardProduct.projection.ProductProjectorService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
