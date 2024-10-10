@@ -60,7 +60,7 @@ public class ProductProjectorService implements EventProjector {
     }
 
     private Product getProductOrThrow(Payload event) {
-        Optional<Product> product = projectionRepository.findById(event.getAggregateId());
+        Optional<Product> product = projectionRepository.getProductByAggregateId(event.getAggregateId());
         if (product.isEmpty()) {
             final String msg = "Unable to find Product in projection repository for aggregate: " + event.getAggregateId();
             log.error(msg);
