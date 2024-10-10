@@ -6,5 +6,4 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.Optional;
 
 public interface ProjectionRepository extends MongoRepository<Product, String> {
-    Optional<Product> getProductByAggregateId(String aggregateId);
 }

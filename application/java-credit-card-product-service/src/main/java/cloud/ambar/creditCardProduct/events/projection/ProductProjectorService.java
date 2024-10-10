@@ -39,6 +39,7 @@ public class ProductProjectorService implements EventProjector {
             case ProductDefinedEvent.EVENT_NAME -> {
                 log.info("Handling projection for ProductDefinedEvent");
                 product = objectMapper.readValue(event.getData(), Product.class);
+                product.setId(event.getAggregateId());
             }
             case ProductActivatedEvent.EVENT_NAME -> {
                 log.info("Handling projection for ProductActivatedEvent");
@@ -60,7 +61,7 @@ public class ProductProjectorService implements EventProjector {
     }
 
     private Product getProductOrThrow(Payload event) {
-        Optional<Product> product = projectionRepository.getProductByAggregateId(event.getAggregateId());
+        Optional<Product> product = projectionRepository.findById(event.getAggregateId());
         if (product.isEmpty()) {
             final String msg = "Unable to find Product in projection repository for aggregate: " + event.getAggregateId();
             log.error(msg);
