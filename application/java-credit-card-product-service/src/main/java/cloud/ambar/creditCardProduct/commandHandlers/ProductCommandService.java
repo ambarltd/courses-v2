@@ -121,7 +121,7 @@ public class ProductCommandService implements CommandService {
                 .correlationId(aggregateId)
                 .causationID(eventId)
                 .aggregateId(aggregateId)
-                .version(1)
+                .version(aggregate.getAggregateVersion())
                 .timeStamp(LocalDateTime.now())
                 .metadata("")
                 .data(objectMapper.writeValueAsString(
@@ -162,7 +162,7 @@ public class ProductCommandService implements CommandService {
                 .correlationId(aggregateId)
                 .causationID(eventId)
                 .aggregateId(aggregateId)
-                .version(1)
+                .version(aggregate.getAggregateVersion())
                 .timeStamp(LocalDateTime.now())
                 .metadata("")
                 .data(objectMapper.writeValueAsString(

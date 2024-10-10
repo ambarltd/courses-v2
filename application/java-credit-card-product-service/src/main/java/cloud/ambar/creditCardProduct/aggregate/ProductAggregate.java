@@ -25,10 +25,10 @@ public class ProductAggregate extends AggregateTraits {
     private String name;
     private int interestInBasisPoints;
     private int annualFeeInCents;
-    private PaymentCycle paymentCycle;
+    private String paymentCycle;
     private int creditLimitInCents;
     private int maxBalanceTransferAllowedInCents;
-    private RewardsType reward;
+    private String reward;
     private String cardBackgroundHex;
     private boolean active;
 
@@ -43,19 +43,20 @@ public class ProductAggregate extends AggregateTraits {
                 log.info("Transforming aggregate for ProductDefinedEvent");
                 ObjectMapper om = new ObjectMapper();
                 try {
-                    ProductAggregate p = om.readValue(event.getData(), ProductAggregate.class);
-                    this.setAggregateId(p.getAggregateId());
-                    this.setAggregateVersion(p.getAggregateVersion());
-                    this.setName(p.getName());
-                    this.setInterestInBasisPoints(p.getInterestInBasisPoints());
-                    this.setAnnualFeeInCents(p.getAnnualFeeInCents());
-                    this.setPaymentCycle(p.getPaymentCycle());
-                    this.setCreditLimitInCents(p.getCreditLimitInCents());
-                    this.setMaxBalanceTransferAllowedInCents(p.getMaxBalanceTransferAllowedInCents());
-                    this.setReward(p.getReward());
-                    this.setCardBackgroundHex(p.getCardBackgroundHex());
+                    ProductDefinedEvent definition = om.readValue(event.getData(), ProductDefinedEvent.class);
+                    this.setAggregateId(event.getAggregateId());
+                    this.setAggregateVersion(event.getVersion());
+                    this.setName(definition.getName());
+                    this.setInterestInBasisPoints(definition.getInterestInBasisPoints());
+                    this.setAnnualFeeInCents(definition.getAnnualFeeInCents());
+                    this.setPaymentCycle(definition.getPaymentCycle());
+                    this.setCreditLimitInCents(definition.getCreditLimitInCents());
+                    this.setMaxBalanceTransferAllowedInCents(definition.getMaxBalanceTransferAllowedInCents());
+                    this.setReward(definition.getReward());
+                    this.setCardBackgroundHex(definition.getCardBackgroundHex());
                     this.setActive(false);
                 } catch (JsonProcessingException e) {
+                    log.error("Error creating initial product definition from event!");
                     throw new InvalidEventException("Error processing ProductDefinedEvent");
                 }
             }
