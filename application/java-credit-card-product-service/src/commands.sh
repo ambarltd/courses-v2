@@ -1,5 +1,6 @@
-endpoint="https://c101175e46b7f-pro-ccp-app-app-sigx6aiy5q-nw.a.run.app"
+endpoint="your-endpoint-here"
 
+# To create the Starter card
 curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 -H "Content-Type: application/json" \
 -d '{
@@ -14,6 +15,7 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
   "cardBackgroundHex": "#7fffd4"
 }'
 
+# To create the Platinum card
 curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
 -H "Content-Type: application/json" \
 -d '{
@@ -27,3 +29,6 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product" \
   "reward": "points",
   "cardBackgroundHex": "#E5E4E2"
 }'
+
+# To list the current card products
+curl -X POST "${endpoint}/api/v1/credit_card_product/product/list-items" | jq .

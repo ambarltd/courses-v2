@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "ProductListItems")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Product {
-    @JsonProperty("aggregate_id")
     @Id
     private String id;
     private String name;
