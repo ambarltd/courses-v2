@@ -1,6 +1,5 @@
 package cloud.ambar.creditCardProduct.events;
 
-import cloud.ambar.common.models.Event;
 import cloud.ambar.creditCardProduct.data.models.projection.Payload;
 import com.fasterxml.jackson.core.JsonProcessingException;
 

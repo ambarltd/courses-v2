@@ -1,4 +1,4 @@
-package cloud.ambar.common.components;
+package cloud.ambar.creditCardProduct.data.postgre;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -1,7 +1,6 @@
 package cloud.ambar.creditCardProduct.aggregate;
 
-import cloud.ambar.common.models.AggregateTraits;
-import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.events.Event;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;

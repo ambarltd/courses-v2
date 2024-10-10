@@ -1,12 +1,12 @@
-package cloud.ambar.common.models;
+package cloud.ambar.creditCardProduct.aggregate;
 
-import cloud.ambar.common.exceptions.InvalidEventException;
-import lombok.Getter;
+import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
+import cloud.ambar.creditCardProduct.events.Event;
+import lombok.Data;
 
-import java.util.List;
 import java.util.Objects;
 
-@Getter
+@Data
 public abstract class AggregateTraits implements Aggregate {
 
     private final String aggregateId;

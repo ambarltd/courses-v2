@@ -1,10 +1,10 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.common.ambar.AmbarResponse;
-import cloud.ambar.common.ambar.Error;
-import cloud.ambar.common.ambar.ErrorPolicy;
-import cloud.ambar.common.ambar.Result;
-import cloud.ambar.common.ambar.Success;
+import cloud.ambar.creditCardProduct.data.models.ambar.AmbarResponse;
+import cloud.ambar.creditCardProduct.data.models.ambar.Error;
+import cloud.ambar.creditCardProduct.data.models.ambar.ErrorPolicy;
+import cloud.ambar.creditCardProduct.data.models.ambar.Result;
+import cloud.ambar.creditCardProduct.data.models.ambar.Success;
 import cloud.ambar.creditCardProduct.data.models.projection.AmbarEvent;
 import cloud.ambar.creditCardProduct.events.projection.ProductProjectorService;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -1,4 +1,4 @@
-package cloud.ambar.common.ambar;
+package cloud.ambar.creditCardProduct.data.models.ambar;
 
 
 import com.fasterxml.jackson.databind.JsonNode;

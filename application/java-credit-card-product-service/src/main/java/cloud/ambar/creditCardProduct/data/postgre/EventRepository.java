@@ -1,6 +1,6 @@
 package cloud.ambar.creditCardProduct.data.postgre;
 
-import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.events.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,8 +1,8 @@
 package cloud.ambar.creditCardProduct.commandHandlers;
 
-import cloud.ambar.common.exceptions.InvalidPaymentCycleException;
-import cloud.ambar.common.exceptions.InvalidRewardException;
-import cloud.ambar.common.models.Event;
+import cloud.ambar.creditCardProduct.exceptions.InvalidPaymentCycleException;
+import cloud.ambar.creditCardProduct.exceptions.InvalidRewardException;
+import cloud.ambar.creditCardProduct.events.Event;
 import cloud.ambar.creditCardProduct.commands.DefineProductCommand;
 import cloud.ambar.creditCardProduct.commands.ProductActivatedCommand;
 import cloud.ambar.creditCardProduct.commands.ProductDeactivatedCommand;
@@ -12,9 +12,9 @@ import cloud.ambar.creditCardProduct.events.ProductDeactivatedEvent;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEvent;
 import cloud.ambar.creditCardProduct.data.models.PaymentCycle;
 import cloud.ambar.creditCardProduct.data.models.RewardsType;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -35,10 +35,9 @@ public class ProductCommandService implements CommandService {
     private final EventRepository eventStore;
 
     private final ObjectMapper objectMapper;
-    @SneakyThrows
-    @Override
 
-    public void handle(DefineProductCommand command) {
+    @Override
+    public void handle(DefineProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDefinedEvent.EVENT_NAME + " command.");
         final String eventId = UUID.nameUUIDFromBytes(command.getProductIdentifierForAggregateIdHash().getBytes()).toString();
         // First part of validation is to check if this event has already been processed. We expect to create a new
@@ -98,7 +97,10 @@ public class ProductCommandService implements CommandService {
         log.info("Handling " + ProductActivatedEvent.EVENT_NAME + " command.");
         // Todo:
         //  1. Hydrate the Aggregate
-        //  2. Validate the command (card currently inactive)
+        //  2. Validate the command
+        //    -> card currently inactive
+        //       This can be done with either a query to the projection DB (async)
+        //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
         //  3. Update the aggregate (write new event to store)
     }
 
@@ -107,7 +109,10 @@ public class ProductCommandService implements CommandService {
         log.info("Handling " + ProductDeactivatedEvent.EVENT_NAME + " command.");
         // Todo:
         //  1. Hydrate the Aggregate
-        //  2. Validate the command (card currently active)
+        //  2. Validate the command
+        //    -> card currently active
+        //       This can be done with either a query to the projection DB (async)
+        //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
         //  3. Update the aggregate (write new event to store)
     }
 }

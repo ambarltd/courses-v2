@@ -4,6 +4,7 @@ import cloud.ambar.creditCardProduct.commandHandlers.ProductCommandService;
 import cloud.ambar.creditCardProduct.commands.DefineProductCommand;
 import cloud.ambar.creditCardProduct.commands.ProductActivatedCommand;
 import cloud.ambar.creditCardProduct.commands.ProductDeactivatedCommand;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +41,7 @@ public class CommandController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void defineProduct(@RequestBody DefineProductCommand defineProductCommand) {
+    public void defineProduct(@RequestBody DefineProductCommand defineProductCommand) throws JsonProcessingException {
         log.info("Got request to define product.");
         // Todo: Validate the request (Required args present, etc)
         productService.handle(defineProductCommand);

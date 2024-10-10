@@ -1,4 +1,4 @@
-package cloud.ambar.common.exceptions;
+package cloud.ambar.creditCardProduct.exceptions;
 
 import lombok.NoArgsConstructor;
 

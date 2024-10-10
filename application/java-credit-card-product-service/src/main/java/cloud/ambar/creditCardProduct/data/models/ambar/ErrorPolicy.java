@@ -1,4 +1,4 @@
-package cloud.ambar.common.ambar;
+package cloud.ambar.creditCardProduct.data.models.ambar;
 
 public enum ErrorPolicy {
     KEEP_GOING,
