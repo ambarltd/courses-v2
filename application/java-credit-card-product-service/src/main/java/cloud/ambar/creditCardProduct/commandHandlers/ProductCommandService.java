@@ -31,7 +31,6 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-// TBD needed?
 @Transactional
 public class ProductCommandService implements CommandService {
     private static final Logger log = LogManager.getLogger(ProductCommandService.class);
@@ -99,33 +98,23 @@ public class ProductCommandService implements CommandService {
     @Override
     public void handle(ProductActivatedCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductActivatedEvent.EVENT_NAME + " command.");
+        final String aggregateId = command.getId();
 
         //  1. Hydrate the Aggregate
-        List<Event> productEvents = eventStore.findAllByAggregateId(command.getId());
-        if (productEvents.isEmpty()) {
-            final String msg = "Unable to find a product with id: " + command.getId();
-            throw new NoSuchProductException(msg);
-        }
-
-        ProductAggregate aggregate = new ProductAggregate();
-        for (Event event: productEvents) {
-            aggregate.apply(event);
-        }
-        log.info("Hydrated Aggregate: " + aggregate);
+        final ProductAggregate aggregate = hydrateAggregateForId(aggregateId);;
 
         //  2. Validate the command
         //    -> card currently inactive
         //       This can be done with either a query to the projection DB (async)
         //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
         if (aggregate.isActive()) {
-            final String msg = "Product " + command.getId() + " is already active!";
+            final String msg = "Product " + aggregateId + " is already active!";
             throw new InvalidEventException(msg);
         }
         log.info("Product is currently inactive, updating to active!");
 
         //  3. Update the aggregate (write new event to store)
         final String eventId = UUID.randomUUID().toString();
-        final String aggregateId = command.getId();
         final Event event = Event.builder()
                 .eventName(ProductActivatedEvent.EVENT_NAME)
                 .eventId(eventId)
@@ -148,14 +137,58 @@ public class ProductCommandService implements CommandService {
     }
 
     @Override
-    public void handle(ProductDeactivatedCommand command) {
+    public void handle(ProductDeactivatedCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDeactivatedEvent.EVENT_NAME + " command.");
-        // Todo:
+        final String aggregateId = command.getId();
+
         //  1. Hydrate the Aggregate
+        final ProductAggregate aggregate = hydrateAggregateForId(aggregateId);
+
         //  2. Validate the command
-        //    -> card currently active
+        //    -> card currently inactive
         //       This can be done with either a query to the projection DB (async)
         //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
+        if (!aggregate.isActive()) {
+            final String msg = "Product " + aggregateId + " is already inactive!";
+            throw new InvalidEventException(msg);
+        }
+        log.info("Product is currently active, updating to active!");
+
         //  3. Update the aggregate (write new event to store)
+        final String eventId = UUID.randomUUID().toString();
+        final Event event = Event.builder()
+                .eventName(ProductDeactivatedEvent.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(1)
+                .timeStamp(LocalDateTime.now())
+                .metadata("")
+                .data(objectMapper.writeValueAsString(
+                        ProductDeactivatedEvent.builder()
+                                .aggregateId(aggregateId)
+                                .build()
+                ))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductDeactivatedEvent.EVENT_NAME + " command.");
+    }
+
+    private ProductAggregate hydrateAggregateForId(String id) {
+        final List<Event> productEvents = eventStore.findAllByAggregateId(id);
+        final ProductAggregate aggregate = new ProductAggregate();
+        if (productEvents.isEmpty()) {
+            final String msg = "Unable to find a product with id: " + id;
+            throw new NoSuchProductException(msg);
+        }
+
+        for (Event event: productEvents) {
+            aggregate.apply(event);
+        }
+        log.info("Hydrated Aggregate: " + aggregate);
+        return aggregate;
     }
 }

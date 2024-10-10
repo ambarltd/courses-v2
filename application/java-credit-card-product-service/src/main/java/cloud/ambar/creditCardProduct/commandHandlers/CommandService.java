@@ -8,5 +8,5 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public interface CommandService {
     void handle(DefineProductCommand command) throws JsonProcessingException;
     void handle(ProductActivatedCommand command) throws JsonProcessingException;
-    void handle(ProductDeactivatedCommand command);
+    void handle(ProductDeactivatedCommand command) throws JsonProcessingException;
 }

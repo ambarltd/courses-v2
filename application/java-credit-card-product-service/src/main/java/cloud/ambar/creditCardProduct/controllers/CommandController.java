@@ -55,7 +55,7 @@ public class CommandController {
 
     @PostMapping("/deactivate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deactivateProduct(@PathVariable String aggregateId) {
+    public void deactivateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
         productService.handle(new ProductDeactivatedCommand(aggregateId));
     }
 
