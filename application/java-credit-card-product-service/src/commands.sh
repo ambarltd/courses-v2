@@ -37,5 +37,5 @@ productId=""
 # Activate a product
 curl -X POST "${endpoint}/api/v1/credit_card_product/product/activate/${productId}"
 
-#Deactivate a product
+# Deactivate a product
 curl -X POST "${endpoint}/api/v1/credit_card_product/product/deactivate/${productId}"

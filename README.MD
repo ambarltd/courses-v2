@@ -53,8 +53,38 @@ pattern (CQRS) where we create distinct paths for our write (record events) and 
   * E.G. Making a new credit card product for customers to apply for.
 * **Event**: A recording of something significant happening in our application containing things like who, what, and when.
 Events should be small and precise, and are written sequentially to an immutable log. Never change events or insert new ones 
-except at the tail of the log.
+except at the tail of the log. Events should belong to short-lived processes, such as handling a request or system notification.
   * E.G. Activating a credit card product so customers can apply for it 
 (Who: The product ID, What: Make it active, When: when was the event recorded)
+* **Aggregate**: Information Model built from a set of related events used to model a process such has handling a command / request.
+They should be small, and leverage event ordering to create a minified state for process handling.
+  * E.G. A Product Aggregate to model a credit card which is offered in our service. We can leverage the aggregate to determine
+if a product is already available (active) or not, to determine if a command (request) is valid.
+* **Projection**: Projection leverages building up some useful state from a filtered set of events and storing the derived
+state into a projection database. These projections can then be leveraged during command validations when determining if
+a command should be accepted (event written) or not.
+* **Query**: Queries are the read side of our application, and leverage the models created by projections to retrieve information
+store about the state of our application.
+
+```
+Comamnd (Read from EventStore/ReadModelStore, write back to EventStore)
+  -> [Command (Request)] -> [Build some state (EventStore Aggregate)] -> [Perform Validations (Aggregate, ReadModels)] -> 
+  [Record whatever happened (New Event)] -> [EventStore]
+
+(Strongly Consistent) ^
+------------------------------------------------------------------------------------------------------------------------
+(Eventually Consistent) v
+
+Reaction (Event from EventStore, write back to EventStore)
+  -> [EventStore(Event)] -> [Build some state (EventStore Aggregate)] -> [Perform Validations (Aggregate, ReadModels)] -> 
+  [Record whatever happened (New Event)] -> [EventStore]
+
+
+Projections (Read from ReadModelStore, write to ReadModelStore)
+  -> [EventStore(Event)] -> [Build some state] -> [Project some interesting state] -> [ReadModelStore]
+
+Querys (Read Commands) (Read from ReadModelStore)
+  -> [ReadModelStore (Modeled State)]
+```
 
 ### Microservices Additional Context / Reminders
