@@ -16,5 +16,5 @@ public class Product {
     private String id;
     private String name;
     @JsonProperty("isActive")
-    private boolean isActive;
+    private boolean active;
 }
