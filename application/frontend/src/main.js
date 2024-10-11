@@ -410,18 +410,20 @@ async function cardToggle(req, res) {
       }
     });
 
-    // Check if the fetch was successful
-    if (!response.ok) {
-      const errorResponse = await response.json();
-      return res.status(response.status).json({ error: getError(errorResponse) });
-    }
+    // Bit of a hack, the request -> event -> projection will take some time.
+    // Realistically you would update the interface locally, and refresh state async
+    await sleep(2000);
 
     // After successfully toggling the product status, render the updated product list
-    return await routeCardProducts(req, res); // Wait for routeCardProducts to finish
+    return await routeCardProducts(req, res);
   } catch (error) {
     console.error('Error in cardToggle:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return await routeCardProducts(req, res);
   }
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
