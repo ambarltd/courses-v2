@@ -28,10 +28,10 @@ public class DefaultCardCreator implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("Defining initial card products");
-//        commandService.handle(STARTER);
-//        commandService.handle(BASIC);
-//        commandService.handle(BASIC_CASH_BACK);
-//        commandService.handle(BASIC_POINTS);
-//        commandService.handle(PLATINUM);
+        commandService.handle(STARTER);
+        commandService.handle(BASIC);
+        commandService.handle(BASIC_CASH_BACK);
+        commandService.handle(BASIC_POINTS);
+        commandService.handle(PLATINUM);
     }
 }
