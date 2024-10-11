@@ -1,4 +1,4 @@
-resource "ambar_data_destination" "CreditCardProduct_Product" {
+resource "ambar_data_destination" "CreditCardProduct_Product_projector" {
   filter_ids = [
     ambar_filter.credit_card_product.resource_id,
   ]
