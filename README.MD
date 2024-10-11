@@ -17,6 +17,7 @@ STATE_MANAGEMENT_BASE64=some_string_here
 CREDENTIALS_BASE64=some_string_here
 ```
 **N.B. Make sure to enter the entire string for each secret, with no quotes, and no newlines!**
+
 3. Make a trivial commit (such as updating this readme), and push it to GitHub.
 
 ## Extending this program
