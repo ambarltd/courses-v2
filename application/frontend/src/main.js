@@ -23,7 +23,9 @@ const endpoints = {
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
-  "list-credit-card-products": domains.card + "/product/list-items"
+  "list-credit-card-products": domains.card + "/product/list-items",
+  "activate-product": domains.card + "/product/activate",
+  "deactivate-product": domains.card + "/product/deactivate"
 }
 
 // Accept JSON bodies
@@ -103,6 +105,7 @@ app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
+app.post('/card/products', authenticated,  cardToggle);
 
 async function userDetails(token) {
   const response = await fetch(endpoints["user-details"], {
@@ -383,6 +386,42 @@ async function routeCardProducts(req, res) {
       products: r
     }
   });
+}
+
+async function cardToggle(req, res) {
+  const productId = req.body.productId;
+  const active = req.body.active;
+
+  if (!productId) {
+    return res.status(400).json({ error: 'Product ID is required' });
+  }
+
+  try {
+    // Make the appropriate fetch request based on the product's current status
+    const endpoint = active === "true"
+        ? endpoints["deactivate-product"] + "/" + productId
+        : endpoints["activate-product"] + "/" + productId;
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      body: '{}',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+    // Check if the fetch was successful
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      return res.status(response.status).json({ error: getError(errorResponse) });
+    }
+
+    // After successfully toggling the product status, render the updated product list
+    return await routeCardProducts(req, res); // Wait for routeCardProducts to finish
+  } catch (error) {
+    console.error('Error in cardToggle:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 }
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
