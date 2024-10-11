@@ -143,8 +143,7 @@ public class CreditCardProductCommandService {
         //       This can be done with either a query to the projection DB (async)
         //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
         if (!aggregate.isActive()) {
-            final String msg = "Product " + aggregateId + " is already inactive!";
-            throw new InvalidEventException(msg);
+            throw new InvalidEventException();
         }
         log.info("Product is currently active, updating to active!");
 

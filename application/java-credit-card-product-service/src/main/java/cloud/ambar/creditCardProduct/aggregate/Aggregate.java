@@ -33,6 +33,6 @@ public abstract class Aggregate implements IAggregate {
     private void validateEvent(final Event event) {
         log.info("Validating Event: " + event);
         if (Objects.isNull(event) || !event.getAggregateId().equals(this.aggregateId))
-            throw new InvalidEventException(event.toString());
+            throw new RuntimeException();
     }
 }
