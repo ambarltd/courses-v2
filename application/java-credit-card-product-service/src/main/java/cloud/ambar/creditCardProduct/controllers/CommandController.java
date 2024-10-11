@@ -49,13 +49,13 @@ public class CommandController {
 
     @PostMapping("/activate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void activateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
+    public void activateProduct(@PathVariable final String aggregateId) throws JsonProcessingException {
         productService.handle(new ActivateCreditCardProductCommand(aggregateId));
     }
 
     @PostMapping("/deactivate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deactivateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
+    public void deactivateProduct(@PathVariable final String aggregateId) throws JsonProcessingException {
         productService.handle(new DeactivateCreditCardProductCommand(aggregateId));
     }
 }

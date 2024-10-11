@@ -39,7 +39,7 @@ public class CreditCardProductCommandService {
 
     private final ObjectMapper objectMapper;
 
-    public void handle(DefineCreditCardProductCommand command) throws JsonProcessingException {
+    public void handle(final DefineCreditCardProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDefinedEventData.EVENT_NAME + " command.");
         final String eventId = UUID.nameUUIDFromBytes(command.getProductIdentifierForAggregateIdHash().getBytes()).toString();
         // First part of validation is to check if this event has already been processed. We expect to create a new
