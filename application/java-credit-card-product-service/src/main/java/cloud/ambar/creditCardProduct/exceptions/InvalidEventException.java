@@ -1,10 +1,8 @@
 package cloud.ambar.creditCardProduct.exceptions;
 
-import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@NoArgsConstructor
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Request conflicts with current state of Credit Card Product")
 public class InvalidEventException extends RuntimeException {
-    public InvalidEventException(String msg) {
-        super(msg);
-    }
 }

@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>cloud.ambar</groupId>
 	<artifactId>CreditCardProduct</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>CreditCardProduct</name>
 	<description>Ambar Credit Card Product service for course demo</description>
 	<url/>

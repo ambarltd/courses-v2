@@ -1,6 +1,6 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.creditCardProduct.data.models.projection.Product;
+import cloud.ambar.creditCardProduct.projection.models.CreditCardProduct;
 import cloud.ambar.creditCardProduct.query.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -35,9 +35,9 @@ public class QueryController {
     @PostMapping(value = "/api/v1/credit_card_product/product/list-items")
     public String listItems() throws JsonProcessingException {
         log.info("Listing all products from ProjectionRepository");
-        List<Product> products = queryService.getAllProductListItems();
-        // Todo: Create the response shape and serialize it.
-        return objectMapper.writeValueAsString(products);
+        List<CreditCardProduct> creditCardProducts = queryService.getAllCreditCardProducts();
+
+        return objectMapper.writeValueAsString(creditCardProducts);
     }
 
 }

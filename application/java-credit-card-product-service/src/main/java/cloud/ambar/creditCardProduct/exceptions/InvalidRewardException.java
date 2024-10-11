@@ -1,10 +1,8 @@
 package cloud.ambar.creditCardProduct.exceptions;
 
-import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@NoArgsConstructor
+@ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Invalid Reward")
 public class InvalidRewardException extends RuntimeException {
-    public InvalidRewardException(String msg) {
-        super(msg);
-    }
 }

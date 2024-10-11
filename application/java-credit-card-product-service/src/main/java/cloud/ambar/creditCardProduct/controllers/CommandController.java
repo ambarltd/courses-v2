@@ -1,9 +1,9 @@
 package cloud.ambar.creditCardProduct.controllers;
 
-import cloud.ambar.creditCardProduct.commandHandlers.ProductCommandService;
-import cloud.ambar.creditCardProduct.commands.DefineProductCommand;
-import cloud.ambar.creditCardProduct.commands.ProductActivatedCommand;
-import cloud.ambar.creditCardProduct.commands.ProductDeactivatedCommand;
+import cloud.ambar.creditCardProduct.command.CreditCardProductCommandService;
+import cloud.ambar.creditCardProduct.command.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.creditCardProduct.command.models.commands.ActivateCreditCardProductCommand;
+import cloud.ambar.creditCardProduct.command.models.commands.DeactivateCreditCardProductCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,16 +32,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class CommandController {
     private static final Logger log = LogManager.getLogger(CommandController.class);
 
-    private final ProductCommandService productService;
+    private final CreditCardProductCommandService productService;
 
     @Autowired
-    public CommandController(final ProductCommandService productService) {
+    public CommandController(final CreditCardProductCommandService productService) {
         this.productService = productService;
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void defineProduct(@RequestBody DefineProductCommand defineProductCommand) throws JsonProcessingException {
+    public void defineProduct(@RequestBody DefineCreditCardProductCommand defineProductCommand) throws JsonProcessingException {
         log.info("Got request to define product.");
         // Todo: Validate the request (Required args present, etc)
         productService.handle(defineProductCommand);
@@ -50,12 +50,12 @@ public class CommandController {
     @PostMapping("/activate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
     public void activateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
-        productService.handle(new ProductActivatedCommand(aggregateId));
+        productService.handle(new ActivateCreditCardProductCommand(aggregateId));
     }
 
     @PostMapping("/deactivate/{aggregateId}")
     @ResponseStatus(HttpStatus.OK)
     public void deactivateProduct(@PathVariable String aggregateId) throws JsonProcessingException {
-        productService.handle(new ProductDeactivatedCommand(aggregateId));
+        productService.handle(new DeactivateCreditCardProductCommand(aggregateId));
     }
 }

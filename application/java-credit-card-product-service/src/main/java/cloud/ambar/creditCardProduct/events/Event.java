@@ -1,7 +1,5 @@
 package cloud.ambar.creditCardProduct.events;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -54,7 +52,7 @@ public class Event {
     private String metadata;
 
     @Column(name="recorded_on")
-    private LocalDateTime timeStamp;
+    private LocalDateTime timestamp;
 
     @Column(name="event_name")
     private String eventName;
