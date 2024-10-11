@@ -35,8 +35,14 @@ public class CreditCardProductProjectionService {
         switch (event.getEventName()) {
             case ProductDefinedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductDefinedEvent");
-                creditCardProduct = objectMapper.readValue(event.getData(), CreditCardProduct.class);
+                final ProductDefinedEventData data = objectMapper.readValue(event.getData(), ProductDefinedEventData.class);
+                creditCardProduct = new CreditCardProduct();
                 creditCardProduct.setId(event.getAggregateId());
+                creditCardProduct.setName(data.getName());
+                creditCardProduct.setActive(false);
+                creditCardProduct.setRewardType(data.getReward());
+                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents()/100);
+                creditCardProduct.setBackgroundColorHex(data.getCardBackgroundHex());
             }
             case ProductActivatedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductActivatedEvent");
