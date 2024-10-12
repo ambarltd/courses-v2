@@ -62,7 +62,7 @@ public class CreditCardProductProjectionService {
                 log.info("Handling projection for ProductDeactivatedEvent");
                 final ProductAnnualFeeChangedEventData data = objectMapper.readValue(event.getData(), ProductAnnualFeeChangedEventData.class);
                 creditCardProduct = getProductOrThrow(event);
-                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents());
+                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents()/100);
             }
             case ProductBackgroundChangedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductBackgroundChangedEvent");
