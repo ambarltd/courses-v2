@@ -86,9 +86,6 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product/deactivate/${produc
 curl -X PATCH "${endpoint}/api/v1/credit_card_product/product" \
 -H "Content-Type: application/json" \
 -d '{
-  "id": "",
-  "annualFeeInCents": ,
-  "paymentCycle": "",
-  "creditLimitInCents": ,
-  "cardBackgroundHex": ""
+  "id": "806ea870-56aa-4289-ac8f-76861b27a702",
+  "annualFeeInCents": 2500
 }'
