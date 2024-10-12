@@ -2,8 +2,12 @@ package cloud.ambar.creditCardProduct.aggregate;
 
 import cloud.ambar.creditCardProduct.events.Event;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEventData;
+import cloud.ambar.creditCardProduct.events.ProductAnnualFeeChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductBackgroundChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductCreditLimitChangedEventData;
 import cloud.ambar.creditCardProduct.events.ProductDeactivatedEventData;
 import cloud.ambar.creditCardProduct.events.ProductDefinedEventData;
+import cloud.ambar.creditCardProduct.events.ProductPaymentCycleChangedEventData;
 import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,10 +38,9 @@ public class CreditCardProductAggregate extends Aggregate {
 
     @Override
     public void transform(Event event) {
+        ObjectMapper om = new ObjectMapper();
         switch(event.getEventName()) {
             case ProductDefinedEventData.EVENT_NAME -> {
-                log.info("Transforming aggregate for ProductDefinedEvent");
-                ObjectMapper om = new ObjectMapper();
                 try {
                     ProductDefinedEventData definition = om.readValue(event.getData(), ProductDefinedEventData.class);
                     this.setAggregateId(event.getAggregateId());
@@ -57,12 +60,42 @@ public class CreditCardProductAggregate extends Aggregate {
                 }
             }
             case ProductActivatedEventData.EVENT_NAME -> {
-                log.info("Transforming aggregate for ProductActivatedEvent");
                 this.active = true;
             }
             case ProductDeactivatedEventData.EVENT_NAME -> {
-                log.info("Transforming aggregate for ProductDeactivatedEvent");
                 this.active = false;
+            }
+            case ProductAnnualFeeChangedEventData.EVENT_NAME -> {
+                try {
+                    ProductAnnualFeeChangedEventData modification = om.readValue(event.getData(), ProductAnnualFeeChangedEventData.class);
+                    this.setAnnualFeeInCents(modification.getAnnualFeeInCents());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }
+            case ProductPaymentCycleChangedEventData.EVENT_NAME -> {
+                try {
+                    ProductPaymentCycleChangedEventData modification = om.readValue(event.getData(), ProductPaymentCycleChangedEventData.class);
+                    this.setPaymentCycle(modification.getPaymentCycle());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }
+            case ProductCreditLimitChangedEventData.EVENT_NAME -> {
+                try {
+                    ProductCreditLimitChangedEventData modification = om.readValue(event.getData(), ProductCreditLimitChangedEventData.class);
+                    this.setCreditLimitInCents(modification.getCreditLimitInCents());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
+            }
+            case ProductBackgroundChangedEventData.EVENT_NAME -> {
+                try {
+                    ProductBackgroundChangedEventData modification = om.readValue(event.getData(), ProductBackgroundChangedEventData.class);
+                    this.setCardBackgroundHex(modification.getCardBackgroundHex());
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e.getMessage());
+                }
             }
         }
     }

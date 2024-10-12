@@ -1,5 +1,6 @@
 package cloud.ambar.creditCardProduct.controllers;
 
+import cloud.ambar.creditCardProduct.exceptions.UnexpectedEventException;
 import cloud.ambar.creditCardProduct.projection.models.response.AmbarResponse;
 import cloud.ambar.creditCardProduct.projection.models.response.Error;
 import cloud.ambar.creditCardProduct.projection.models.response.ErrorPolicy;
@@ -51,6 +52,10 @@ public class ProjectionReactionController {
 
             creditCardProductProjectionService.project(ambarEvent.getPayload());
             return successResponse();
+        } catch (UnexpectedEventException e) {
+            log.warn("Got unexpected event at projection endpoint from Ambar...");
+            log.warn("Check Filter configuration for Ambar, dropping event and continuing...");
+            return keepGoingResponse(e.getMessage());
         } catch (Exception e) {
             log.error("Failed to process projection event!");
             log.error(e);
@@ -64,6 +69,17 @@ public class ProjectionReactionController {
                 .result(Result.builder()
                         .error(Error.builder()
                                 .policy(ErrorPolicy.MUST_RETRY.toString())
+                                .description(err)
+                                .build())
+                        .build())
+                .build();
+    }
+
+    private AmbarResponse keepGoingResponse(String err) {
+        return AmbarResponse.builder()
+                .result(Result.builder()
+                        .error(Error.builder()
+                                .policy(ErrorPolicy.KEEP_GOING.toString())
                                 .description(err)
                                 .build())
                         .build())

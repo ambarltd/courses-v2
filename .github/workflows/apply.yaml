@@ -2,7 +2,7 @@ name: Apply
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, ModifyCardProduct ]
 
 permissions:
   contents: write

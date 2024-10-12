@@ -1,5 +1,9 @@
 package cloud.ambar.creditCardProduct.projection;
 
+import cloud.ambar.creditCardProduct.events.ProductAnnualFeeChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductBackgroundChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductCreditLimitChangedEventData;
+import cloud.ambar.creditCardProduct.exceptions.UnexpectedEventException;
 import cloud.ambar.creditCardProduct.projection.models.event.Payload;
 import cloud.ambar.creditCardProduct.database.mongo.ProjectionRepository;
 import cloud.ambar.creditCardProduct.events.ProductActivatedEventData;
@@ -54,10 +58,22 @@ public class CreditCardProductProjectionService {
                 creditCardProduct = getProductOrThrow(event);
                 creditCardProduct.setActive(false);
             }
-            default -> {
-                log.info("Event is not a ProductEvent, doing nothing...");
-                return;
+            case ProductAnnualFeeChangedEventData.EVENT_NAME -> {
+                log.info("Handling projection for ProductDeactivatedEvent");
+                final ProductAnnualFeeChangedEventData data = objectMapper.readValue(event.getData(), ProductAnnualFeeChangedEventData.class);
+                creditCardProduct = getProductOrThrow(event);
+                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents());
             }
+            case ProductBackgroundChangedEventData.EVENT_NAME -> {
+                log.info("Handling projection for ProductBackgroundChangedEvent");
+                final ProductBackgroundChangedEventData data = objectMapper.readValue(event.getData(), ProductBackgroundChangedEventData.class);
+                creditCardProduct = getProductOrThrow(event);
+                creditCardProduct.setBackgroundColorHex(data.getCardBackgroundHex());
+            }
+            // For now Ambar is sending all events. But we could update the filter to only give us events related to
+            // the properties of products which we actually display.
+            // Throwing this will tell ambar to keep going despite something unexpected.
+            default -> throw new UnexpectedEventException(event.getEventName());
         }
 
         projectionRepository.save(creditCardProduct);

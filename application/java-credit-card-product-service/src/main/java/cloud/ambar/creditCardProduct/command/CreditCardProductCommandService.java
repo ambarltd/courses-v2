@@ -1,19 +1,26 @@
 package cloud.ambar.creditCardProduct.command;
 
 import cloud.ambar.creditCardProduct.aggregate.CreditCardProductAggregate;
-import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
-import cloud.ambar.creditCardProduct.exceptions.InvalidPaymentCycleException;
-import cloud.ambar.creditCardProduct.exceptions.InvalidRewardException;
-import cloud.ambar.creditCardProduct.events.Event;
-import cloud.ambar.creditCardProduct.command.models.commands.DefineCreditCardProductCommand;
 import cloud.ambar.creditCardProduct.command.models.commands.ActivateCreditCardProductCommand;
 import cloud.ambar.creditCardProduct.command.models.commands.DeactivateCreditCardProductCommand;
-import cloud.ambar.creditCardProduct.database.postgre.EventRepository;
-import cloud.ambar.creditCardProduct.events.ProductActivatedEventData;
-import cloud.ambar.creditCardProduct.events.ProductDeactivatedEventData;
-import cloud.ambar.creditCardProduct.events.ProductDefinedEventData;
+import cloud.ambar.creditCardProduct.command.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.creditCardProduct.command.models.commands.ModifyCreditCardCommand;
+import cloud.ambar.creditCardProduct.command.models.validation.HexColorValidator;
 import cloud.ambar.creditCardProduct.command.models.validation.PaymentCycle;
 import cloud.ambar.creditCardProduct.command.models.validation.RewardsType;
+import cloud.ambar.creditCardProduct.database.postgre.EventRepository;
+import cloud.ambar.creditCardProduct.events.Event;
+import cloud.ambar.creditCardProduct.events.ProductActivatedEventData;
+import cloud.ambar.creditCardProduct.events.ProductAnnualFeeChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductBackgroundChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductCreditLimitChangedEventData;
+import cloud.ambar.creditCardProduct.events.ProductDeactivatedEventData;
+import cloud.ambar.creditCardProduct.events.ProductDefinedEventData;
+import cloud.ambar.creditCardProduct.events.ProductPaymentCycleChangedEventData;
+import cloud.ambar.creditCardProduct.exceptions.InvalidEventException;
+import cloud.ambar.creditCardProduct.exceptions.InvalidHexColorException;
+import cloud.ambar.creditCardProduct.exceptions.InvalidPaymentCycleException;
+import cloud.ambar.creditCardProduct.exceptions.InvalidRewardException;
 import cloud.ambar.creditCardProduct.exceptions.NoSuchProductException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +29,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -30,7 +38,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional
+// @Transactional
+// We define this on a Method level instead, as some handle methods will call multiple private helpers to write multiple
+// events, and we want an all or nothing transaction on the command handler method, not on each and every method.
+// Write all events for a command in a single transaction so either the whole command is accepted or not. No partial
+// applications!
 @RequiredArgsConstructor
 public class CreditCardProductCommandService {
     private static final Logger log = LogManager.getLogger(CreditCardProductCommandService.class);
@@ -39,6 +51,7 @@ public class CreditCardProductCommandService {
 
     private final ObjectMapper objectMapper;
 
+    @Transactional
     public void handle(final DefineCreditCardProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDefinedEventData.EVENT_NAME + " command.");
         final String eventId = UUID.nameUUIDFromBytes(command.getProductIdentifierForAggregateIdHash().getBytes()).toString();
@@ -51,16 +64,18 @@ public class CreditCardProductCommandService {
             return;
         }
 
-        // Next, some simple business validations. These do not rely on any read models (queries)
         if (Arrays.stream(PaymentCycle.values()).noneMatch(p -> p.name().equalsIgnoreCase(command.getPaymentCycle()))) {
             log.error("Invalid payment cycle was specified in command: " + command.getPaymentCycle());
             throw new InvalidPaymentCycleException();
         }
 
-        // ...
         if (Arrays.stream(RewardsType.values()).noneMatch(p -> p.name().equalsIgnoreCase(command.getReward()))) {
             log.error("Invalid reward was specified in command: " + command.getReward());
             throw new InvalidRewardException();
+        }
+
+        if (!HexColorValidator.isValidHexCode(command.getCardBackgroundHex())) {
+            throw new InvalidHexColorException();
         }
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
@@ -94,7 +109,8 @@ public class CreditCardProductCommandService {
         log.info("Successfully handled " + ProductDefinedEventData.EVENT_NAME + " command.");
     }
 
-    public void handle(ActivateCreditCardProductCommand command) throws JsonProcessingException {
+    @Transactional
+    public void handle(final ActivateCreditCardProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductActivatedEventData.EVENT_NAME + " command.");
         final String aggregateId = command.getId();
 
@@ -131,7 +147,8 @@ public class CreditCardProductCommandService {
         log.info("Successfully handled " + ProductDefinedEventData.EVENT_NAME + " command.");
     }
 
-    public void handle(DeactivateCreditCardProductCommand command) throws JsonProcessingException {
+    @Transactional
+    public void handle(final DeactivateCreditCardProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDeactivatedEventData.EVENT_NAME + " command.");
         final String aggregateId = command.getId();
 
@@ -166,6 +183,136 @@ public class CreditCardProductCommandService {
         log.info("Saving Event: " + objectMapper.writeValueAsString(event));
         eventStore.save(event);
         log.info("Successfully handled " + ProductDeactivatedEventData.EVENT_NAME + " command.");
+    }
+
+    @Transactional
+    public void handle(final ModifyCreditCardCommand command) throws JsonProcessingException {
+        log.info("Handling ModifyCreditCardCommand command.");
+        final String aggregateId = command.getId();
+
+        //  1. Hydrate the Aggregate
+        final CreditCardProductAggregate aggregate = hydrateAggregateForId(aggregateId);
+
+        if (command.getAnnualFeeInCents() > 0 && command.getAnnualFeeInCents() != aggregate.getAnnualFeeInCents()) {
+            aggregate.apply(saveProductAnnualFeeChangeEvent(command, aggregate));
+        }
+
+        if (command.getCreditLimitInCents() > 0 && command.getCreditLimitInCents() != aggregate.getCreditLimitInCents()) {
+            aggregate.apply(saveProductCreditLimitChangeEvent(command, aggregate));
+        }
+
+        if (!ObjectUtils.isEmpty(command.getPaymentCycle())
+                && !command.getPaymentCycle().equalsIgnoreCase(aggregate.getPaymentCycle())) {
+            aggregate.apply(saveProductPaymentCycleChangedEvent(command, aggregate));
+        }
+
+        if (!ObjectUtils.isEmpty(command.getCardBackgroundHex())
+                && !command.getCardBackgroundHex().equalsIgnoreCase(aggregate.getCardBackgroundHex())
+                && HexColorValidator.isValidHexCode(command.getCardBackgroundHex())) {
+            aggregate.apply(saveProductBackgroundChangedEvent(command, aggregate));
+        }
+
+        log.info("Successfully handled ModifyCreditCardCommand command.");
+    }
+
+    private Event saveProductBackgroundChangedEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
+        final String aggregateId = command.getId();
+        final String eventId = UUID.randomUUID().toString();
+        final Event event = Event.builder()
+                .eventName(ProductBackgroundChangedEventData.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(aggregate.getAggregateVersion())
+                .timestamp(LocalDateTime.now())
+                .metadata("{\"prior_value\":\"" + aggregate.getCardBackgroundHex() + "\"}")
+                .data(objectMapper.writeValueAsString(
+                        ProductBackgroundChangedEventData.builder()
+                                .cardBackgroundHex(command.getCardBackgroundHex())
+                                .build()))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductBackgroundChangedEventData.EVENT_NAME + " command.");
+
+        return event;
+    }
+
+    private Event saveProductCreditLimitChangeEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
+        final String aggregateId = command.getId();
+        final String eventId = UUID.randomUUID().toString();
+        final Event event = Event.builder()
+                .eventName(ProductCreditLimitChangedEventData.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(aggregate.getAggregateVersion())
+                .timestamp(LocalDateTime.now())
+                .metadata("{\"prior_value\":" + aggregate.getCreditLimitInCents() + "}")
+                .data(objectMapper.writeValueAsString(
+                        ProductCreditLimitChangedEventData.builder()
+                                .creditLimitInCents(command.getCreditLimitInCents())
+                                .build()))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductCreditLimitChangedEventData.EVENT_NAME + " command.");
+
+        return event;
+    }
+
+    private Event saveProductPaymentCycleChangedEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
+        final String aggregateId = command.getId();
+        final String eventId = UUID.randomUUID().toString();
+        final Event event = Event.builder()
+                .eventName(ProductPaymentCycleChangedEventData.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(aggregate.getAggregateVersion())
+                .timestamp(LocalDateTime.now())
+                .metadata("{\"prior_value\":\"" + aggregate.getPaymentCycle() + "\"}")
+                .data(objectMapper.writeValueAsString(
+                        ProductPaymentCycleChangedEventData.builder()
+                                .paymentCycle(command.getPaymentCycle())
+                                .build()))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductPaymentCycleChangedEventData.EVENT_NAME + " command.");
+
+        return event;
+    }
+
+    private Event saveProductAnnualFeeChangeEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
+        final String aggregateId = command.getId();
+        final String eventId = UUID.randomUUID().toString();
+        final Event event = Event.builder()
+                .eventName(ProductAnnualFeeChangedEventData.EVENT_NAME)
+                .eventId(eventId)
+                .correlationId(aggregateId)
+                .causationID(eventId)
+                .aggregateId(aggregateId)
+                .version(aggregate.getAggregateVersion())
+                .timestamp(LocalDateTime.now())
+                .metadata("{\"prior_value\":" + aggregate.getAnnualFeeInCents() + "}")
+                .data(objectMapper.writeValueAsString(
+                        ProductAnnualFeeChangedEventData.builder()
+                                .annualFeeInCents(command.getAnnualFeeInCents())
+                                .build()))
+                .build();
+
+        log.info("Saving Event: " + objectMapper.writeValueAsString(event));
+        eventStore.save(event);
+        log.info("Successfully handled " + ProductDeactivatedEventData.EVENT_NAME + " command.");
+
+        return event;
     }
 
     private CreditCardProductAggregate hydrateAggregateForId(String id) {

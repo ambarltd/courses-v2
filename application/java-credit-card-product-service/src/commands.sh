@@ -81,3 +81,14 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product/activate/${productI
 
 # Deactivate a product
 curl -X POST "${endpoint}/api/v1/credit_card_product/product/deactivate/${productId}"
+
+# To modify a card product
+curl -X PATCH "${endpoint}/api/v1/credit_card_product/product" \
+-H "Content-Type: application/json" \
+-d '{
+  "id": "",
+  "annualFeeInCents": ,
+  "paymentCycle": "",
+  "creditLimitInCents": ,
+  "cardBackgroundHex": ""
+}'
