@@ -22,6 +22,8 @@ import cloud.ambar.creditCardProduct.exceptions.InvalidHexColorException;
 import cloud.ambar.creditCardProduct.exceptions.InvalidPaymentCycleException;
 import cloud.ambar.creditCardProduct.exceptions.InvalidRewardException;
 import cloud.ambar.creditCardProduct.exceptions.NoSuchProductException;
+import cloud.ambar.creditCardProduct.projection.models.CreditCardProduct;
+import cloud.ambar.creditCardProduct.query.QueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +52,8 @@ public class CreditCardProductCommandService {
     private final EventRepository eventStore;
 
     private final ObjectMapper objectMapper;
+
+    private final QueryService queryService;
 
     @Transactional
     public void handle(final DefineCreditCardProductCommand command) throws JsonProcessingException {
@@ -160,9 +164,21 @@ public class CreditCardProductCommandService {
         //       This can be done with either a query to the projection DB (async)
         //       Or via the Aggregate (sync) for this trivial example, we will use the aggregate.
         if (!aggregate.isActive()) {
+            // Todo: Our error could be more clear about why this is invalid. An exercise for later.
             throw new InvalidEventException();
         }
-        log.info("Product is currently active, updating to active!");
+        // Leveraging the read side of our CQRS application. We can have a business rule that there must be at least
+        // one active product.
+        final List<CreditCardProduct> allProducts = queryService.getAllCreditCardProducts();
+        final long activeProductCount = allProducts.stream()
+                .filter(CreditCardProduct::isActive)
+                .count();
+        // If < 2, then we would end up with 0 active cards after accepting this command.
+        if (activeProductCount < 2) {
+            // Todo: Our error could be more clear about why this is invalid. An exercise for later.
+            throw new InvalidEventException();
+        }
+        log.info("Product is currently inactive, updating to active!");
 
         //  3. Update the aggregate (write new event to store)
         final String eventId = UUID.randomUUID().toString();

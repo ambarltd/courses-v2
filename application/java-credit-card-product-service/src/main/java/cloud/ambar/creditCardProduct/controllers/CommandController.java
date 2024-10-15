@@ -39,7 +39,6 @@ import java.util.Arrays;
 @Controller
 @RequestMapping("/api/v1/credit_card_product/product")
 public class CommandController {
-    private static final Logger log = LogManager.getLogger(CommandController.class);
 
     private final CreditCardProductCommandService productService;
 
