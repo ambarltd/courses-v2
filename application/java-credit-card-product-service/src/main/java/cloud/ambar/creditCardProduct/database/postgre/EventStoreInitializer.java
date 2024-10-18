@@ -117,7 +117,12 @@ public class EventStoreInitializer {
                     "CREATE INDEX event_store_idx_event_name ON %s(event_name);",
                     eventStoreTableName
             ));
+            
+            defineInitialCards();
         };
+    }
+
+    private void defineInitialCards() {
     }
 
     private void executeStatementIgnoreErrors(final String sqlStatement) {
