@@ -39,3 +39,18 @@ curl -X POST "${endpoint}/api/v1/credit_card_product/product/activate/${productI
 
 # Deactivate a product
 curl -X POST "${endpoint}/api/v1/credit_card_product/product/deactivate/${productId}"
+
+# To modify a card product
+curl -X PATCH "${endpoint}/api/v1/credit_card_product/product" \
+-H "Content-Type: application/json" \
+-d '{
+  "id": "806ea870-56aa-4289-ac8f-76861b27a702",
+  "annualFeeInCents": 50000,
+  "creditLimitInCents": 500000,
+  "paymentCycle": "monthly",
+  "cardBackgroundHex": "#E5E4E2"
+}'
+
+# For connecting to the postgres container (To See the events)
+# It will prompt for the password: my_es_password
+psql -h 172.30.0.102 -p 5432 -U my_es_username -d my_es_database
