@@ -17,7 +17,7 @@ terraform {
 
 provider "ambar" {
   api_key = local.credentials["ambar_api_key"]
-  endpoint   = "euw1.api.ambar.cloud"
+  endpoint   = "staging.api.ambar.cloud"
   alias      = "production"
 }
 
