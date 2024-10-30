@@ -28,6 +28,12 @@ public class DefaultCardCreator implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("Defining initial card products");
+        try {
+            // Sleep to give time for the db to init.
+            Thread.sleep(15000);
+        } catch (InterruptedException e) {
+            // Do nothing.
+        }
         commandService.handle(STARTER);
         commandService.handle(BASIC);
         commandService.handle(BASIC_CASH_BACK);
