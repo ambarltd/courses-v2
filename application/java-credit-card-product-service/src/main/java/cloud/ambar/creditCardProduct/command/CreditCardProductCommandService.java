@@ -119,7 +119,7 @@ public class CreditCardProductCommandService {
         final String aggregateId = command.getId();
 
         //  1. Hydrate the Aggregate
-        final CreditCardProductAggregate aggregate = hydrateAggregateForId(aggregateId);;
+        final CreditCardProductAggregate aggregate = hydrateAggregateForId(aggregateId);
 
         //  2. Validate the command
         //    -> card currently inactive
