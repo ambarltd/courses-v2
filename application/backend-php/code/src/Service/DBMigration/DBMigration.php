@@ -11,7 +11,6 @@ use Galeas\Api\Service\Logger\PhpOutLogger;
 
 class DBMigration
 {
-    private DocumentManager $reactionDocumentManager;
     private PhpOutLogger $phpOutLogger;
 
     private DocumentManager $projectionDocumentManager;
@@ -25,7 +24,6 @@ class DBMigration
     private string $eventStoreCreateReplicationPublication;
 
     public function __construct(
-        DocumentManager $reactionDocumentManager,
         DocumentManager $projectionDocumentManager,
         SQLEventStoreConnection $sqlEventStoreConnection,
         PhpOutLogger $phpOutLogger,
@@ -35,7 +33,6 @@ class DBMigration
         string $eventStoreCreateReplicationUserWithPassword,
         string $eventStoreCreateReplicationPublication,
     ) {
-        $this->reactionDocumentManager = $reactionDocumentManager;
         $this->projectionDocumentManager = $projectionDocumentManager;
         $this->sqlEventStoreConnection = $sqlEventStoreConnection;
         $this->phpOutLogger = $phpOutLogger;
@@ -85,8 +82,6 @@ class DBMigration
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_event_name ON %s(event_name);', $this->eventStoreTableName));
             $this->projectionDocumentManager->getSchemaManager()->createCollections();
             $this->projectionDocumentManager->getSchemaManager()->createSearchIndexes();
-            $this->reactionDocumentManager->getSchemaManager()->createCollections();
-            $this->reactionDocumentManager->getSchemaManager()->createSearchIndexes();
         } catch (\Throwable $throwable) {
             if ($logErrors) {
                 throw $throwable;

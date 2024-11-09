@@ -48,11 +48,6 @@ abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
         return $this->getContainer()->get('doctrine_mongodb.odm.projection_document_manager');
     }
 
-    protected function getReactionDocumentManager(): DocumentManager
-    {
-        return $this->getContainer()->get('doctrine_mongodb.odm.reaction_document_manager');
-    }
-
     private function truncateEventStoreAndProjectionDatabases(): void
     {
         $projectionDocumentManager = $this->getProjectionDocumentManager();
@@ -64,19 +59,6 @@ abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
         ;
         foreach ($projectionDatabase->listCollections() as $collection) {
             $projectionDatabase->selectCollection(
-                $collection->getName()
-            )->deleteMany([]);
-        }
-
-        $reactionDocumentManager = $this->getReactionDocumentManager();
-        $reactionDocumentManager->clear();
-        $reactionDatabase = $reactionDocumentManager->getClient()
-            ->selectDatabase(
-                $this->getContainer()->getParameter('mongodb_reaction_database_name')
-            )
-        ;
-        foreach ($reactionDatabase->listCollections() as $collection) {
-            $reactionDatabase->selectCollection(
                 $collection->getName()
             )->deleteMany([]);
         }

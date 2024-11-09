@@ -4,4 +4,3 @@ parameters:
   event_store_create_replication_user_with_password: '%env(EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD)%_test'
   event_store_create_replication_publication: '%env(EVENT_STORE_CREATE_REPLICATION_PUBLICATION)%_test'
   mongodb_projection_database_name: '%env(MONGODB_PROJECTION_DATABASE_NAME)%_test'
-  mongodb_reaction_database_name: '%env(MONGODB_REACTION_DATABASE_NAME)%_test'

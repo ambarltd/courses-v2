@@ -26,13 +26,6 @@ doctrine_mongodb:
                 password: '%mongodb_projection_password%'
                 db: '%mongodb_projection_database_name%'
                 authSource: '%mongodb_projection_authentication_database%'
-        reaction:
-            server: 'mongodb://%mongodb_reaction_host%'
-            options:
-                username: '%mongodb_reaction_username%'
-                password: '%mongodb_reaction_password%'
-                db: '%mongodb_reaction_database_name%'
-                authSource: '%mongodb_reaction_authentication_database%'
     document_managers:
         projection:
             connection: projection
@@ -62,10 +55,6 @@ doctrine_mongodb:
                     prefix: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
                     dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/Product/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
-        reaction:
-            connection: reaction
-            database: '%mongodb_reaction_database_name%'
-            mappings:
 
 parameters:
     event_store_database_host: '%env(EVENT_STORE_HOST)%'
@@ -83,10 +72,4 @@ parameters:
     mongodb_projection_database_name: '%env(MONGODB_PROJECTION_DATABASE_NAME)%'
     mongodb_projection_username: '%env(MONGODB_PROJECTION_DATABASE_USERNAME)%'
     mongodb_projection_password: '%env(MONGODB_PROJECTION_DATABASE_PASSWORD)%'
-    mongodb_reaction_host: '%env(MONGODB_REACTION_HOST)%'
-    mongodb_reaction_port: '%env(MONGODB_REACTION_PORT)%'
-    mongodb_reaction_authentication_database: '%env(MONGODB_REACTION_AUTHENTICATION_DATABASE)%'
-    mongodb_reaction_database_name: '%env(MONGODB_REACTION_DATABASE_NAME)%'
-    mongodb_reaction_username: '%env(MONGODB_REACTION_DATABASE_USERNAME)%'
-    mongodb_reaction_password: '%env(MONGODB_REACTION_DATABASE_PASSWORD)%'
     session_tokens_expire_after_seconds: '%env(SESSION_TOKENS_EXPIRE_AFTER_SECONDS)%'

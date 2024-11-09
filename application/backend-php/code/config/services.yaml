@@ -10,7 +10,6 @@ services:
         public: true
         bind:
             $eventStore: '@Galeas\Api\Service\EventStore\SQLEventStore'
-            $reactionDocumentManager: '@doctrine_mongodb.odm.reaction_document_manager'
             $projectionDocumentManager: '@doctrine_mongodb.odm.projection_document_manager'
             $kernelEnvironment: '%kernel.environment%'
 
