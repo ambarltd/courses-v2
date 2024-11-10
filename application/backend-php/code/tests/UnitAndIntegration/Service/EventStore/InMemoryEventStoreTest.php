@@ -143,7 +143,6 @@ class InMemoryEventStoreTest extends UnitTest
             return;
         }
 
-
         Assert::fail('Did not have expected exception');
     }
 

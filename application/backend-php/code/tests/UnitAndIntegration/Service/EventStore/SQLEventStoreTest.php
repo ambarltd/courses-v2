@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Service\EventStore;
 
-use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
-use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Service\EventStore\AggregateAndEventIdsInLastEvent;
@@ -14,11 +11,9 @@ use Galeas\Api\Service\EventStore\Exception\CancellingTransactionRequiresActiveT
 use Galeas\Api\Service\EventStore\Exception\CompletingTransactionRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\SavingEventRequiresActiveTransaction;
-use Galeas\Api\Service\EventStore\InMemoryEventStore;
 use Galeas\Api\Service\EventStore\SQLEventStore;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
-use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class SQLEventStoreTest extends ResetsEventStoreAndProjectionsIntegrationTest
@@ -137,7 +132,6 @@ class SQLEventStoreTest extends ResetsEventStoreAndProjectionsIntegrationTest
 
             return;
         }
-
 
         Assert::fail('Did not have expected exception');
     }

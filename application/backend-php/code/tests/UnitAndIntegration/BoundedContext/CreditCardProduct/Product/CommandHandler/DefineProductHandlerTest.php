@@ -36,7 +36,7 @@ class DefineProductHandlerTest extends HandlerUnitTest
         $events = $eventStore->storedEvents();
         self::assertCount(1, $events);
         self::assertInstanceOf(ProductDefined::class, $events[0]);
-        self::assertEquals(Id::createNewByHashing("CreditCardProduct_Product:".$command->name), $events[0]->aggregateId());
+        self::assertEquals(Id::createNewByHashing('CreditCardProduct_Product:'.$command->name), $events[0]->aggregateId());
         self::assertEquals('Test Product', $events[0]->name());
         self::assertEquals(1_500, $events[0]->interestInBasisPoints());
         self::assertEquals(5_000, $events[0]->annualFeeInCents());

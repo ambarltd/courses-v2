@@ -93,7 +93,6 @@ class InMemoryEventStore implements EventStore
     public function findAggregate(string $aggregateId): ?Aggregate
     {
         return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
-
     }
 
     public function findAggregateAndEventIdsInLastEvent(string $aggregateId): ?AggregateAndEventIdsInLastEvent

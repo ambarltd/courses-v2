@@ -29,7 +29,7 @@ class DefineProductHandler
      */
     public function handle(DefineProductCommand $command): void
     {
-        $aggregateId = Id::createNewByHashing("CreditCardProduct_Product:".$command->name);
+        $aggregateId = Id::createNewByHashing('CreditCardProduct_Product:'.$command->name);
 
         $this->eventStore->beginTransaction();
         $alreadyDefined = null !== $this->eventStore->findAggregateAndEventIdsInLastEvent($aggregateId->id());

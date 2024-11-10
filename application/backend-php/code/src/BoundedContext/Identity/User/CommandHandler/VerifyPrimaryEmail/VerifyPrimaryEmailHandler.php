@@ -56,7 +56,6 @@ class VerifyPrimaryEmailHandler
         $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($userId);
         if (null === $result) {
             throw new NoUserFoundForCode();
-
         }
 
         [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];

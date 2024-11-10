@@ -66,7 +66,6 @@ class SQLEventStore implements EventStore
     public function find(string $aggregateId): ?Aggregate
     {
         return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
-
     }
 
     public function cancelTransaction(): void
