@@ -51,12 +51,12 @@ class RequestPrimaryEmailChangeHandler
     {
         $this->eventStore->beginTransaction();
 
-        $aggregateAndEventIds = $this->eventStore->find($command->authenticatedUserId);
-        if (null === $aggregateAndEventIds) {
+        $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($command->authenticatedUserId);
+        if (null === $result) {
             throw new UserNotFound();
         }
 
-        $user = $aggregateAndEventIds->aggregate();
+        [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$user instanceof User) {
             throw new NoUserFoundForCode();
         }
@@ -117,8 +117,8 @@ class RequestPrimaryEmailChangeHandler
             Id::createNew(),
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
-            $aggregateAndEventIds->lastEventId(),
-            $aggregateAndEventIds->firstEventId(),
+            $lastEventId,
+            $lastEventCorrelationId,
             new \DateTimeImmutable('now'),
             $command->metadata,
             $command->newEmailRequested,

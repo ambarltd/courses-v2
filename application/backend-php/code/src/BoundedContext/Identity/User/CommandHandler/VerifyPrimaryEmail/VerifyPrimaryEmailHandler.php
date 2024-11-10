@@ -53,12 +53,13 @@ class VerifyPrimaryEmailHandler
 
         $this->eventStore->beginTransaction();
 
-        $aggregateAndEventIds = $this->eventStore->find($userId);
-        if (null === $aggregateAndEventIds) {
+        $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($userId);
+        if (null === $result) {
             throw new NoUserFoundForCode();
+
         }
 
-        $user = $aggregateAndEventIds->aggregate();
+        [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$user instanceof User) {
             throw new NoUserFoundForCode();
         }
@@ -85,8 +86,8 @@ class VerifyPrimaryEmailHandler
             Id::createNew(),
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
-            $aggregateAndEventIds->lastEventId(),
-            $aggregateAndEventIds->firstEventId(),
+            $lastEventId,
+            $lastEventCorrelationId,
             new \DateTimeImmutable('now'),
             $command->metadata,
             $command->verificationCode

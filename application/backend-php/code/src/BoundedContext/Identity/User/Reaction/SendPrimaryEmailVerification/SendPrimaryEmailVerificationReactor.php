@@ -51,7 +51,7 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
 
         $fromEmailAddress = 'system.development-application.example.com';
         $subjectLine = 'Your Verification Code';
-        $emailContents = 'This is your verification code: https://example.com/page/?verificationCode='.$verificationCode;
+        $emailContents = 'This is your verification code: http://localhost:8080/page/?verificationCode='.$verificationCode;
         //        We're not sending emails for now
         //        $this->emailer->send(
         //            $sendToEmailAddress,
@@ -60,12 +60,12 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
         //            $fromEmailAddress
         //        );
 
-        $aggregateAndEventIds = $this->eventStore->find($event->aggregateId()->id());
-        if (null === $aggregateAndEventIds) {
+        $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($event->aggregateId()->id());
+        if (null === $result) {
             throw new NoUserFoundForEventAggregateId();
         }
 
-        $user = $aggregateAndEventIds->aggregate();
+        [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$user instanceof User) {
             throw new NoUserFoundForEventAggregateId();
         }
@@ -74,8 +74,8 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
             $newEventId,
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
-            $aggregateAndEventIds->lastEventId(),
-            $aggregateAndEventIds->firstEventId(),
+            $lastEventId,
+            $lastEventCorrelationId,
             new \DateTimeImmutable('now'),
             [],
             $verificationCode,

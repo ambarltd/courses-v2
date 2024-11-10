@@ -28,7 +28,7 @@ interface EventStore
     /**
      * @throws EventStoreCannotRead
      */
-    public function find(string $aggregateId): ?AggregateAndEventIds;
+    public function findAggregateAndEventIdsInLastEvent(string $aggregateId): ?AggregateAndEventIdsInLastEvent;
 
     /**
      * @throws EventStoreCannotRead

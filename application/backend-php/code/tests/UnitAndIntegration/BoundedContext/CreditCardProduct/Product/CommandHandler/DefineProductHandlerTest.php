@@ -9,6 +9,7 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefinePro
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
+use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\HandlerUnitTest;
 
@@ -20,7 +21,6 @@ class DefineProductHandlerTest extends HandlerUnitTest
         $handler = new DefineProductHandler($eventStore);
 
         $command = new DefineProductCommand();
-        $command->productIdentifierForAggregateIdHash = 'some-hash';
         $command->name = 'Test Product';
         $command->interestInBasisPoints = 1_500;
         $command->annualFeeInCents = 5_000;
@@ -36,6 +36,7 @@ class DefineProductHandlerTest extends HandlerUnitTest
         $events = $eventStore->storedEvents();
         self::assertCount(1, $events);
         self::assertInstanceOf(ProductDefined::class, $events[0]);
+        self::assertEquals(Id::createNewByHashing("CreditCardProduct_Product:".$command->name), $events[0]->aggregateId());
         self::assertEquals('Test Product', $events[0]->name());
         self::assertEquals(1_500, $events[0]->interestInBasisPoints());
         self::assertEquals(5_000, $events[0]->annualFeeInCents());
@@ -80,7 +81,6 @@ class DefineProductHandlerTest extends HandlerUnitTest
         $handler = new DefineProductHandler($eventStore);
 
         $command = new DefineProductCommand();
-        $command->productIdentifierForAggregateIdHash = 'some-hash';
         $command->name = 'Test Product';
         $command->interestInBasisPoints = 1_500;
         $command->annualFeeInCents = 5_000;

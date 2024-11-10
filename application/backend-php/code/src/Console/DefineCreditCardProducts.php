@@ -46,7 +46,6 @@ class DefineCreditCardProducts extends Command
         OutputInterface $output
     ): int {
         $defineStarterCard = new DefineProductCommand();
-        $defineStarterCard->productIdentifierForAggregateIdHash = 'STARTER_CREDIT_CARD';
         $defineStarterCard->name = 'Starter';
         $defineStarterCard->interestInBasisPoints = 1_200;
         $defineStarterCard->annualFeeInCents = 5_000;
@@ -58,7 +57,6 @@ class DefineCreditCardProducts extends Command
         $this->defineProductHandler->handle($defineStarterCard);
 
         $definePlatinumCard = new DefineProductCommand();
-        $definePlatinumCard->productIdentifierForAggregateIdHash = 'PLATINUM_CREDIT_CARD';
         $definePlatinumCard->name = 'Platinum';
         $definePlatinumCard->interestInBasisPoints = 300;
         $definePlatinumCard->annualFeeInCents = 50_000;

@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Service\EventStore;
 
+use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
+use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
+use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Service\EventStore\AggregateAndEventIdsInLastEvent;
@@ -12,29 +15,27 @@ use Galeas\Api\Service\EventStore\Exception\CompletingTransactionRequiresActiveT
 use Galeas\Api\Service\EventStore\Exception\FindingAggregateRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\Exception\SavingEventRequiresActiveTransaction;
 use Galeas\Api\Service\EventStore\InMemoryEventStore;
+use Galeas\Api\Service\EventStore\SQLEventStore;
 use PHPUnit\Framework\Assert;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class InMemoryEventStoreTest extends UnitTest
+class SQLEventStoreTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testPersistence(): void
     {
-        $inMemoryEventStore = $this->createNewInMemoryEventStore();
+        $sqlEventStore = $this->getSQLEventStore();
 
         $signedUp = SampleEvents::signedUp();
-        $this->saveInTransaction($inMemoryEventStore, [$signedUp]);
+        $this->saveInTransaction($sqlEventStore, [$signedUp]);
         Assert::assertEquals(
             AggregateAndEventIdsInLastEvent::fromProperties(
                 $signedUp->createUser(),
                 $signedUp->correlationId(),
                 $signedUp->eventId()
             ),
-            $this->findAggregateAndEventIdsInLastEventInTransaction($inMemoryEventStore, $signedUp->aggregateId()->id())
-        );
-        Assert::assertEquals(
-            [$signedUp],
-            $inMemoryEventStore->storedEvents()
+            $this->findAggregateAndEventIdsInLastEventInTransaction($sqlEventStore, $signedUp->aggregateId()->id())
         );
 
         $primaryEmailVerified = SampleEvents::primaryEmailVerified(
@@ -43,27 +44,23 @@ class InMemoryEventStoreTest extends UnitTest
             $signedUp->eventId(),
             $signedUp->eventId(),
         );
-        $this->saveInTransaction($inMemoryEventStore, [$primaryEmailVerified]);
+        $this->saveInTransaction($sqlEventStore, [$primaryEmailVerified]);
         Assert::assertEquals(
             AggregateAndEventIdsInLastEvent::fromProperties(
                 $primaryEmailVerified->transformUser($signedUp->createUser()),
                 $primaryEmailVerified->correlationId(),
                 $primaryEmailVerified->eventId()
             ),
-            $this->findAggregateAndEventIdsInLastEventInTransaction($inMemoryEventStore, $signedUp->aggregateId()->id())
-        );
-        Assert::assertEquals(
-            [$signedUp, $primaryEmailVerified],
-            $inMemoryEventStore->storedEvents()
+            $this->findAggregateAndEventIdsInLastEventInTransaction($sqlEventStore, $signedUp->aggregateId()->id())
         );
     }
 
     public function testAggregateIsAvailableOnPendingTransactionButNotAfterItIsCanceled(): void
     {
-        $inMemoryEventStore = $this->createNewInMemoryEventStore();
+        $sqlEventStore = $this->getSQLEventStore();
 
         $signedUp = SampleEvents::signedUp();
-        $this->saveInTransaction($inMemoryEventStore, [$signedUp]);
+        $this->saveInTransaction($sqlEventStore, [$signedUp]);
 
         $primaryEmailVerified = SampleEvents::primaryEmailVerified(
             $signedUp->aggregateId(),
@@ -71,18 +68,17 @@ class InMemoryEventStoreTest extends UnitTest
             $signedUp->eventId(),
             $signedUp->eventId(),
         );
-        $inMemoryEventStore->beginTransaction();
-        $inMemoryEventStore->save($primaryEmailVerified);
+        $sqlEventStore->beginTransaction();
+        $sqlEventStore->save($primaryEmailVerified);
         Assert::assertEquals(
             AggregateAndEventIdsInLastEvent::fromProperties(
                 $primaryEmailVerified->transformUser($signedUp->createUser()),
                 $primaryEmailVerified->correlationId(),
                 $primaryEmailVerified->eventId(),
             ),
-            $inMemoryEventStore->findAggregateAndEventIdsInLastEvent($signedUp->aggregateId()->id())
+            $sqlEventStore->findAggregateAndEventIdsInLastEvent($signedUp->aggregateId()->id())
         );
-        Assert::assertEquals([$signedUp], $inMemoryEventStore->storedEvents());
-        $inMemoryEventStore->cancelTransaction();
+        $sqlEventStore->cancelTransaction();
 
         Assert::assertEquals(
             AggregateAndEventIdsInLastEvent::fromProperties(
@@ -90,16 +86,15 @@ class InMemoryEventStoreTest extends UnitTest
                 $signedUp->correlationId(),
                 $signedUp->eventId(),
             ),
-            $this->findAggregateAndEventIdsInLastEventInTransaction($inMemoryEventStore, $signedUp->aggregateId()->id())
+            $this->findAggregateAndEventIdsInLastEventInTransaction($sqlEventStore, $signedUp->aggregateId()->id())
         );
-        Assert::assertEquals([$signedUp], $inMemoryEventStore->storedEvents());
     }
 
     public function testCompletingTransactionRequiresActiveTransaction(): void
     {
         try {
-            $inMemoryEventStore = $this->createNewInMemoryEventStore();
-            $inMemoryEventStore->completeTransaction();
+            $sqlEventStore = $this->getSQLEventStore();
+            $sqlEventStore->completeTransaction();
         } catch (EventStoreCannotWrite $eventStoreCannotWrite) {
             Assert::assertInstanceOf(
                 CompletingTransactionRequiresActiveTransaction::class,
@@ -115,8 +110,8 @@ class InMemoryEventStoreTest extends UnitTest
     public function testCancellingTransactionRequiresActiveTransaction(): void
     {
         try {
-            $inMemoryEventStore = $this->createNewInMemoryEventStore();
-            $inMemoryEventStore->cancelTransaction();
+            $sqlEventStore = $this->getSQLEventStore();
+            $sqlEventStore->cancelTransaction();
         } catch (EventStoreCannotWrite $eventStoreCannotWrite) {
             Assert::assertInstanceOf(
                 CancellingTransactionRequiresActiveTransaction::class,
@@ -132,8 +127,8 @@ class InMemoryEventStoreTest extends UnitTest
     public function testFindingAggregateRequiresActiveTransaction(): void
     {
         try {
-            $inMemoryEventStore = $this->createNewInMemoryEventStore();
-            $inMemoryEventStore->findAggregateAndEventIdsInLastEvent('made_up_id');
+            $sqlEventStore = $this->getSQLEventStore();
+            $sqlEventStore->findAggregateAndEventIdsInLastEvent('made_up_id');
         } catch (EventStoreCannotRead $eventStoreCannotWrite) {
             Assert::assertInstanceOf(
                 FindingAggregateRequiresActiveTransaction::class,
@@ -150,10 +145,10 @@ class InMemoryEventStoreTest extends UnitTest
     public function testSavingEventRequiresActiveTransaction(): void
     {
         try {
-            $inMemoryEventStore = $this->createNewInMemoryEventStore();
+            $sqlEventStore = $this->getSQLEventStore();
 
             $signedUp = SampleEvents::signedUp();
-            $inMemoryEventStore->save($signedUp);
+            $sqlEventStore->save($signedUp);
         } catch (EventStoreCannotWrite $eventStoreCannotWrite) {
             Assert::assertInstanceOf(
                 SavingEventRequiresActiveTransaction::class,
@@ -166,25 +161,20 @@ class InMemoryEventStoreTest extends UnitTest
         Assert::fail('Did not have expected exception');
     }
 
-    private function createNewInMemoryEventStore(): InMemoryEventStore
+    private function saveInTransaction(SQLEventStore $sqlEventStore, array $events): void
     {
-        return new InMemoryEventStore();
-    }
-
-    private function saveInTransaction(InMemoryEventStore $inMemoryEventStore, array $events): void
-    {
-        $inMemoryEventStore->beginTransaction();
+        $sqlEventStore->beginTransaction();
         foreach ($events as $event) {
-            $inMemoryEventStore->save($event);
+            $sqlEventStore->save($event);
         }
-        $inMemoryEventStore->completeTransaction();
+        $sqlEventStore->completeTransaction();
     }
 
-    private function findAggregateAndEventIdsInLastEventInTransaction(InMemoryEventStore $inMemoryEventStore, string $aggregateId): ?AggregateAndEventIdsInLastEvent
+    private function findAggregateAndEventIdsInLastEventInTransaction(SQLEventStore $sqlEventStore, string $aggregateId): ?AggregateAndEventIdsInLastEvent
     {
-        $inMemoryEventStore->beginTransaction();
-        $aggregateAndEventIdsInLastEvent = $inMemoryEventStore->findAggregateAndEventIdsInLastEvent($aggregateId);
-        $inMemoryEventStore->completeTransaction();
+        $sqlEventStore->beginTransaction();
+        $aggregateAndEventIdsInLastEvent = $sqlEventStore->findAggregateAndEventIdsInLastEvent($aggregateId);
+        $sqlEventStore->completeTransaction();
 
         return $aggregateAndEventIdsInLastEvent;
     }

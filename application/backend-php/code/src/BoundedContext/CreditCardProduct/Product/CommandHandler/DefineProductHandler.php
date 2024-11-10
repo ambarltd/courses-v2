@@ -29,10 +29,10 @@ class DefineProductHandler
      */
     public function handle(DefineProductCommand $command): void
     {
-        $eventId = Id::createNewByHashing($command->productIdentifierForAggregateIdHash);
+        $aggregateId = Id::createNewByHashing("CreditCardProduct_Product:".$command->name);
 
         $this->eventStore->beginTransaction();
-        $alreadyDefined = null !== $this->eventStore->findEvent($eventId->id());
+        $alreadyDefined = null !== $this->eventStore->findAggregateAndEventIdsInLastEvent($aggregateId->id());
 
         if ($alreadyDefined) {
             $this->eventStore->completeTransaction();
@@ -48,7 +48,7 @@ class DefineProductHandler
             throw new InvalidReward();
         }
 
-        $aggregateId = Id::createNew();
+        $eventId = Id::createNew();
         $event = ProductDefined::new(
             $eventId,
             $aggregateId,

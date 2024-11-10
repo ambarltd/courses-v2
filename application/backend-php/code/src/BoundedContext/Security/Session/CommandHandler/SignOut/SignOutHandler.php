@@ -46,13 +46,13 @@ class SignOutHandler
 
         $this->eventStore->beginTransaction();
 
-        $aggregateAndEventIds = $this->eventStore->find($sessionId);
+        $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($sessionId);
 
-        if (null === $aggregateAndEventIds) {
+        if (null === $result) {
             throw new NoSessionFound();
         }
 
-        $session = $aggregateAndEventIds->aggregate();
+        [$session, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$session instanceof Session) {
             throw new NoSessionFound();
         }
@@ -69,8 +69,8 @@ class SignOutHandler
             Id::createNew(),
             $session->aggregateId(),
             $session->aggregateVersion() + 1,
-            $aggregateAndEventIds->lastEventId(),
-            $aggregateAndEventIds->firstEventId(),
+            $lastEventId,
+            $lastEventCorrelationId,
             new \DateTimeImmutable('now'),
             $command->metadata,
             $command->withIp,

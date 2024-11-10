@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\EventStore;
 
+use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\EventStoreCannotRead;
@@ -89,7 +90,13 @@ class InMemoryEventStore implements EventStore
         }
     }
 
-    public function find(string $aggregateId): ?AggregateAndEventIds
+    public function findAggregate(string $aggregateId): ?Aggregate
+    {
+        return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
+
+    }
+
+    public function findAggregateAndEventIdsInLastEvent(string $aggregateId): ?AggregateAndEventIdsInLastEvent
     {
         try {
             if (false === $this->isTransactionActive) {
@@ -98,7 +105,7 @@ class InMemoryEventStore implements EventStore
 
             $creationEvent = null;
             $transformationEvents = [];
-            foreach ($this->storedEvents as $event) {
+            foreach (array_merge($this->storedEvents, $this->uncommittedEvents) as $event) {
                 if (
                     $event->aggregateId()->id() === $aggregateId
                     && null === $creationEvent
@@ -116,15 +123,15 @@ class InMemoryEventStore implements EventStore
                 return null;
             }
 
-            $count = \count($transformationEvents);
+            $countTransformationEvents = \count($transformationEvents);
 
-            return AggregateAndEventIds::fromProperties(
+            return AggregateAndEventIdsInLastEvent::fromProperties(
                 AggregateFromEvents::aggregateFromEvents(
                     $creationEvent,
                     $transformationEvents
                 ),
-                $creationEvent->eventId(),
-                $count > 0 ? $transformationEvents[$count - 1]->eventId() : $creationEvent->eventId()
+                $countTransformationEvents > 0 ? $transformationEvents[$countTransformationEvents - 1]->correlationId() : $creationEvent->correlationId(),
+                $countTransformationEvents > 0 ? $transformationEvents[$countTransformationEvents - 1]->eventId() : $creationEvent->eventId()
             );
         } catch (\Throwable $exception) {
             throw new EventStoreCannotRead($exception);

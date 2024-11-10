@@ -6,6 +6,7 @@ namespace Galeas\Api\Service\EventStore;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
+use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\Event\EventDeserializer;
@@ -62,6 +63,12 @@ class SQLEventStore implements EventStore
         }
     }
 
+    public function find(string $aggregateId): ?Aggregate
+    {
+        return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
+
+    }
+
     public function cancelTransaction(): void
     {
         try {
@@ -75,7 +82,7 @@ class SQLEventStore implements EventStore
         }
     }
 
-    public function find(string $aggregateId): ?AggregateAndEventIds
+    public function findAggregateAndEventIdsInLastEvent(string $aggregateId): ?AggregateAndEventIdsInLastEvent
     {
         try {
             if (false === $this->connection->isTransactionActive()) {
@@ -134,15 +141,15 @@ class SQLEventStore implements EventStore
             $creationEvent = EventDeserializer::serializedEventsToEvents([$creationEvent])[0];
             $transformationEvents = EventDeserializer::serializedEventsToEvents($aggregateEvents);
 
-            $count = \count($transformationEvents);
+            $countTransformationEvents = \count($transformationEvents);
 
-            return AggregateAndEventIds::fromProperties(
+            return AggregateAndEventIdsInLastEvent::fromProperties(
                 AggregateFromEvents::aggregateFromEvents(
                     $creationEvent,
                     $transformationEvents
                 ),
-                $creationEvent->eventId(),
-                $count > 0 ? $transformationEvents[$count - 1]->eventId() : $creationEvent->eventId()
+                $countTransformationEvents > 0 ? $transformationEvents[$countTransformationEvents - 1]->correlationId() : $creationEvent->correlationId(),
+                $countTransformationEvents > 0 ? $transformationEvents[$countTransformationEvents - 1]->eventId() : $creationEvent->eventId()
             );
         } catch (\Throwable $exception) {
             throw new EventStoreCannotRead($exception);
