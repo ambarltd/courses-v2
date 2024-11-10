@@ -10,7 +10,7 @@ use Galeas\Api\Service\DBMigration\DBMigration;
 use Galeas\Api\Service\EventStore\SQLEventStore;
 use Galeas\Api\Service\EventStore\SQLEventStoreConnection;
 
-abstract class ProjectionAndReactionIntegrationTest extends IntegrationTest
+abstract class ResetsEventStoreAndProjectionsIntegrationTest extends IntegrationTest
 {
     public static function setUpBeforeClass(): void
     {

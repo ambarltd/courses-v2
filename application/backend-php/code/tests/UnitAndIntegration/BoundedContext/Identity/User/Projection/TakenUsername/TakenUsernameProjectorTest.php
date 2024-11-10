@@ -7,10 +7,10 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class TakenUsernameProjectorTest extends ProjectionAndReactionIntegrationTest
+class TakenUsernameProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessSignedUpWithTwoUsers(): void
     {

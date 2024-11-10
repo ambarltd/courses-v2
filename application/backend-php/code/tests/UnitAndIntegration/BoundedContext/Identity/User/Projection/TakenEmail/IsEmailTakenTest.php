@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\IsEmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class IsEmailTakenTest extends ProjectionAndReactionIntegrationTest
+class IsEmailTakenTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testIsEmailTaken(): void
     {

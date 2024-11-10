@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Pr
 use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\SessionIdFromSessionToken;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class SessionIdFromSessionTokenTest extends ProjectionAndReactionIntegrationTest
+class SessionIdFromSessionTokenTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testSessionIdFromSessionToken(): void
     {

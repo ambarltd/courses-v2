@@ -11,9 +11,9 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject
 use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmailButRequestedNewEmail;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class GetUserDetailsTest extends ProjectionAndReactionIntegrationTest
+class GetUserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testGetDetails(): void
     {

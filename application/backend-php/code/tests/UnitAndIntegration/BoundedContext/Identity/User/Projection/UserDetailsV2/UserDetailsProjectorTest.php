@@ -10,10 +10,10 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject
 use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmailButRequestedNewEmail;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class UserDetailsProjectorTest extends ProjectionAndReactionIntegrationTest
+class UserDetailsProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcess(): void
     {

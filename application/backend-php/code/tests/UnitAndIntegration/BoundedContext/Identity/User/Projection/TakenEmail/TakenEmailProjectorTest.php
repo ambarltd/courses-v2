@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\TakenEmailProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class TakenEmailProjectorTest extends ProjectionAndReactionIntegrationTest
+class TakenEmailProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessSignedUp(): void
     {

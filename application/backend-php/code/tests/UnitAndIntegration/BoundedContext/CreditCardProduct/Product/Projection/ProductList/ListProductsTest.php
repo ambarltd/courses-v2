@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\CreditCardProduct\P
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection\ProductList\ListProducts;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection\ProductList\ProductListItem;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class ListProductsTest extends ProjectionAndReactionIntegrationTest
+class ListProductsTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testListProducts(): void
     {

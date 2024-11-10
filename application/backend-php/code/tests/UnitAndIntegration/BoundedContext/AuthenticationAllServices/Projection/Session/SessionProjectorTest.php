@@ -7,10 +7,10 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\AuthenticationAllSe
 use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\Session;
 use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\SessionProjector;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SessionProjectorTest extends ProjectionAndReactionIntegrationTest
+class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessSignedIn(): void
     {

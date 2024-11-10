@@ -10,9 +10,9 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserIdFr
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmail;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\Verified;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class UserIdFromSignInEmailTest extends ProjectionAndReactionIntegrationTest
+class UserIdFromSignInEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testUnverified(): void
     {

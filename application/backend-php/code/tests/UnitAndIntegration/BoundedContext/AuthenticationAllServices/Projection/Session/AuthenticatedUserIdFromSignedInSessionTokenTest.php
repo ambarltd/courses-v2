@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\AuthenticationAllSe
 use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
 use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\Session;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class AuthenticatedUserIdFromSignedInSessionTokenTest extends ProjectionAndReactionIntegrationTest
+class AuthenticatedUserIdFromSignedInSessionTokenTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testUserIdFromSignedInSessionToken(): void
     {

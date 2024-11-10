@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\ListSentVerificationEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\SentVerificationEmail;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class ListSentVerificationEmailTest extends ProjectionAndReactionIntegrationTest
+class ListSentVerificationEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testList(): void
     {

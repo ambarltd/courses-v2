@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationC
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class PrimaryEmailVerificationCodeProjectorTest extends ProjectionAndReactionIntegrationTest
+class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessSignedUp(): void
     {

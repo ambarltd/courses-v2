@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\Session;
 use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\SessionProjector;
 use Galeas\Api\Common\Event\Event;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SessionProjectorTest extends ProjectionAndReactionIntegrationTest
+class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessSignedIn(): void
     {

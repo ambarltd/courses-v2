@@ -8,10 +8,10 @@ use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\S
 use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\SentVerificationEmailProjector;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
-class SentVerificationEmailProjectorTest extends ProjectionAndReactionIntegrationTest
+class SentVerificationEmailProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testProcessPrimaryEmailVerificationCodeSent(): void
     {

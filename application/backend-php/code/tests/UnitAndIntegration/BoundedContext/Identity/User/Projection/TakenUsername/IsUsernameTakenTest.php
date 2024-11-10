@@ -7,9 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Proje
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsername;
 use PHPUnit\Framework\Assert;
-use Tests\Galeas\Api\UnitAndIntegration\ProjectionAndReactionIntegrationTest;
+use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 
-class IsUsernameTakenTest extends ProjectionAndReactionIntegrationTest
+class IsUsernameTakenTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
     public function testIsUsernameTaken(): void
     {
