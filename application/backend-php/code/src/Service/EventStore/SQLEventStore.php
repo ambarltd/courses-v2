@@ -6,7 +6,6 @@ namespace Galeas\Api\Service\EventStore;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Common\Event\EventDeserializer;
@@ -61,11 +60,6 @@ class SQLEventStore implements EventStore
         } catch (\Throwable $exception) {
             throw new EventStoreCannotWrite($exception);
         }
-    }
-
-    public function find(string $aggregateId): ?Aggregate
-    {
-        return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
     }
 
     public function cancelTransaction(): void

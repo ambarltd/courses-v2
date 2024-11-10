@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\EventStore;
 
-use Galeas\Api\Common\Aggregate\Aggregate;
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\EventStoreCannotRead;
@@ -88,11 +87,6 @@ class InMemoryEventStore implements EventStore
         } catch (\Throwable $exception) {
             throw new EventStoreCannotWrite($exception);
         }
-    }
-
-    public function findAggregate(string $aggregateId): ?Aggregate
-    {
-        return $this->findAggregateAndEventIdsInLastEvent($aggregateId)?->aggregate();
     }
 
     public function findAggregateAndEventIdsInLastEvent(string $aggregateId): ?AggregateAndEventIdsInLastEvent
