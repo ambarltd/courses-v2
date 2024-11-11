@@ -3,8 +3,6 @@ services:
     container_name: frontend-app
     build:
       context: ./../application/frontend-javascript/
-    volumes:
-      - ./../:/srv
     restart: always
     environment:
       DOMAIN_IDENTITY: "http://172.30.0.106:8080"

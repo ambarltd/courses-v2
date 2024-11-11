@@ -8,6 +8,5 @@
     <field field-name="annualFeeInCents" type="int" nullable="false"/>
     <field field-name="creditLimitInCents" type="int" nullable="false"/>
     <field field-name="reward" type="string" nullable="false"/>
-
   </document>
 </doctrine-mongo-mapping>

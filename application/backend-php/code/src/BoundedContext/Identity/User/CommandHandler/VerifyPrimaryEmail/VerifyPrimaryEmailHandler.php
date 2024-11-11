@@ -40,7 +40,7 @@ class VerifyPrimaryEmailHandler
      * @see SignUpHandler
      * @see RequestPrimaryEmailChangeHandler
      *
-     * @throws EmailIsAlreadyVerified|NoUserFoundForCode|VerificationCodeDoesNotMatch
+     * @throws EmailIsAlreadyVerified|NoVerifiableUserFoundForCode|VerificationCodeDoesNotMatch
      * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable|ProjectionCannotRead
      */
     public function handle(VerifyPrimaryEmail $command): void
@@ -48,19 +48,19 @@ class VerifyPrimaryEmailHandler
         $userId = $this->userIdFromVerificationCode->userIdFromPrimaryEmailVerificationCode($command->verificationCode);
 
         if (null === $userId) {
-            throw new NoUserFoundForCode();
+            throw new NoVerifiableUserFoundForCode();
         }
 
         $this->eventStore->beginTransaction();
 
         $result = $this->eventStore->findAggregateAndEventIdsInLastEvent($userId);
         if (null === $result) {
-            throw new NoUserFoundForCode();
+            throw new NoVerifiableUserFoundForCode();
         }
 
         [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$user instanceof User) {
-            throw new NoUserFoundForCode();
+            throw new NoVerifiableUserFoundForCode();
         }
 
         if ($user->primaryEmailStatus() instanceof VerifiedEmail) {
