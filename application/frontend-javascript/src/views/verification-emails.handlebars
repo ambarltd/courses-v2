@@ -1,0 +1,39 @@
+<!-- views/verification-emails.handlebars -->
+<div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+  <img src="/assets/images/logo.png" width="100px" class="m-auto">
+  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Verification Emails Sent</h2>
+</div>
+
+<div class="mt-10 sm:mx-auto sm:w-full sm:max-w-2xl">
+  {{#if locals.emails.length}}
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+        <thead>
+          <tr class="bg-gray-100 border-b">
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Recipient</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Sent At</th>
+            <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Verification Link</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each locals.emails}}
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-2 text-sm text-gray-800">{{this.toEmailAddress}}</td>
+              <td class="px-4 py-2 text-sm text-gray-800">{{this.sentAt}}</td>
+              <td class="px-4 py-2 text-sm text-indigo-600">
+                <a href="/verify-email?code={{this.verificationCodeSent}}" class="hover:text-indigo-500 underline">Click here</a>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{else}}
+    <p class="text-center text-sm text-gray-500 mt-5">No verification emails sent.</p>
+  {{/if}}
+
+  <p class="mt-10 text-center text-sm text-gray-500">
+    Go back to
+    <a href="/" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Home</a>
+  </p>
+</div>

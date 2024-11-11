@@ -1,5 +1,5 @@
 services:
-  frontend:
+  frontend-app:
     container_name: frontend-app
     build:
       context: ./../application/frontend-javascript/

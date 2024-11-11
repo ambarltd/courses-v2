@@ -1,5 +1,11 @@
 <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign-up successful</h2>
+  <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+    {{#if locals.error}}
+      Verification Error
+    {{else}}
+      Verification Success
+    {{/if}}
+  </h2>
 </div>
 
 <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -7,7 +13,12 @@
     {{#if locals.error}}
       Unable to verify email: <span style="color:red">{{locals.error}}</span>.
     {{else}}
-      Email verified successfully. You can now <a href="/sign-in">sign-in</a>.
+      Email verified successfully. You can now <a style="color: blue" href="/sign-in">sign-in</a>.
     {{/if}}
+  </p>
+    <br><br>
+  <p class="text-center text-sm text-gray-500">
+    Go back to
+    <a href="/" class="font-semibold leading-6 text-indigo-600 hover:text-indigo-500">Home</a>
   </p>
 </div>

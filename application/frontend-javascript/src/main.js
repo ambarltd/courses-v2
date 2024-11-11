@@ -52,12 +52,17 @@ function unauthenticated(req, res, next) {
   if (!req.session.token) {
     return next();
   }
-  return res.redirect("/home");
+  return res.redirect("/");
 }
 
-function authenticate(req, { token, userId, email, verified }) {
+function authenticatedOrNot(req, res, next) {
+  return next();
+}
+
+function authenticate(req, { token, userId, email, requestedEmail, verified }) {
   req.session.token = token;
   req.session.email = email;
+  req.session.requestedEmail = requestedEmail;
   req.session.userId = userId;
   req.session.verified = verified;
 }
@@ -100,7 +105,7 @@ app.get('/user/details', authenticated, routeUserDetails)
 app.post('/user/details', authenticated, routeUserDetailsPost)
 app.get('/logout', authenticated, routeLogout)
 app.get('/', authenticated, render("home", { title: "Home" }))
-app.get('/verify-email', unauthenticated, routeVerifyEmail);
+app.get('/verify-email', authenticatedOrNot, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', routeVerificationEmails);
@@ -124,16 +129,17 @@ async function userDetails(token) {
   }
 
   const { userId, primaryEmailStatus } = r;
-  const { email, verified } =
+  console.log(primaryEmailStatus);
+  const { email, requestedEmail, verified } =
     ("unverifiedEmail" in primaryEmailStatus)
-    ? { email: primaryEmailStatus.unverifiedEmail.email, verified: false }
+    ? { email: primaryEmailStatus.unverifiedEmail.email, requestedEmail: null, verified: false }
     : ("verifiedEmail" in primaryEmailStatus)
-    ? { email: primaryEmailStatus.verifiedEmail.email, verified: true }
+    ? { email: primaryEmailStatus.verifiedEmail.email, requestedEmail: null, verified: true }
     : ("verifiedButRequestedNewEmail" in primaryEmailStatus)
-    ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.requestedEmail, verified: false }
+    ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.verifiedEmail, requestedEmail: primaryEmailStatus.verifiedButRequestedNewEmail.requestedEmail, verified: false }
     : new Error(`Unknown state of primaryEmailStatus. ${JSON.stringify(primaryEmailStatus)}`);
 
-  return { userId, email, verified };
+  return { userId, email, requestedEmail, verified };
 }
 
 
@@ -153,6 +159,7 @@ function renderUserDetails(req, res, { successMessage, failureMessage }) {
       title: "User details",
       email: req.session.email,
       userId: req.session.userId,
+      requestedEmail: req.session.requestedEmail,
       verified: req.session.verified,
       successMessage,
       failureMessage
@@ -186,13 +193,25 @@ async function routeUserDetailsPost(req, res) {
 
 
   { // update user details.
-    const { email, userId, verified } = await userDetails(token);
-    authenticate(req, { token, email, userId, verified });
+    const { email, userId, verified, requestedEmail } = await userDetails(token);
+    authenticate(req, { token, email, userId, verified, requestedEmail });
   }
   return renderUserDetails(req, res, { successMessage: "Details changed successfully" });
 }
 
 async function routeVerifyEmail(req,res) {
+  if (req.session.token) {
+      unauthenticate(req);
+      await fetch(endpoints["sign-out"], {
+          method: "POST",
+          body: JSON.stringify(contents, null, 2),
+          headers: {
+            'Content-Type': 'application/json',
+            'X-With-Session-Token': req.session.token
+          }
+      });
+  }
+
   const verificationCode = req.query.code;
   const contents = { verificationCode, metadata };
   const response = await fetch(endpoints["verify-primary-email"], {
@@ -254,8 +273,8 @@ async function routeSignIn(req, res) {
   }
 
   try {
-    const { email, userId, verified } = await userDetails(token);
-    authenticate(req, { token, email, userId, verified });
+    const { email, userId, verified, requestedEmail } = await userDetails(token);
+    authenticate(req, { token, email, userId, requestedEmail, verified });
   } catch (e) {
     errorPage(res, e);
   }
@@ -343,24 +362,36 @@ function errorPage(res, error) {
 }
 
 async function routeVerificationEmails(req, res) {
-
-  const response = await fetch(endpoints["list-sent-verification-emails"], {
+  try {
+    const response = await fetch(endpoints["list-sent-verification-emails"], {
       method: "POST",
       body: '{}',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-  });
-  if (!response.ok) {
-    console.log(response)
-    const error = getError(r);
-    errorPage(res, error);
-    return;
-  }
+      headers: { 'Content-Type': 'application/json' }
+    });
 
-  const r = await response.json()
-  res.json(r);
+    if (!response.ok) {
+      const error = getError(await response.json());
+      errorPage(res, error);
+      return;
+    }
+
+    const emails = await response.json();
+
+    res.render("verification-emails", {
+      layout: layouts.signedOut,
+      locals: {
+        title: "Verification Emails",
+        emails: emails,
+        response: JSON.stringify(response.json),
+        json: JSON.stringify(response.json)
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching verification emails:", error);
+    errorPage(res, "Failed to fetch verification emails.");
+  }
 }
+
 async function routeCardProducts(req, res) {
   const contents = {};
 
