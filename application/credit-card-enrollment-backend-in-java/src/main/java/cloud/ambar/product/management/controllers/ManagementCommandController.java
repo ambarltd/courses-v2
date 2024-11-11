@@ -1,6 +1,6 @@
 package cloud.ambar.product.management.controllers;
 
-import cloud.ambar.product.management.command.CreditCardProductCommandService;
+import cloud.ambar.product.management.command.ProductManagementCommandService;
 import cloud.ambar.product.management.command.models.commands.DefineCreditCardProductCommand;
 import cloud.ambar.product.management.command.models.commands.ActivateCreditCardProductCommand;
 import cloud.ambar.product.management.command.models.commands.DeactivateCreditCardProductCommand;
@@ -29,12 +29,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @Controller
 @RequestMapping("/api/v1/credit_card_product/product")
-public class CommandController {
+public class ManagementCommandController {
 
-    private final CreditCardProductCommandService productService;
+    private final ProductManagementCommandService productService;
 
     @Autowired
-    public CommandController(final CreditCardProductCommandService productService) {
+    public ManagementCommandController(final ProductManagementCommandService productService) {
         this.productService = productService;
     }
 

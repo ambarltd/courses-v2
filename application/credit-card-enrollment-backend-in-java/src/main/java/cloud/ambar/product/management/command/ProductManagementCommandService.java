@@ -23,7 +23,7 @@ import cloud.ambar.product.management.exceptions.InvalidPaymentCycleException;
 import cloud.ambar.product.management.exceptions.InvalidRewardException;
 import cloud.ambar.product.management.exceptions.NoSuchProductException;
 import cloud.ambar.product.management.projection.models.CreditCardProduct;
-import cloud.ambar.product.management.query.QueryService;
+import cloud.ambar.product.management.query.ProductManagementQueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -46,14 +46,14 @@ import java.util.UUID;
 // Write all events for a command in a single transaction so either the whole command is accepted or not. No partial
 // applications!
 @RequiredArgsConstructor
-public class CreditCardProductCommandService {
-    private static final Logger log = LogManager.getLogger(CreditCardProductCommandService.class);
+public class ProductManagementCommandService {
+    private static final Logger log = LogManager.getLogger(ProductManagementCommandService.class);
 
     private final EventRepository eventStore;
 
     private final ObjectMapper objectMapper;
 
-    private final QueryService queryService;
+    private final ProductManagementQueryService productManagementQueryService;
 
     @Transactional
     public void handle(final DefineCreditCardProductCommand command) throws JsonProcessingException {
@@ -169,7 +169,7 @@ public class CreditCardProductCommandService {
         }
         // Leveraging the read side of our CQRS application. We can have a business rule that there must be at least
         // one active product.
-        final List<CreditCardProduct> allProducts = queryService.getAllCreditCardProducts();
+        final List<CreditCardProduct> allProducts = productManagementQueryService.getAllCreditCardProducts();
         final long activeProductCount = allProducts.stream()
                 .filter(CreditCardProduct::isActive)
                 .count();

@@ -1,7 +1,7 @@
 package cloud.ambar.product.management.controllers;
 
 import cloud.ambar.product.management.projection.models.CreditCardProduct;
-import cloud.ambar.product.management.query.QueryService;
+import cloud.ambar.product.management.query.ProductManagementQueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.logging.log4j.LogManager;
@@ -20,22 +20,22 @@ import java.util.List;
  *  - ListProducts
  */
 @RestController
-public class QueryController {
-    private static final Logger log = LogManager.getLogger(QueryController.class);
+public class ManagementQueryController {
+    private static final Logger log = LogManager.getLogger(ManagementQueryController.class);
 
-    private final QueryService queryService;
+    private final ProductManagementQueryService productManagementQueryService;
 
     private final ObjectMapper objectMapper;
 
-    public QueryController(QueryService queryService) {
-        this.queryService = queryService;
+    public ManagementQueryController(ProductManagementQueryService productManagementQueryService) {
+        this.productManagementQueryService = productManagementQueryService;
         this.objectMapper = new ObjectMapper();
     }
 
     @PostMapping(value = "/api/v1/credit_card_product/product/list-items")
     public String listItems() throws JsonProcessingException {
         log.info("Listing all products from ProjectionRepository");
-        List<CreditCardProduct> creditCardProducts = queryService.getAllCreditCardProducts();
+        List<CreditCardProduct> creditCardProducts = productManagementQueryService.getAllCreditCardProducts();
 
         return objectMapper.writeValueAsString(creditCardProducts);
     }

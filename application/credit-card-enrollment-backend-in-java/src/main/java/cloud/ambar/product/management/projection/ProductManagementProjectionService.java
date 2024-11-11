@@ -21,14 +21,14 @@ import java.util.Optional;
  * Takes aggregates and projects them into a list of products for querying later.
  */
 @Service
-public class CreditCardProductProjectionService {
-    private static final Logger log = LogManager.getLogger(CreditCardProductProjectionService.class);
+public class ProductManagementProjectionService {
+    private static final Logger log = LogManager.getLogger(ProductManagementProjectionService.class);
 
     private final CreditCardProductProjectionRepository creditCardProductProjectionRepository;
 
     private final ObjectMapper objectMapper;
 
-    public CreditCardProductProjectionService(final CreditCardProductProjectionRepository creditCardProductProjectionRepository) {
+    public ProductManagementProjectionService(final CreditCardProductProjectionRepository creditCardProductProjectionRepository) {
         this.creditCardProductProjectionRepository = creditCardProductProjectionRepository;
         this.objectMapper = new ObjectMapper();
     }

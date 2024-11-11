@@ -1,6 +1,6 @@
 package cloud.ambar.product.management.util;
 
-import cloud.ambar.product.management.command.CreditCardProductCommandService;
+import cloud.ambar.product.management.command.ProductManagementCommandService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +23,7 @@ import static cloud.ambar.product.management.util.Constants.PLATINUM;
 public class DefaultCardCreator implements ApplicationRunner {
     private static final Logger log = LogManager.getLogger(DefaultCardCreator.class);
 
-    private final CreditCardProductCommandService commandService;
+    private final ProductManagementCommandService commandService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

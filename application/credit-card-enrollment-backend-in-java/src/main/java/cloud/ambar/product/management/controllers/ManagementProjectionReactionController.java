@@ -7,7 +7,7 @@ import cloud.ambar.common.ambar.response.ErrorPolicy;
 import cloud.ambar.common.ambar.response.Result;
 import cloud.ambar.common.ambar.response.Success;
 import cloud.ambar.common.ambar.event.AmbarEvent;
-import cloud.ambar.product.management.projection.CreditCardProductProjectionService;
+import cloud.ambar.product.management.projection.ProductManagementProjectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,15 +30,15 @@ import java.nio.charset.StandardCharsets;
  * Note: This service does not write any new events in response to incoming events, and thus does not have a reaction portion
  */
 @RestController
-public class ProjectionReactionController {
-    private static final Logger log = LogManager.getLogger(ProjectionReactionController.class);
+public class ManagementProjectionReactionController {
+    private static final Logger log = LogManager.getLogger(ManagementProjectionReactionController.class);
 
-    private final CreditCardProductProjectionService creditCardProductProjectionService;
+    private final ProductManagementProjectionService productManagementProjectionService;
 
     private final ObjectMapper objectMapper;
 
-    public ProjectionReactionController(final CreditCardProductProjectionService creditCardProductProjectionService) {
-        this.creditCardProductProjectionService = creditCardProductProjectionService;
+    public ManagementProjectionReactionController(final ProductManagementProjectionService productManagementProjectionService) {
+        this.productManagementProjectionService = productManagementProjectionService;
         this.objectMapper = new ObjectMapper();
     }
 
@@ -50,7 +50,7 @@ public class ProjectionReactionController {
             final AmbarEvent ambarEvent = extractEvent(httpServletRequest);
             log.info("Got event: " + ambarEvent);
 
-            creditCardProductProjectionService.project(ambarEvent.getPayload());
+            productManagementProjectionService.project(ambarEvent.getPayload());
             return successResponse();
         } catch (UnexpectedEventException e) {
             log.warn("Got unexpected event at projection endpoint from Ambar...");

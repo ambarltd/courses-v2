@@ -9,7 +9,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class QueryService {
+public class ProductManagementQueryService {
 
     private final CreditCardProductProjectionRepository creditCardProductProjectionRepository;
 
