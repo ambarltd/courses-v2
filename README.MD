@@ -58,6 +58,6 @@ To make sense of this application, please re-review the slides and recordings yo
 ### Support
 
 If you get stuck, please ask us questions in the #event-sourcing channel of our Slack community. 
-Sign up [here](https://www.launchpass.com/ambar). Or if you'd like a free private walkthrough, simply 
-book one [here](https://calendly.com/luis-ambar).
+If you're not part of our Slack, please sign up [here](https://www.launchpass.com/ambar). 
+Or if you'd like a free private walkthrough, simply book one [here](https://calendly.com/luis-ambar).
 
