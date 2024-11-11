@@ -22,8 +22,9 @@ navigate to `local-development` and run `dev_start.sh`. You will receive further
 
 ```bash
 git clone git@github.com:ambarltd/courses-v2.git
-cd courses-v2
-./dev_start.sh
+cd courses-v2/local-development
+./dev_start.sh 
+./dev_start_with_data_deletion.sh # use this instead if you want to reset your existing event store, and projection db
 ```
 
 ## Making Sense of the Code
