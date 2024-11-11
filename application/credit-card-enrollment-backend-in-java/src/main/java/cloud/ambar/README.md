@@ -1,7 +1,7 @@
 This is the java implementation of the backend services for the Ambar course repo. This portion of the application 
 is structured as follows:
 ```
-cloud.ambar/
+ambar/
 ├── common/     # Has common components for the java application. Things that are required throughout the application
 │               # such as database setup and access, exceptions, or common base classes such as for events. You can also
 │               # find models used when comunicating with Ambar.
