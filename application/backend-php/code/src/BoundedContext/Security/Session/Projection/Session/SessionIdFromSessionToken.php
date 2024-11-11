@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2;
+namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\CommonException\ProjectionCannotRead;

@@ -54,19 +54,19 @@ data_destinations:
     sources:
       - postgres_source
 
-  - id: Identity_User_SentVerificationEmail_V2
-    description: Identity_User_SentVerificationEmail_V2
+  - id: Identity_User_SentVerificationEmail
+    description: Identity_User_SentVerificationEmail
     type: http-push
-    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/sent_verification_email_v2
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/sent_verification_email
     username: username
     password: password
     sources:
       - postgres_source
 
-  - id: Identity_User_UserDetailsV2
-    description: Identity_User_UserDetails_V2
+  - id: Identity_User_UserDetails
+    description: Identity_User_UserDetails
     type: http-push
-    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/user_details_v2
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/user_details
     username: username
     password: password
     sources:
@@ -99,10 +99,10 @@ data_destinations:
     sources:
       - postgres_source
 
-  - id: Security_SessionV2_Session
-    description: Security_SessionV2_Session
+  - id: Security_Session_Session
+    description: Security_Session_Session
     type: http-push
-    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/session_v2
+    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/session
     username: username
     password: password
     sources:

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\QueryHandler;
 
-use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\ListSentVerificationEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail\ListSentVerificationEmail;
 use Galeas\Api\BoundedContext\Identity\User\Query\ListSentVerificationEmailQuery;
 use Galeas\Api\BoundedContext\Identity\User\QueryHandler\ListSentVerificationEmailQueryHandler;
 use PHPUnit\Framework\Assert;

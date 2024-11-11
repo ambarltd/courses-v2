@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\SessionV2;
+namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Security\Session\Projection\Session;
 
-use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\Session;
-use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\SessionIdFromSessionToken;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\Session;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionIdFromSessionToken;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 

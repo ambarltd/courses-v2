@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail;
 
 class SentVerificationEmail
 {

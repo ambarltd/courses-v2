@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2;
+namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
 
 class Session
 {

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\UserDetailsV2;
+namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\UserDetails;
 
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\GetUserDetails;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\UserDetails;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\UnverifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject\VerifiedEmailButRequestedNewEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\GetUserDetails;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\UserDetails;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\UnverifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmailButRequestedNewEmail;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;

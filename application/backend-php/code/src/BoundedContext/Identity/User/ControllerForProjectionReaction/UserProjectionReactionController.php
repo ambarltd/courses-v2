@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Identity\User\ControllerForProjectionReaction;
 
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\PrimaryEmailVerificationCodeProjector;
-use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\SentVerificationEmailProjector;
+use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail\SentVerificationEmailProjector;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\TakenUsernameProjector;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\UserDetailsProjector;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\UserDetailsProjector;
 use Galeas\Api\BoundedContext\Identity\User\Reaction\SendPrimaryEmailVerification\SendPrimaryEmailVerificationReactor;
 use Galeas\Api\CommonController\ProjectionReactionController;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,7 +57,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/sent_verification_email_v2', name: 'projection_sent_verification_email_v2', methods: ['POST'])]
+    #[Route('/projection/sent_verification_email', name: 'projection_sent_verification_email', methods: ['POST'])]
     public function sentVerificationEmail(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
@@ -67,7 +67,7 @@ class UserProjectionReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/user_details_v2', name: 'projection_user_details_v2', methods: ['POST'])]
+    #[Route('/projection/user_details', name: 'projection_user_details', methods: ['POST'])]
     public function userDetails(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

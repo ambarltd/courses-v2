@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\SentVerificationEmailV2;
+namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Projection\SentVerificationEmail;
 
-use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmailV2\SentVerificationEmail;
+use Galeas\Api\BoundedContext\Identity\User\Projection\SentVerificationEmail\SentVerificationEmail;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\UnitTest;
 

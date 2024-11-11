@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\ValueObject;
+namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject;
 
 class VerifiedEmailButRequestedNewEmail
 {

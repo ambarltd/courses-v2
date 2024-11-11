@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Security\Session\ControllerForProjectionReaction;
 
 use Galeas\Api\BoundedContext\Security\Session\Projection\HashedPassword\HashedPasswordProjector;
-use Galeas\Api\BoundedContext\Security\Session\Projection\SessionV2\SessionProjector;
+use Galeas\Api\BoundedContext\Security\Session\Projection\Session\SessionProjector;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithEmail\UserWithEmailProjector;
 use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsernameProjector;
 use Galeas\Api\CommonController\ProjectionReactionController;
@@ -43,7 +43,7 @@ class SessionProjectorReactionController extends ProjectionReactionController
         );
     }
 
-    #[Route('/projection/session_v2', name: 'projection_session', methods: ['POST'])]
+    #[Route('/projection/session', name: 'projection_session', methods: ['POST'])]
     public function session(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(

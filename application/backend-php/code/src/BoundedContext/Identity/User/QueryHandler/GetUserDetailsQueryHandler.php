@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\QueryHandler;
 
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetailsV2\GetUserDetails;
+use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\GetUserDetails;
 use Galeas\Api\BoundedContext\Identity\User\Query\GetUserDetailsQuery;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
