@@ -25,8 +25,6 @@ services:
     container_name: backend-php
     build:
       context: ./../application/backend-php
-      args:
-        SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
     command: [ "./run_in_local.sh" ]
     restart: always
     environment:

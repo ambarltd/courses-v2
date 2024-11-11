@@ -10,9 +10,10 @@ The example contains an event sourced financial institution that allows you to:
 1. Sign up
 2. Verify your email
 3. Sign in / sign out
-4. View credit card products you can apply to (platinum and starter)
+4. View credit card products you can enrol in (Platinum and Starter)
 
-The application is written in PHP, but we will soon have the session aggregate implemented in multiple languages.
+The application is written in PHP, but we will soon have an extra feature (5. Credit Card Enrolment), 
+implemented in multiple languages.
 
 ## Getting Started
 
@@ -28,7 +29,8 @@ cd courses-v2
 ## Making Sense of the Code
 
 To make sense of this application, please re-review the slides and recordings you received during your course. 
-For now, here's the directory structure of the project:
+
+[//]: <> (TODO: Include a structure for the various events in the system.)
 
 ```markdown
 
