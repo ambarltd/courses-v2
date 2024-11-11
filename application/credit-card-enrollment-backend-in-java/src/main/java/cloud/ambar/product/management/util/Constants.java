@@ -1,6 +1,6 @@
 package cloud.ambar.product.management.util;
 
-import cloud.ambar.product.management.commands.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.DefineCreditCardProductCommand;
 import cloud.ambar.product.management.commands.models.validation.PaymentCycle;
 import cloud.ambar.product.management.commands.models.validation.RewardsType;
 
