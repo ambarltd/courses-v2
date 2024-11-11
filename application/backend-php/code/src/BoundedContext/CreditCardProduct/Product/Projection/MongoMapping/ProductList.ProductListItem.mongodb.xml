@@ -4,5 +4,10 @@
     <id type="string" strategy="NONE"/>
     <field field-name="name" type="string" nullable="false"/>
     <field field-name="isActive" type="string" nullable="false"/>
+    <field field-name="paymentCycle" type="string" nullable="false"/>
+    <field field-name="annualFeeInCents" type="int" nullable="false"/>
+    <field field-name="creditLimitInCents" type="int" nullable="false"/>
+    <field field-name="reward" type="string" nullable="false"/>
+
   </document>
 </doctrine-mongo-mapping>

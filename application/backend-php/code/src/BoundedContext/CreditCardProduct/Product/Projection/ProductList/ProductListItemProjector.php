@@ -33,7 +33,11 @@ class ProductListItemProjector implements EventProjector
                 $productListItem = ProductListItem::fromProperties(
                     $id,
                     $event->name(),
-                    false
+                    false,
+                    $event->paymentCycle(),
+                    $event->annualFeeInCents(),
+                    $event->creditLimitInCents(),
+                    $event->reward()
                 );
             }
 

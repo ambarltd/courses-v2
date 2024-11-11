@@ -9,6 +9,13 @@ class ProductListItem
     private string $id;
 
     private string $name;
+    private string $paymentCycle;
+
+    private int $annualFeeInCents;
+
+    private int $creditLimitInCents;
+
+    private string $reward;
     private bool $isActive;
 
     public function id(): string
@@ -40,15 +47,43 @@ class ProductListItem
         return $this;
     }
 
+    public function paymentCycle(): string
+    {
+        return $this->paymentCycle;
+    }
+
+    public function annualFeeInCents(): int
+    {
+        return $this->annualFeeInCents;
+    }
+
+    public function creditLimitInCents(): int
+    {
+        return $this->creditLimitInCents;
+    }
+
+    public function reward(): string
+    {
+        return $this->reward;
+    }
+
     public static function fromProperties(
         string $productId,
         string $name,
-        bool $isActive
+        bool $isActive,
+        string $paymentCycle,
+        int $annualFeeInCents,
+        int $creditLimitInCents,
+        string $reward
     ): self {
         $productListItem = new self();
         $productListItem->id = $productId;
         $productListItem->name = $name;
         $productListItem->isActive = $isActive;
+        $productListItem->paymentCycle = $paymentCycle;
+        $productListItem->annualFeeInCents = $annualFeeInCents;
+        $productListItem->creditLimitInCents = $creditLimitInCents;
+        $productListItem->reward = $reward;
 
         return $productListItem;
     }

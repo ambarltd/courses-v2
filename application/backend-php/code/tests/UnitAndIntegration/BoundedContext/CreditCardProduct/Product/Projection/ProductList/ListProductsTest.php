@@ -26,7 +26,11 @@ class ListProductsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $this->getProjectionDocumentManager()->persist(ProductListItem::fromProperties(
             'id123',
             'Nameabc',
-            true
+            true,
+            'payment_cycle',
+            1_000,
+            10_000,
+            'reward'
         ));
         $this->getProjectionDocumentManager()->flush();
 
@@ -36,6 +40,10 @@ class ListProductsTest extends ResetsEventStoreAndProjectionsIntegrationTest
                     'id' => 'id123',
                     'name' => 'Nameabc',
                     'isActive' => true,
+                    'paymentCycle' => 'payment_cycle',
+                    'annualFeeInCents' => 1_000,
+                    'creditLimitInCents' => 10_000,
+                    'reward' => 'reward',
                 ],
             ],
             $listProductsService->list()

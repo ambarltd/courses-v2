@@ -33,42 +33,28 @@
                     </div>
                 </div>
                 <div class="flex-1 min-w-0">
-                    {{#if this.isActive}}
-                        <p class="text-sm font-medium text-gray-900 truncate">
-                            {{this.name}}
-                        </p>
-                        <p class="text-sm text-gray-700 truncate">
-                            Active
-                        </p>
-                        <p class="text-sm font-medium text-gray-700">
-                            Reward Program: {{this.reward}}
-                        </p>
-                        <p class="text-sm font-medium text-gray-700">
-                            Annual Fee: ${{this.annualFee}}.00
-                        </p>
-                    {{else}}
-                        <p class="text-sm font-medium text-gray-400 truncate">
-                            {{this.name}}
-                        </p>
-                        <p class="text-sm text-gray-400 truncate">
-                            Inactive
-                        </p>
-                    {{/if}}
+                    <p class="text-lg font-large text-gray-900 truncate">
+                        {{this.name}}
+                    </p>
+                    <p class="text-md font-medium text-gray-700">
+                        {{#if this.isActive}} Active {{ else }} Inactive {{/if}}
+                    </p>
+                    <p class="text-sm font-medium text-gray-700">
+                        Credit Limit (in cents): ${{this.creditLimitInCents}}.00
+                    </p>
+                    <p class="text-sm font-medium text-gray-700">
+                        Annual Fee (in cents): ${{this.annualFeeInCents}}.00
+                    </p>
+                    <p class="text-sm font-medium text-gray-700">
+                        Payment Cycle: {{this.paymentCycle}}
+                    </p>
+                    <p class="text-sm font-medium text-gray-700">
+                        Rewards: {{this.reward}}
+                    </p>
                 </div>
                 <div class="text-base font-semibold text-gray-900"
                      style="width: 10em; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: inline-block;">
                     {{this.id}}
-                </div>
-                <div class="flex items-center">
-                    <!-- Activate/Deactivate Button -->
-                    <form method="POST" action="/card/products">
-                        <input type="hidden" name="productId" value="{{this.id}}">
-                        <input type="hidden" name="active" value="{{this.isActive}}">
-                        <button type="submit"
-                                class="px-4 py-2 text-sm font-medium text-white {{#if this.isActive}}bg-red-500 hover:bg-red-600{{else}}bg-green-500 hover:bg-green-600{{/if}} rounded">
-                            {{#if this.isActive}}Deactivate{{else}}Activate{{/if}}
-                        </button>
-                    </form>
                 </div>
             </div>
         </li>
