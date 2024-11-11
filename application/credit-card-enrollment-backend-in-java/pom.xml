@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>cloud.ambar</groupId>
-	<artifactId>AmbarEventSourceJavaj</artifactId>
+	<artifactId>AmbarEventSourceJava</artifactId>
 	<version>1.0.0</version>
 	<name>CreditCardProduct</name>
 	<description>Ambar Java service for course demo</description>
