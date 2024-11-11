@@ -14,7 +14,7 @@ The example contains an event sourced financial institution that allows you to:
 
 The application is written in PHP, but we will soon have the session aggregate implemented in multiple languages.
 
-### Getting Started
+## Getting Started
 
 To run this application you need Docker. Once you have Docker installed, please clone the code, 
 navigate to `local-development` and run `dev_start.sh`. You will receive further instructions.
@@ -25,7 +25,7 @@ cd courses-v2
 ./dev_start.sh
 ```
 
-### Making Sense of the Code
+## Making Sense of the Code
 
 To make sense of this application, please re-review the slides and recordings you received during your course. 
 For now, here's the directory structure of the project:
@@ -53,7 +53,7 @@ local-development/          # Local development environment defined with Docker 
 └── dev_shutdown.sh         # Stops the application's Docker containers
 ```
 
-### Support
+## Support
 
 If you get stuck, please ask us questions in the #event-sourcing channel of our Slack community. 
 If you're not part of our Slack, please sign up [here](https://www.launchpass.com/ambar). 
