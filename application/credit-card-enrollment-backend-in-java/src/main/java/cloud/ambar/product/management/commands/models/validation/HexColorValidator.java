@@ -1,4 +1,4 @@
-package cloud.ambar.product.management.command.models.validation;
+package cloud.ambar.product.management.commands.models.validation;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

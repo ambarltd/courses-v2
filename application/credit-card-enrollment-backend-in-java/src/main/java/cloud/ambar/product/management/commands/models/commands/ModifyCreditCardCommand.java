@@ -1,4 +1,4 @@
-package cloud.ambar.product.management.command.models.commands;
+package cloud.ambar.product.management.commands.models.commands;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

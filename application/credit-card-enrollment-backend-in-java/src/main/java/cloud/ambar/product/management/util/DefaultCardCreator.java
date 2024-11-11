@@ -1,6 +1,6 @@
 package cloud.ambar.product.management.util;
 
-import cloud.ambar.product.management.command.ProductManagementCommandService;
+import cloud.ambar.product.management.commands.ProductManagementCommandService;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

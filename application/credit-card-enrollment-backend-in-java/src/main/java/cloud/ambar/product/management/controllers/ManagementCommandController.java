@@ -1,10 +1,10 @@
 package cloud.ambar.product.management.controllers;
 
-import cloud.ambar.product.management.command.ProductManagementCommandService;
-import cloud.ambar.product.management.command.models.commands.DefineCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.ActivateCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.DeactivateCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.ModifyCreditCardCommand;
+import cloud.ambar.product.management.commands.ProductManagementCommandService;
+import cloud.ambar.product.management.commands.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.ActivateCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.DeactivateCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.ModifyCreditCardCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -30,14 +30,14 @@ import java.nio.charset.StandardCharsets;
  * Note: This service does not write any new events in response to incoming events, and thus does not have a reaction portion
  */
 @RestController
-public class ManagementProjectionReactionController {
-    private static final Logger log = LogManager.getLogger(ManagementProjectionReactionController.class);
+public class ManagementProjectionController {
+    private static final Logger log = LogManager.getLogger(ManagementProjectionController.class);
 
     private final ProductManagementProjectionService productManagementProjectionService;
 
     private final ObjectMapper objectMapper;
 
-    public ManagementProjectionReactionController(final ProductManagementProjectionService productManagementProjectionService) {
+    public ManagementProjectionController(final ProductManagementProjectionService productManagementProjectionService) {
         this.productManagementProjectionService = productManagementProjectionService;
         this.objectMapper = new ObjectMapper();
     }

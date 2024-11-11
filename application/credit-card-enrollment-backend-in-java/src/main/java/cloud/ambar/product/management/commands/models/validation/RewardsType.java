@@ -1,4 +1,4 @@
-package cloud.ambar.product.management.command.models.validation;
+package cloud.ambar.product.management.commands.models.validation;
 
 public enum RewardsType {
     POINTS,

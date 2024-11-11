@@ -1,13 +1,13 @@
-package cloud.ambar.product.management.command;
+package cloud.ambar.product.management.commands;
 
 import cloud.ambar.product.management.aggregate.CreditCardProductAggregate;
-import cloud.ambar.product.management.command.models.commands.ActivateCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.DeactivateCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.DefineCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.commands.ModifyCreditCardCommand;
-import cloud.ambar.product.management.command.models.validation.HexColorValidator;
-import cloud.ambar.product.management.command.models.validation.PaymentCycle;
-import cloud.ambar.product.management.command.models.validation.RewardsType;
+import cloud.ambar.product.management.commands.models.commands.ActivateCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.DeactivateCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.commands.ModifyCreditCardCommand;
+import cloud.ambar.product.management.commands.models.validation.HexColorValidator;
+import cloud.ambar.product.management.commands.models.validation.PaymentCycle;
+import cloud.ambar.product.management.commands.models.validation.RewardsType;
 import cloud.ambar.common.event.store.EventRepository;
 import cloud.ambar.common.event.models.Event;
 import cloud.ambar.product.management.events.ProductActivatedEventData;

@@ -1,8 +1,8 @@
 package cloud.ambar.product.management.util;
 
-import cloud.ambar.product.management.command.models.commands.DefineCreditCardProductCommand;
-import cloud.ambar.product.management.command.models.validation.PaymentCycle;
-import cloud.ambar.product.management.command.models.validation.RewardsType;
+import cloud.ambar.product.management.commands.models.commands.DefineCreditCardProductCommand;
+import cloud.ambar.product.management.commands.models.validation.PaymentCycle;
+import cloud.ambar.product.management.commands.models.validation.RewardsType;
 
 public class Constants {
 
