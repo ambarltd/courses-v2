@@ -215,6 +215,29 @@ abstract class SampleEvents
         );
     }
 
+    public static function takenEmailEvents(): array
+    {
+        $emailTaken = self::emailTaken(
+            'test1239jau@ambar.cloud',
+            Id::createNew()
+        );
+        $emailAbandoned = self::emailAbandoned(
+            $emailTaken->aggregateId(),
+            2,
+            $emailTaken->eventId(),
+            $emailTaken->eventId()
+        );
+        $abandonedEmailRetaken = self::abandonedEmailRetaken(
+            $emailTaken->aggregateId(),
+            3,
+            $emailAbandoned->eventId(),
+            $emailTaken->eventId(),
+            Id::createNew()
+        );
+
+        return [$emailTaken, $emailAbandoned, $abandonedEmailRetaken];
+    }
+
     public static function emailTaken(string $email, Id $takenByUser): EmailTaken
     {
         $eventId = Id::createNew();

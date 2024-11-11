@@ -15,20 +15,26 @@ class AggregateFromEventsTest extends UnitTest
     public function testAggregateFromEvents(): void
     {
         $userEvents = SampleEvents::userEvents();
+        $takenEmailEvents = SampleEvents::takenEmailEvents();
         $sessionEvents = SampleEvents::sessionEvents();
         $productEvents = SampleEvents::creditCardProductEvents();
-        $this->runAssertions($userEvents, 'createUser', 'transformUser');
-        $this->runAssertions($sessionEvents, 'createSession', 'transformSession');
-        $this->runAssertions($productEvents, 'createProduct', 'transformProduct');
+
+        // AggregateFromEvents detects creation and transformation methods with reflection.
+        // But testHydrateAggregateFromEvents should use hardcoded method names, so we verify that reflection works correctly.
+        $this->testHydrateAggregateFromEvents($userEvents, 'createUser', 'transformUser');
+        $this->testHydrateAggregateFromEvents($takenEmailEvents, 'createTakenEmail', 'transformTakenEmail');
+        $this->testHydrateAggregateFromEvents($sessionEvents, 'createSession', 'transformSession');
+        $this->testHydrateAggregateFromEvents($productEvents, 'createProduct', 'transformProduct');
 
         $this->assertWeTestedAllRegisteredEvents(array_merge(
             $userEvents,
+            $takenEmailEvents,
             $sessionEvents,
             $productEvents
         ));
     }
 
-    private function runAssertions(array $events, string $creationMethod, string $transformationMethod): void
+    private function testHydrateAggregateFromEvents(array $events, string $creationMethod, string $transformationMethod): void
     {
         $creationEvent = $events[0];
         $transformationEvents = \array_slice($events, 1);
