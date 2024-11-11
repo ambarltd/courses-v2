@@ -6,6 +6,8 @@ namespace Galeas\Api\Service\EventStore;
 
 use Galeas\Api\Common\Event\AggregateFromEvents;
 use Galeas\Api\Common\Event\Event;
+use Galeas\Api\Common\Event\EventDeserializer;
+use Galeas\Api\Common\Event\EventSerializer;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Service\EventStore\Exception\CancellingTransactionRequiresActiveTransaction;
@@ -144,14 +146,16 @@ class InMemoryEventStore implements EventStore
 
     public function save(Event $event): void
     {
-        try {
-            if (false === $this->isTransactionActive) {
-                throw new SavingEventRequiresActiveTransaction();
-            }
+        if (false === $this->isTransactionActive) {
+            throw new EventStoreCannotWrite(new SavingEventRequiresActiveTransaction());
+        }
 
-            $this->uncommittedEvents[] = $event;
+        try {
+            $this->uncommittedEvents[] = EventDeserializer::serializedEventsToEvents(
+                EventSerializer::eventsToSerializedEvents([$event])
+            )[0];
         } catch (\Throwable $exception) {
-            throw new EventStoreCannotWrite($exception);
+            throw new EventStoreCannotWrite(new \RuntimeException('Event could not be serialized or deserialized. Have you registered it in the EventReflectionBaseClass?'));
         }
     }
 

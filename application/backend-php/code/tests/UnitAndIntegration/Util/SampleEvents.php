@@ -7,6 +7,9 @@ namespace Tests\Galeas\Api\UnitAndIntegration\Util;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailAbandoned;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerificationCodeSent;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
@@ -209,6 +212,62 @@ abstract class SampleEvents
             self::anotherSampleHashedPassword(),
             self::anotherSampleUsername(),
             true,
+        );
+    }
+
+    public static function emailTaken(string $email, Id $takenByUser): EmailTaken
+    {
+        $eventId = Id::createNew();
+        $aggregateId = Id::createNewByHashing(
+            'Identity_TakenEmail:'.strtolower($email)
+        );
+
+        return EmailTaken::new(
+            $eventId,
+            $aggregateId,
+            1,
+            $eventId,
+            $eventId,
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
+            self::sampleMetadata(null),
+            self::sampleEmail(),
+            $takenByUser
+        );
+    }
+
+    public static function emailAbandoned(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId
+    ): EmailAbandoned {
+        return EmailAbandoned::new(
+            Id::createNew(),
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
+            self::sampleMetadata(null)
+        );
+    }
+
+    public static function abandonedEmailRetaken(
+        Id $aggregateId,
+        int $aggregateVersion,
+        Id $causationId,
+        Id $correlationId,
+        Id $retakenByUser
+    ): AbandonedEmailRetaken {
+        return AbandonedEmailRetaken::new(
+            Id::createNew(),
+            $aggregateId,
+            $aggregateVersion,
+            $causationId,
+            $correlationId,
+            new \DateTimeImmutable('2024-02-02 03:00:32'),
+            self::sampleMetadata(null),
+            $retakenByUser
         );
     }
 

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\Common\Event;
 
 use Galeas\Api\BoundedContext\CreditCardProduct\Product;
+use Galeas\Api\BoundedContext\Identity\TakenEmail;
 use Galeas\Api\BoundedContext\Identity\User;
 use Galeas\Api\BoundedContext\Security\Session;
 use Galeas\Api\Common\Event\Exception as EventException;
@@ -19,6 +20,9 @@ abstract class EventReflectionBaseClass
         'Identity_User_PrimaryEmailVerificationCodeSent' => User\Event\PrimaryEmailVerificationCodeSent::class,
         'Identity_User_PrimaryEmailVerified' => User\Event\PrimaryEmailVerified::class,
         'Identity_User_PrimaryEmailChangeRequested' => User\Event\PrimaryEmailChangeRequested::class,
+        'Identity_TakenEmail_EmailTaken' => TakenEmail\Event\EmailTaken::class,
+        'Identity_TakenEmail_EmailAbandoned' => TakenEmail\Event\EmailAbandoned::class,
+        'Identity_TakenEmail_AbandonedEmailRetaken' => TakenEmail\Event\AbandonedEmailRetaken::class,
         'Security_Session_SignedIn' => Session\Event\SignedIn::class,
         'Security_Session_TokenRefreshed' => Session\Event\TokenRefreshed::class,
         'Security_Session_SignedOut' => Session\Event\SignedOut::class,

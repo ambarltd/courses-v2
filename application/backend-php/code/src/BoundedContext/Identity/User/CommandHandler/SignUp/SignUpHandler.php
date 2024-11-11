@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Aggregate\TakenEmail;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
-use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\IsEmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
@@ -23,17 +25,13 @@ class SignUpHandler
 {
     private EventStore $eventStore;
 
-    private IsEmailTaken $isEmailTaken;
-
     private IsUsernameTaken $isUsernameTaken;
 
     public function __construct(
         EventStore $eventStore,
-        IsEmailTaken $isEmailTaken,
         IsUsernameTaken $isUsernameTaken
     ) {
         $this->eventStore = $eventStore;
-        $this->isEmailTaken = $isEmailTaken;
         $this->isUsernameTaken = $isUsernameTaken;
     }
 
@@ -62,26 +60,25 @@ class SignUpHandler
             throw new TermsAreNotAgreedTo();
         }
 
-        if (true === $this->isEmailTaken->isEmailTaken($command->primaryEmail)) {
-            throw new EmailIsTaken();
-        }
-
+        // This implements unique usernames asynchronously through a projection.
         if (true === $this->isUsernameTaken->isUsernameTaken($command->username)) {
             throw new UsernameIsTaken();
         }
 
-        $eventId = Id::createNew();
-        $aggregateId = Id::createNew();
+        $this->eventStore->beginTransaction();
+
+        $signedUpEventId = Id::createNew();
+        $userAggregateId = Id::createNew();
         $hashedPassword = BCryptPasswordHash::hash($command->password, 10);
         if (null === $hashedPassword) {
             throw new CouldNotHashWithBCrypt();
         }
-        $event = SignedUp::new(
-            $eventId,
-            $aggregateId,
+        $signedUp = SignedUp::new(
+            $signedUpEventId,
+            $userAggregateId,
             1,
-            $eventId,
-            $eventId,
+            $signedUpEventId,
+            $signedUpEventId,
             new \DateTimeImmutable('now'),
             $command->metadata,
             $command->primaryEmail,
@@ -91,12 +88,64 @@ class SignUpHandler
             $command->termsOfUseAccepted
         );
 
-        $this->eventStore->beginTransaction();
-        $this->eventStore->save($event);
+        $this->eventStore->save($signedUp);
+        // This implements unique emails per user synchronously through the event store.
+        $this->eventStore->save($this->takeEmail($command, $userAggregateId));
         $this->eventStore->completeTransaction();
 
         return [
-            'userId' => $event->aggregateId()->id(),
+            'userId' => $signedUp->aggregateId()->id(),
         ];
+    }
+
+    /**
+     * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
+     */
+    private function takeEmail(SignUp $command, Id $userAggregateId): AbandonedEmailRetaken|EmailTaken
+    {
+        $takenEmailAggregateId = Id::createNewByHashing(
+            'Identity_TakenEmail:'.strtolower($command->primaryEmail)
+        );
+        $takenEmailResult = $this->eventStore->findAggregateAndEventIdsInLastEvent($takenEmailAggregateId->id());
+
+        if (null === $takenEmailResult) {
+            $emailTakenEventId = Id::createNew();
+
+            return EmailTaken::new(
+                $emailTakenEventId,
+                $takenEmailAggregateId,
+                1,
+                $emailTakenEventId,
+                $emailTakenEventId,
+                new \DateTimeImmutable('now'),
+                $command->metadata,
+                $command->primaryEmail,
+                $userAggregateId
+            );
+        }
+        [$takenEmail, $takenEmailLastEventId, $takenEmailLastEventCorrelationId] = [
+            $takenEmailResult->aggregate(),
+            $takenEmailResult->eventIdInLastEvent(),
+            $takenEmailResult->correlationIdInLastEvent(),
+        ];
+
+        if (!$takenEmail instanceof TakenEmail) {
+            throw new AggregateIdForTakenEmailUnavailable();
+        }
+
+        if (null !== $takenEmail->takenByUser()) {
+            throw new EmailIsTaken();
+        }
+
+        return AbandonedEmailRetaken::new(
+            Id::createNew(),
+            $takenEmailAggregateId,
+            $takenEmail->aggregateVersion() + 1,
+            $takenEmailLastEventId,
+            $takenEmailLastEventCorrelationId,
+            new \DateTimeImmutable('now'),
+            $command->metadata,
+            $userAggregateId
+        );
     }
 }

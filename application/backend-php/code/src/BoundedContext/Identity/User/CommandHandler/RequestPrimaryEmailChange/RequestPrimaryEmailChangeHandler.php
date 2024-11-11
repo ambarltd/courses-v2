@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange;
 
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Aggregate\TakenEmail;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
-use Galeas\Api\BoundedContext\Identity\User\Projection\TakenEmail\IsEmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
@@ -27,14 +29,10 @@ class RequestPrimaryEmailChangeHandler
 {
     private EventStore $eventStore;
 
-    private IsEmailTaken $isEmailTaken;
-
     public function __construct(
         EventStore $eventStore,
-        IsEmailTaken $isEmailTaken
     ) {
         $this->eventStore = $eventStore;
-        $this->isEmailTaken = $isEmailTaken;
     }
 
     /**
@@ -105,15 +103,11 @@ class RequestPrimaryEmailChangeHandler
             throw new PasswordDoesNotMatch();
         }
 
-        if (true === $this->isEmailTaken->isEmailTaken($command->newEmailRequested)) {
-            throw new EmailIsTaken();
-        }
-
         if (false === EmailValidator::isValid($command->newEmailRequested)) {
             throw new InvalidEmail();
         }
 
-        $event = PrimaryEmailChangeRequested::new(
+        $primaryEmailChangeRequested = PrimaryEmailChangeRequested::new(
             Id::createNew(),
             $user->aggregateId(),
             $user->aggregateVersion() + 1,
@@ -126,7 +120,59 @@ class RequestPrimaryEmailChangeHandler
             $user->hashedPassword()->hash()
         );
 
-        $this->eventStore->save($event);
+        $this->eventStore->save($primaryEmailChangeRequested);
+        $this->eventStore->save($this->takeEmail($command, $user->aggregateId()));
         $this->eventStore->completeTransaction();
+    }
+
+    /**
+     * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
+     */
+    private function takeEmail(RequestPrimaryEmailChange $command, Id $userAggregateId): AbandonedEmailRetaken|EmailTaken
+    {
+        $takenEmailAggregateId = Id::createNewByHashing(
+            'Identity_TakenEmail:'.strtolower($command->newEmailRequested)
+        );
+        $takenEmailResult = $this->eventStore->findAggregateAndEventIdsInLastEvent($takenEmailAggregateId->id());
+
+        if (null === $takenEmailResult) {
+            $emailTakenEventId = Id::createNew();
+
+            return EmailTaken::new(
+                $emailTakenEventId,
+                $takenEmailAggregateId,
+                1,
+                $emailTakenEventId,
+                $emailTakenEventId,
+                new \DateTimeImmutable('now'),
+                $command->metadata,
+                $command->newEmailRequested,
+                $userAggregateId
+            );
+        }
+        [$takenEmail, $takenEmailLastEventId, $takenEmailLastEventCorrelationId] = [
+            $takenEmailResult->aggregate(),
+            $takenEmailResult->eventIdInLastEvent(),
+            $takenEmailResult->correlationIdInLastEvent(),
+        ];
+
+        if (!$takenEmail instanceof TakenEmail) {
+            throw new AggregateIdForTakenEmailUnavailable();
+        }
+
+        if (null !== $takenEmail->takenByUser()) {
+            throw new EmailIsTaken();
+        }
+
+        return AbandonedEmailRetaken::new(
+            Id::createNew(),
+            $takenEmailAggregateId,
+            $takenEmail->aggregateVersion() + 1,
+            $takenEmailLastEventId,
+            $takenEmailLastEventCorrelationId,
+            new \DateTimeImmutable('now'),
+            $command->metadata,
+            $userAggregateId
+        );
     }
 }
