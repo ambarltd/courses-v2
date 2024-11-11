@@ -1,4 +1,26 @@
 services:
+  frontend:
+    container_name: frontend-app
+    build:
+      context: ./../application/frontend-javascript/
+    volumes:
+      - ./../:/srv
+    restart: always
+    environment:
+      DOMAIN_IDENTITY: "http://172.30.0.106:8080"
+      DOMAIN_SECURITY: "http://172.30.0.106:8080"
+      DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.106:8080"
+    depends_on:
+      backend-php:
+        condition: service_healthy
+    networks:
+      development:
+        ipv4_address: 172.30.0.105
+    expose:
+      - 8080
+    ports:
+      - "8080:8080"
+
   backend-php:
     container_name: backend-php
     build:
@@ -23,41 +45,24 @@ services:
       MONGODB_PROJECTION_DATABASE_NAME: "projections"
       MONGODB_PROJECTION_DATABASE_USERNAME: "my_mongo_username"
       MONGODB_PROJECTION_DATABASE_PASSWORD: "my_mongo_password"
-      MONGODB_REACTION_HOST: "172.30.0.108"
-      MONGODB_REACTION_PORT: 27017
-      MONGODB_REACTION_AUTHENTICATION_DATABASE: "admin"
-      MONGODB_REACTION_DATABASE_NAME: "reactions"
-      MONGODB_REACTION_DATABASE_USERNAME: "my_mongo_username"
-      MONGODB_REACTION_DATABASE_PASSWORD: "my_mongo_password"
       SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
-      SERVICE_NAME_IN_LOWERCASE: "all_for_local_development"
     depends_on:
-      - postgres-event-store
-      - mongo-projection
+      postgres-event-store:
+        condition: service_healthy    
+      mongo-projection:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080?docker_healthcheck=true 2>&1 | grep '200 OK'"]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 5s
     expose:
       - 8080
-    networks:
-      development:
-        ipv4_address: 172.30.0.105
-
-  frontend:
-    container_name: frontend-app
-    build:
-      context: ./../application/frontend-javascript/
-    volumes:
-      - ./../:/srv
-    restart: always
-    environment:
-      DOMAIN_IDENTITY: "http://172.30.0.105:8080"
-      DOMAIN_SECURITY: "http://172.30.0.105:8080"
-      DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.105:8080"
     networks:
       development:
         ipv4_address: 172.30.0.106
-    expose:
-      - 8080
-    ports:
-      - "8080:8080"
 
   postgres-event-store:
     image: postgres:16.4
@@ -70,6 +75,13 @@ services:
       POSTGRES_DB: my_es_database
       POSTGRES_PASSWORD: my_es_password
     command: postgres -c wal_level=logical
+    healthcheck:
+      test: [ "CMD-SHELL", "PGPASSWORD=my_es_password psql -U my_es_username -d my_es_database -h localhost -c 'SELECT 1;'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 5s
     expose:
       - 5432
     networks:
@@ -83,6 +95,13 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: my_mongo_username
       MONGO_INITDB_ROOT_PASSWORD: my_mongo_password
+    healthcheck:
+      test: ['CMD-SHELL', "mongosh --username my_mongo_username --password my_mongo_password --eval 'db.runCommand({ ping: 1 }).ok'"]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 5s
     volumes:
       - ./data/mongo-projection/db-data:/data/db
     expose:
@@ -98,10 +117,13 @@ services:
     volumes:
       - ./ambar-config.yaml:/opt/emulator/config/config.yaml
       - ./data/ambar-emulator:/root/.local/share/ambar-emulator
+    depends_on:
+      backend-php:
+        condition: service_healthy
     networks:
       development:
-        ipv4_address: 172.30.0.109
-        
+        ipv4_address: 172.30.0.199
+
 
 networks:
     development:

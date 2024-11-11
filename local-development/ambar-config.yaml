@@ -30,7 +30,7 @@ data_destinations:
   - id: Identity_User_Authentication_Session
     description: Identity_User_Authentication_Session
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/authentication_all_services/projection/session
+    endpoint: http://172.30.0.106:8080/api/v1/authentication_all_services/projection/session
     username: username
     password: password
     sources:
@@ -39,16 +39,7 @@ data_destinations:
   - id: Identity_User_PrimaryEmailVerificationCode
     description: Identity_User_PrimaryEmailVerificationCode
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/projection/primary_email_verification_code
-    username: username
-    password: password
-    sources:
-      - postgres_source
-
-  - id: Identity_User_TakenEmail
-    description: Identity_User_TakenEmail
-    type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/projection/taken_email
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/primary_email_verification_code
     username: username
     password: password
     sources:
@@ -57,7 +48,7 @@ data_destinations:
   - id: Identity_User_TakenUsername
     description: Identity_User_TakenUsername
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/projection/taken_username
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/taken_username
     username: username
     password: password
     sources:
@@ -66,7 +57,7 @@ data_destinations:
   - id: Identity_User_SentVerificationEmail_V2
     description: Identity_User_SentVerificationEmail_V2
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/projection/sent_verification_email_v2
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/sent_verification_email_v2
     username: username
     password: password
     sources:
@@ -75,7 +66,7 @@ data_destinations:
   - id: Identity_User_UserDetailsV2
     description: Identity_User_UserDetails_V2
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/projection/user_details_v2
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/projection/user_details_v2
     username: username
     password: password
     sources:
@@ -84,7 +75,7 @@ data_destinations:
   - id: Identity_User_SendPrimaryEmailVerification
     description: Identity_User_SendPrimaryEmailVerification
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/identity/user/reaction/send_primary_email_verification
+    endpoint: http://172.30.0.106:8080/api/v1/identity/user/reaction/send_primary_email_verification
     username: username
     password: password
     sources:
@@ -93,7 +84,7 @@ data_destinations:
   - id: SecuritySession_Authentication_Session
     description: SecuritySession_Authentication_Session
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/authentication_all_services/projection/session
+    endpoint: http://172.30.0.106:8080/api/v1/authentication_all_services/projection/session
     username: username
     password: password
     sources:
@@ -102,7 +93,7 @@ data_destinations:
   - id: Security_Session_HashedPassword
     description: Security_Session_HashedPassword
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/security/session/projection/hashed_password
+    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/hashed_password
     username: username
     password: password
     sources:
@@ -111,7 +102,7 @@ data_destinations:
   - id: Security_SessionV2_Session
     description: Security_SessionV2_Session
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/security/session/projection/session_v2
+    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/session_v2
     username: username
     password: password
     sources:
@@ -120,7 +111,7 @@ data_destinations:
   - id: Security_Session_UserWithEmail
     description: Security_Session_UserWithEmail
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/security/session/projection/user_with_email
+    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/user_with_email
     username: username
     password: password
     sources:
@@ -129,7 +120,7 @@ data_destinations:
   - id: Security_Session_UserWithUsername
     description: Security_Session_UserWithUsername
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/security/session/projection/user_with_username
+    endpoint: http://172.30.0.106:8080/api/v1/security/session/projection/user_with_username
     username: username
     password: password
     sources:
@@ -138,7 +129,7 @@ data_destinations:
   - id: CreditCardProduct_Product_projector
     description: CreditCardProduct_Product_ProductListItem
     type: http-push
-    endpoint: http://172.30.0.105:8080/api/v1/credit_card_product/product/projection/product_list_item
+    endpoint: http://172.30.0.106:8080/api/v1/credit_card_product/product/projection/product_list_item
     username: username
     password: password
     sources:
