@@ -7,6 +7,7 @@ namespace Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotRead;
@@ -68,6 +69,17 @@ class DefineProductHandler
         );
 
         $this->eventStore->save($event);
+        $this->eventStore->save(
+            ProductActivated::new(
+                Id::createNew(),
+                $aggregateId,
+                2,
+                $eventId,
+                $eventId,
+                new \DateTimeImmutable('now'),
+                [],
+            )
+        );
         $this->eventStore->completeTransaction();
     }
 }

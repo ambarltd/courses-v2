@@ -8,6 +8,8 @@ use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCom
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefineProductHandler;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
+use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
 use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
 use Galeas\Api\Common\Id\Id;
 use PHPUnit\Framework\Assert;
@@ -32,9 +34,9 @@ class DefineProductHandlerTest extends HandlerUnitTest
 
         $handler->handle($command);
 
-        /** @var ProductDefined[] $events */
+        /** @var ProductDefined[]|ProductActivated[]|ProductDeactivated[] $events */
         $events = $eventStore->storedEvents();
-        self::assertCount(1, $events);
+        self::assertCount(2, $eventStore->storedEvents());
         self::assertInstanceOf(ProductDefined::class, $events[0]);
         self::assertEquals(Id::createNewByHashing('CreditCardProduct_Product:'.$command->name), $events[0]->aggregateId());
         self::assertEquals('Test Product', $events[0]->name());
@@ -46,8 +48,14 @@ class DefineProductHandlerTest extends HandlerUnitTest
         self::assertEquals('cashback', $events[0]->reward());
         self::assertEquals('#FFFFFF', $events[0]->cardBackgroundHex());
 
+        /** @var ProductActivated[] $events */
+        $event = $eventStore->storedEvents()[1];
+        self::assertCount(2, $eventStore->storedEvents());
+        self::assertInstanceOf(ProductActivated::class, $events[1]);
+        self::assertEquals($event->aggregateId(), $events[0]->aggregateId());
+
         $handler->handle($command);
-        self::assertCount(1, $events);
+        self::assertCount(2, $events);
     }
 
     public function testValidPaymentCycles(): void
@@ -91,6 +99,6 @@ class DefineProductHandlerTest extends HandlerUnitTest
         $command->cardBackgroundHex = '#FFFFFF';
 
         $handler->handle($command);
-        Assert::assertCount(1, $eventStore->storedEvents());
+        Assert::assertCount(2, $eventStore->storedEvents());
     }
 }
