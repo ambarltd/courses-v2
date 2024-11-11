@@ -32,5 +32,11 @@ RUN chmod 777 /var/run/php
 COPY code /srv
 RUN composer install
 
+# Windows environments running Linux Docker containers 
+# make a mess of carriage returns. Let's fix it.
+RUN sed 's/\r//g' run_in_local.sh > compatible.sh
+RUN chmod --reference=run_in_local.sh compatible.sh
+RUN mv compatible.sh run_in_local.sh
+
 EXPOSE 8080
 CMD ["./run_in_local.sh"]

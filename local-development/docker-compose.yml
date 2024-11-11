@@ -25,7 +25,6 @@ services:
     container_name: backend-php
     build:
       context: ./../application/backend-php
-    command: [ "./run_in_local.sh" ]
     restart: always
     environment:
       EVENT_STORE_HOST: "172.30.0.107"
