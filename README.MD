@@ -14,7 +14,21 @@ The example contains an event sourced financial institution that allows you to:
 
 The application is written in PHP, but we will soon have the session aggregate implemented in multiple languages.
 
-### Directory Structure
+### Getting Started
+
+To run this application you need Docker. Once you have Docker installed, please clone the code, 
+navigate to `local-development` and run `dev_start.sh`. You will receive further instructions.
+
+```bash
+git clone git@github.com:ambarltd/courses-v2.git
+cd courses-v2
+./dev_start.sh
+```
+
+### Making Sense of the Code
+
+To make sense of this application, please re-review the slides and recordings you received during your course. 
+For now, here's the directory structure of the project:
 
 ```markdown
 
@@ -38,22 +52,6 @@ local-development/          # Local development environment defined with Docker 
 ├── dev_start.sh            # Starts the application's containers and gives you first steps!
 └── dev_shutdown.sh         # Stops the application's Docker containers
 ```
-
-
-### Getting Started
-
-To run this application you need Docker. Once you have Docker installed, please clone the code, 
-navigate to `local-development` and run `dev_start.sh`. You will receive further instructions.
-
-```bash
-git clone git@github.com:ambarltd/courses-v2.git
-cd courses-v2
-./dev_start.sh
-```
-
-### Making Sense of the Code
-
-To make sense of this application, please re-review the slides and recordings you received during your course. 
 
 ### Support
 
