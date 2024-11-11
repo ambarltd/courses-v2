@@ -11,6 +11,7 @@ use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
 use Galeas\Api\Common\Id\Id;
+use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
@@ -41,6 +42,8 @@ class SignUpHandler
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
      * @throws CouldNotHashWithBCrypt|EmailIsTaken|UsernameIsTaken
      * @throws EventStoreCannotWrite|NoRandomnessAvailable|ProjectionCannotRead
+     * @throws AggregateIdForTakenEmailUnavailable|NoRandomnessAvailable
+     * @throws EventStoreCannotRead
      */
     public function handle(SignUp $command): array
     {
@@ -100,6 +103,7 @@ class SignUpHandler
 
     /**
      * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
+     * @throws EventStoreCannotRead|NoRandomnessAvailable
      */
     private function takeEmail(SignUp $command, Id $userAggregateId): AbandonedEmailRetaken|EmailTaken
     {

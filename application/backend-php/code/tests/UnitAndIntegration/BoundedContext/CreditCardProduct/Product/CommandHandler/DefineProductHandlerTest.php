@@ -34,7 +34,7 @@ class DefineProductHandlerTest extends HandlerUnitTest
 
         $handler->handle($command);
 
-        /** @var ProductDefined[]|ProductActivated[]|ProductDeactivated[] $events */
+        /** @var ProductActivated[]|ProductDeactivated[]|ProductDefined[] $events */
         $events = $eventStore->storedEvents();
         self::assertCount(2, $eventStore->storedEvents());
         self::assertInstanceOf(ProductDefined::class, $events[0]);

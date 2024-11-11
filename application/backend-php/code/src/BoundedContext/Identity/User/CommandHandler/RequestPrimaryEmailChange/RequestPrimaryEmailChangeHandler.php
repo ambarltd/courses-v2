@@ -18,7 +18,6 @@ use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
 use Galeas\Api\Common\Id\Id;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
-use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveComparison\Email\AreEmailsEquivalent;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
@@ -42,8 +41,9 @@ class RequestPrimaryEmailChangeHandler
      *
      * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
      * @throws EmailIsTaken|InvalidEmail|NoUserFoundForCode
-     * @throws EventStoreCannotRead|EventStoreCannotWrite|ProjectionCannotRead
-     * @throws NoRandomnessAvailable
+     * @throws EventStoreCannotRead|EventStoreCannotWrite
+     * @throws AggregateIdForTakenEmailUnavailable|NoRandomnessAvailable
+     * @throws AggregateIdForTakenEmailUnavailable
      */
     public function handle(RequestPrimaryEmailChange $command): void
     {
@@ -127,6 +127,7 @@ class RequestPrimaryEmailChangeHandler
 
     /**
      * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
+     * @throws EventStoreCannotRead|NoRandomnessAvailable
      */
     private function takeEmail(RequestPrimaryEmailChange $command, Id $userAggregateId): AbandonedEmailRetaken|EmailTaken
     {
