@@ -3,7 +3,7 @@ schema_controller:
   type: attribute
 
 authentication_all_services:
-  resource: ../src/BoundedContext/AuthenticationAllServices/ControllerForProjectionReaction/
+  resource: ../src/BoundedContext/AuthenticationForAllContexts/ControllerForProjectionReaction/
   type: attribute
 
 identity_user_controller:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping                   http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
-  <document name="Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\Session" collection="AuthenticationAllServices_Session_Session">
+  <document name="Galeas\Api\BoundedContext\AuthenticationForAllContexts\Projection\Session\Session" collection="AuthenticationForAllContexts_Session_Session">
     <indexes>
       <index name="userId">
         <key name="userId"/>

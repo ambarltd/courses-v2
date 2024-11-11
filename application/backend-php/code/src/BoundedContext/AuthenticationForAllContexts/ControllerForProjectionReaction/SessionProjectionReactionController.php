@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Galeas\Api\BoundedContext\AuthenticationAllServices\ControllerForProjectionReaction;
+namespace Galeas\Api\BoundedContext\AuthenticationForAllContexts\ControllerForProjectionReaction;
 
-use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\SessionProjector;
+use Galeas\Api\BoundedContext\AuthenticationForAllContexts\Projection\Session\SessionProjector;
 use Galeas\Api\CommonController\ProjectionReactionController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\RequestMapper;
 
-use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
+use Galeas\Api\BoundedContext\AuthenticationForAllContexts\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Service\RequestMapper\Exception\CannotResolveAuthorizerFromSessionTokenDatabase;
 use Galeas\Api\Service\RequestMapper\Exception\ExpiredOrNonExistentSessionToken;

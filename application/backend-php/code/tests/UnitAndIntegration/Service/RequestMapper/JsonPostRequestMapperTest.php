@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Service\RequestMapper;
 
-use Galeas\Api\BoundedContext\AuthenticationAllServices\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
+use Galeas\Api\BoundedContext\AuthenticationForAllContexts\Projection\Session\AuthenticatedUserIdFromSignedInSessionToken;
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Security\Session\Command\RefreshToken;
