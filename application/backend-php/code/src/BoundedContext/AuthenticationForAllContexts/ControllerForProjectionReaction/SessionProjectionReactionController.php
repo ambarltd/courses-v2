@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/api/v1/authentication_all_services')]
+#[Route('/api/v1/authentication_for_all_contexts')]
 class SessionProjectionReactionController extends ProjectionReactionController
 {
     private SessionProjector $sessionProjector;
@@ -20,7 +20,7 @@ class SessionProjectionReactionController extends ProjectionReactionController
         $this->sessionProjector = $sessionProjector;
     }
 
-    #[Route('/projection/session', name: 'authentication_all_services_session', methods: ['POST'])]
+    #[Route('/projection/session', name: 'authentication_for_all_contexts_session', methods: ['POST'])]
     public function hashedPassword(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
