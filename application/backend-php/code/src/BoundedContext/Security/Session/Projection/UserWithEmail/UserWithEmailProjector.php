@@ -29,19 +29,25 @@ class UserWithEmailProjector extends EventProjector
                         null,
                         $event->primaryEmail()
                     ));
+
                     break;
+
                 case $event instanceof PrimaryEmailVerified:
                     $userWithEmail = $this->getOne(UserWithEmail::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($userWithEmail?->verifyEmail());
+
                     break;
+
                 case $event instanceof PrimaryEmailChangeRequested:
                     $userWithEmail = $this->getOne(UserWithEmail::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($userWithEmail?->requestNewEmail($event->newEmailRequested()));
+
                     break;
+
                 default:
                     break;
             }
-            $this->commitProjection($event, "Security_Session_UserWithEmail");
+            $this->commitProjection($event, 'Security_Session_UserWithEmail');
         } catch (\Throwable $exception) {
             throw new ProjectionCannotProcess($exception);
         }

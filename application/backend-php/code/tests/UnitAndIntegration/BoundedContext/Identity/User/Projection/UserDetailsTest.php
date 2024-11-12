@@ -12,13 +12,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $userDetailsProjector = $this->getContainer()
             ->get(UserDetailsProjector::class)
         ;
         $getUserDetails = $this->getContainer()
-            ->get(GetUserDetails::class);
+            ->get(GetUserDetails::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $userDetailsProjector->project($signedUp);

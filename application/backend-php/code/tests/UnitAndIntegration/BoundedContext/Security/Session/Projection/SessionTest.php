@@ -12,13 +12,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class SessionTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $sessionIdFromSessionToken = $this->getContainer()
             ->get(SessionIdFromSessionToken::class)
         ;
         $sessionProjector = $this->getContainer()
-            ->get(SessionProjector::class);
+            ->get(SessionProjector::class)
+        ;
 
         $signedIn = SampleEvents::signedIn();
         $sessionProjector->project($signedIn);

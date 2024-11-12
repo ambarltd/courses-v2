@@ -13,13 +13,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class SentVerificationEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $sentVerificationEmailProjector = $this->getContainer()
             ->get(SentVerificationEmailProjector::class)
         ;
         $listVerificationEmails = $this->getContainer()
-            ->get(ListSentVerificationEmail::class);
+            ->get(ListSentVerificationEmail::class)
+        ;
 
         $primaryEmailVerificationCodeSent = SampleEvents::primaryEmailVerificationCodeSent(
             Id::createNew(),
@@ -42,5 +43,4 @@ class SentVerificationEmailTest extends ResetsEventStoreAndProjectionsIntegratio
             $listVerificationEmails->list($primaryEmailVerificationCodeSent->eventId()->id())
         );
     }
-
 }

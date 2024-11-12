@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Security\Session\Projection\Session;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\MongoDBException;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\Event\Event;
@@ -28,15 +27,20 @@ class SessionProjector extends EventProjector
                         $event->aggregateId()->id(),
                         $event->sessionTokenCreated(),
                     ));
+
                     break;
+
                 case $event instanceof TokenRefreshed:
                     $session = $this->getOne(Session::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($session->refreshToken(
                         $event->refreshedSessionToken(),
                     ));
+
                     break;
+
                 default:
                     $this->commitProjection($event, 'Security_Session_Session');
+
                     return;
             }
         } catch (\Throwable $exception) {

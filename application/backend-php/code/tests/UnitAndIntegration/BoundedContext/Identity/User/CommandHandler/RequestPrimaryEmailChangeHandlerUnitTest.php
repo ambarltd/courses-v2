@@ -135,6 +135,7 @@ class RequestPrimaryEmailChangeHandlerUnitTest extends HandlerUnitTest
             ]
         );
     }
+
     public function testHandleForVerifiedEmail(): void
     {
         $signedUp = SampleEvents::signedUp();

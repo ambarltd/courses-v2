@@ -7,7 +7,6 @@ namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmailButRequestedNewEmail;
 use Galeas\Api\CommonException\ProjectionCannotRead;
 
 class GetUserDetails
@@ -38,8 +37,8 @@ class GetUserDetails
                 throw new \Exception('Expected UserDetails instance, got nothing.');
             }
             if (
-                $userDetails->verifiedEmail() !== null
-                && $userDetails->unverifiedEmail() !== null
+                null !== $userDetails->verifiedEmail()
+                && null !== $userDetails->unverifiedEmail()
             ) {
                 return [
                     'userId' => $userDetails->getUserId(),
@@ -48,11 +47,11 @@ class GetUserDetails
                             'requestedEmail' => $userDetails->unverifiedEmail(),
                             'verifiedEmail' => $userDetails->verifiedEmail(),
                         ],
-                    ]
+                    ],
                 ];
             }
 
-            if ($userDetails->verifiedEmail() !== null && $userDetails->unverifiedEmail() === null) {
+            if (null !== $userDetails->verifiedEmail() && null === $userDetails->unverifiedEmail()) {
                 return [
                     'userId' => $userDetails->getUserId(),
                     'primaryEmailStatus' => [
@@ -63,7 +62,7 @@ class GetUserDetails
                 ];
             }
 
-            if ($userDetails->verifiedEmail() === null && $userDetails->unverifiedEmail() !== null) {
+            if (null === $userDetails->verifiedEmail() && null !== $userDetails->unverifiedEmail()) {
                 return [
                     'userId' => $userDetails->getUserId(),
                     'primaryEmailStatus' => [

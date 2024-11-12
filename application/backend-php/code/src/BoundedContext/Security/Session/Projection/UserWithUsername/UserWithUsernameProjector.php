@@ -21,21 +21,24 @@ class UserWithUsernameProjector extends EventProjector
     public function project(Event $event): void
     {
         try {
-            switch ($event){
+            switch ($event) {
                 case $event instanceof SignedUp:
                     $this->saveOne(UserWithUsername::fromProperties(
-                            strtolower($event->username()),
-                            $event->aggregateId()->id(),
-                            false
-                        ));
+                        strtolower($event->username()),
+                        $event->aggregateId()->id(),
+                        false
+                    ));
+
                     break;
+
                 case $event instanceof PrimaryEmailVerified:
                     $userWithUsername = $this->getOne(UserWithUsername::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($userWithUsername?->verify());
-                    $this->commitProjection($event, "Security_Session_UserWithUsername");
+                    $this->commitProjection($event, 'Security_Session_UserWithUsername');
+
                     break;
             }
-            $this->commitProjection($event, "Security_Session_UserWithUsername");
+            $this->commitProjection($event, 'Security_Session_UserWithUsername');
         } catch (\Throwable $exception) {
             throw new ProjectionCannotProcess($exception);
         }

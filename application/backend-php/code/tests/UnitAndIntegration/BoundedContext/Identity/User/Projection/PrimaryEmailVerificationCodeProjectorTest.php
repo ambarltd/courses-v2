@@ -12,13 +12,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $primaryEmailVerificationCodeProjector = $this->getContainer()
             ->get(PrimaryEmailVerificationCodeProjector::class)
         ;
         $primaryEmailVerificationCode = $this->getContainer()
-            ->get(UserIdFromPrimaryEmailVerificationCode::class);
+            ->get(UserIdFromPrimaryEmailVerificationCode::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $primaryEmailVerificationCodeProjector->project($signedUp);
@@ -63,5 +64,4 @@ class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProje
             $primaryEmailVerificationCode->userIdFromPrimaryEmailVerificationCode($primaryEmailChangeRequested->newVerificationCode())
         );
     }
-
 }

@@ -28,14 +28,19 @@ class PrimaryEmailVerificationCodeProjector extends EventProjector
                         $event->aggregateId()->id(),
                         null
                     ));
+
                     break;
+
                 case $event instanceof PrimaryEmailChangeRequested:
                     $primaryEmailVerificationCode = $this->getOne(PrimaryEmailVerificationCode::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($primaryEmailVerificationCode?->setVerificationCode($event->newVerificationCode()));
+
                     break;
+
                 case $event instanceof PrimaryEmailVerified:
                     $primaryEmailVerificationCode = $this->getOne(PrimaryEmailVerificationCode::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($primaryEmailVerificationCode?->resetVerificationCode());
+
                     break;
             }
             $this->commitProjection($event, 'Identity_User_PrimaryEmailVerificationCode');

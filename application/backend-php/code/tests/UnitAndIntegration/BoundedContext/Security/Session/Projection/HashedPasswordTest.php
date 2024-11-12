@@ -12,12 +12,15 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class HashedPasswordTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents(): void {
+    public function testEvents(): void
+    {
         $hashedPasswordProjector = $this->getContainer()
-            ->get(HashedPasswordProjector::class);
+            ->get(HashedPasswordProjector::class)
+        ;
 
         $hashedPasswordFromUserId = $this->getContainer()
-            ->get(HashedPasswordFromUserId::class);
+            ->get(HashedPasswordFromUserId::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $hashedPasswordProjector->project($signedUp);

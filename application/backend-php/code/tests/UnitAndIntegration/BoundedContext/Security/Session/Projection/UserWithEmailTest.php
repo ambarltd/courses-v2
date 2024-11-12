@@ -12,13 +12,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class UserWithEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $userWithEmailProjector = $this->getContainer()
             ->get(UserWithEmailProjector::class)
         ;
         $userIdFromSignInEmail = $this->getContainer()
-            ->get(UserIdFromSignInEmail::class);
+            ->get(UserIdFromSignInEmail::class)
+        ;
 
         $signedUp = SampleEvents::signedUp();
         $userWithEmailProjector->project($signedUp);

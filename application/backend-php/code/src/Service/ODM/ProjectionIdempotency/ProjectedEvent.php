@@ -12,7 +12,7 @@ class ProjectedEvent
     private string $eventId;
     private string $projectionName;
 
-    private function __construct(){}
+    private function __construct() {}
 
     public static function new(Event $event, string $projectionName): self
     {

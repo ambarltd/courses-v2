@@ -35,14 +35,19 @@ class ProductListItemProjector extends EventProjector
                             $event->reward()
                         )
                     );
+
                     break;
+
                 case $event instanceof ProductActivated:
                     $productListItem = $this->getOne(ProductListItem::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($productListItem?->activate());
+
                     break;
+
                 case $event instanceof ProductDeactivated:
                     $productListItem = $this->getOne(ProductListItem::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($productListItem?->deactivate());
+
                     break;
             }
             $this->commitProjection($event, 'CreditCardProduct_Product_ProductList');

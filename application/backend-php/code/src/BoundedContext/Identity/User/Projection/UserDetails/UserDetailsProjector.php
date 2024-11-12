@@ -29,14 +29,19 @@ class UserDetailsProjector extends EventProjector
                         null,
                         $event->primaryEmail()
                     ));
+
                     break;
+
                 case $event instanceof PrimaryEmailVerified:
                     $userDetails = $this->getOne(UserDetails::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($userDetails?->verifyEmail());
+
                     break;
+
                 case $event instanceof PrimaryEmailChangeRequested:
                     $userDetails = $this->getOne(UserDetails::class, ['id' => $event->aggregateId()->id()]);
                     $this->saveOne($userDetails?->requestNewEmail($event->newEmailRequested()));
+
                     break;
             }
             $this->commitProjection($event, 'Identity_User_UserDetails');

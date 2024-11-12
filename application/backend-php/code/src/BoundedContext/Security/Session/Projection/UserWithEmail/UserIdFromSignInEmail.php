@@ -26,7 +26,8 @@ class UserIdFromSignInEmail
                 ->createQueryBuilder(UserWithEmail::class)
                 ->field('lowercaseVerifiedEmail')->equals(strtolower($email))
                 ->getQuery()
-                ->getSingleResult();
+                ->getSingleResult()
+            ;
 
             if ($userWithEmail instanceof UserWithEmail) {
                 return $userWithEmail->userId();

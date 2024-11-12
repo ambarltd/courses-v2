@@ -12,13 +12,14 @@ use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
 
 class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
 {
-    public function testEvents()
+    public function testEvents(): void
     {
         $productListProjector = $this->getContainer()
             ->get(ProductListItemProjector::class)
         ;
         $listProducts = $this->getContainer()
-            ->get(ListProducts::class);
+            ->get(ListProducts::class)
+        ;
 
         $productDefined = SampleEvents::productDefined();
         $productListProjector->project($productDefined);
@@ -75,5 +76,4 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $listProducts->list()
         );
     }
-
 }

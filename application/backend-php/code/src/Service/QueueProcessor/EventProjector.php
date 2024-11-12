@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\QueueProcessor;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\ODM\ProjectionIdempotency\ProjectedEvent;
@@ -21,15 +20,17 @@ abstract class EventProjector
 
     /**
      * @template T
-     * @param class-string<T> $documentName
+     *
+     * @param class-string<T>      $documentName
      * @param array<string, mixed> $fieldsAndValues
      *
-     * @return T|null
+     * @return null|T
      */
     protected function getOne(string $documentName, array $fieldsAndValues): ?object
     {
         $query = $this->projectionDocumentManager
-            ->createQueryBuilder($documentName);
+            ->createQueryBuilder($documentName)
+        ;
 
         foreach ($fieldsAndValues as $field => $value) {
             $query->field($field)->equals($value);
@@ -51,9 +52,10 @@ abstract class EventProjector
     protected function commitProjection(Event $projectedEvent, string $projectionName): void
     {
         $this->projectionDocumentManager
-            ->persist(ProjectedEvent::new($projectedEvent, $projectionName));
+            ->persist(ProjectedEvent::new($projectedEvent, $projectionName))
+        ;
         $this->projectionDocumentManager->flush([
-            'withTransaction' => true
+            'withTransaction' => true,
         ]);
     }
 }
