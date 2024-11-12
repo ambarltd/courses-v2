@@ -53,7 +53,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
                             'email' => $signedUp->primaryEmail(),
                         ],
                     ],
-                ]
+                ],
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );
@@ -75,7 +75,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
                             'verifiedEmail' => $signedUp->primaryEmail(),
                         ],
                     ],
-                ]
+                ],
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );
@@ -96,7 +96,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
                             'email' => $primaryEmailChangeRequested->newEmailRequested(),
                         ],
                     ],
-                ]
+                ],
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );
