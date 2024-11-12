@@ -1,4 +1,4 @@
 package cloud.ambar.product.enrollment.commands;
 
-public class RequestEnvrollmentCommand {
+public class RequestEnrollmentCommand {
 }
