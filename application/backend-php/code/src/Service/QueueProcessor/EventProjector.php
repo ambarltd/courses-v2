@@ -4,13 +4,56 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Service\QueueProcessor;
 
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername\UserWithUsername;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
+use Galeas\Api\Service\ODM\ProjectionIdempotency\ProjectedEvent;
 
-interface EventProjector
+abstract class EventProjector
 {
+    protected DocumentManager $projectionDocumentManager;
+
     /**
      * @throws ProjectionCannotProcess
      */
-    public function project(Event $event): void;
+    abstract public function project(Event $event): void;
+
+    /**
+     * @template T
+     * @param class-string<T> $documentName
+     * @param array<string, mixed> $fieldsAndValues
+     *
+     * @return T|null
+     */
+    protected function getOne(string $documentName, array $fieldsAndValues): ?object
+    {
+        $query = $this->projectionDocumentManager
+            ->createQueryBuilder($documentName);
+
+        foreach ($fieldsAndValues as $field => $value) {
+            $query->field($field)->equals($value);
+        }
+
+        return $query->getQuery()->getSingleResult();
+    }
+
+    protected function saveOne(?object $object): void
+    {
+        // makes it easier to sometimes save nothing
+        // for syntactic sugar
+        if (null === $object) {
+            return;
+        }
+        $this->projectionDocumentManager->persist($object);
+    }
+
+    protected function commitProjection(Event $projectedEvent, string $projectionName): void
+    {
+        $this->projectionDocumentManager
+            ->persist(ProjectedEvent::new($projectedEvent, $projectionName));
+        $this->projectionDocumentManager->flush([
+            'withTransaction' => true
+        ]);
+    }
 }

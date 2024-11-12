@@ -10,10 +10,8 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class TakenUsernameProjector implements EventProjector
+class TakenUsernameProjector extends EventProjector
 {
-    private DocumentManager $projectionDocumentManager;
-
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
@@ -23,31 +21,14 @@ class TakenUsernameProjector implements EventProjector
     {
         try {
             if ($event instanceof SignedUp) {
-                $username = $event->username();
-            } else {
-                return;
-            }
-
-            $takenUsername = $this->projectionDocumentManager
-                ->createQueryBuilder(TakenUsername::class)
-                ->field('id')->equals($event->aggregateId()->id())
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            if ($takenUsername instanceof TakenUsername) {
-                $takenUsername->changeUsername($username);
-            } elseif (null === $takenUsername) {
-                $takenUsername = TakenUsername::fromUserIdAndUsername(
-                    $event->aggregateId()->id(),
-                    $username
+                $this->saveOne(
+                    TakenUsername::fromUserIdAndUsername(
+                        $event->aggregateId()->id(),
+                        $event->username()
+                    )
                 );
-            } else {
-                throw new \Exception('Could not process event with id '.$event->eventId()->id());
             }
-
-            $this->projectionDocumentManager->persist($takenUsername);
-            $this->projectionDocumentManager->flush();
+            $this->commitProjection($event, 'Identity_User_TakenUsername');
         } catch (\Throwable $throwable) {
             throw new ProjectionCannotProcess($throwable);
         }

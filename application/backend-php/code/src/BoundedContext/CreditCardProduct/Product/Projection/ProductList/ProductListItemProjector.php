@@ -12,10 +12,8 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class ProductListItemProjector implements EventProjector
+class ProductListItemProjector extends EventProjector
 {
-    private DocumentManager $projectionDocumentManager;
-
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
@@ -24,39 +22,30 @@ class ProductListItemProjector implements EventProjector
     public function project(Event $event): void
     {
         try {
-            $id = $event->aggregateId()->id();
-
-            $productListItem = null;
-
-            // ProductDefined -> create an item in the projection database
-            if ($event instanceof ProductDefined) {
-                $productListItem = ProductListItem::fromProperties(
-                    $id,
-                    $event->name(),
-                    false,
-                    $event->paymentCycle(),
-                    $event->annualFeeInCents(),
-                    $event->creditLimitInCents(),
-                    $event->reward()
-                );
+            switch (true) {
+                case $event instanceof ProductDefined:
+                    $this->saveOne(
+                        ProductListItem::fromProperties(
+                            $event->aggregateId()->id(),
+                            $event->name(),
+                            false,
+                            $event->paymentCycle(),
+                            $event->annualFeeInCents(),
+                            $event->creditLimitInCents(),
+                            $event->reward()
+                        )
+                    );
+                    break;
+                case $event instanceof ProductActivated:
+                    $productListItem = $this->getOne(ProductListItem::class, ['id' => $event->aggregateId()->id()]);
+                    $this->saveOne($productListItem?->activate());
+                    break;
+                case $event instanceof ProductDeactivated:
+                    $productListItem = $this->getOne(ProductListItem::class, ['id' => $event->aggregateId()->id()]);
+                    $this->saveOne($productListItem?->deactivate());
+                    break;
             }
-
-            // ProductActivated -> update the item in the projection database
-            if ($event instanceof ProductActivated) {
-                $productListItem = $this->findItem($id);
-                $productListItem->activate();
-            }
-
-            // ProductDeactivated -> update the item in the projection database
-            if ($event instanceof ProductDeactivated) {
-                $productListItem = $this->findItem($id);
-                $productListItem->deactivate();
-            }
-
-            if (null !== $productListItem) {
-                $this->projectionDocumentManager->persist($productListItem);
-                $this->projectionDocumentManager->flush();
-            }
+            $this->commitProjection($event, 'CreditCardProduct_Product_ProductList');
         } catch (\Throwable $throwable) {
             throw new ProjectionCannotProcess($throwable);
         }

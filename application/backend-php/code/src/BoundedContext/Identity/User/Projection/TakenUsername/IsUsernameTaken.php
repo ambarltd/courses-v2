@@ -33,11 +33,7 @@ class IsUsernameTaken
                 return true;
             }
 
-            if (null === $takenUsername) {
-                return false;
-            }
-
-            throw new \Exception();
+            return false;
         } catch (\Throwable $exception) {
             throw new ProjectionCannotRead($exception);
         }

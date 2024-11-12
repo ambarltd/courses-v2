@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
+use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class UserWithUsernameProjector implements EventProjector
+class UserWithUsernameProjector extends EventProjector
 {
-    private DocumentManager $projectionDocumentManager;
-
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
@@ -22,41 +21,21 @@ class UserWithUsernameProjector implements EventProjector
     public function project(Event $event): void
     {
         try {
-            $userId = null;
-            $username = null;
-
-            if ($event instanceof SignedUp) {
-                $userId = $event->aggregateId()->id();
-                $username = $event->username();
+            switch ($event){
+                case $event instanceof SignedUp:
+                    $this->saveOne(UserWithUsername::fromProperties(
+                            strtolower($event->username()),
+                            $event->aggregateId()->id(),
+                            false
+                        ));
+                    break;
+                case $event instanceof PrimaryEmailVerified:
+                    $userWithUsername = $this->getOne(UserWithUsername::class, ['id' => $event->aggregateId()->id()]);
+                    $this->saveOne($userWithUsername?->verify());
+                    $this->commitProjection($event, "Security_Session_UserWithUsername");
+                    break;
             }
-
-            if (
-                null === $userId
-                || null === $username
-            ) {
-                return;
-            }
-
-            $userWithUsername = $this->projectionDocumentManager
-                ->createQueryBuilder(UserWithUsername::class)
-                ->field('id')->equals($userId)
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            if ($userWithUsername instanceof UserWithUsername) {
-                $userWithUsername->changeUsername($username);
-            } elseif (null === $userWithUsername) {
-                $userWithUsername = UserWithUsername::fromProperties(
-                    $username,
-                    $userId
-                );
-            } else {
-                throw new \Exception();
-            }
-
-            $this->projectionDocumentManager->persist($userWithUsername);
-            $this->projectionDocumentManager->flush();
+            $this->commitProjection($event, "Security_Session_UserWithUsername");
         } catch (\Throwable $exception) {
             throw new ProjectionCannotProcess($exception);
         }

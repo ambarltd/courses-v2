@@ -9,6 +9,7 @@
       </index>
     </indexes>
     <field field-name="canonicalUsername" type="string" nullable="false"/>
+    <field field-name="verified" type="boolean" nullable="false"/>
     <id type="string" strategy="NONE"/>
   </document>
 </doctrine-mongo-mapping>

@@ -13,7 +13,7 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class SessionProjector implements EventProjector
+class SessionProjector extends EventProjector
 {
     private DocumentManager $projectionDocumentManager;
 

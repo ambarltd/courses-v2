@@ -95,4 +95,6 @@ class VerifyPrimaryEmailHandler
         $this->eventStore->save($event);
         $this->eventStore->completeTransaction();
     }
+
+
 }

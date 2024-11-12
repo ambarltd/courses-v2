@@ -10,7 +10,7 @@ use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class HashedPasswordProjector implements EventProjector
+class HashedPasswordProjector extends EventProjector
 {
     private DocumentManager $projectionDocumentManager;
 

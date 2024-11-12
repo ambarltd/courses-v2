@@ -6,37 +6,36 @@ namespace Galeas\Api\BoundedContext\Security\Session\Projection\UserWithUsername
 
 class UserWithUsername
 {
-    private string $canonicalUsername;
-
     private string $id;
 
-    private function __construct() {}
+    private string $lowercaseUsername;
 
-    public function getCanonicalUsername(): string
-    {
-        return $this->canonicalUsername;
-    }
+    private bool $verified;
+
+    private function __construct() {}
 
     public function getUserId(): string
     {
         return $this->id;
     }
 
-    public function changeUsername(string $username): self
+    public function verify(): self
     {
-        $this->canonicalUsername = strtolower($username);
+        $this->verified = true;
 
         return $this;
     }
 
     public static function fromProperties(
         string $username,
-        string $userId
+        string $userId,
+        bool $verified
     ): self {
-        $hashedPasswordObject = new self();
-        $hashedPasswordObject->canonicalUsername = strtolower($username);
-        $hashedPasswordObject->id = $userId;
+        $userWithUsername = new self();
+        $userWithUsername->lowercaseUsername = strtolower($username);
+        $userWithUsername->id = $userId;
+        $userWithUsername->verified = $verified;
 
-        return $hashedPasswordObject;
+        return $userWithUsername;
     }
 }

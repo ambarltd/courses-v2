@@ -8,80 +8,48 @@ class UserWithEmail
 {
     private string $id;
 
-    private ?string $canonicalVerifiedEmail = null;
+    private ?string $lowercaseVerifiedEmail;
 
-    private ?string $canonicalRequestedEmail = null;
-
-    private RequestedChange|Unverified|Verified $status;
+    private ?string $lowercaseRequestedEmail;
 
     private function __construct() {}
 
-    public function getUserId(): string
+    public function userId(): string
     {
         return $this->id;
     }
 
-    public function getCanonicalVerifiedEmail(): ?string
+    public function verifyEmail(): self
     {
-        return $this->canonicalVerifiedEmail;
-    }
-
-    public function getCanonicalRequestedEmail(): ?string
-    {
-        return $this->canonicalRequestedEmail;
-    }
-
-    /**
-     * @return RequestedChange|Unverified|Verified
-     */
-    public function getStatus()
-    {
-        return $this->status;
-    }
-
-    /**
-     * @param RequestedChange|Unverified|Verified $status
-     *
-     * @return $this
-     */
-    public function changeEmails(
-        ?string $verifiedEmail,
-        ?string $requestedEmail,
-        $status
-    ): self {
-        $this->canonicalVerifiedEmail = null;
-        $this->canonicalRequestedEmail = null;
-        $this->status = $status;
-
-        if (\is_string($verifiedEmail)) {
-            $this->canonicalVerifiedEmail = strtolower($verifiedEmail);
-        }
-        if (\is_string($requestedEmail)) {
-            $this->canonicalRequestedEmail = strtolower($requestedEmail);
-        }
+        $this->lowercaseVerifiedEmail = $this->lowercaseRequestedEmail;
+        $this->lowercaseRequestedEmail = null;
 
         return $this;
     }
 
-    /**
-     * @param RequestedChange|Unverified|Verified $status
-     */
+    public function requestNewEmail(string $newEmailRequested): self
+    {
+        $this->lowercaseRequestedEmail = strtolower($newEmailRequested);
+
+        return $this;
+    }
+
     public static function fromUserIdAndEmails(
         string $userId,
         ?string $verifiedEmail,
-        ?string $requestedEmail,
-        $status
+        ?string $requestedEmail
     ): self {
         $takenEmail = new self();
         $takenEmail->id = $userId;
+        $takenEmail->lowercaseVerifiedEmail = null;
+        $takenEmail->lowercaseRequestedEmail = null;
 
         if (\is_string($verifiedEmail)) {
-            $takenEmail->canonicalVerifiedEmail = strtolower($verifiedEmail);
+            $takenEmail->lowercaseVerifiedEmail = strtolower($verifiedEmail);
         }
         if (\is_string($requestedEmail)) {
-            $takenEmail->canonicalRequestedEmail = strtolower($requestedEmail);
+            $takenEmail->lowercaseRequestedEmail = strtolower($requestedEmail);
         }
-        $takenEmail->status = $status;
 
         return $takenEmail;
     }

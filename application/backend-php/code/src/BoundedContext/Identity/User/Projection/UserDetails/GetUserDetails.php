@@ -34,46 +34,47 @@ class GetUserDetails
                 ->getSingleResult()
             ;
 
-            if ($userDetails instanceof UserDetails) {
-                $status = $userDetails->getPrimaryEmailStatus();
-
-                switch ($status) {
-                    case $status instanceof UnverifiedEmail:
-                        $primaryEmailStatus = [
-                            'unverifiedEmail' => [
-                                'email' => $status->getEmail(),
-                            ],
-                        ];
-
-                        break;
-
-                    case $status instanceof VerifiedEmail:
-                        $primaryEmailStatus = [
-                            'verifiedEmail' => [
-                                'email' => $status->getEmail(),
-                            ],
-                        ];
-
-                        break;
-
-                    case $status instanceof VerifiedEmailButRequestedNewEmail:
-                        $primaryEmailStatus = [
-                            'verifiedButRequestedNewEmail' => [
-                                'requestedEmail' => $status->getRequestedEmail(),
-                                'verifiedEmail' => $status->getVerifiedEmail(),
-                            ],
-                        ];
-
-                        break;
-                }
-
+            if (!$userDetails instanceof UserDetails) {
+                throw new \Exception('Expected UserDetails instance, got nothing.');
+            }
+            if (
+                $userDetails->verifiedEmail() !== null
+                && $userDetails->unverifiedEmail() !== null
+            ) {
                 return [
                     'userId' => $userDetails->getUserId(),
-                    'primaryEmailStatus' => $primaryEmailStatus,
+                    'primaryEmailStatus' => [
+                        'verifiedButRequestedNewEmail' => [
+                            'requestedEmail' => $userDetails->unverifiedEmail(),
+                            'verifiedEmail' => $userDetails->verifiedEmail(),
+                        ],
+                    ]
                 ];
             }
 
-            throw new \Exception('Expected UserDetails instance, got nothing.');
+            if ($userDetails->verifiedEmail() !== null && $userDetails->unverifiedEmail() === null) {
+                return [
+                    'userId' => $userDetails->getUserId(),
+                    'primaryEmailStatus' => [
+                        'verifiedEmail' => [
+                            'email' => $userDetails->verifiedEmail(),
+                        ],
+                    ],
+                ];
+            }
+
+            if ($userDetails->verifiedEmail() === null && $userDetails->unverifiedEmail() !== null) {
+                return [
+                    'userId' => $userDetails->getUserId(),
+                    'primaryEmailStatus' => [
+                        'unverifiedEmail' => [
+                            'email' => $userDetails->unverifiedEmail(),
+                        ],
+                    ],
+                ];
+            }
+
+            throw new \Exception('Expected UserDetails to have non null details.');
         } catch (\Throwable $exception) {
             throw new ProjectionCannotRead($exception);
         }

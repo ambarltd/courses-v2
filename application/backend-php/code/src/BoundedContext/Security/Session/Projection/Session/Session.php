@@ -22,7 +22,7 @@ class Session
         return $this->sessionToken;
     }
 
-    public function changeProperties(
+    public function refreshToken(
         string $sessionToken,
     ): self {
         $this->sessionToken = $sessionToken;

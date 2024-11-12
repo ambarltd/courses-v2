@@ -6,6 +6,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryE
 
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Aggregate\TakenEmail;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailAbandoned;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
@@ -175,5 +176,17 @@ class RequestPrimaryEmailChangeHandler
             $command->metadata,
             $userAggregateId
         );
+    }
+
+    private function abandonEmail(UnverifiedEmail|VerifiedButRequestedNewEmail|VerifiedEmail $emailStatus): ?EmailAbandoned
+    {
+        switch ($emailStatus) {
+            case $emailStatus instanceof UnverifiedEmail:
+                // abandon unverified email
+            case $emailStatus instanceof VerifiedEmail:
+                // nothing
+            case $emailStatus instanceof VerifiedButRequestedNewEmail:
+                // abandon new email
+        }
     }
 }

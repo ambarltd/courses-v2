@@ -49,10 +49,13 @@ class SendPrimaryEmailVerificationReactor implements EventReactor
             return;
         }
 
-        $fromEmailAddress = 'system.development-application.example.com';
+        $fromEmailAddress = 'example.ambar.cloud';
         $subjectLine = 'Your Verification Code';
-        $emailContents = 'This is your verification code: http://localhost:8080/page/?verificationCode='.$verificationCode;
-        //        We're not sending emails for now
+        $emailContents = 'This is your verification code: '.$verificationCode;
+        //        We're not sending emails, but there is a fake inbox
+        //        where users can check their verification codes.
+        //        We're doing this because not everyone has access to
+        //        send emails from their local machines.
         //        $this->emailer->send(
         //            $sendToEmailAddress,
         //            $subjectLine,
