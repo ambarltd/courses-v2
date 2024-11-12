@@ -10,13 +10,23 @@ class TakenUsername
 
     private string $lowercaseUsername;
 
+    private bool $verifiedPrimaryEmail;
+
     private function __construct() {}
 
-    public static function fromUserIdAndUsername(string $userId, string $username): self
+    public function verify(): self
+    {
+        $this->verifiedPrimaryEmail = true;
+
+        return $this;
+    }
+
+    public static function fromUserIdAndUsername(string $userId, string $username, bool $verifiedPrimaryEmail): self
     {
         $takenUsername = new self();
         $takenUsername->id = $userId;
         $takenUsername->lowercaseUsername = strtolower($username);
+        $takenUsername->verifiedPrimaryEmail = $verifiedPrimaryEmail;
 
         return $takenUsername;
     }

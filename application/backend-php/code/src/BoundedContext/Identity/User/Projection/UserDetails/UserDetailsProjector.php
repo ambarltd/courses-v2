@@ -22,7 +22,7 @@ class UserDetailsProjector extends EventProjector
     public function project(Event $event): void
     {
         try {
-            switch ($event) {
+            switch (true) {
                 case $event instanceof SignedUp:
                     $this->saveOne(UserDetails::fromUserIdAndEmails(
                         $event->aggregateId()->id(),

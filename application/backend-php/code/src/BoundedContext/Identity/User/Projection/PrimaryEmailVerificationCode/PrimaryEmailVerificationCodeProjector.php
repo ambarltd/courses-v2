@@ -22,7 +22,7 @@ class PrimaryEmailVerificationCodeProjector extends EventProjector
     public function project(Event $event): void
     {
         try {
-            switch ($event) {
+            switch (true) {
                 case $event instanceof SignedUp:
                     $this->saveOne(PrimaryEmailVerificationCode::fromUserIdAndVerificationCode(
                         $event->aggregateId()->id(),

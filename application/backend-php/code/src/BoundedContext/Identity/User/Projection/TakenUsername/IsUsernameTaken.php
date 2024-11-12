@@ -24,7 +24,8 @@ class IsUsernameTaken
         try {
             $takenUsername = $this->projectionDocumentManager
                 ->createQueryBuilder(TakenUsername::class)
-                ->field('canonicalUsername')->equals(strtolower($username))
+                ->field('lowercaseUsername')->equals(strtolower($username))
+                ->field('verifiedPrimaryEmail')->equals(true)
                 ->getQuery()
                 ->getSingleResult()
             ;

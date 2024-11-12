@@ -21,7 +21,7 @@ class SessionProjector extends EventProjector
     public function project(Event $event): void
     {
         try {
-            switch ($event) {
+            switch (true) {
                 case $event instanceof SignedIn:
                     $this->saveOne(Session::fromProperties(
                         $event->aggregateId()->id(),
