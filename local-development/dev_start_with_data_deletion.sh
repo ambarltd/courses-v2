@@ -7,5 +7,5 @@ docker compose down
 sleep 5
 sudo rm -Rf data/*
 sleep 4
-docker compose up -d --build --force-recreate
+docker compose up -d --build --force-recreate mongo-projection
 sleep 5
