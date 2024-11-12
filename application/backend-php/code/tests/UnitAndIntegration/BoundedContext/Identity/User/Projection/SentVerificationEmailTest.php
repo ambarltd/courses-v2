@@ -29,18 +29,23 @@ class SentVerificationEmailTest extends ResetsEventStoreAndProjectionsIntegratio
             Id::createNew(),
         );
         $sentVerificationEmailProjector->project($primaryEmailVerificationCodeSent);
+        $list = $listVerificationEmails->list($primaryEmailVerificationCodeSent->eventId()->id());
+        Assert::assertTrue(str_contains($list[0]['sentAt'], 'UTC'));
+        $list[0]['sentAt'] = 'Overridden'; // Overriding the sentAt value to make the test deterministic, mongodb can swallow microseconds
         Assert::assertEquals(
-            [[
-                'eventId' => $primaryEmailVerificationCodeSent->eventId()->id(),
-                'userId' => $primaryEmailVerificationCodeSent->aggregateId()->id(),
-                'verificationCodeSent' => $primaryEmailVerificationCodeSent->verificationCodeSent(),
-                'toEmailAddress' => $primaryEmailVerificationCodeSent->toEmailAddress(),
-                'emailContents' => $primaryEmailVerificationCodeSent->emailContents(),
-                'fromEmailAddress' => $primaryEmailVerificationCodeSent->fromEmailAddress(),
-                'subjectLine' => $primaryEmailVerificationCodeSent->subjectLine(),
-                'recordedOn' => $primaryEmailVerificationCodeSent->recordedOn(),
-            ]],
-            $listVerificationEmails->list($primaryEmailVerificationCodeSent->eventId()->id())
+            [
+                [
+                    'eventId' => $primaryEmailVerificationCodeSent->eventId()->id(),
+                    'userId' => $primaryEmailVerificationCodeSent->aggregateId()->id(),
+                    'verificationCodeSent' => $primaryEmailVerificationCodeSent->verificationCodeSent(),
+                    'toEmailAddress' => $primaryEmailVerificationCodeSent->toEmailAddress(),
+                    'emailContents' => $primaryEmailVerificationCodeSent->emailContents(),
+                    'fromEmailAddress' => $primaryEmailVerificationCodeSent->fromEmailAddress(),
+                    'subjectLine' => $primaryEmailVerificationCodeSent->subjectLine(),
+                    'sentAt' => 'Overridden',
+                ],
+            ],
+            $list
         );
     }
 }

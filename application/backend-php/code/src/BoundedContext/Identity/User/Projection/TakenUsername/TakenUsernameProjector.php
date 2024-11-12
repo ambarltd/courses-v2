@@ -31,7 +31,7 @@ class TakenUsernameProjector extends EventProjector
                 );
             }
             if ($event instanceof PrimaryEmailVerified) {
-                $takenUsername = $this->getOne(TakenUsername::class, ['id' => $event->aggregateId()->id(), 'verifiedPrimaryEmail' => false]);
+                $takenUsername = $this->getOne(TakenUsername::class, ['id' => $event->aggregateId()->id()]);
                 $this->saveOne($takenUsername?->verify());
             }
             $this->commitProjection($event, 'Identity_User_TakenUsername');

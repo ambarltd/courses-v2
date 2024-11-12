@@ -9,6 +9,7 @@
       </index>
     </indexes>
     <id type="string" strategy="NONE"/>
-    <field field-name="lowercaseUsername" type="string" nullable="true"/>
+    <field field-name="lowercaseUsername" type="string" nullable="false"/>
+    <field field-name="verifiedPrimaryEmail" type="boolean" nullable="false"/>
   </document>
 </doctrine-mongo-mapping>

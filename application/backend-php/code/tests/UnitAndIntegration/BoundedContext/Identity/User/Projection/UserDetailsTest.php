@@ -25,10 +25,12 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $userDetailsProjector->project($signedUp);
         Assert::assertEquals(
             [
-                'userId' => $signedUp->aggregateId()->id(),
-                'primaryEmailStatus' => [
-                    'unverifiedEmail' => [
-                        'email' => $signedUp->primaryEmail(),
+                [
+                    'userId' => $signedUp->aggregateId()->id(),
+                    'primaryEmailStatus' => [
+                        'unverifiedEmail' => [
+                            'email' => $signedUp->primaryEmail(),
+                        ],
                     ],
                 ],
             ],
@@ -44,12 +46,14 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $userDetailsProjector->project($primaryEmailVerified);
         Assert::assertEquals(
             [
-                'userId' => $signedUp->aggregateId()->id(),
-                'primaryEmailStatus' => [
-                    'verifiedEmail' => [
-                        'email' => $signedUp->primaryEmail(),
+                [
+                    'userId' => $signedUp->aggregateId()->id(),
+                    'primaryEmailStatus' => [
+                        'verifiedEmail' => [
+                            'email' => $signedUp->primaryEmail(),
+                        ],
                     ],
-                ],
+                ]
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );
@@ -63,13 +67,15 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $userDetailsProjector->project($primaryEmailChangeRequested);
         Assert::assertEquals(
             [
-                'userId' => $signedUp->aggregateId()->id(),
-                'primaryEmailStatus' => [
-                    'verifiedButRequestedNewEmail' => [
-                        'requestedEmail' => $primaryEmailChangeRequested->newEmailRequested(),
-                        'verifiedEmail' => $signedUp->primaryEmail(),
+                [
+                    'userId' => $signedUp->aggregateId()->id(),
+                    'primaryEmailStatus' => [
+                        'verifiedButRequestedNewEmail' => [
+                            'requestedEmail' => $primaryEmailChangeRequested->newEmailRequested(),
+                            'verifiedEmail' => $signedUp->primaryEmail(),
+                        ],
                     ],
-                ],
+                ]
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );
@@ -83,12 +89,14 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $userDetailsProjector->project($primaryEmailVerified);
         Assert::assertEquals(
             [
-                'userId' => $signedUp->aggregateId()->id(),
-                'primaryEmailStatus' => [
-                    'verifiedEmail' => [
-                        'email' => $primaryEmailChangeRequested->newEmailRequested(),
+                [
+                    'userId' => $signedUp->aggregateId()->id(),
+                    'primaryEmailStatus' => [
+                        'verifiedEmail' => [
+                            'email' => $primaryEmailChangeRequested->newEmailRequested(),
+                        ],
                     ],
-                ],
+                ]
             ],
             $getUserDetails->getUserDetails($signedUp->aggregateId()->id())
         );

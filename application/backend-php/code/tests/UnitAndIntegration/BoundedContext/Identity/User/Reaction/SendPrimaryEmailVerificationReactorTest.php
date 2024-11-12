@@ -36,8 +36,8 @@ class SendPrimaryEmailVerificationReactorTest extends ResetsEventStoreAndProject
             [],
             $signedUp->primaryEmailVerificationCode(),
             $signedUp->primaryEmail(),
-            'This is your verification code: http://localhost:8080/page/?verificationCode='.$signedUp->primaryEmailVerificationCode(),
-            'system.development-application.example.com',
+            'This is your verification code: '.$signedUp->primaryEmailVerificationCode(),
+            'example.ambar.cloud',
             'Your Verification Code',
         );
 
@@ -107,8 +107,8 @@ class SendPrimaryEmailVerificationReactorTest extends ResetsEventStoreAndProject
             [],
             $primaryEmailChangeRequested->newVerificationCode(),
             $primaryEmailChangeRequested->newEmailRequested(),
-            'This is your verification code: http://localhost:8080/page/?verificationCode='.$primaryEmailChangeRequested->newVerificationCode(),
-            'system.development-application.example.com',
+            'This is your verification code: '.$primaryEmailChangeRequested->newVerificationCode(),
+            'example.ambar.cloud',
             'Your Verification Code',
         );
 

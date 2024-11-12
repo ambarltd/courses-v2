@@ -9,7 +9,7 @@
         <option name="safe" value="true"/>
       </index>
     </indexes>
-    <id type="string" strategy="NONE"/>
+    <id type="string" strategy="AUTO"/>
     <field field-name="eventId" type="string" nullable="false"/>
     <field field-name="projectionName" type="string" nullable="false"/>
   </document>

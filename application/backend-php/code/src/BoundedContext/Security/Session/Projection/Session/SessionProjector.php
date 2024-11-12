@@ -37,12 +37,9 @@ class SessionProjector extends EventProjector
                     ));
 
                     break;
-
-                default:
-                    $this->commitProjection($event, 'Security_Session_Session');
-
-                    return;
             }
+
+            $this->commitProjection($event, 'Security_Session_Session');
         } catch (\Throwable $exception) {
             throw new ProjectionCannotProcess($exception);
         }

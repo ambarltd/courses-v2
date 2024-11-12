@@ -26,7 +26,7 @@ class PrimaryEmailVerificationCodeProjector extends EventProjector
                 case $event instanceof SignedUp:
                     $this->saveOne(PrimaryEmailVerificationCode::fromUserIdAndVerificationCode(
                         $event->aggregateId()->id(),
-                        null
+                        $event->primaryEmailVerificationCode()
                     ));
 
                     break;

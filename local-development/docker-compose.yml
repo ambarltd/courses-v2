@@ -90,14 +90,17 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: my_mongo_username
       MONGO_INITDB_ROOT_PASSWORD: my_mongo_password
+      MONGO_REPLICA_SET_KEY: rs0
     healthcheck:
-      test: ['CMD-SHELL', "mongosh --username my_mongo_username --password my_mongo_password --eval 'db.runCommand({ ping: 1 }).ok'"]
+      test: ['CMD-SHELL', "echo \"try { rs.status() } catch (err) { rs.initiate({_id:'rs0',members:[{_id:0,host:'172.30.0.108:27017'}]}) }\" | mongosh --username my_mongo_username --password my_mongo_password"]
       timeout: 2s
       interval: 60s
       retries: 10
       start_period: 20s
       start_interval: 5s
+    command: [ "mongod", "--replSet", "rs0", "--keyFile", "/data/configdb/mongo-keyfile", "--auth" ]
     volumes:
+      - ./build-files/.mongo-keyfile:/data/configdb/mongo-keyfile
       - ./data/mongo-projection/db-data:/data/db
     expose:
       - 27017
@@ -106,7 +109,7 @@ services:
         ipv4_address: 172.30.0.108
 
   ambar-emulator:
-    image: ambarltd/emulator:v1.1
+    image: ambarltd/emulator:v1.2
     container_name: ambar-emulator
     restart: always
     volumes:

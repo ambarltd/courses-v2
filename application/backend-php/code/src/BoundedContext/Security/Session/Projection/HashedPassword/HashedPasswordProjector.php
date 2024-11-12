@@ -12,8 +12,6 @@ use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class HashedPasswordProjector extends EventProjector
 {
-    private DocumentManager $projectionDocumentManager;
-
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;

@@ -41,7 +41,7 @@ class GetUserDetails
                 && null !== $userDetails->unverifiedEmail()
             ) {
                 return [
-                    'userId' => $userDetails->getUserId(),
+                    'userId' => $userDetails->userId(),
                     'primaryEmailStatus' => [
                         'verifiedButRequestedNewEmail' => [
                             'requestedEmail' => $userDetails->unverifiedEmail(),
@@ -53,7 +53,7 @@ class GetUserDetails
 
             if (null !== $userDetails->verifiedEmail() && null === $userDetails->unverifiedEmail()) {
                 return [
-                    'userId' => $userDetails->getUserId(),
+                    'userId' => $userDetails->userId(),
                     'primaryEmailStatus' => [
                         'verifiedEmail' => [
                             'email' => $userDetails->verifiedEmail(),
@@ -64,7 +64,7 @@ class GetUserDetails
 
             if (null === $userDetails->verifiedEmail() && null !== $userDetails->unverifiedEmail()) {
                 return [
-                    'userId' => $userDetails->getUserId(),
+                    'userId' => $userDetails->userId(),
                     'primaryEmailStatus' => [
                         'unverifiedEmail' => [
                             'email' => $userDetails->unverifiedEmail(),

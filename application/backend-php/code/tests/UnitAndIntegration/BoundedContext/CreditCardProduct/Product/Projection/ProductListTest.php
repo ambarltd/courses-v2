@@ -25,13 +25,15 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $productListProjector->project($productDefined);
         Assert::assertEquals(
             [
-                'id' => $productDefined->aggregateId()->id(),
-                'name' => $productDefined->name(),
-                'isActive' => false,
-                'paymentCycle' => $productDefined->paymentCycle(),
-                'annualFeeInCents' => $productDefined->annualFeeInCents(),
-                'creditLimitInCents' => $productDefined->creditLimitInCents(),
-                'reward' => $productDefined->reward(),
+                [
+                    'id' => $productDefined->aggregateId()->id(),
+                    'name' => $productDefined->name(),
+                    'isActive' => false,
+                    'paymentCycle' => $productDefined->paymentCycle(),
+                    'annualFeeInCents' => $productDefined->annualFeeInCents(),
+                    'creditLimitInCents' => $productDefined->creditLimitInCents(),
+                    'reward' => $productDefined->reward(),
+                ],
             ],
             $listProducts->list()
         );
@@ -45,13 +47,15 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $productListProjector->project($productActivated);
         Assert::assertEquals(
             [
-                'id' => $productDefined->aggregateId()->id(),
-                'name' => $productDefined->name(),
-                'isActive' => true,
-                'paymentCycle' => $productDefined->paymentCycle(),
-                'annualFeeInCents' => $productDefined->annualFeeInCents(),
-                'creditLimitInCents' => $productDefined->creditLimitInCents(),
-                'reward' => $productDefined->reward(),
+                [
+                    'id' => $productDefined->aggregateId()->id(),
+                    'name' => $productDefined->name(),
+                    'isActive' => true,
+                    'paymentCycle' => $productDefined->paymentCycle(),
+                    'annualFeeInCents' => $productDefined->annualFeeInCents(),
+                    'creditLimitInCents' => $productDefined->creditLimitInCents(),
+                    'reward' => $productDefined->reward(),
+                ],
             ],
             $listProducts->list()
         );
@@ -65,13 +69,15 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
         $productListProjector->project($productDeactivated);
         Assert::assertEquals(
             [
-                'id' => $productDefined->aggregateId()->id(),
-                'name' => $productDefined->name(),
-                'isActive' => false,
-                'paymentCycle' => $productDefined->paymentCycle(),
-                'annualFeeInCents' => $productDefined->annualFeeInCents(),
-                'creditLimitInCents' => $productDefined->creditLimitInCents(),
-                'reward' => $productDefined->reward(),
+                [
+                    'id' => $productDefined->aggregateId()->id(),
+                    'name' => $productDefined->name(),
+                    'isActive' => false,
+                    'paymentCycle' => $productDefined->paymentCycle(),
+                    'annualFeeInCents' => $productDefined->annualFeeInCents(),
+                    'creditLimitInCents' => $productDefined->creditLimitInCents(),
+                    'reward' => $productDefined->reward(),
+                ],
             ],
             $listProducts->list()
         );
