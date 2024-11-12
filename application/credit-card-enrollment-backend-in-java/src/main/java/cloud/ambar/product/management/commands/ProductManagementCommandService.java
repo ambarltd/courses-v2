@@ -9,7 +9,7 @@ import cloud.ambar.product.management.commands.models.validation.HexColorValidat
 import cloud.ambar.product.management.commands.models.validation.PaymentCycle;
 import cloud.ambar.product.management.commands.models.validation.RewardsType;
 import cloud.ambar.common.event.store.EventRepository;
-import cloud.ambar.common.event.models.Event;
+import cloud.ambar.common.event.Event;
 import cloud.ambar.product.management.events.ProductActivatedEventData;
 import cloud.ambar.product.management.events.ProductAnnualFeeChangedEventData;
 import cloud.ambar.product.management.events.ProductBackgroundChangedEventData;

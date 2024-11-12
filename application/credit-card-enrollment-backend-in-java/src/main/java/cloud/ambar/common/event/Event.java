@@ -1,4 +1,4 @@
-package cloud.ambar.common.event.models;
+package cloud.ambar.common.event;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

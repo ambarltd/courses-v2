@@ -1,6 +1,6 @@
 package cloud.ambar.common.aggregate;
 
-import cloud.ambar.common.event.models.Event;
+import cloud.ambar.common.event.Event;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.logging.log4j.LogManager;

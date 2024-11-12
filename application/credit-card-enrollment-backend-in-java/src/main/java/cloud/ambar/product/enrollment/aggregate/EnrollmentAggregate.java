@@ -1,7 +1,7 @@
 package cloud.ambar.product.enrollment.aggregate;
 
 import cloud.ambar.common.aggregate.Aggregate;
-import cloud.ambar.common.event.models.Event;
+import cloud.ambar.common.event.Event;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

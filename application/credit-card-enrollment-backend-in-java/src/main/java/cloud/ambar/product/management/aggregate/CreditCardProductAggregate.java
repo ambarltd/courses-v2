@@ -1,7 +1,7 @@
 package cloud.ambar.product.management.aggregate;
 
 import cloud.ambar.common.aggregate.Aggregate;
-import cloud.ambar.common.event.models.Event;
+import cloud.ambar.common.event.Event;
 import cloud.ambar.product.management.events.ProductActivatedEventData;
 import cloud.ambar.product.management.events.ProductAnnualFeeChangedEventData;
 import cloud.ambar.product.management.events.ProductBackgroundChangedEventData;
