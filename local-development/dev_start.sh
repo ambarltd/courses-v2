@@ -7,7 +7,9 @@ docker compose down
 
 # Ambar won't have to be recreated from scratch once we fix a bug.
 # For now recreating from scratch means that all events are re-sent upon startup.
+sleep 4
 sudo rm -Rf data/ambar-emulator/
+sleep 4
 
 docker compose up -d --build --force-recreate
 sleep 5

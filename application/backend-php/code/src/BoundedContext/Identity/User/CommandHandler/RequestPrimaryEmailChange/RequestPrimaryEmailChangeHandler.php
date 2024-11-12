@@ -10,7 +10,7 @@ use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoVerifiableUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
@@ -40,7 +40,7 @@ class RequestPrimaryEmailChangeHandler
      * @see SignUpHandler
      *
      * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
-     * @throws EmailIsTaken|InvalidEmail|NoUserFoundForCode
+     * @throws EmailIsTaken|InvalidEmail|NoVerifiableUserFoundForCode
      * @throws EventStoreCannotRead|EventStoreCannotWrite
      * @throws AggregateIdForTakenEmailUnavailable|NoRandomnessAvailable
      * @throws AggregateIdForTakenEmailUnavailable
@@ -56,7 +56,7 @@ class RequestPrimaryEmailChangeHandler
 
         [$user, $lastEventId, $lastEventCorrelationId] = [$result->aggregate(), $result->eventIdInLastEvent(), $result->correlationIdInLastEvent()];
         if (!$user instanceof User) {
-            throw new NoUserFoundForCode();
+            throw new NoVerifiableUserFoundForCode();
         }
 
         if (

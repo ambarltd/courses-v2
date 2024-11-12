@@ -18,7 +18,7 @@ class ListProductsQueryHandler
     }
 
     /**
-     * @return array<array{id: string, name: string, isActive: bool}>
+     * @return array<array{id: string, name: string, isActive: bool, paymentCycle: string, annualFeeInCents: int, creditLimitInCents: int, reward: string}>
      *
      * @throws ProjectionCannotRead
      */

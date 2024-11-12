@@ -6,7 +6,7 @@ namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\Identity\User\Comma
 
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\EmailIsAlreadyVerified;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoUserFoundForCode;
+use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoVerifiableUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\VerificationCodeDoesNotMatch;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\VerifyPrimaryEmailHandler;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
@@ -153,9 +153,9 @@ class VerifyPrimaryEmailHandlerUnitTest extends HandlerUnitTest
         );
     }
 
-    public function testNoUserFoundForCodeWhenUserIdIsNull(): void
+    public function testNoVerifiableUserFoundForCodeWhenUserIdIsNull(): void
     {
-        $this->expectException(NoUserFoundForCode::class);
+        $this->expectException(NoVerifiableUserFoundForCode::class);
         $signedUp = SampleEvents::signedUp();
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();
@@ -178,9 +178,9 @@ class VerifyPrimaryEmailHandlerUnitTest extends HandlerUnitTest
         $handler->handle($command);
     }
 
-    public function testNoUserFoundForCode(): void
+    public function testNoVerifiableUserFoundForCode(): void
     {
-        $this->expectException(NoUserFoundForCode::class);
+        $this->expectException(NoVerifiableUserFoundForCode::class);
         $signedUp = SampleEvents::signedUp();
         $eventStore = $this->getInMemoryEventStore();
         $eventStore->beginTransaction();

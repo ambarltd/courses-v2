@@ -27,7 +27,11 @@ class ProductListItemProjectorTest extends ResetsEventStoreAndProjectionsIntegra
             ProductListItem::fromProperties(
                 $productId,
                 $productDefined->name(),
-                false
+                false,
+                $productDefined->paymentCycle(),
+                $productDefined->annualFeeInCents(),
+                $productDefined->creditLimitInCents(),
+                $productDefined->reward()
             ),
             $this->findProductListItem($productId)
         );

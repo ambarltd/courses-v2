@@ -13,12 +13,28 @@
       },
       "isActive": {
         "type": "boolean"
+      },
+      "paymentCycle": {
+        "type": "string"
+      },
+      "annualFeeInCents": {
+        "type": "integer"
+      },
+      "creditLimitInCents": {
+        "type": "integer"
+      },
+      "reward": {
+        "type": "string"
       }
     },
     "required": [
       "id",
       "name",
-      "isActive"
+      "isActive",
+      "paymentCycle",
+      "annualFeeInCents",
+      "creditLimitInCents",
+      "reward"
     ]
   }
 }

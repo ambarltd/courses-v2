@@ -6,10 +6,10 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEm
 
 use Galeas\Api\CommonException\NotFoundException;
 
-class NoUserFoundForCode extends NotFoundException
+class NoVerifiableUserFoundForCode extends NotFoundException
 {
     public static function getErrorIdentifier(): string
     {
-        return 'Identity_User_VerifyPrimaryEmail_NoUserFoundForCode';
+        return 'Identity_User_VerifyPrimaryEmail_NoVerifiableUserFoundForCode';
     }
 }

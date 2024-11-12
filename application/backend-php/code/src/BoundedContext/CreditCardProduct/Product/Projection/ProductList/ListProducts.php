@@ -17,7 +17,7 @@ class ListProducts
     }
 
     /**
-     * @return array<array{id: string, name: string, isActive: bool}>
+     * @return array<array{id: string, name: string, isActive: bool, paymentCycle: string, annualFeeInCents: int, creditLimitInCents: int, reward: string}>
      *
      * @throws ProjectionCannotRead
      */
@@ -37,6 +37,10 @@ class ListProducts
                     'id' => $item->id(),
                     'name' => $item->name(),
                     'isActive' => $item->isActive(),
+                    'paymentCycle' => $item->paymentCycle(),
+                    'annualFeeInCents' => $item->annualFeeInCents(),
+                    'creditLimitInCents' => $item->creditLimitInCents(),
+                    'reward' => $item->reward(),
                 ];
             }
 
