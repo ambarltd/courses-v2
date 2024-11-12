@@ -56,8 +56,6 @@ public class ManagementCommandController {
         productService.handle(new DeactivateCreditCardProductCommand(aggregateId));
     }
 
-    // Todo: Add new URI Mapping to handle ModifyCreditCardColorCommands
-    // PATCH '/api/v1/credit_card_product/product'
     @PatchMapping
     @ResponseStatus(HttpStatus.OK)
     public void modifyProduct(@RequestBody ModifyCreditCardCommand defineProductCommand) throws JsonProcessingException {
