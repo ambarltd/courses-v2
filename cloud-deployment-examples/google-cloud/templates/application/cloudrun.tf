@@ -70,30 +70,6 @@ resource "google_cloud_run_service" "application" {
           value = var.mongodb_projection_database_password
         }
         env {
-          name  = "MONGODB_REACTION_HOST"
-          value = var.mongodb_reaction_host
-        }
-        env {
-          name  = "MONGODB_REACTION_PORT"
-          value = var.mongodb_reaction_port
-        }
-        env {
-          name  = "MONGODB_REACTION_AUTHENTICATION_DATABASE"
-          value = var.mongodb_reaction_authentication_database
-        }
-        env {
-          name  = "MONGODB_REACTION_DATABASE_NAME"
-          value = var.mongodb_reaction_database_name
-        }
-        env {
-          name  = "MONGODB_REACTION_DATABASE_USERNAME"
-          value = var.mongodb_reaction_database_username
-        }
-        env {
-          name  = "MONGODB_REACTION_DATABASE_PASSWORD"
-          value = var.mongodb_reaction_database_password
-        }
-        env {
           name  = "SESSION_TOKENS_EXPIRE_AFTER_SECONDS"
           value = var.session_tokens_expire_after_seconds
         }

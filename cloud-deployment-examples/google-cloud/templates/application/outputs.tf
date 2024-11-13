@@ -13,11 +13,6 @@ output "projection_database_name" {
   depends_on = [google_cloud_run_service.application]
 }
 
-output "reaction_database_name" {
-  value = var.mongodb_reaction_database_name
-  depends_on = [google_cloud_run_service.application]
-}
-
 output "event_store_table_name" {
   value = var.event_store_table_name
   depends_on = [google_cloud_run_service.application]

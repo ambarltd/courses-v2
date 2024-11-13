@@ -25,18 +25,12 @@ module "application" {
   event_store_password                       = module.event_store.database_admin_password
   event_store_port                           = module.event_store.database_port
   event_store_user                           = module.event_store.database_admin_username
-  mongodb_projection_authentication_database = module.projection_and_reaction_store.authentication_database
+  mongodb_projection_authentication_database = module.projection_store.authentication_database
   mongodb_projection_database_name           = "projections"
-  mongodb_projection_database_password       = module.projection_and_reaction_store.admin_password
-  mongodb_projection_database_username       = module.projection_and_reaction_store.admin_username
-  mongodb_projection_host                    = module.projection_and_reaction_store.database_private_ip
-  mongodb_projection_port                    = module.projection_and_reaction_store.database_port
-  mongodb_reaction_authentication_database   = module.projection_and_reaction_store.authentication_database
-  mongodb_reaction_database_name             = "reactions"
-  mongodb_reaction_database_password         = module.projection_and_reaction_store.admin_password
-  mongodb_reaction_database_username         = module.projection_and_reaction_store.admin_username
-  mongodb_reaction_host                      = module.projection_and_reaction_store.database_private_ip
-  mongodb_reaction_port                      = module.projection_and_reaction_store.database_port
+  mongodb_projection_database_password       = module.projection_store.admin_password
+  mongodb_projection_database_username       = module.projection_store.admin_username
+  mongodb_projection_host                    = module.projection_store.database_private_ip
+  mongodb_projection_port                    = module.projection_store.database_port
   session_tokens_expire_after_seconds        = 72000
   full_service_name_in_lowercase             = var.full_service_name_in_lowercase
 }
@@ -52,8 +46,8 @@ module "pgt_proxy" {
   database_local_network_ip_address    = module.event_store.database_private_ip_address
 }
 
-module "projection_and_reaction_store" {
-  source             = "./../projection-and-reaction-db"
+module "projection_store" {
+  source             = "./../projection-db"
   resource_id_prefix = "${local.resource_id_prefix_prefix}-pard"
   network_name       = module.networking.network_name
   subnetwork_name    = module.networking.subnetwork1_name
