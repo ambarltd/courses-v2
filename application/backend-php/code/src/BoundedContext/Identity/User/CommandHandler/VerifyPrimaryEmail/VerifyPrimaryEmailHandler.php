@@ -84,7 +84,7 @@ class VerifyPrimaryEmailHandler
             throw new VerificationCodeDoesNotMatch();
         }
 
-        if ($this->isUsernameTaken->isUsernameTaken($user->accountDetails()->username())) {
+        if ($user->primaryEmailStatus() instanceof UnverifiedEmail && $this->isUsernameTaken->isUsernameTaken($user->accountDetails()->username())) {
             throw new UsernameIsTaken();
         }
 

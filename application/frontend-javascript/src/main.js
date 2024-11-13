@@ -200,6 +200,9 @@ async function routeUserDetailsPost(req, res) {
 }
 
 async function routeVerifyEmail(req,res) {
+  const verificationCode = req.query.code;
+  const contents = { verificationCode, metadata };
+
   if (req.session.token) {
       unauthenticate(req);
       await fetch(endpoints["sign-out"], {
@@ -212,8 +215,7 @@ async function routeVerifyEmail(req,res) {
       });
   }
 
-  const verificationCode = req.query.code;
-  const contents = { verificationCode, metadata };
+
   const response = await fetch(endpoints["verify-primary-email"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
@@ -256,7 +258,7 @@ async function routeSignIn(req, res) {
     const rawError = getError(r);
     const error =
       rawError == "Security_Session_SignIn_UserNotFound"
-      ? "Invalid email or password"
+      ? "Invalid email or password. Or unverified email."
       : rawError
 
     res.render("sign-in", {
