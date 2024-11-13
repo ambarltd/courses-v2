@@ -22,7 +22,7 @@ class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProje
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $primaryEmailVerificationCodeProjector->project($signedUp);
+        $primaryEmailVerificationCodeProjector->projectIdempotently('test', $signedUp);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $primaryEmailVerificationCode->userIdFromPrimaryEmailVerificationCode($signedUp->primaryEmailVerificationCode())
@@ -34,7 +34,7 @@ class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProje
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $primaryEmailVerificationCodeProjector->project($primaryEmailVerified);
+        $primaryEmailVerificationCodeProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             null,
             $primaryEmailVerificationCode->userIdFromPrimaryEmailVerificationCode($signedUp->primaryEmailVerificationCode())
@@ -46,7 +46,7 @@ class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProje
             $signedUp->eventId(),
             $signedUp->eventId(),
         );
-        $primaryEmailVerificationCodeProjector->project($primaryEmailChangeRequested);
+        $primaryEmailVerificationCodeProjector->projectIdempotently('test', $primaryEmailChangeRequested);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $primaryEmailVerificationCode->userIdFromPrimaryEmailVerificationCode($primaryEmailChangeRequested->newVerificationCode())
@@ -58,7 +58,7 @@ class PrimaryEmailVerificationCodeProjectorTest extends ResetsEventStoreAndProje
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $primaryEmailVerificationCodeProjector->project($primaryEmailVerified);
+        $primaryEmailVerificationCodeProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             null,
             $primaryEmailVerificationCode->userIdFromPrimaryEmailVerificationCode($primaryEmailChangeRequested->newVerificationCode())

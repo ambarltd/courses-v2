@@ -48,7 +48,7 @@ class ProjectionReactionController extends AbstractController
             $event = EventDeserializer::serializedEventsToEvents([$serializedEvent])[0];
             $success = false;
             if ($projectorOrReactor instanceof EventProjector) {
-                $projectorOrReactor->project($event);
+                $projectorOrReactor->projectIdempotently($projectionPayload['data_destination_id'], $event);
                 $success = true;
             }
 

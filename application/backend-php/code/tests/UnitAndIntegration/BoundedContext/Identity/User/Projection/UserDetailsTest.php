@@ -22,7 +22,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $userDetailsProjector->project($signedUp);
+        $userDetailsProjector->projectIdempotently('test', $signedUp);
         Assert::assertEquals(
             [
                 'userId' => $signedUp->aggregateId()->id(),
@@ -41,7 +41,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $userDetailsProjector->project($primaryEmailVerified);
+        $userDetailsProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             [
                 'userId' => $signedUp->aggregateId()->id(),
@@ -60,7 +60,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId(),
         );
-        $userDetailsProjector->project($primaryEmailChangeRequested);
+        $userDetailsProjector->projectIdempotently('test', $primaryEmailChangeRequested);
         Assert::assertEquals(
             [
                 'userId' => $signedUp->aggregateId()->id(),
@@ -80,7 +80,7 @@ class UserDetailsTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $userDetailsProjector->project($primaryEmailVerified);
+        $userDetailsProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             [
                 'userId' => $signedUp->aggregateId()->id(),

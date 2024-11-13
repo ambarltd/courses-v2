@@ -19,7 +19,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedIn = SampleEvents::signedIn();
-        $sessionProjector->project($signedIn);
+        $sessionProjector->projectIdempotently('test', $signedIn);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -33,7 +33,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $this->findAllSessions()
         );
 
-        $sessionProjector->project($signedIn);
+        $sessionProjector->projectIdempotently('test', $signedIn);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -55,7 +55,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedIn = SampleEvents::signedIn();
-        $sessionProjector->project($signedIn);
+        $sessionProjector->projectIdempotently('test', $signedIn);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -75,7 +75,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedIn->eventId(),
             $signedIn->eventId(),
         );
-        $sessionProjector->project($tokenRefreshed);
+        $sessionProjector->projectIdempotently('test', $tokenRefreshed);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -89,7 +89,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $this->findAllSessions()
         );
 
-        $sessionProjector->project($tokenRefreshed);
+        $sessionProjector->projectIdempotently('test', $tokenRefreshed);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -111,7 +111,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedIn = SampleEvents::signedIn();
-        $sessionProjector->project($signedIn);
+        $sessionProjector->projectIdempotently('test', $signedIn);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -131,7 +131,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedIn->eventId(),
             $signedIn->eventId(),
         );
-        $sessionProjector->project($signedOut);
+        $sessionProjector->projectIdempotently('test', $signedOut);
         Assert::assertEquals(
             [
                 Session::fromProperties(
@@ -145,7 +145,7 @@ class SessionProjectorTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $this->findAllSessions()
         );
 
-        $sessionProjector->project($signedOut);
+        $sessionProjector->projectIdempotently('test', $signedOut);
         Assert::assertEquals(
             [
                 Session::fromProperties(

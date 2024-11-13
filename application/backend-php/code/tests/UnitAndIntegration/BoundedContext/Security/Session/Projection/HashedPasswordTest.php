@@ -23,7 +23,7 @@ class HashedPasswordTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $hashedPasswordProjector->project($signedUp);
+        $hashedPasswordProjector->projectIdempotently('test', $signedUp);
 
         Assert::assertEquals(
             $signedUp->hashedPassword(),

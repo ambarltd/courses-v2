@@ -22,7 +22,7 @@ class UserWithUsernameTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $userWithUsernameProjector->project($signedUp);
+        $userWithUsernameProjector->projectIdempotently('test', $signedUp);
         Assert::assertEquals(
             null,
             $userIdFromSignInUsername->userIdFromSignInUsername($signedUp->username())
@@ -34,7 +34,7 @@ class UserWithUsernameTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $userWithUsernameProjector->project($primaryEmailVerified);
+        $userWithUsernameProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $userIdFromSignInUsername->userIdFromSignInUsername($signedUp->username())

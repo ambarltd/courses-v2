@@ -22,7 +22,7 @@ class SessionTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedIn = SampleEvents::signedIn();
-        $sessionProjector->project($signedIn);
+        $sessionProjector->projectIdempotently('test', $signedIn);
         Assert::assertEquals(
             $signedIn->aggregateId()->id(),
             $sessionIdFromSessionToken->sessionIdFromSessionToken($signedIn->sessionTokenCreated())
@@ -34,7 +34,7 @@ class SessionTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedIn->eventId(),
             $signedIn->eventId(),
         );
-        $sessionProjector->project($tokenRefreshed);
+        $sessionProjector->projectIdempotently('test', $tokenRefreshed);
         Assert::assertEquals(
             null,
             $sessionIdFromSessionToken->sessionIdFromSessionToken($signedIn->sessionTokenCreated())

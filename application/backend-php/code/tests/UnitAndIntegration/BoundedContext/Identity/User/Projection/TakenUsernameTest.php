@@ -22,7 +22,7 @@ class TakenUsernameTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $takenUsernameProjector->project($signedUp);
+        $takenUsernameProjector->projectIdempotently('test', $signedUp);
         Assert::assertFalse(
             $isUsernameTaken->isUsernameTaken($signedUp->username())
         );
@@ -33,7 +33,7 @@ class TakenUsernameTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $takenUsernameProjector->project($primaryEmailVerified);
+        $takenUsernameProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertTrue(
             $isUsernameTaken->isUsernameTaken($signedUp->username())
         );

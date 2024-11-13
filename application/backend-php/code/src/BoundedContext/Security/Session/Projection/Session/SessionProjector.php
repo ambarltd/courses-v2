@@ -8,7 +8,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Security\Session\Event\SignedIn;
 use Galeas\Api\BoundedContext\Security\Session\Event\TokenRefreshed;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class SessionProjector extends EventProjector
@@ -18,30 +17,24 @@ class SessionProjector extends EventProjector
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    public function project(Event $event): void
+    protected function project(Event $event): void
     {
-        try {
-            switch (true) {
-                case $event instanceof SignedIn:
-                    $this->saveOne(Session::fromProperties(
-                        $event->aggregateId()->id(),
-                        $event->sessionTokenCreated(),
-                    ));
+        switch (true) {
+            case $event instanceof SignedIn:
+                $this->saveOne(Session::fromProperties(
+                    $event->aggregateId()->id(),
+                    $event->sessionTokenCreated(),
+                ));
 
-                    break;
+                break;
 
-                case $event instanceof TokenRefreshed:
-                    $session = $this->getOne(Session::class, ['id' => $event->aggregateId()->id()]);
-                    $this->saveOne($session?->refreshToken(
-                        $event->refreshedSessionToken(),
-                    ));
+            case $event instanceof TokenRefreshed:
+                $session = $this->getOne(Session::class, ['id' => $event->aggregateId()->id()]);
+                $this->saveOne($session?->refreshToken(
+                    $event->refreshedSessionToken(),
+                ));
 
-                    break;
-            }
-
-            $this->commitProjection($event, 'Security_Session_Session');
-        } catch (\Throwable $exception) {
-            throw new ProjectionCannotProcess($exception);
+                break;
         }
     }
 }

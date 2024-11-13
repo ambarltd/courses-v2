@@ -22,7 +22,7 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $productDefined = SampleEvents::productDefined();
-        $productListProjector->project($productDefined);
+        $productListProjector->projectIdempotently('test', $productDefined);
         Assert::assertEquals(
             [
                 [
@@ -44,7 +44,7 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $productDefined->eventId(),
             $productDefined->eventId()
         );
-        $productListProjector->project($productActivated);
+        $productListProjector->projectIdempotently('test', $productActivated);
         Assert::assertEquals(
             [
                 [
@@ -66,7 +66,7 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $productActivated->eventId(),
             $productDefined->eventId()
         );
-        $productListProjector->project($productDeactivated);
+        $productListProjector->projectIdempotently('test', $productDeactivated);
         Assert::assertEquals(
             [
                 [

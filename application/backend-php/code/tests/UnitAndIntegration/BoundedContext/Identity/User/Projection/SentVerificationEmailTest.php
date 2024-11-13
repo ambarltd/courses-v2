@@ -28,7 +28,7 @@ class SentVerificationEmailTest extends ResetsEventStoreAndProjectionsIntegratio
             Id::createNew(),
             Id::createNew(),
         );
-        $sentVerificationEmailProjector->project($primaryEmailVerificationCodeSent);
+        $sentVerificationEmailProjector->projectIdempotently('test', $primaryEmailVerificationCodeSent);
         $list = $listVerificationEmails->list($primaryEmailVerificationCodeSent->eventId()->id());
         Assert::assertTrue(str_contains($list[0]['sentAt'], 'UTC'));
         $list[0]['sentAt'] = 'Overridden'; // Overriding the sentAt value to make the test deterministic, mongodb can swallow microseconds

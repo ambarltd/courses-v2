@@ -8,7 +8,6 @@ use Doctrine\ODM\MongoDB\DocumentManager;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
 class TakenUsernameProjector extends EventProjector
@@ -18,25 +17,20 @@ class TakenUsernameProjector extends EventProjector
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    public function project(Event $event): void
+    protected function project(Event $event): void
     {
-        try {
-            if ($event instanceof SignedUp) {
-                $this->saveOne(
-                    TakenUsername::fromUserIdAndUsername(
-                        $event->aggregateId()->id(),
-                        $event->username(),
-                        false
-                    )
-                );
-            }
-            if ($event instanceof PrimaryEmailVerified) {
-                $takenUsername = $this->getOne(TakenUsername::class, ['id' => $event->aggregateId()->id()]);
-                $this->saveOne($takenUsername?->verify());
-            }
-            $this->commitProjection($event, 'Identity_User_TakenUsername');
-        } catch (\Throwable $throwable) {
-            throw new ProjectionCannotProcess($throwable);
+        if ($event instanceof SignedUp) {
+            $this->saveOne(
+                TakenUsername::fromUserIdAndUsername(
+                    $event->aggregateId()->id(),
+                    $event->username(),
+                    false
+                )
+            );
+        }
+        if ($event instanceof PrimaryEmailVerified) {
+            $takenUsername = $this->getOne(TakenUsername::class, ['id' => $event->aggregateId()->id()]);
+            $this->saveOne($takenUsername?->verify());
         }
     }
 }

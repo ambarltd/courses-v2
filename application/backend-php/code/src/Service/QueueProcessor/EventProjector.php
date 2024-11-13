@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Galeas\Api\Service\QueueProcessor;
 
 use Doctrine\ODM\MongoDB\DocumentManager;
-use Doctrine\ODM\MongoDB\MongoDBException;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\ODM\ProjectionIdempotency\ProjectedEvent;
@@ -17,7 +16,38 @@ abstract class EventProjector
     /**
      * @throws ProjectionCannotProcess
      */
-    abstract public function project(Event $event): void;
+    public function projectIdempotently(string $projectionName, Event $event): void
+    {
+        try {
+            $existingProjectedEvent = $this->projectionDocumentManager
+                ->createQueryBuilder(ProjectedEvent::class)
+                ->field('eventId')->equals($event->eventId()->id())
+                ->field('projectionName')->equals($projectionName)
+                ->getQuery()
+                ->getSingleResult()
+            ;
+
+            if (null !== $existingProjectedEvent) {
+                return;
+            }
+
+            $this->project($event);
+
+            $this->projectionDocumentManager
+                ->persist(ProjectedEvent::new($event, $projectionName))
+            ;
+            $this->projectionDocumentManager->flush([
+                'withTransaction' => true,
+            ]);
+        } catch (\Throwable $e) {
+            throw new ProjectionCannotProcess($e);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    abstract protected function project(Event $event): void;
 
     /**
      * @template T of object
@@ -63,18 +93,5 @@ abstract class EventProjector
             return;
         }
         $this->projectionDocumentManager->persist($object);
-    }
-
-    /**
-     * @throws \InvalidArgumentException|MongoDBException
-     */
-    protected function commitProjection(Event $projectedEvent, string $projectionName): void
-    {
-        $this->projectionDocumentManager
-            ->persist(ProjectedEvent::new($projectedEvent, $projectionName))
-        ;
-        $this->projectionDocumentManager->flush([
-            'withTransaction' => true,
-        ]);
     }
 }

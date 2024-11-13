@@ -22,7 +22,7 @@ class UserWithEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
         ;
 
         $signedUp = SampleEvents::signedUp();
-        $userWithEmailProjector->project($signedUp);
+        $userWithEmailProjector->projectIdempotently('test', $signedUp);
         Assert::assertEquals(
             null,
             $userIdFromSignInEmail->userIdFromSignInEmail($signedUp->primaryEmail())
@@ -34,7 +34,7 @@ class UserWithEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $userWithEmailProjector->project($primaryEmailVerified);
+        $userWithEmailProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $userIdFromSignInEmail->userIdFromSignInEmail($signedUp->primaryEmail())
@@ -46,7 +46,7 @@ class UserWithEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId(),
         );
-        $userWithEmailProjector->project($primaryEmailChangeRequested);
+        $userWithEmailProjector->projectIdempotently('test', $primaryEmailChangeRequested);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $userIdFromSignInEmail->userIdFromSignInEmail($signedUp->primaryEmail())
@@ -58,7 +58,7 @@ class UserWithEmailTest extends ResetsEventStoreAndProjectionsIntegrationTest
             $signedUp->eventId(),
             $signedUp->eventId()
         );
-        $userWithEmailProjector->project($primaryEmailVerified);
+        $userWithEmailProjector->projectIdempotently('test', $primaryEmailVerified);
         Assert::assertEquals(
             $signedUp->aggregateId()->id(),
             $userIdFromSignInEmail->userIdFromSignInEmail($primaryEmailChangeRequested->newEmailRequested())
