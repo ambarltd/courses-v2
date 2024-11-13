@@ -107,11 +107,22 @@ services:
     entrypoint:
       - "sh"
       - "-c"
-      - "timeout 15s /usr/local/bin/docker-entrypoint.sh mongod 
-          || mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /keyfile/mongo.key --auth"
+      - "[ ! -f /data/db/entrypoint-finished ] && (
+          timeout 35s /usr/local/bin/docker-entrypoint.sh mongod
+          || (
+            touch /data/db/entrypoint-finished &&
+            cp /keyfile/mongo.key /data/configdb/mongo.key &&
+            mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
+          )
+        ) 
+        || (
+          cp /keyfile/mongo.key /data/configdb/mongo.key &&
+          mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
+        )"
     volumes:
       - ./docker-build/mongo/mongo.key:/keyfile/mongo.key:ro
       - ./data/mongo-projection/db-data:/data/db
+      - ./data/mongo-projection/db-config:/data/configdb
     expose:
       - 27017
     networks:
