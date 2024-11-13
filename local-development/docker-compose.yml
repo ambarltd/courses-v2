@@ -102,8 +102,8 @@ services:
       timeout: 2s
       interval: 60s
       retries: 10
-      start_period: 30s
-      start_interval: 5s
+      start_period: 70s
+      start_interval: 3s
     entrypoint:
       - "sh"
       - "-c"
