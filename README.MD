@@ -39,6 +39,8 @@ application/                # Source code
 ├── frontend-javascript/    # Source code for the frontend
 └── backend-php/            # Source code for the backend
 
+cloud-deployment-example/   # Infrastructure code, in case you ever want to deploy this to the cloud.
+
 local-development/          # Local development environment defined with Docker Compose
 │
 │
