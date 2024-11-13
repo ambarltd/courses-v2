@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EnrollmentPendingReviewEventData {
     public static final String EVENT_NAME = "CreditCardProduct_Product_EnrollmentPending";
+    private String id;
 }

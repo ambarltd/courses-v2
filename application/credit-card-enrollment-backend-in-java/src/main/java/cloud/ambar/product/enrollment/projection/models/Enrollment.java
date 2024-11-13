@@ -13,4 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Enrollment {
     @Id
     private String id;
+    private String requestedDate;
+    private String status;
+    private String reviewedDate;
 }

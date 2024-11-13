@@ -1,5 +1,6 @@
 package cloud.ambar.product.management.projection;
 
+import cloud.ambar.common.projection.Projector;
 import cloud.ambar.product.management.events.ProductAnnualFeeChangedEventData;
 import cloud.ambar.product.management.events.ProductBackgroundChangedEventData;
 import cloud.ambar.common.exceptions.UnexpectedEventException;
@@ -11,6 +12,7 @@ import cloud.ambar.product.management.events.ProductDefinedEventData;
 import cloud.ambar.product.management.projection.models.CreditCardProduct;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
@@ -21,17 +23,13 @@ import java.util.Optional;
  * Takes aggregates and projects them into a list of products for querying later.
  */
 @Service
-public class ProductManagementProjectionService {
+@RequiredArgsConstructor
+public class ProductManagementProjectionService implements Projector {
     private static final Logger log = LogManager.getLogger(ProductManagementProjectionService.class);
 
     private final CreditCardProductProjectionRepository creditCardProductProjectionRepository;
 
     private final ObjectMapper objectMapper;
-
-    public ProductManagementProjectionService(final CreditCardProductProjectionRepository creditCardProductProjectionRepository) {
-        this.creditCardProductProjectionRepository = creditCardProductProjectionRepository;
-        this.objectMapper = new ObjectMapper();
-    }
 
     public void project(Payload event) throws JsonProcessingException {
         final CreditCardProduct creditCardProduct;
