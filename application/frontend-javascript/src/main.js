@@ -1,6 +1,7 @@
 import Express from "express";
 import fetch from "node-fetch"
 import { engine } from 'express-handlebars';
+import { helpers } from './handlebarsHelpers.js';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import Session from "express-session";
@@ -90,7 +91,7 @@ function renderSignedOut(template, locals) {
 
 // Setup templating
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({helpers}));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, "views"));
 

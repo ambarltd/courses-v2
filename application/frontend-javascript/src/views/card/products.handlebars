@@ -40,10 +40,10 @@
                         {{#if this.isActive}} Active {{ else }} Inactive {{/if}}
                     </p>
                     <p class="text-sm font-medium text-gray-700">
-                        Credit Limit (in cents): ${{this.creditLimitInCents}}.00
+                        Credit Limit (in cents): ${{formatCentsToDecimal this.creditLimitInCents}}
                     </p>
                     <p class="text-sm font-medium text-gray-700">
-                        Annual Fee (in cents): ${{this.annualFeeInCents}}.00
+                        Annual Fee (in cents): ${{formatCentsToDecimal this.annualFeeInCents}}
                     </p>
                     <p class="text-sm font-medium text-gray-700">
                         Payment Cycle: {{this.paymentCycle}}
