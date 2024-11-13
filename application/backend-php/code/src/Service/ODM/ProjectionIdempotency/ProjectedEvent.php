@@ -8,6 +8,7 @@ use Galeas\Api\Common\Event\Event;
 
 class ProjectedEvent
 {
+    /** @phpstan-ignore-next-line */
     private string $id;
     private string $eventId;
     private string $projectionName;

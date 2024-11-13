@@ -10,7 +10,6 @@ use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailAbandoned;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\AggregateIdForTakenEmailUnavailable;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\UserIdFromPrimaryEmailVerificationCode;
 use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
@@ -114,6 +113,12 @@ class VerifyPrimaryEmailHandler
         $this->eventStore->completeTransaction();
     }
 
+    /**
+     * @param array<string, mixed> $metadata
+     *
+     * @throws EventStoreCannotWrite|NoRandomnessAvailable
+     * @throws AggregateIdForTakenEmailUnavailable|EventStoreCannotRead
+     */
     public function abandonTakenEmail(string $emailToAbandon, array $metadata): void
     {
         $takenEmailAggregateId = Id::createNewByHashing(
@@ -151,8 +156,10 @@ class VerifyPrimaryEmailHandler
     }
 
     /**
+     * @param array<string, mixed> $metadata
+     *
      * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
-     * @throws EventStoreCannotRead|NoRandomnessAvailable
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
      */
     private function takeEmail(string $emailToTake, array $metadata, Id $takenByUser): void
     {

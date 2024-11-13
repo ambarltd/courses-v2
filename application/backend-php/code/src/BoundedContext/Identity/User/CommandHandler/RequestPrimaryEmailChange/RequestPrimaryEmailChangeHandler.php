@@ -6,7 +6,6 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryE
 
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\RequestPrimaryEmailChange;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\AggregateIdForTakenEmailUnavailable;
 use Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail\NoVerifiableUserFoundForCode;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
@@ -34,8 +33,7 @@ class RequestPrimaryEmailChangeHandler
      * @throws EmailIsNotChanging|PasswordDoesNotMatch|UserNotFound
      * @throws InvalidEmail|NoVerifiableUserFoundForCode
      * @throws EventStoreCannotRead|EventStoreCannotWrite
-     * @throws AggregateIdForTakenEmailUnavailable|NoRandomnessAvailable
-     * @throws AggregateIdForTakenEmailUnavailable
+     * @throws NoRandomnessAvailable|UnverifiedUserCannotRequestPrimaryEmailChange
      */
     public function handle(RequestPrimaryEmailChange $command): void
     {

@@ -34,13 +34,11 @@ class ProjectionReactionController extends AbstractController
     ): JsonResponse {
         try {
             $json = $this->requestJsonToRequestArray($request);
-            // data_source_description and data_destination_description are not
-            // currently sent by the ambar emulator
             $projectionPayload = [
                 'data_source_id' => $json['data_source_id'],
-                // 'data_source_description' => $json['data_source_description'],
+                'data_source_description' => $json['data_source_description'],
                 'data_destination_id' => $json['data_destination_id'],
-                // 'data_destination_description' => $json['data_destination_description'],
+                'data_destination_description' => $json['data_destination_description'],
                 'payload' => $json['payload'],
             ];
 

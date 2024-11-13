@@ -55,22 +55,4 @@ class ProductListItemProjector extends EventProjector
             throw new ProjectionCannotProcess($throwable);
         }
     }
-
-    /**
-     * @throws \Exception
-     */
-    private function findItem(string $id): ProductListItem
-    {
-        $productListItem = $this->projectionDocumentManager
-            ->createQueryBuilder(ProductListItem::class)
-            ->field('id')->equals($id)
-            ->getQuery()
-            ->getSingleResult()
-        ;
-        if ($productListItem instanceof ProductListItem) {
-            return $productListItem;
-        }
-
-        throw new \Exception();
-    }
 }

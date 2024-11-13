@@ -32,7 +32,7 @@ class SessionProjector extends EventProjector
 
                 case $event instanceof TokenRefreshed:
                     $session = $this->getOne(Session::class, ['id' => $event->aggregateId()->id()]);
-                    $this->saveOne($session->refreshToken(
+                    $this->saveOne($session?->refreshToken(
                         $event->refreshedSessionToken(),
                     ));
 

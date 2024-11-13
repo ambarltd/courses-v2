@@ -7,9 +7,7 @@ namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Command\SignUp;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Id\Id;
-use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
-use Galeas\Api\CommonException\ProjectionCannotRead;
 use Galeas\Api\Primitive\PrimitiveCreation\Email\EmailVerificationCodeCreator;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;
 use Galeas\Api\Primitive\PrimitiveTransformation\Hash\BCryptPasswordHash;
@@ -33,9 +31,8 @@ class SignUpHandler
      *
      * @throws InvalidEmail|InvalidPassword|InvalidUsername|TermsAreNotAgreedTo
      * @throws CouldNotHashWithBCrypt
-     * @throws EventStoreCannotWrite|NoRandomnessAvailable|ProjectionCannotRead
-     * @throws AggregateIdForTakenEmailUnavailable|NoRandomnessAvailable
-     * @throws EventStoreCannotRead
+     * @throws EventStoreCannotWrite|NoRandomnessAvailable
+     * @throws NoRandomnessAvailable
      */
     public function handle(SignUp $command): array
     {

@@ -2,11 +2,9 @@
 <doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping                   http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
   <document name="Galeas\Api\Service\ODM\ProjectionIdempotency\ProjectedEvent" collection="ProjectionIdempotency_ProjectedEvent">
     <indexes>
-      <index name="projectionIdempotency">
+      <index name="projectionIdempotency" unique="true" background="false">
         <key name="eventId"/>
         <key name="projectionName"/>
-        <option name="unique" value="false"/>
-        <option name="safe" value="true"/>
       </index>
     </indexes>
     <id type="string" strategy="AUTO"/>
