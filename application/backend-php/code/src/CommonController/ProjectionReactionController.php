@@ -118,18 +118,17 @@ class ProjectionReactionController extends AbstractController
      */
     private function requestJsonToRequestArray(Request $request): array
     {
-        // No need for content type enforcement - to fix on ambar side
-        //        $contentType = $request->headers->get('content-type');
-        //
-        //        if (!is_string($contentType)) {
-        //            throw new InvalidContentType();
-        //        }
-        //        if (
-        //            is_string($contentType) &&
-        //            'application/json' !== substr($contentType, 0, 16)
-        //        ) {
-        //            throw new InvalidContentType();
-        //        }
+        $contentType = $request->headers->get('content-type');
+
+        if (!\is_string($contentType)) {
+            throw new InvalidContentType();
+        }
+        if (
+            \is_string($contentType)
+            && 'application/json' !== substr($contentType, 0, 16)
+        ) {
+            throw new InvalidContentType();
+        }
 
         try {
             $content = $request->getContent();
