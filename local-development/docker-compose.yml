@@ -108,15 +108,15 @@ services:
       - "sh"
       - "-c"
       - "[ ! -f /data/db/entrypoint-finished ] && (
-          timeout 35s /usr/local/bin/docker-entrypoint.sh mongod
+          timeout 40s /usr/local/bin/docker-entrypoint.sh mongod
           || (
             touch /data/db/entrypoint-finished &&
-            cp /keyfile/mongo.key /data/configdb/mongo.key &&
+            cp /keyfile/mongo.key /data/configdb/mongo.key && chmod 600 /data/configdb/mongo.key &&
             mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
           )
         ) 
         || (
-          cp /keyfile/mongo.key /data/configdb/mongo.key &&
+          cp /keyfile/mongo.key /data/configdb/mongo.key && chmod 600 /data/configdb/mongo.key &&
           mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
         )"
     volumes:
