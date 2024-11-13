@@ -5,7 +5,7 @@ the course for free [in this link](https://ambar.cloud/esd). Please retake the c
 
 ## Contents
 
-The example contains an event sourced financial institution that allows you to:
+This example application contains an event sourced financial institution that allows you to:
 
 1. Sign up
 2. Verify your email
@@ -29,7 +29,7 @@ cd courses-v2/local-development
 
 ## Making Sense of the Code
 
-To make sense of this application, please re-review the slides and recordings you received during your course. 
+To make sense of this application, please review the slides and recordings you received during your course. 
 
 [//]: <> (TODO: Include a structure for the various events in the system.)
 
