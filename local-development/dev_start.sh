@@ -2,7 +2,7 @@
 set -e
 
 docker compose down
-docker compose up -d --build --force-recreate
+docker compose up -d --build --force-recreate || docker logs mongo-projection
 
 echo "The application is up!"
 echo "You can navigate to localhost:8080 to view your application."
