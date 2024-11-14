@@ -1,0 +1,136 @@
+<div id="demo-menu" class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-500 via-blue-500 to-slate-500 text-white shadow-lg" style="padding: 10px 0;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-4 flex flex-wrap items-center justify-between gap-4 text-base">
+      <!-- Home Button -->
+      <a href="/" class="flex items-center justify-center space-x-2 bg-indigo-500 hover:bg-indigo-600 transition-colors rounded-md px-4 py-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+        </svg>
+      </a>
+
+      <!-- Middle Navigation -->
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a href="/event-store-with-postgres" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M1 5h8M5 17v4M1 19h8M5 10v4M1 12h8M19 3v4M15 5h8M19 17v4M15 19h8M19 10v4M15 12h8"></path>
+          </svg>
+          <span>Explore Event Store</span>
+        </a>
+
+        <a href="/projections-with-mongo" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+          </svg>
+          <span>Explore Projections</span>
+        </a>
+
+        <a href="/event-bus-with-ambar" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+          <span>Explore Event Bus</span>
+        </a>
+      </div>
+
+      <!-- Instructions Button (Right-aligned) -->
+      <a href="/#" id="instructions-button" class="flex items-center justify-center space-x-2 bg-indigo-500 hover:bg-indigo-600 transition-colors rounded-md px-4 py-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span>Instructions</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div id="menu-spacer"></div>
+<div id="instructions-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl max-w-2xl w-full relative">
+    <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 transition-colors">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+    <div class="p-6">
+      <h2 class="text-xl font-semibold mb-4 text-gray-900">Instructions</h2>
+      <div class="text-sm text-gray-600">
+        <p class="font-medium mb-2">Getting Started:</p>
+        <ul class="space-y-2">
+          <li>1. Sign up for an account, verify your email, and sign in.</li>
+          <li>2. Explore the results in the event store database, projections database, and event bus.</li>
+          <li>3. Read the code for
+              <a class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener" href="https://github.com/ambarltd/courses-v2/blob/main/application/backend-php/code/src/BoundedContext/Identity/User/CommandHandler/SignUp/SignUpHandler.php">
+                  Command Handler: Sign Up
+              </a>
+              and
+              <a class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener" href="https://github.com/ambarltd/courses-v2/blob/main/application/backend-php/code/src/BoundedContext/Identity/User/Projection/UserDetails/UserDetailsProjector.php">
+                  Projection: User Details
+              </a>
+          </li>
+          <li>4. Read more code, write new code, redeploy, play around, the sky is the limit!</li>
+          <li>5. If you get stuck, just ask questions in the #event-sourcing channel on the
+              <a class="text-blue-600 hover:text-blue-800 underline transition-colors" target="_blank" rel="noopener" href="https://www.launchpass.com/ambar">
+                  Ambar Community Slack.
+              </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    // Get the menu and spacer elements
+    const menu = document.querySelector('#demo-menu');
+    const spacer = document.querySelector('#menu-spacer');
+
+    // Function to update spacer height
+    function updateSpacerHeight() {
+        if (menu && spacer) {
+            spacer.style.height = menu.offsetHeight + 'px';
+        }
+    }
+
+    // Update initially
+    updateSpacerHeight();
+
+    // Update on window resize
+    window.addEventListener('resize', updateSpacerHeight);
+</script>
+<script>
+// Find the Instructions link by looking for the span with "Instructions" text
+const instructionsLink = document.getElementById('instructions-button');
+
+const modal = document.getElementById('instructions-modal');
+
+// Add click handler to the Instructions link
+if (instructionsLink) {
+    instructionsLink.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal();
+    });
+}
+
+function openModal() {
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+}
+
+function closeModal() {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+// Close modal when clicking outside
+modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+        closeModal();
+    }
+});
+
+// Close modal on escape key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeModal();
+    }
+});
+</script>

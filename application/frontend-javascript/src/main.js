@@ -76,6 +76,7 @@ function unauthenticate(req) {
 }
 
 const layouts = {
+  explore: "explore",
   signedOut: "signed-out",
   main: "main"
 }
@@ -481,8 +482,20 @@ app.get('/event-bus.yml', (req, res) => {
     }
 });
 
+app.get('/event-bus-with-ambar-iframe', (req, res) => {
+  res.render('event-bus-with-ambar-iframe', { layout: false });
+});
+
 app.get('/event-bus-with-ambar', (req, res) => {
-  res.render('event-bus-with-ambar', { layout: false });
+  res.render('event-bus-with-ambar', { layout: layouts.explore });
+});
+
+app.get('/event-store-with-postgres', (req, res) => {
+  res.render('event-store-with-postgres', { layout: layouts.explore });
+});
+
+app.get('/projections-with-mongo', (req, res) => {
+  res.render('projections-with-mongo', { layout: layouts.explore });
 });
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ambar Event Bus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
+    <style>
+        :root {
+            --primary-color: #2C3E50;
+            --secondary-color: #34495E;
+            --accent-color: #3498DB;
+            --bg-color: #F8F9FA;
+            --text-color: #2C3E50;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            padding: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .navbar-brand {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: white !important;
+        }
+
+        .description {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .table-container h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+
+        .table {
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background-color: var(--bg-color);
+            color: var(--primary-color);
+            font-weight: 600;
+            border-bottom: 2px solid var(--accent-color);
+            padding: 1rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background-color: rgba(52, 152, 219, 0.05);
+        }
+
+        .endpoint-cell {
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            direction: rtl;
+            text-align: left;
+        }
+
+        .endpoint-content {
+            direction: ltr;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.4em 0.8em;
+            font-weight: 500;
+        }
+
+        .badge-source {
+            background-color: #3498DB;
+            color: white;
+        }
+
+        .refresh-indicator {
+            font-size: 0.9rem;
+            color: #666;
+            text-align: right;
+            margin-top: 1rem;
+        }
+
+        /* Status indicators */
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .status-active {
+            background-color: #2ECC71;
+        }
+
+        .status-inactive {
+            background-color: #E74C3C;
+        }
+        .config-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .config-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-header:hover {
+            color: var(--accent-color);
+        }
+
+        .config-content {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .config-content.show {
+            display: block;
+        }
+
+        pre {
+            margin: 0;
+            border-radius: 4px;
+            max-height: 500px;
+            overflow: auto;
+        }
+
+        code {
+            padding: 1rem !important;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="description">
+            <p class="lead mb-0 fw-semibold text-center mx-auto" style="max-width: 500px">
+                Ambar is the most robust, performant, and easy to use event bus for event sourcing!
+            </p>
+            <br>
+            <p class="mb-0 fw-normal text-center mx-auto" style="max-width: 500px">
+                Ambar reads and stores database rows, and forwards them as messages
+                to HTTP endpoints with delivery and ordering guarantees.
+            </p>
+        </div>
+
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Data Sources</h3>
+                <span class="badge bg-primary" id="sources-badge"></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Source</th>
+                            <th>Type</th>
+                            <th>Connection</th>
+                            <th>Database</th>
+                            <th>Table</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sources-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Data Destinations</h3>
+                <span class="badge bg-primary" id="destinations-badge"></span>
+            </div>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Status</th>
+                            <th>Destination</th>
+                            <th>Type</th>
+                            <th>Endpoint</th>
+                            <th>Sources</th>
+                        </tr>
+                    </thead>
+                    <tbody id="destinations-tbody">
+                    </tbody>
+                </table>
+            </div>
+            <div class="refresh-indicator">
+                Last updated: <span id="last-update">Just now</span>
+            </div>
+        </div>
+        <div class="config-container">
+            <div class="config-header" onclick="toggleConfig()">
+                <h3 class="mb-0">View Ambar Configuration File</h3>
+                <svg class="chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="config-content">
+                <pre><code class="language-yaml" id="raw-config"></code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+        function toggleConfig() {
+            const content = document.querySelector('.config-content');
+            const chevron = document.querySelector('.chevron');
+            content.classList.toggle('show');
+            chevron.classList.toggle('rotated');
+        }
+
+        function formatDateTime(date) {
+            return date.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+        }
+
+        function refreshData() {
+            // First fetch for JSON data and update tables
+            fetch('/event-bus-yml')
+                .then(response => response.json())
+                .then(data => {
+                    // Update source count badge
+                    const sourcesBadge = document.getElementById('sources-badge');
+                    sourcesBadge.textContent = `${data.data_sources.length} Active Sources`;
+
+                    // Update destination count badge
+                    const destinationsBadge = document.getElementById('destinations-badge');
+                    destinationsBadge.textContent = `${data.data_destinations.length} Active Endpoints`;
+
+                    // Update Data Sources table
+                    const sourcesBody = document.getElementById('sources-tbody');
+                    sourcesBody.innerHTML = '';
+
+                    data.data_sources.forEach(source => {
+                        const row = `
+                            <tr>
+                                <td><span class="status-dot status-active"></span></td>
+                                <td>${source.id}</td>
+                                <td><span class="badge badge-source">${source.type}</span></td>
+                                <td>${source.host}:${source.port}</td>
+                                <td>${source.database}</td>
+                                <td>${source.table}</td>
+                            </tr>
+                        `;
+                        sourcesBody.innerHTML += row;
+                    });
+
+                    // Update Data Destinations table
+                    const destinationsBody = document.getElementById('destinations-tbody');
+                    destinationsBody.innerHTML = '';
+
+                    data.data_destinations.forEach(dest => {
+                        const row = `
+                            <tr>
+                                <td><span class="status-dot status-active"></span></td>
+                                <td>${dest.id}</td>
+                                <td><span class="badge badge-source">${dest.type}</span></td>
+                                <td class="endpoint-cell"><span class="endpoint-content">${dest.endpoint}</span></td>
+                                <td>${dest.sources.join(', ')}</td>
+                            </tr>
+                        `;
+                        destinationsBody.innerHTML += row;
+                    });
+
+                    // Update last refresh time
+                    document.getElementById('last-update').textContent = formatDateTime(new Date());
+                })
+                .catch(error => {
+                    console.error('Error fetching JSON data:', error);
+                });
+
+            // Separate fetch for YAML content
+            fetch('/event-bus.yml')
+                .then(response => response.text())
+                .then(yamlText => {
+                    const codeElement = document.getElementById('raw-config');
+                    codeElement.textContent = yamlText;
+                    hljs.highlightElement(codeElement);
+                })
+                .catch(error => {
+                    console.error('Error fetching YAML:', error);
+                });
+        }
+
+        // Initial load
+        refreshData();
+
+        // Refresh every 5 seconds
+        setInterval(refreshData, 5000);
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
