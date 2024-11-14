@@ -8,7 +8,6 @@
 </head>
 <body>
 
-<!-- Fixed navigation bar -->
 <div class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-500 via-blue-500 to-slate-500 text-white shadow-lg" style="padding: 10px 0;">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="py-4 flex flex-wrap items-center justify-center gap-4 text-base">
@@ -20,13 +19,26 @@
           </svg>
           <span>Instructions</span>
         </button>
-        <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white text-gray-700 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all z-50">
+        <div class="absolute left-0 mt-2 w-96 rounded-md shadow-lg bg-white text-gray-700 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all z-50">
           <div class="p-4 text-sm">
             <p class="font-medium mb-2">Getting Started:</p>
             <ul class="space-y-2">
-              <li>• Sign in or create an account</li>
-              <li>• Explore the application components</li>
-              <li>• Check verification status</li>
+              <li>1. Sign up for an account, verify your email, and sign in.</li>
+              <li>2. Explore the results in the event store database, projections database, and event bus.</li>
+              <li>3. Read the code for
+                  <a class="text-blue-600 hover:text-blue-800 underline transition-color" href="https://github.com/ambarltd/courses-v2/blob/main/application/backend-php/code/src/BoundedContext/Identity/User/CommandHandler/SignUp/SignUpHandler.php">
+                      Command Handler: Sign Up
+                  </a> and
+                  <a class="text-blue-600 hover:text-blue-800 underline transition-color" href="https://github.com/ambarltd/courses-v2/blob/main/application/backend-php/code/src/BoundedContext/Identity/User/Projection/UserDetails/UserDetailsProjector.php">
+                      Projection: User Details
+                  </a>
+              </li>
+              <li>4. Read more code, write new code, redeploy, play around, the sky is the limit!</li>
+              <li>5. If you get stuck, just ask questions in the #event-sourcing channel on the
+                  <a class="text-blue-600 hover:text-blue-800 underline transition-color" href ="https://www.launchpass.com/ambar">
+                      Ambar Community Slack.
+                  </a>
+              </li>
             </ul>
           </div>
         </div>
