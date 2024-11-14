@@ -3,6 +3,7 @@
 <head>
     <title>Ambar Event Bus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         :root {
             --primary-color: #2C3E50;
@@ -80,6 +81,17 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            direction: rtl;
+            text-align: left;
+        }
+
+        .endpoint-content {
+            direction: ltr;
+            display: inline-block;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .badge {
@@ -116,6 +128,53 @@
         .status-inactive {
             background-color: #E74C3C;
         }
+        .config-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .config-header {
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-header:hover {
+            color: var(--accent-color);
+        }
+
+        .config-content {
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .config-content.show {
+            display: block;
+        }
+
+        pre {
+            margin: 0;
+            border-radius: 4px;
+            max-height: 500px;
+            overflow: auto;
+        }
+
+        code {
+            padding: 1rem !important;
+        }
+
+        .chevron {
+            transition: transform 0.3s ease;
+        }
+
+        .chevron.rotated {
+            transform: rotate(180deg);
+        }
     </style>
 </head>
 <body>
@@ -127,17 +186,19 @@
 
     <div class="container">
         <div class="description">
-            <h2 class="mb-3">Event Bus Monitor</h2>
+            <h2 class="mb-3">Event Bus with Ambar</h2>
             <p class="lead mb-0">
-                Monitoring and managing event streams across your distributed system. Track data sources,
-                destinations, and ensure smooth event flow throughout your infrastructure.
+                Ambar is the best event bus for event sourcing! Ambar allows you to read messages from one or more
+                database tables, and forward each new row as a message to one or more HTTP endpoints. Messages
+                are sent in parallel (according to a partitioning column), with ordering guarantees (per partition key),
+                and with delivery guarantees (at least once).
             </p>
         </div>
 
         <div class="table-container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="mb-0">Data Sources</h3>
-                <span class="badge bg-primary">{data_sources.length} Active Sources</span>
+                <span class="badge bg-primary" id="sources-badge"></span>
             </div>
             <div class="table-responsive">
                 <table class="table">
@@ -160,7 +221,7 @@
         <div class="table-container">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h3 class="mb-0">Data Destinations</h3>
-                <span class="badge bg-primary">{data_destinations.length} Active Endpoints</span>
+                <span class="badge bg-primary" id="destinations-badge"></span>
             </div>
             <div class="table-responsive">
                 <table class="table">
@@ -196,6 +257,14 @@
             fetch('/event-bus-yml')
                 .then(response => response.json())
                 .then(data => {
+                    // Update source count badge
+                    const sourcesBadge = document.getElementById('sources-badge');
+                    sourcesBadge.textContent = `${data.data_sources.length} Active Sources`;
+
+                    // Update destination count badge
+                    const destinationsBadge = document.getElementById('destinations-badge');
+                    destinationsBadge.textContent = `${data.data_destinations.length} Active Endpoints`;
+
                     // Update Data Sources table
                     const sourcesBody = document.getElementById('sources-tbody');
                     sourcesBody.innerHTML = '';
@@ -224,7 +293,7 @@
                                 <td><span class="status-dot status-active"></span></td>
                                 <td>${dest.id}</td>
                                 <td><span class="badge badge-source">${dest.type}</span></td>
-                                <td class="endpoint-cell">${dest.endpoint}</td>
+                                <td class="endpoint-cell"><span class="endpoint-content">${dest.endpoint}</span></td>
                                 <td>${dest.sources.join(', ')}</td>
                             </tr>
                         `;
