@@ -8,6 +8,53 @@
 </head>
 <body>
 
+<div class="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-slate-500 via-blue-500 to-slate-500 text-white shadow-lg" style="padding: 10px 0;">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-4 flex flex-wrap items-center justify-center gap-4 text-base">
+      <div class="relative group">
+        <button class="w-full sm:w-auto flex items-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+          <span>Instructions</span>
+        </button>
+        <div class="absolute left-0 mt-2 w-64 rounded-md shadow-lg bg-white text-gray-700 transform opacity-0 scale-95 group-hover:opacity-100 group-hover:scale-100 transition-all z-50">
+          <div class="p-4 text-sm">
+            <p class="font-medium mb-2">Getting Started:</p>
+            <ul class="space-y-2">
+              <li>• Sign in or create an account</li>
+              <li>• Explore the application components</li>
+              <li>• Check verification status</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <a href="http://localhost:8081" target="_blank" rel="noopener" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M1 5h8M5 17v4M1 19h8M5 10v4M1 12h8M19 3v4M15 5h8M19 17v4M15 19h8M19 10v4M15 12h8"></path>
+        </svg>
+        <span>Explore Event Store</span>
+      </a>
+
+      <a href="http://localhost:8082" target="_blank" rel="noopener" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <span>Explore Projections</span>
+      </a>
+
+      <a href="/event-bus-with-ambar" target="_blank" rel="noopener" class="w-full sm:w-auto flex items-center justify-center space-x-2 bg-white/20 hover:bg-white/30 transition-colors rounded-md px-4 py-2">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+        </svg>
+        <span>Explore Event Bus</span>
+      </a>
+    </div>
+  </div>
+</div>
+<div class="h-[104px]"></div>
+
 <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
 
 {{{body}}}

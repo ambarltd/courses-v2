@@ -1,0 +1,19 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// Enable MongoDB introspection
+generator dbml {
+  provider = "prisma-dbml-generator"
+  output   = "./dbml"
+}
+
+// This will make Prisma introspect your MongoDB database
+// Run: prisma db pull
+// Then the models will be automatically generated based on your existing collections

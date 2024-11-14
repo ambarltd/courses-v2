@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["multiSchema"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["public"]
+}
+
+model event_store {
+  id                Int      @id @default(autoincrement())
+  event_id         String
+  aggregate_id     String
+  aggregate_version BigInt
+  causation_id     String
+  correlation_id    String
+  recorded_on      String
+  event_name       String
+  json_payload     String
+  json_metadata    String
+
+  @@map("event_store")
+  @@schema("public")
+}

@@ -8,6 +8,7 @@
     "express": "^4.21.0",
     "express-handlebars": "^8.0.1",
     "express-session": "^1.18.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "js-yaml": "^4.1.0"
   }
 }

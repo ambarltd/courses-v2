@@ -1,4 +1,5 @@
 services:
+
   frontend-app:
     container_name: frontend-app
     build:
@@ -8,9 +9,13 @@ services:
       DOMAIN_IDENTITY: "http://172.30.0.106:8080"
       DOMAIN_SECURITY: "http://172.30.0.106:8080"
       DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.106:8080"
+      POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
+      MONGODB_DATABASE_URL: "mongodb://my_mongo_username:my_mongo_password@172.30.0.108:27017/projections?authSource=admin"
     depends_on:
       backend-php:
         condition: service_healthy
+    volumes:
+      - ./ambar-config.yaml:/ambar-yml/ambar-config.yaml:ro
     networks:
       development:
         ipv4_address: 172.30.0.105
@@ -142,6 +147,48 @@ services:
     networks:
       development:
         ipv4_address: 172.30.0.199
+
+  frontend-database-explorer-postgres:
+    container_name: frontend-database-explorer-postgres
+    build:
+      context: ./../application/frontend-database-explorer
+      args:
+        - DB_TYPE=postgres
+        - STUDIO_PORT=5555
+    restart: always
+    environment:
+      DB_TYPE: postgres
+      STUDIO_PORT: 8081
+      POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
+    depends_on:
+      postgres-event-store:
+        condition: service_healthy
+    networks:
+      development:
+        ipv4_address: 172.30.0.211
+    ports:
+      - "8081:8081"
+
+  frontend-database-explorer-mongo:
+    container_name: frontend-database-explorer-mongo
+    build:
+      context: ./../application/frontend-database-explorer
+      args:
+        - DB_TYPE=mongo
+        - STUDIO_PORT=5556
+    restart: always
+    environment:
+      DB_TYPE: mongo
+      STUDIO_PORT: 8082
+      MONGO_DATABASE_URL: "mongodb://my_mongo_username:my_mongo_password@172.30.0.108:27017/projections?authSource=admin"
+    depends_on:
+      mongo-projection:
+        condition: service_healthy
+    networks:
+      development:
+        ipv4_address: 172.30.0.212
+    ports:
+      - "8082:8082"
 
 
 networks:

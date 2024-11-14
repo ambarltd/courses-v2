@@ -5,6 +5,9 @@ import { helpers } from './handlebarsHelpers.js';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import Session from "express-session";
+import yaml from 'js-yaml';
+import { readFileSync } from 'fs';
+import { dirname } from 'path';
 
 const port = 8080
 const app = Express()
@@ -459,6 +462,20 @@ async function cardToggle(req, res) {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+app.get('/event-bus-yml', (req, res) => {
+  try {
+    const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
+    const data = yaml.load(fileContents);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error reading YAML file' });
+  }
+});
+
+app.get('/event-bus-with-ambar', (req, res) => {
+  res.render('event-bus-with-ambar', { layout: false });
+});
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
 

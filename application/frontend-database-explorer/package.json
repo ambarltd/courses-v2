@@ -1,0 +1,9 @@
+{
+  "name": "prisma-studio",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^5.7.0",
+    "prisma": "^5.7.0"
+  }
+}
