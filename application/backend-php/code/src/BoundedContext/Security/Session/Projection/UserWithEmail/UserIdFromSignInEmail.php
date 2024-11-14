@@ -22,48 +22,18 @@ class UserIdFromSignInEmail
     public function userIdFromSignInEmail(string $email): ?string
     {
         try {
-            $queryBuilder = $this->projectionDocumentManager
+            $userWithEmail = $this->projectionDocumentManager
                 ->createQueryBuilder(UserWithEmail::class)
+                ->field('lowercaseVerifiedEmail')->equals(strtolower($email))
+                ->getQuery()
+                ->getSingleResult()
             ;
 
-            $queryBuilder->addOr(
-                $queryBuilder->expr()->addAnd(
-                    $queryBuilder->expr()
-                        ->field('status')
-                        ->equals(Unverified::setStatus()),
-                    $queryBuilder->expr()
-                        ->field('canonicalRequestedEmail')
-                        ->equals(strtolower($email))
-                ),
-                $queryBuilder->expr()->addAnd(
-                    $queryBuilder->expr()
-                        ->field('status')
-                        ->equals(Verified::setStatus()),
-                    $queryBuilder->expr()
-                        ->field('canonicalVerifiedEmail')
-                        ->equals(strtolower($email))
-                ),
-                $queryBuilder->expr()->addAnd(
-                    $queryBuilder->expr()
-                        ->field('status')
-                        ->equals(RequestedChange::setStatus()),
-                    $queryBuilder->expr()
-                        ->field('canonicalVerifiedEmail')
-                        ->equals(strtolower($email))
-                )
-            );
-
-            $userWithEmail = $queryBuilder->getQuery()->getSingleResult();
-
             if ($userWithEmail instanceof UserWithEmail) {
-                return $userWithEmail->getUserId();
+                return $userWithEmail->userId();
             }
 
-            if (null === $userWithEmail) {
-                return null;
-            }
-
-            throw new \Exception();
+            return null;
         } catch (\Throwable $exception) {
             throw new ProjectionCannotRead($exception);
         }

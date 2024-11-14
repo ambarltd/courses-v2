@@ -25,7 +25,6 @@ class UserIdFromPrimaryEmailVerificationCode
             $userIdToPrimaryEmailVerificationCode = $this->projectionDocumentManager
                 ->createQueryBuilder(PrimaryEmailVerificationCode::class)
                 ->field('primaryEmailVerificationCode')->equals($primaryEmailVerificationCode)
-                ->field('primaryEmailVerificationCode')->notEqual(null)
                 ->getQuery()
                 ->getSingleResult()
             ;

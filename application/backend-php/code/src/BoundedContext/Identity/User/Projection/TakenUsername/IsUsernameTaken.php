@@ -24,7 +24,8 @@ class IsUsernameTaken
         try {
             $takenUsername = $this->projectionDocumentManager
                 ->createQueryBuilder(TakenUsername::class)
-                ->field('canonicalUsername')->equals(strtolower($username))
+                ->field('lowercaseUsername')->equals(strtolower($username))
+                ->field('verifiedPrimaryEmail')->equals(true)
                 ->getQuery()
                 ->getSingleResult()
             ;
@@ -33,11 +34,7 @@ class IsUsernameTaken
                 return true;
             }
 
-            if (null === $takenUsername) {
-                return false;
-            }
-
-            throw new \Exception();
+            return false;
         } catch (\Throwable $exception) {
             throw new ProjectionCannotRead($exception);
         }

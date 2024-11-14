@@ -22,9 +22,16 @@ class PrimaryEmailVerificationCode
         return $this->primaryEmailVerificationCode;
     }
 
-    public function updateVerificationCode(?string $primaryEmailVerificationCode): self
+    public function setVerificationCode(string $primaryEmailVerificationCode): self
     {
         $this->primaryEmailVerificationCode = $primaryEmailVerificationCode;
+
+        return $this;
+    }
+
+    public function resetVerificationCode(): self
+    {
+        $this->primaryEmailVerificationCode = null;
 
         return $this;
     }

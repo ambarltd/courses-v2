@@ -1,4 +1,5 @@
 services:
+
   frontend-app:
     container_name: frontend-app
     build:
@@ -7,10 +8,21 @@ services:
     environment:
       DOMAIN_IDENTITY: "http://172.30.0.106:8080"
       DOMAIN_SECURITY: "http://172.30.0.106:8080"
-      DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.109:8080"
+      DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.106:8080"
+      POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
+      MONGODB_DATABASE_URL: "mongodb://my_mongo_username:my_mongo_password@172.30.0.108:27017/projections?authSource=admin"
     depends_on:
       backend-php:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
+    volumes:
+      - ./ambar-config.yaml:/ambar-yml/ambar-config.yaml:ro
     networks:
       development:
         ipv4_address: 172.30.0.105
@@ -130,15 +142,39 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: my_mongo_username
       MONGO_INITDB_ROOT_PASSWORD: my_mongo_password
+      MONGO_INITDB_DATABASE: admin
+      MONGO_REPLICA_SET_NAME: rs0
     healthcheck:
-      test: ['CMD-SHELL', "mongosh --username my_mongo_username --password my_mongo_password --eval 'db.runCommand({ ping: 1 }).ok'"]
+      test:
+        - "CMD-SHELL"
+        - 'mongosh --username my_mongo_username --password my_mongo_password
+            --authenticationDatabase admin --host 172.30.0.108 --eval
+            "try { rs.status() } catch (err) { rs.initiate({_id:\"rs0\",members:[{_id:0,host:\"172.30.0.108:27017\"}]})}"
+            | grep "votingMembersCount: 1"'
       timeout: 2s
       interval: 60s
       retries: 10
-      start_period: 20s
-      start_interval: 5s
+      start_period: 70s
+      start_interval: 3s
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "[ ! -f /data/db/entrypoint-finished ] && (
+          timeout 40s /usr/local/bin/docker-entrypoint.sh mongod
+          || (
+            touch /data/db/entrypoint-finished &&
+            cp /keyfile/mongo.key /data/configdb/mongo.key && chmod 600 /data/configdb/mongo.key &&
+            mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
+          )
+        ) 
+        || (
+          cp /keyfile/mongo.key /data/configdb/mongo.key && chmod 600 /data/configdb/mongo.key &&
+          mongod --replSet rs0 --bind_ip 172.30.0.108 --keyFile /data/configdb/mongo.key --auth
+        )"
     volumes:
+      - ./docker-build/mongo/mongo.key:/keyfile/mongo.key:ro
       - ./data/mongo-projection/db-data:/data/db
+      - ./data/mongo-projection/db-config:/data/configdb
     expose:
       - 27017
     networks:
@@ -146,7 +182,7 @@ services:
         ipv4_address: 172.30.0.108
 
   ambar-emulator:
-    image: ambarltd/emulator:v1.1
+    image: ambarltd/emulator:v1.2-1
     container_name: ambar-emulator
     restart: always
     volumes:
@@ -158,6 +194,62 @@ services:
     networks:
       development:
         ipv4_address: 172.30.0.199
+
+  frontend-database-explorer-postgres:
+    container_name: frontend-database-explorer-postgres
+    build:
+      context: ./../application/frontend-database-explorer
+      args:
+        - DB_TYPE=postgres
+        - STUDIO_PORT=5555
+    restart: always
+    environment:
+      DB_TYPE: postgres
+      STUDIO_PORT: 8081
+      POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8081 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
+    depends_on:
+      postgres-event-store:
+        condition: service_healthy
+    networks:
+      development:
+        ipv4_address: 172.30.0.211
+    ports:
+      - "8081:8081"
+
+  frontend-database-explorer-mongo:
+    container_name: frontend-database-explorer-mongo
+    build:
+      context: ./../application/frontend-database-explorer
+      args:
+        - DB_TYPE=mongo
+        - STUDIO_PORT=5556
+    restart: always
+    environment:
+      DB_TYPE: mongo
+      STUDIO_PORT: 8082
+      MONGO_DATABASE_URL: "mongodb://my_mongo_username:my_mongo_password@172.30.0.108:27017/projections?authSource=admin"
+    depends_on:
+      mongo-projection:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8082 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
+    networks:
+      development:
+        ipv4_address: 172.30.0.212
+    ports:
+      - "8082:8082"
 
 
 networks:

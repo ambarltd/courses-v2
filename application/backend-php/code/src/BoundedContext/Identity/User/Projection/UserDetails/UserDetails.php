@@ -4,40 +4,62 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails;
 
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\UnverifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmail;
-use Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\ValueObject\VerifiedEmailButRequestedNewEmail;
-
 class UserDetails
 {
     private string $id;
 
-    private UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $primaryEmailStatus;
+    private ?string $verifiedEmail;
+
+    private ?string $unverifiedEmail;
 
     private function __construct() {}
 
-    public function getUserId(): string
+    public function userId(): string
     {
         return $this->id;
     }
 
-    public function getPrimaryEmailStatus(): UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail
+    public function verifiedEmail(): ?string
     {
-        return $this->primaryEmailStatus;
+        return $this->verifiedEmail;
     }
 
-    public function changePrimaryEmailStatus(UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $primaryEmailStatus): self
+    public function unverifiedEmail(): ?string
     {
-        $this->primaryEmailStatus = $primaryEmailStatus;
+        return $this->unverifiedEmail;
+    }
+
+    public function verifyEmail(): self
+    {
+        $this->verifiedEmail = $this->unverifiedEmail;
+        $this->unverifiedEmail = null;
 
         return $this;
     }
 
-    public static function fromProperties(string $userId, UnverifiedEmail|VerifiedEmail|VerifiedEmailButRequestedNewEmail $primaryEmailStatus): self
+    public function requestNewEmail(string $newEmailRequested): self
     {
+        $this->unverifiedEmail = $newEmailRequested;
+
+        return $this;
+    }
+
+    public static function fromUserIdAndEmails(
+        string $userId,
+        ?string $verifiedEmail,
+        ?string $requestedEmail
+    ): self {
         $userDetails = new self();
         $userDetails->id = $userId;
-        $userDetails->primaryEmailStatus = $primaryEmailStatus;
+        $userDetails->verifiedEmail = null;
+        $userDetails->unverifiedEmail = null;
+
+        if (\is_string($verifiedEmail)) {
+            $userDetails->verifiedEmail = $verifiedEmail;
+        }
+        if (\is_string($requestedEmail)) {
+            $userDetails->unverifiedEmail = $requestedEmail;
+        }
 
         return $userDetails;
     }

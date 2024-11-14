@@ -55,6 +55,12 @@ doctrine_mongodb:
                     prefix: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
                     dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/Product/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
+                Galeas\Api\Service\ODM:
+                    type: xml
+                    is_bundle: false
+                    prefix: Galeas\Api\Service\ODM
+                    dir: '%kernel.project_dir%/src/Service/ODM/MongoMapping'
+                    alias: Galeas\Api\Service\ODM
 
 parameters:
     event_store_database_host: '%env(EVENT_STORE_HOST)%'

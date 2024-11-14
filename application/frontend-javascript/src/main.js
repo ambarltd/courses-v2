@@ -1,9 +1,13 @@
 import Express from "express";
 import fetch from "node-fetch"
 import { engine } from 'express-handlebars';
+import { helpers } from './handlebarsHelpers.js';
 import * as path from 'path';
 import { fileURLToPath } from 'url';
 import Session from "express-session";
+import yaml from 'js-yaml';
+import { readFileSync } from 'fs';
+import { dirname } from 'path';
 
 const port = 8080
 const app = Express()
@@ -72,6 +76,7 @@ function unauthenticate(req) {
 }
 
 const layouts = {
+  explore: "explore",
   signedOut: "signed-out",
   main: "main"
 }
@@ -90,7 +95,7 @@ function renderSignedOut(template, locals) {
 
 // Setup templating
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-app.engine('handlebars', engine());
+app.engine('handlebars', engine({helpers}));
 app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, "views"));
 
@@ -200,6 +205,9 @@ async function routeUserDetailsPost(req, res) {
 }
 
 async function routeVerifyEmail(req,res) {
+  const verificationCode = req.query.code;
+  const contents = { verificationCode, metadata };
+
   if (req.session.token) {
       unauthenticate(req);
       await fetch(endpoints["sign-out"], {
@@ -212,8 +220,7 @@ async function routeVerifyEmail(req,res) {
       });
   }
 
-  const verificationCode = req.query.code;
-  const contents = { verificationCode, metadata };
+
   const response = await fetch(endpoints["verify-primary-email"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
@@ -256,7 +263,7 @@ async function routeSignIn(req, res) {
     const rawError = getError(r);
     const error =
       rawError == "Security_Session_SignIn_UserNotFound"
-      ? "Invalid email or password"
+      ? "Invalid email or password. Or unverified email."
       : rawError
 
     res.render("sign-in", {
@@ -456,6 +463,40 @@ async function cardToggle(req, res) {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+app.get('/event-bus-yml', (req, res) => {
+  try {
+    const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
+    const data = yaml.load(fileContents);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ error: 'Error reading YAML file' });
+  }
+});
+app.get('/event-bus.yml', (req, res) => {
+    try {
+        const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
+        res.type('text/plain').send(fileContents);
+    } catch (error) {
+        res.status(500).send('Error reading YAML file');
+    }
+});
+
+app.get('/event-bus-with-ambar-iframe', (req, res) => {
+  res.render('explorer/event-bus-with-ambar-iframe', { layout: false });
+});
+
+app.get('/event-bus-with-ambar', (req, res) => {
+  res.render('explorer/event-bus-with-ambar', { layout: layouts.explore, locals: {title: 'Explore Event Bus', activeEventBus: true}  });
+});
+
+app.get('/event-store-with-postgres', (req, res) => {
+  res.render('explorer/event-store-with-postgres', { layout: layouts.explore, locals: {title: 'Explore Event Store', activeEventStore: true} });
+});
+
+app.get('/projections-with-mongo', (req, res) => {
+  res.render('explorer/projections-with-mongo', { layout: layouts.explore, locals: {title: 'Explore Projections', activeProjection: true}  });
+});
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
 

@@ -6,6 +6,11 @@ parameters:
         - src/JsonSchema
         - src/Primitive
         - src/Service
+    ignoreErrors:
+        -
+            message: '#is never read, only written#'
+            # the docs say unread properties don't become errors if they're persisted, eg doctrine orm
+            # unfortunately, it doesn't appear to work for odm
     exceptions:
         reportUncheckedExceptionDeadCatch: false
         check:

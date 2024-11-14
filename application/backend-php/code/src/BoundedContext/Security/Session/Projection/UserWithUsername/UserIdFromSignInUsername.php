@@ -24,7 +24,8 @@ class UserIdFromSignInUsername
         try {
             $userWithUsername = $this->projectionDocumentManager
                 ->createQueryBuilder(UserWithUsername::class)
-                ->field('canonicalUsername')->equals(strtolower($username))
+                ->field('lowercaseUsername')->equals(strtolower($username))
+                ->field('verified')->equals(true)
                 ->getQuery()
                 ->getSingleResult()
             ;

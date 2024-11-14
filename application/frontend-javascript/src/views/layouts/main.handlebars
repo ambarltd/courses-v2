@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>{{locals.title}} | Example application</title>
+  <title>{{locals.title}}</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="icon" type="image/x-icon" href="/assets/images/favicon.webp">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+
+{{>demo-menu}}
 
 <div style="min-height: 100vh; max-width: 900px; margin: auto; display: flex; flex-flow: column">
   {{>navbar}}

@@ -34,13 +34,11 @@ class ProjectionReactionController extends AbstractController
     ): JsonResponse {
         try {
             $json = $this->requestJsonToRequestArray($request);
-            // data_source_description and data_destination_description are not
-            // currently sent by the ambar emulator
             $projectionPayload = [
                 'data_source_id' => $json['data_source_id'],
-                // 'data_source_description' => $json['data_source_description'],
+                'data_source_description' => $json['data_source_description'],
                 'data_destination_id' => $json['data_destination_id'],
-                // 'data_destination_description' => $json['data_destination_description'],
+                'data_destination_description' => $json['data_destination_description'],
                 'payload' => $json['payload'],
             ];
 
@@ -50,7 +48,7 @@ class ProjectionReactionController extends AbstractController
             $event = EventDeserializer::serializedEventsToEvents([$serializedEvent])[0];
             $success = false;
             if ($projectorOrReactor instanceof EventProjector) {
-                $projectorOrReactor->project($event);
+                $projectorOrReactor->projectIdempotently($projectionPayload['data_destination_id'], $event);
                 $success = true;
             }
 
@@ -120,18 +118,17 @@ class ProjectionReactionController extends AbstractController
      */
     private function requestJsonToRequestArray(Request $request): array
     {
-        // No need for content type enforcement - to fix on ambar side
-        //        $contentType = $request->headers->get('content-type');
-        //
-        //        if (!is_string($contentType)) {
-        //            throw new InvalidContentType();
-        //        }
-        //        if (
-        //            is_string($contentType) &&
-        //            'application/json' !== substr($contentType, 0, 16)
-        //        ) {
-        //            throw new InvalidContentType();
-        //        }
+        $contentType = $request->headers->get('content-type');
+
+        if (!\is_string($contentType)) {
+            throw new InvalidContentType();
+        }
+        if (
+            \is_string($contentType)
+            && 'application/json' !== substr($contentType, 0, 16)
+        ) {
+            throw new InvalidContentType();
+        }
 
         try {
             $content = $request->getContent();

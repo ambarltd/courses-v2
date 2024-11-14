@@ -81,7 +81,8 @@ class DBMigration
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_occurred_on ON %s(recorded_on);', $this->eventStoreTableName));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_event_name ON %s(event_name);', $this->eventStoreTableName));
             $this->projectionDocumentManager->getSchemaManager()->createCollections();
-            $this->projectionDocumentManager->getSchemaManager()->createSearchIndexes();
+            $this->projectionDocumentManager->getSchemaManager()->updateIndexes();
+            $this->projectionDocumentManager->getSchemaManager()->ensureIndexes();
         } catch (\Throwable $throwable) {
             if ($logErrors) {
                 throw $throwable;

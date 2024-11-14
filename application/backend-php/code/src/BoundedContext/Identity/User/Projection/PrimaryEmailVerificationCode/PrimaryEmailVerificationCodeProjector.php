@@ -9,58 +9,37 @@ use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailChangeRequested;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Event\SignedUp;
 use Galeas\Api\Common\Event\Event;
-use Galeas\Api\CommonException\ProjectionCannotProcess;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class PrimaryEmailVerificationCodeProjector implements EventProjector
+class PrimaryEmailVerificationCodeProjector extends EventProjector
 {
-    private DocumentManager $projectionDocumentManager;
-
     public function __construct(DocumentManager $projectionDocumentManager)
     {
         $this->projectionDocumentManager = $projectionDocumentManager;
     }
 
-    public function project(Event $event): void
+    protected function project(Event $event): void
     {
-        try {
-            if ($event instanceof SignedUp) {
-                $code = $event->primaryEmailVerificationCode();
-            } elseif ($event instanceof PrimaryEmailChangeRequested) {
-                $code = $event->newVerificationCode();
-            } elseif ($event instanceof PrimaryEmailVerified) {
-                $code = null;
-            } else {
-                return;
-            }
-
-            $userIdToPrimaryEmailVerificationCode = $this->projectionDocumentManager
-                ->createQueryBuilder(PrimaryEmailVerificationCode::class)
-                ->field('id')->equals($event->aggregateId()->id())
-                ->getQuery()
-                ->getSingleResult()
-            ;
-
-            if (
-                null !== $userIdToPrimaryEmailVerificationCode
-                && !($userIdToPrimaryEmailVerificationCode instanceof PrimaryEmailVerificationCode)
-            ) {
-                throw new \Exception('Could not process event with id '.$event->eventId()->id());
-            }
-
-            if (!$userIdToPrimaryEmailVerificationCode) {
-                $userIdToPrimaryEmailVerificationCode = PrimaryEmailVerificationCode::fromUserIdAndVerificationCode(
+        switch (true) {
+            case $event instanceof SignedUp:
+                $this->saveOne(PrimaryEmailVerificationCode::fromUserIdAndVerificationCode(
                     $event->aggregateId()->id(),
-                    $code
-                );
-            } else {
-                $userIdToPrimaryEmailVerificationCode->updateVerificationCode($code);
-            }
+                    $event->primaryEmailVerificationCode()
+                ));
 
-            $this->projectionDocumentManager->persist($userIdToPrimaryEmailVerificationCode);
-            $this->projectionDocumentManager->flush();
-        } catch (\Throwable $exception) {
-            throw new ProjectionCannotProcess($exception);
+                break;
+
+            case $event instanceof PrimaryEmailChangeRequested:
+                $primaryEmailVerificationCode = $this->getOne(PrimaryEmailVerificationCode::class, ['id' => $event->aggregateId()->id()]);
+                $this->saveOne($primaryEmailVerificationCode?->setVerificationCode($event->newVerificationCode()));
+
+                break;
+
+            case $event instanceof PrimaryEmailVerified:
+                $primaryEmailVerificationCode = $this->getOne(PrimaryEmailVerificationCode::class, ['id' => $event->aggregateId()->id()]);
+                $this->saveOne($primaryEmailVerificationCode?->resetVerificationCode());
+
+                break;
         }
     }
 }

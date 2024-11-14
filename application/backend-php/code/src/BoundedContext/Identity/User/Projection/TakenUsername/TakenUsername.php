@@ -8,35 +8,25 @@ class TakenUsername
 {
     private string $id;
 
-    private string $canonicalUsername;
+    private string $lowercaseUsername;
+
+    private bool $verifiedPrimaryEmail;
 
     private function __construct() {}
 
-    public function getUserId(): string
+    public function verify(): self
     {
-        return $this->id;
-    }
-
-    public function getCanonicalUsername(): string
-    {
-        return $this->canonicalUsername;
-    }
-
-    /**
-     * @return $this
-     */
-    public function changeUsername(string $username)
-    {
-        $this->canonicalUsername = strtolower($username);
+        $this->verifiedPrimaryEmail = true;
 
         return $this;
     }
 
-    public static function fromUserIdAndUsername(string $userId, string $username): self
+    public static function fromUserIdAndUsername(string $userId, string $username, bool $verifiedPrimaryEmail): self
     {
         $takenUsername = new self();
         $takenUsername->id = $userId;
-        $takenUsername->canonicalUsername = strtolower($username);
+        $takenUsername->lowercaseUsername = strtolower($username);
+        $takenUsername->verifiedPrimaryEmail = $verifiedPrimaryEmail;
 
         return $takenUsername;
     }

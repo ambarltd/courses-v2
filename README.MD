@@ -1,11 +1,24 @@
 # Event Sourcing Course - Example
 
-This repository contains an example event sourced application, used in Ambar's Event Sourcing course. You can join 
-the course for free [in this link](https://ambar.cloud/esd). Please retake the course as many times as you need!
+This repository contains an example event sourced application, used in Ambar's Event Sourcing course. You can take
+(or retake) the course for free [in this link](https://ambar.cloud/esd).
+
+## Getting Started
+
+To run this application you need Docker. Once you have Docker installed, please clone the code, 
+navigate to `local-development` and run `dev_start.sh`.
+
+```bash
+git clone git@github.com:ambarltd/courses-v2.git
+cd courses-v2/local-development
+./dev_start.sh
+```
+
+Now open your browser to `localhost:8080` and try the application out!
 
 ## Contents
 
-The example contains an event sourced financial institution that allows you to:
+This example application contains an event sourced financial institution that allows you to:
 
 1. Sign up
 2. Verify your email
@@ -15,21 +28,19 @@ The example contains an event sourced financial institution that allows you to:
 The application is written in PHP, but we will soon have an extra feature (5. Credit Card Enrolment), 
 implemented in multiple languages.
 
-## Getting Started
+## Building More
 
-To run this application you need Docker. Once you have Docker installed, please clone the code, 
-navigate to `local-development` and run `dev_start.sh`. You will receive further instructions.
+If you change the code, simply redeploy your Docker containers, and refresh your browser.
 
 ```bash
-git clone git@github.com:ambarltd/courses-v2.git
 cd courses-v2/local-development
-./dev_start.sh 
-./dev_start_with_data_deletion.sh # use this instead if you want to reset your existing event store, and projection db
+./dev_start.sh
+./dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
 ```
 
 ## Making Sense of the Code
 
-To make sense of this application, please re-review the slides and recordings you received during your course. 
+To make sense of this application, please review the slides and recordings you received during your course. 
 
 [//]: <> (TODO: Include a structure for the various events in the system.)
 
@@ -38,6 +49,8 @@ To make sense of this application, please re-review the slides and recordings yo
 application/                # Source code
 ├── frontend-javascript/    # Source code for the frontend
 └── backend-php/            # Source code for the backend
+
+cloud-deployment-examples/  # Infrastructure code examples, in case you ever want to deploy this to the cloud.
 
 local-development/          # Local development environment defined with Docker Compose
 │

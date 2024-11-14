@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Galeas\Api\BoundedContext\Identity\User\CommandHandler\VerifyPrimaryEmail;
 
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Aggregate\TakenEmail;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailAbandoned;
+use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;
 use Galeas\Api\BoundedContext\Identity\User\Aggregate\User;
 use Galeas\Api\BoundedContext\Identity\User\Command\VerifyPrimaryEmail;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\RequestPrimaryEmailChange\RequestPrimaryEmailChangeHandler;
-use Galeas\Api\BoundedContext\Identity\User\CommandHandler\SignUp\SignUpHandler;
 use Galeas\Api\BoundedContext\Identity\User\Event\PrimaryEmailVerified;
 use Galeas\Api\BoundedContext\Identity\User\Projection\PrimaryEmailVerificationCode\UserIdFromPrimaryEmailVerificationCode;
+use Galeas\Api\BoundedContext\Identity\User\Projection\TakenUsername\IsUsernameTaken;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\UnverifiedEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedButRequestedNewEmail;
 use Galeas\Api\BoundedContext\Identity\User\ValueObject\VerifiedEmail;
@@ -26,22 +29,22 @@ class VerifyPrimaryEmailHandler
 
     private UserIdFromPrimaryEmailVerificationCode $userIdFromVerificationCode;
 
+    private IsUsernameTaken $isUsernameTaken;
+
     public function __construct(
         EventStore $eventStore,
-        UserIdFromPrimaryEmailVerificationCode $userIdFromVerificationCode
+        UserIdFromPrimaryEmailVerificationCode $userIdFromVerificationCode,
+        IsUsernameTaken $isUsernameTaken
     ) {
         $this->eventStore = $eventStore;
         $this->userIdFromVerificationCode = $userIdFromVerificationCode;
+        $this->isUsernameTaken = $isUsernameTaken;
     }
 
     /**
-     * There is no need to check if the existing requested email is taken, as there must have been a check on it previously.
-     *
-     * @see SignUpHandler
-     * @see RequestPrimaryEmailChangeHandler
-     *
      * @throws EmailIsAlreadyVerified|NoVerifiableUserFoundForCode|VerificationCodeDoesNotMatch
      * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable|ProjectionCannotRead
+     * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken|UsernameIsTaken
      */
     public function handle(VerifyPrimaryEmail $command): void
     {
@@ -81,6 +84,10 @@ class VerifyPrimaryEmailHandler
             throw new VerificationCodeDoesNotMatch();
         }
 
+        if ($user->primaryEmailStatus() instanceof UnverifiedEmail && $this->isUsernameTaken->isUsernameTaken($user->accountDetails()->username())) {
+            throw new UsernameIsTaken();
+        }
+
         $event = PrimaryEmailVerified::new(
             Id::createNew(),
             $user->aggregateId(),
@@ -93,6 +100,115 @@ class VerifyPrimaryEmailHandler
         );
 
         $this->eventStore->save($event);
+
+        $primaryEmailStatus = $user->primaryEmailStatus();
+        if ($primaryEmailStatus instanceof UnverifiedEmail) {
+            $this->takeEmail($primaryEmailStatus->email()->email(), $command->metadata, $user->aggregateId());
+        }
+        if ($primaryEmailStatus instanceof VerifiedButRequestedNewEmail) {
+            $this->takeEmail($primaryEmailStatus->requestedEmail()->email(), $command->metadata, $user->aggregateId());
+            $this->abandonTakenEmail($primaryEmailStatus->verifiedEmail()->email(), $command->metadata);
+        }
+
         $this->eventStore->completeTransaction();
+    }
+
+    /**
+     * @param array<string, mixed> $metadata
+     *
+     * @throws EventStoreCannotWrite|NoRandomnessAvailable
+     * @throws AggregateIdForTakenEmailUnavailable|EventStoreCannotRead
+     */
+    public function abandonTakenEmail(string $emailToAbandon, array $metadata): void
+    {
+        $takenEmailAggregateId = Id::createNewByHashing(
+            'Identity_TakenEmail:'.strtolower($emailToAbandon)
+        );
+        $takenEmailResult = $this->eventStore->findAggregateAndEventIdsInLastEvent($takenEmailAggregateId->id());
+
+        if (null === $takenEmailResult) {
+            return;
+        }
+
+        [$takenEmail, $takenEmailLastEventId, $takenEmailLastEventCorrelationId] = [
+            $takenEmailResult->aggregate(),
+            $takenEmailResult->eventIdInLastEvent(),
+            $takenEmailResult->correlationIdInLastEvent(),
+        ];
+
+        if (!$takenEmail instanceof TakenEmail) {
+            throw new AggregateIdForTakenEmailUnavailable();
+        }
+
+        if (null === $takenEmail->takenByUser()) {
+            return;
+        }
+
+        $this->eventStore->save(EmailAbandoned::new(
+            Id::createNew(),
+            $takenEmailAggregateId,
+            $takenEmail->aggregateVersion() + 1,
+            $takenEmailLastEventId,
+            $takenEmailLastEventCorrelationId,
+            new \DateTimeImmutable('now'),
+            $metadata
+        ));
+    }
+
+    /**
+     * @param array<string, mixed> $metadata
+     *
+     * @throws AggregateIdForTakenEmailUnavailable|EmailIsTaken
+     * @throws EventStoreCannotRead|EventStoreCannotWrite|NoRandomnessAvailable
+     */
+    private function takeEmail(string $emailToTake, array $metadata, Id $takenByUser): void
+    {
+        $takenEmailAggregateId = Id::createNewByHashing(
+            'Identity_TakenEmail:'.strtolower($emailToTake)
+        );
+        $takenEmailResult = $this->eventStore->findAggregateAndEventIdsInLastEvent($takenEmailAggregateId->id());
+
+        if (null === $takenEmailResult) {
+            $emailTakenEventId = Id::createNew();
+
+            $this->eventStore->save(EmailTaken::new(
+                $emailTakenEventId,
+                $takenEmailAggregateId,
+                1,
+                $emailTakenEventId,
+                $emailTakenEventId,
+                new \DateTimeImmutable('now'),
+                $metadata,
+                strtolower($emailToTake),
+                $takenByUser
+            ));
+
+            return;
+        }
+
+        [$takenEmail, $takenEmailLastEventId, $takenEmailLastEventCorrelationId] = [
+            $takenEmailResult->aggregate(),
+            $takenEmailResult->eventIdInLastEvent(),
+            $takenEmailResult->correlationIdInLastEvent(),
+        ];
+
+        if (!$takenEmail instanceof TakenEmail) {
+            throw new AggregateIdForTakenEmailUnavailable();
+        }
+
+        if (null !== $takenEmail->takenByUser()) {
+            throw new EmailIsTaken();
+        }
+
+        $this->eventStore->save(AbandonedEmailRetaken::new(
+            Id::createNew(),
+            $takenEmailAggregateId,
+            $takenEmail->aggregateVersion() + 1,
+            $takenEmailLastEventId,
+            $takenEmailLastEventCorrelationId,
+            new \DateTimeImmutable('now'),
+            $metadata,
+            $takenByUser
+        ));
     }
 }
