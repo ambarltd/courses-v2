@@ -3,6 +3,7 @@
 <head>
     <title>Ambar Event Bus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css">
 
     <style>
         :root {
@@ -180,18 +181,17 @@
 <body>
     <nav class="navbar navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">Ambar</a>
+            <a class="navbar-brand" href="#">Ambar - Event Bus</a>
         </div>
     </nav>
 
     <div class="container">
         <div class="description">
-            <h2 class="mb-3">Event Bus with Ambar</h2>
             <p class="lead mb-0">
-                Ambar is the best event bus for event sourcing! Ambar allows you to read messages from one or more
-                database tables, and forward each new row as a message to one or more HTTP endpoints. Messages
-                are sent in parallel (according to a partitioning column), with ordering guarantees (per partition key),
-                and with delivery guarantees (at least once).
+                Ambar reads and stores database rows, and forwards them as messages
+                to HTTP endpoints with delivery and ordering guarantees. </p>
+            <p class="lead mb-0">
+                Ambar is the most robust, performant, and easy to use event bus for event sourcing!
             </p>
         </div>
 
@@ -242,9 +242,31 @@
                 Last updated: <span id="last-update">Just now</span>
             </div>
         </div>
+        <div class="config-container">
+            <div class="config-header" onclick="toggleConfig()">
+                <h3 class="mb-0">View Ambar Configuration File</h3>
+                <svg class="chevron" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="config-content">
+                <pre><code class="language-yaml" id="raw-config"></code></pre>
+            </div>
+        </div>
     </div>
 
-    <script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script>
+        function toggleConfig() {
+            const content = document.querySelector('.config-content');
+            const chevron = document.querySelector('.chevron');
+            content.classList.toggle('show');
+            chevron.classList.toggle('rotated');
+        }
+
         function formatDateTime(date) {
             return date.toLocaleTimeString('en-US', {
                 hour: '2-digit',
@@ -254,6 +276,7 @@
         }
 
         function refreshData() {
+            // First fetch for JSON data and update tables
             fetch('/event-bus-yml')
                 .then(response => response.json())
                 .then(data => {
@@ -304,7 +327,19 @@
                     document.getElementById('last-update').textContent = formatDateTime(new Date());
                 })
                 .catch(error => {
-                    console.error('Error fetching data:', error);
+                    console.error('Error fetching JSON data:', error);
+                });
+
+            // Separate fetch for YAML content
+            fetch('/event-bus.yml')
+                .then(response => response.text())
+                .then(yamlText => {
+                    const codeElement = document.getElementById('raw-config');
+                    codeElement.textContent = yamlText;
+                    hljs.highlightElement(codeElement);
+                })
+                .catch(error => {
+                    console.error('Error fetching YAML:', error);
                 });
         }
 

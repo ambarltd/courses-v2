@@ -472,6 +472,14 @@ app.get('/event-bus-yml', (req, res) => {
     res.status(500).json({ error: 'Error reading YAML file' });
   }
 });
+app.get('/event-bus.yml', (req, res) => {
+    try {
+        const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
+        res.type('text/plain').send(fileContents);
+    } catch (error) {
+        res.status(500).send('Error reading YAML file');
+    }
+});
 
 app.get('/event-bus-with-ambar', (req, res) => {
   res.render('event-bus-with-ambar', { layout: false });
