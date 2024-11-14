@@ -224,7 +224,7 @@
 </head>
 <body>
     <div class="theme-switcher">
-        <button onclick="cycleTheme()" id="theme-toggle">🌓 Theme</button>
+        <button onclick="toggleTheme()" id="theme-toggle">🌓 Theme</button>
     </div>
     <div class="container">
         <div class="description">
@@ -302,7 +302,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 
-<script>
+    <script>
         function toggleConfig() {
             const content = document.querySelector('.config-content');
             const chevron = document.querySelector('.chevron');
@@ -392,47 +392,57 @@
         // Refresh every 5 seconds
         setInterval(refreshData, 5000);
     </script>
-    <script>
+ <script>
         // Theme switching functionality
-        function cycleTheme() {
+        function toggleTheme() {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
 
-            const themes = ['system', 'light', 'dark'];
-            const currentIndex = themes.indexOf(currentTheme);
-            const nextIndex = (currentIndex + 1) % themes.length;
-
-            const newTheme = themes[nextIndex];
             html.setAttribute('data-theme', newTheme);
-
-            // Save preference
             localStorage.setItem('preferred-theme', newTheme);
-
-            // Update button text
             updateThemeButton(newTheme);
         }
 
         function updateThemeButton(theme) {
             const button = document.getElementById('theme-toggle');
             const icons = {
-                'system': '🌓',
                 'light': '☀️',
                 'dark': '🌙'
             };
             button.textContent = `${icons[theme]} Theme`;
         }
 
-        // Initialize theme
+        // Initialize theme based on system preference
         function initializeTheme() {
-            const savedTheme = localStorage.getItem('preferred-theme') || 'system';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            updateThemeButton(savedTheme);
+            // Check if user has a saved preference
+            const savedTheme = localStorage.getItem('preferred-theme');
+
+            if (savedTheme) {
+                // Use saved preference if it exists
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeButton(savedTheme);
+            } else {
+                // Otherwise use system preference
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const initialTheme = prefersDark ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', initialTheme);
+                updateThemeButton(initialTheme);
+            }
         }
 
         // Call initialize on page load
         initializeTheme();
 
-        // Your existing JavaScript remains the same
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            // Only update if user hasn't set a preference
+            if (!localStorage.getItem('preferred-theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                updateThemeButton(newTheme);
+            }
+        });
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
