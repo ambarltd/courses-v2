@@ -483,19 +483,19 @@ app.get('/event-bus.yml', (req, res) => {
 });
 
 app.get('/event-bus-with-ambar-iframe', (req, res) => {
-  res.render('event-bus-with-ambar-iframe', { layout: false });
+  res.render('explorer/event-bus-with-ambar-iframe', { layout: false });
 });
 
 app.get('/event-bus-with-ambar', (req, res) => {
-  res.render('event-bus-with-ambar', { layout: layouts.explore, locals: {title: 'Explore Event Bus', activeEventBus: true}  });
+  res.render('explorer/event-bus-with-ambar', { layout: layouts.explore, locals: {title: 'Explore Event Bus', activeEventBus: true}  });
 });
 
 app.get('/event-store-with-postgres', (req, res) => {
-  res.render('event-store-with-postgres', { layout: layouts.explore, locals: {title: 'Explore Event Store', activeEventStore: true} });
+  res.render('explorer/event-store-with-postgres', { layout: layouts.explore, locals: {title: 'Explore Event Store', activeEventStore: true} });
 });
 
 app.get('/projections-with-mongo', (req, res) => {
-  res.render('projections-with-mongo', { layout: layouts.explore, locals: {title: 'Explore Projections', activeProjection: true}  });
+  res.render('explorer/projections-with-mongo', { layout: layouts.explore, locals: {title: 'Explore Projections', activeProjection: true}  });
 });
 
 app.get("*", authenticated, render("404", { title: "Not Found" }))
