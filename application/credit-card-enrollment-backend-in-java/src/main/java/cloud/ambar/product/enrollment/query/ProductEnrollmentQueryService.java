@@ -7,6 +7,7 @@ import cloud.ambar.product.enrollment.projection.store.EnrollmentProjectionRepos
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -21,5 +22,9 @@ public class ProductEnrollmentQueryService {
 
     public Optional<EnrollmentRequest> getEnrollment(final String id) {
         return enrollmentProjectionRepository.findById(id);
+    }
+
+    public List<EnrollmentRequest> getUserEnrollmentRequests(final String userId) {
+        return enrollmentProjectionRepository.findAllByUserId(userId);
     }
 }

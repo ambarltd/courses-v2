@@ -14,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class EnrollmentRequest {
     @Id
     private String id;
+    @Indexed
     private String userId;
     @Indexed
     private String productId;

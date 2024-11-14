@@ -6,6 +6,7 @@ import cloud.ambar.product.management.commands.models.ActivateCreditCardProductC
 import cloud.ambar.product.management.commands.models.DeactivateCreditCardProductCommand;
 import cloud.ambar.product.management.commands.models.ModifyCreditCardCommand;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
@@ -28,15 +29,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *  - DeactivateProduct
  */
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/credit_card_product/product")
 public class ManagementCommandController {
 
     private final ProductManagementCommandService productService;
-
-    @Autowired
-    public ManagementCommandController(final ProductManagementCommandService productService) {
-        this.productService = productService;
-    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)

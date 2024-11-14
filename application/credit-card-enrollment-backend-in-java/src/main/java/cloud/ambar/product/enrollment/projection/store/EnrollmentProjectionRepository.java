@@ -7,4 +7,7 @@ import java.util.List;
 
 public interface EnrollmentProjectionRepository extends MongoRepository<EnrollmentRequest, String> {
     List<EnrollmentRequest> findAllByProductId(final String productId);
+    List<EnrollmentRequest> findAllByUserId(final String userId);
+
+    List<EnrollmentRequest> findAllByStatus(final String status);
 }
