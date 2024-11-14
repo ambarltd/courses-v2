@@ -8,7 +8,7 @@ import cloud.ambar.product.enrollment.events.EnrollmentAcceptedEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentDeclinedEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentPendingReviewEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentRequestedEventData;
-import cloud.ambar.product.enrollment.projection.models.Enrollment;
+import cloud.ambar.product.enrollment.projection.models.EnrollmentRequest;
 import cloud.ambar.product.enrollment.projection.store.EnrollmentProjectionRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,14 +32,15 @@ public class EnrollmentProjectionService implements Projector {
 
     @Override
     public void project(Payload event) throws JsonProcessingException {
-        final Enrollment enrollment;
+        final EnrollmentRequest enrollment;
         switch (event.getEventName()) {
             case EnrollmentRequestedEventData.EVENT_NAME -> {
                 final EnrollmentRequestedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentRequestedEventData.class);
-                enrollment = new Enrollment();
+                enrollment = new EnrollmentRequest();
                 final String id = eventData.getUserId() + "-" + eventData.getProductId();
                 enrollment.setId(id);
-
+                enrollment.setUserId(eventData.getUserId());
+                enrollment.setProductId(eventData.getProductId());
                 enrollment.setStatus(EnrollmentStatus.REQUESTED.name());
                 enrollment.setRequestedDate(event.getRecordedOn().format(DateTimeFormatter.RFC_1123_DATE_TIME));
             }
@@ -64,8 +65,8 @@ public class EnrollmentProjectionService implements Projector {
         enrollmentProjectionRepository.save(enrollment);
     }
 
-    private Enrollment getAndSetStatus(String id, EnrollmentStatus status) {
-        final Enrollment enrollment = getOrThrow(id);
+    private EnrollmentRequest getAndSetStatus(String id, EnrollmentStatus status) {
+        final EnrollmentRequest enrollment = getOrThrow(id);
         enrollment.setStatus(status.name());
         switch (status) {
             case ACCEPTED, DECLINED -> enrollment.setReviewedDate(LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME));
@@ -73,8 +74,8 @@ public class EnrollmentProjectionService implements Projector {
         return enrollment;
     }
 
-    private Enrollment getOrThrow(String id) {
-        Optional<Enrollment> enrollment = enrollmentProjectionRepository.findById(id);
+    private EnrollmentRequest getOrThrow(String id) {
+        Optional<EnrollmentRequest> enrollment = enrollmentProjectionRepository.findById(id);
         if (enrollment.isEmpty()) {
             final String msg = "Unable to find Enrollment in projection repository for id: " + id;
             log.error(msg);

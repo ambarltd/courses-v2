@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class EnrollmentDeclinedEventData {
     public static final String EVENT_NAME = "CreditCardProduct_Product_EnrollmentDeclined";
 
-    private String Id;
+    private String id;
     private String reasonCode;
     private String reasonDescription;
 }

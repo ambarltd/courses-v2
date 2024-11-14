@@ -1,19 +1,13 @@
 package cloud.ambar.product.enrollment.projection.service;
 
-import cloud.ambar.common.ambar.event.AmbarEvent;
 import cloud.ambar.common.ambar.event.Payload;
 import cloud.ambar.common.exceptions.UnexpectedEventException;
 import cloud.ambar.common.projection.Projector;
 import cloud.ambar.product.enrollment.projection.models.CardProduct;
-import cloud.ambar.product.enrollment.projection.models.Enrollment;
 import cloud.ambar.product.enrollment.projection.store.EnrollmentCardProductProjectionRepository;
 import cloud.ambar.product.management.events.ProductActivatedEventData;
-import cloud.ambar.product.management.events.ProductAnnualFeeChangedEventData;
-import cloud.ambar.product.management.events.ProductBackgroundChangedEventData;
 import cloud.ambar.product.management.events.ProductDeactivatedEventData;
 import cloud.ambar.product.management.events.ProductDefinedEventData;
-import cloud.ambar.product.management.projection.models.CreditCardProduct;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
