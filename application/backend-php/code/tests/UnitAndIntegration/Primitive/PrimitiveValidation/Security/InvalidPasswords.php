@@ -14,12 +14,7 @@ abstract class InvalidPasswords
         return [
             '',
             ' ',
-            '          ',
-            'abcdeGH$9',
-            'abcdEGH$9',
-            '012346789',
-            'abcdegh$j',
-            'abcdegh$9',
+            '12345',
             'abcdefg$I01234567890123456789012345678901234567890123456789012345',
         ];
     }

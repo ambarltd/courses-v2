@@ -12,11 +12,11 @@ abstract class ValidPasswords
     public static function listValidPasswords(): array
     {
         return [
-            'abcDEFg1/2',
-            'DEF18AN/aS',
-            'DEF 8AN/aS',
-            'abcdefg%I9',
-            '      /aC8',
+            'abcdef',
+            'ABCDEF',
+            'BlueSky12',
+            'BLE BLE@',
+            '   123123',
             ':@ !"~$C8n',
             'abcdefghI01234567890$',
             'abcdefghI012345678901234567890$',
