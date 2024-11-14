@@ -9,13 +9,12 @@
             --primary-color: #2C3E50;
             --secondary-color: #34495E;
             --accent-color: #3498DB;
-            --bg-color: #F8F9FA;
+            --bg-color: #e8e9eA;
             --text-color: #2C3E50;
             --card-bg: white;
             --table-hover: rgba(52, 152, 219, 0.05);
             --table-header-bg: #F8F9FA;
             --shadow-color: rgba(0,0,0,0.05);
-            --code-background: #fff;
         }
 
         :root[data-theme="dark"] {
@@ -51,7 +50,7 @@
                 --primary-color: #2C3E50;
                 --secondary-color: #34495E;
                 --accent-color: #3498DB;
-                --bg-color: #F8F9FA;
+                --bg-color: #e8e9eA;
                 --text-color: #2C3E50;
                 --card-bg: white;
                 --table-hover: rgba(52, 152, 219, 0.05);
@@ -259,6 +258,9 @@
                     </tbody>
                 </table>
             </div>
+            <div class="refresh-indicator">
+                Last updated: <span class="last-update">Just now</span>
+            </div>
         </div>
 
         <div class="table-container">
@@ -282,7 +284,7 @@
                 </table>
             </div>
             <div class="refresh-indicator">
-                Last updated: <span id="last-update">Just now</span>
+                Last updated: <span class="last-update">Just now</span>
             </div>
         </div>
         <div class="config-container">
@@ -294,6 +296,9 @@
             </div>
             <div class="config-content">
                 <pre><code class="language-yaml" id="raw-config"></code></pre>
+            </div>
+            <div class="refresh-indicator">
+                Last updated: <span class="last-update">Just now</span>
             </div>
         </div>
     </div>
@@ -325,11 +330,11 @@
                 .then(data => {
                     // Update source count badge
                     const sourcesBadge = document.getElementById('sources-badge');
-                    sourcesBadge.textContent = `${data.data_sources.length} Active Sources`;
+                    sourcesBadge.textContent = `Active Data Sources: ${data.data_sources.length}`;
 
                     // Update destination count badge
                     const destinationsBadge = document.getElementById('destinations-badge');
-                    destinationsBadge.textContent = `${data.data_destinations.length} Active Endpoints`;
+                    destinationsBadge.textContent = `Active: Data Destinations ${data.data_destinations.length}`;
 
                     // Update Data Sources table
                     const sourcesBody = document.getElementById('sources-tbody');
@@ -367,7 +372,9 @@
                     });
 
                     // Update last refresh time
-                    document.getElementById('last-update').textContent = formatDateTime(new Date());
+                    document.querySelectorAll('.last-update').forEach(element => {
+                        element.textContent = formatDateTime(new Date());
+                    });
                 })
                 .catch(error => {
                     console.error('Error fetching JSON data:', error);

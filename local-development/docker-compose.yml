@@ -14,6 +14,13 @@ services:
     depends_on:
       backend-php:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
     volumes:
       - ./ambar-config.yaml:/ambar-yml/ambar-config.yaml:ro
     networks:
@@ -160,6 +167,13 @@ services:
       DB_TYPE: postgres
       STUDIO_PORT: 8081
       POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8081 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
     depends_on:
       postgres-event-store:
         condition: service_healthy
@@ -184,6 +198,13 @@ services:
     depends_on:
       mongo-projection:
         condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8082 2>&1 | grep '200 OK'" ]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 3s
     networks:
       development:
         ipv4_address: 172.30.0.212

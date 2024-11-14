@@ -30,9 +30,8 @@ refresh_schema() {\n\
     echo "Schema pulled successfully, generating Prisma Client..."\n\
     npx prisma generate\n\
   else\n\
-    echo "Failed to pull schema. Retrying in 10 seconds..."\n\
-    sleep 10\n\
-    refresh_schema\n\
+    echo "Failed to pull schema. Exiting to trigger container restart..."\n\
+    exit 1\n\
   fi\n\
 }\n\
 \n\
