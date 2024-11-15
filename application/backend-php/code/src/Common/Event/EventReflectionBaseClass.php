@@ -52,6 +52,11 @@ abstract class EventReflectionBaseClass
     private static array $eventNamesToReflectionConstructorMethodsCache = [];
 
     /**
+     * @var array<string, \ReflectionClass<Event>>
+     */
+    private static array $eventNamesToReflectionClassCache = [];
+
+    /**
      * @throws EventException\EventMappingReflectionError
      */
     private static function setup(): void
@@ -63,6 +68,8 @@ abstract class EventReflectionBaseClass
                 foreach (self::$eventNamesToEventClasses as $eventName => $eventClass) {
                     /** @var \ReflectionClass<Event> $reflectionClass */
                     $reflectionClass = new \ReflectionClass($eventClass);
+
+                    self::$eventNamesToReflectionClassCache[$eventName] = $reflectionClass;
 
                     $creationMethod = self::findFirstMethodBeginningWith($reflectionClass, 'create');
                     if (null !== $creationMethod) {
@@ -105,6 +112,23 @@ abstract class EventReflectionBaseClass
         }
 
         throw new EventException\NoEventClassMappingFound('No mapping found for class: '.$eventClass);
+    }
+
+    /**
+     * @return \ReflectionClass<Event>
+     *
+     * @throws EventException\NoEventReflectionClassMappingFound
+     * @throws EventException\EventMappingReflectionError
+     */
+    protected static function eventNameToReflectionClass(string $eventName): \ReflectionClass
+    {
+        self::setup();
+
+        if (\array_key_exists($eventName, self::$eventNamesToReflectionClassCache)) {
+            return self::$eventNamesToReflectionClassCache[$eventName];
+        }
+
+        throw new EventException\NoEventReflectionClassMappingFound('No reflection class mapping found for event name '.$eventName);
     }
 
     /**

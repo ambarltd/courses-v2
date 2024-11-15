@@ -470,6 +470,7 @@ abstract class SampleEvents
     private static function sampleMetadata(?string $withSessionToken): array
     {
         return [
+            'someId' => Id::createNew()->id(),
             'environment' => 'native',
             'devicePlatform' => 'linux',
             'deviceModel' => 'Penguin 1.0',
@@ -487,6 +488,7 @@ abstract class SampleEvents
     private static function anotherSampleMetadata(?string $withSessionToken): array
     {
         return [
+            'someId' => Id::createNew()->id(),
             'environment' => 'browser',
             'devicePlatform' => 'windows',
             'deviceModel' => 'The OG',

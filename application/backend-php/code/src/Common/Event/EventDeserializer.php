@@ -33,7 +33,7 @@ abstract class EventDeserializer extends EventReflectionBaseClass
      *
      * @throws EventException\UnrecoverableDeserializationError
      */
-    public static function jsonPayloadToArrayPayload(string $jsonPayload): array
+    public static function jsonPayloadToArrayPayload(string $jsonPayload, string $eventName, bool $trueIfJsonPayloadFalseIfMetadata): array
     {
         /** @var null|array<string, mixed> $arrayPayload */
         $arrayPayload = json_decode(
@@ -45,7 +45,9 @@ abstract class EventDeserializer extends EventReflectionBaseClass
         }
 
         return self::serializedArrayPayloadToArrayPayload(
-            $arrayPayload
+            $arrayPayload,
+            $eventName,
+            $trueIfJsonPayloadFalseIfMetadata
         );
     }
 
@@ -68,8 +70,8 @@ abstract class EventDeserializer extends EventReflectionBaseClass
                 Id::fromId($serializedEvent->causationId()),
                 Id::fromId($serializedEvent->correlationId()),
                 \DateTimeImmutable::createFromFormat('Y-m-d H:i:s.u e', $serializedEvent->recordedOn()),
-                self::jsonPayloadToArrayPayload($serializedEvent->jsonMetadata()),
-                self::jsonPayloadToArrayPayload($serializedEvent->jsonPayload())
+                self::jsonPayloadToArrayPayload($serializedEvent->jsonMetadata(), $serializedEvent->eventName(), false),
+                self::jsonPayloadToArrayPayload($serializedEvent->jsonPayload(), $serializedEvent->eventName(), true)
             );
         } catch (\ReflectionException $exception) {
             throw new EventException\EventMappingReflectionError('Reflection method failure. Inside method.');
@@ -89,38 +91,21 @@ abstract class EventDeserializer extends EventReflectionBaseClass
      *
      * @throws EventException\UnrecoverableDeserializationError
      */
-    private static function serializedArrayPayloadToArrayPayload(array $serializedArrayPayload): array
+    private static function serializedArrayPayloadToArrayPayload(array $serializedArrayPayload, string $eventName, bool $trueIfJsonPayloadFalseIfMetadata): array
     {
         $payload = [];
 
         try {
             foreach ($serializedArrayPayload as $propertyName => $value) {
-                if (
-                    \is_array($value)
-                    && \array_key_exists('type', $value)
-                    && 'payload_datetime' === $value['type']
-                ) {
-                    $value = \DateTimeImmutable::createFromFormat(
-                        'Y-m-d H:i:s.u',
-                        $value['datetime'],
-                        new \DateTimeZone($value['timezone'])
-                    );
-                }
-                if (
-                    \is_array($value)
-                    && \array_key_exists('type', $value)
-                    && 'payload_id' === $value['type']
-                ) {
-                    $value = Id::fromId(
-                        $value['id']
-                    );
-                }
-
-                if (
-                    \is_array($value)
-                    && (!\array_key_exists('type', $value))
-                ) {
-                    $value = self::serializedArrayPayloadToArrayPayload($value);
+                $reflectionClass = self::eventNameToReflectionClass($eventName);
+                if ($trueIfJsonPayloadFalseIfMetadata) {
+                    $type = $reflectionClass->getProperty($propertyName)->getType();
+                    if (
+                        $type instanceof \ReflectionType
+                        && Id::class === $type->getName()
+                    ) {
+                        $value = Id::fromId($value);
+                    }
                 }
 
                 $payload[$propertyName] = $value;
@@ -129,7 +114,14 @@ abstract class EventDeserializer extends EventReflectionBaseClass
             $jsonPayload = json_encode($serializedArrayPayload);
             $jsonPayload = false === $jsonPayload ? 'Could not encode failed payload' : $jsonPayload;
 
-            throw new EventException\UnrecoverableDeserializationError('Unrecoverable for:'.$jsonPayload);
+            throw new EventException\UnrecoverableDeserializationError(
+                \sprintf(
+                    'Unrecoverable error in deserialization of payload: %s, exception %s, message: %s',
+                    $jsonPayload,
+                    $exception::class,
+                    $exception->getMessage()
+                )
+            );
         }
 
         return $payload;

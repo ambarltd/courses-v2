@@ -29,7 +29,7 @@
       "additionalProperties": false,
       "properties": {
         "asUser": {
-          "$ref": "Event/Shared/PayloadIdObject.json"
+          "$ref": "Event/Shared/IdString.json"
         },
         "withUsername": {
           "type": ["string", "null"]
