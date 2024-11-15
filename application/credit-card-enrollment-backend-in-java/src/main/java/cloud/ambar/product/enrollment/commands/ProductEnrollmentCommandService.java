@@ -73,7 +73,7 @@ public class ProductEnrollmentCommandService {
                 .aggregateId(aggregateId)
                 .version(1)
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentRequestedEventData.builder()
                                 .userId(command.getUserId())

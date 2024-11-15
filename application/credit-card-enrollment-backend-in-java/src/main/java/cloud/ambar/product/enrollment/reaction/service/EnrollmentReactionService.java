@@ -67,7 +67,7 @@ public class EnrollmentReactionService extends Reactor {
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentDeclinedEventData.builder()
                                 .id(eventData.getAggregateId())
@@ -90,7 +90,7 @@ public class EnrollmentReactionService extends Reactor {
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentPendingReviewEventData.builder()
                                 .id(eventData.getAggregateId())

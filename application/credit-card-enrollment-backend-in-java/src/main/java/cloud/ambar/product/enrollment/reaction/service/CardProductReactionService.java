@@ -74,7 +74,7 @@ public class CardProductReactionService extends Reactor {
                     .aggregateId(request.getId())
                     .version(aggregate.getAggregateVersion() + 1)
                     .timestamp(LocalDateTime.now())
-                    .metadata("Triggered by ProductDeactivatedEvent")
+                    .metadata("{}")
                     .data(objectMapper.writeValueAsString(
                             EnrollmentDeclinedEventData.builder()
                                     .id(request.getId())

@@ -96,7 +96,7 @@ public class ProductManagementCommandService {
                 .aggregateId(aggregateId)
                 .version(1)
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                     ProductDefinedEventData.builder()
                         .name(command.getName())
@@ -143,7 +143,7 @@ public class ProductManagementCommandService {
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 // The top level event EventName, aggregateId, and timestamp really capture everything there is to know
                 // about this event.
                 .data("")
@@ -193,7 +193,7 @@ public class ProductManagementCommandService {
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
                 .timestamp(LocalDateTime.now())
-                .metadata("")
+                .metadata("{}")
                 // The top level event EventName, aggregateId, and timestamp really capture everything there is to know
                 // about this event.
                 .data("")
