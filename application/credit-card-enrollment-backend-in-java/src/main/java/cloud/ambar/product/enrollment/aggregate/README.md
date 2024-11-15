@@ -1,0 +1,1 @@
+See more information about aggregates in the common/aggregate directory.
