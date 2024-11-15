@@ -101,8 +101,9 @@ abstract class EventDeserializer extends EventReflectionBaseClass
                 if ($trueIfJsonPayloadFalseIfMetadata) {
                     $type = $reflectionClass->getProperty($propertyName)->getType();
                     if (
-                        $type instanceof \ReflectionType
+                        $type instanceof \ReflectionNamedType
                         && Id::class === $type->getName()
+                        && \is_string($value)
                     ) {
                         $value = Id::fromId($value);
                     }

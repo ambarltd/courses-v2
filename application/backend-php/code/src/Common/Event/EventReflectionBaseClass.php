@@ -100,6 +100,14 @@ abstract class EventReflectionBaseClass
     }
 
     /**
+     * @return array<string>
+     */
+    public static function allEventNames(): array
+    {
+        return array_values(self::$eventClassesToEventNames);
+    }
+
+    /**
      * @throws EventException\NoEventClassMappingFound
      * @throws EventException\EventMappingReflectionError
      */

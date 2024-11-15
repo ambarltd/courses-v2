@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Galeas\Api\CommonController;
 
 use Galeas\Api\Common\Event\EventDeserializer;
+use Galeas\Api\Common\Event\EventReflectionBaseClass;
 use Galeas\Api\Common\Event\Exception\FoundBadJsonInProjectionOrReaction;
 use Galeas\Api\Common\Event\SerializedEvent;
 use Galeas\Api\CommonException\BaseException;
@@ -45,6 +46,15 @@ class ProjectionReactionController extends AbstractController
             $serializedEvent = SerializedEvent::fromAmbarJson(
                 json_encode($projectionPayload['payload'])
             );
+            // We only want to process events that we know the schema for.
+            // I.e., if another service commits an event, we want to ignore it, unless we have mapped it explicitly.
+            if (!\in_array($serializedEvent->eventName(), EventReflectionBaseClass::allEventNames(), true)) {
+                return JsonResponse::fromJsonString(json_encode([
+                    'result' => [
+                        'success' => new \stdClass(),
+                    ],
+                ]), $successStatusCode);
+            }
             $event = EventDeserializer::serializedEventsToEvents([$serializedEvent])[0];
             $success = false;
             if ($projectorOrReactor instanceof EventProjector) {
