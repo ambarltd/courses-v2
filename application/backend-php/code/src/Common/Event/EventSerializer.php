@@ -161,9 +161,12 @@ abstract class EventSerializer extends EventReflectionBaseClass
                 && (!\is_int($value))
                 && (!\is_float($value))
                 && (!$value instanceof Id)
-                && (!$value instanceof \DateTimeImmutable)
             ) {
-                throw new PropertyIsOfInvalidType(\sprintf('Property %s is a %s, instead it should be one of: string, null, boolean, integer, float, \DateTimeImmutable, ..\Id\Id', $propertyName, \gettype($value)));
+                throw new PropertyIsOfInvalidType(\sprintf('Property %s is a %s, instead it should be one of: string, null, boolean, integer, float, ..\Id\Id', $propertyName, \gettype($value)));
+            }
+
+            if ($value instanceof Id) {
+                $value = $value->id();
             }
 
             if (
@@ -178,21 +181,6 @@ abstract class EventSerializer extends EventReflectionBaseClass
                 && (!$arrayPropertiesAllowed)
             ) {
                 throw new ArraysNotAllowedWhenMappingPayload();
-            }
-
-            if ($value instanceof \DateTimeImmutable) {
-                $value = [
-                    'type' => 'payload_datetime',
-                    'datetime' => $value->format('Y-m-d H:i:s.u'),
-                    'timezone' => $value->getTimezone()->getName(),
-                ];
-            }
-
-            if ($value instanceof Id) {
-                $value = [
-                    'type' => 'payload_id',
-                    'id' => $value->id(),
-                ];
             }
 
             $payload[$propertyName] = $value;

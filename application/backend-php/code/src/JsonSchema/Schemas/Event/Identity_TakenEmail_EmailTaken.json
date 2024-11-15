@@ -32,7 +32,7 @@
           "type": "string"
         },
         "takenByUser": {
-          "$ref": "Event/Shared/PayloadIdObject.json"
+          "$ref": "Event/Shared/IdString.json"
         }
       },
       "required": [

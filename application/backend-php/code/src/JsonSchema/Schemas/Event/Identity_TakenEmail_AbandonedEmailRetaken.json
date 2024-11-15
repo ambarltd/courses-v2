@@ -29,7 +29,7 @@
       "additionalProperties": false,
       "properties": {
         "retakenByUser": {
-          "$ref": "Event/Shared/PayloadIdObject.json"
+          "$ref": "Event/Shared/IdString.json"
         }
       },
       "required": [
