@@ -2,7 +2,6 @@ package cloud.ambar.product.enrollment.commands;
 
 import cloud.ambar.common.event.Event;
 import cloud.ambar.common.event.store.EventRepository;
-import cloud.ambar.common.users.service.UserSessionService;
 import cloud.ambar.product.enrollment.commands.models.RequestEnrollmentCommand;
 import cloud.ambar.product.enrollment.events.EnrollmentRequestedEventData;
 import cloud.ambar.product.enrollment.exceptions.DuplicateEnrollmentException;
@@ -20,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 import static cloud.ambar.common.util.IdGenerator.generateRandomId;
