@@ -26,10 +26,7 @@ refresh_schema() {\n\
   echo "Refreshing schema..."\n\
   OLD_MD5=$(md5sum prisma/schema.prisma)\n\
   npx prisma db pull --force\n\
-  # pull + generate does not appear to refresh the studio \
-  # but not doing npx prisma generate does appear to break the studio. \
-  # thus we must pull again to check for changes, but we also need to generate again to keep studio working\
-  npx prisma generate\n#\
+  npx prisma generate\n\
   NEW_MD5=$(md5sum prisma/schema.prisma)\n\
   if [ $? -eq 0 ]; then\n\
     if [ "$OLD_MD5" != "$NEW_MD5" ]; then\n\
@@ -46,11 +43,14 @@ refresh_schema() {\n\
 if [ "$DB_TYPE" = "mongo" ]; then \n\
   export DATABASE_URL="$MONGO_DATABASE_URL"\n\
   echo "MongoDB detected - initializing..."\n\
-  sleep 15\n\
   npx prisma db pull --force\n\
   npx prisma generate\n\
-  npx prisma studio --port $STUDIO_PORT --hostname 0.0.0.0 > /tmp/prisma-studio.log 2>&1 & \n\
+  npx prisma studio --port $STUDIO_PORT --hostname 0.0.0.0 & \n\
   echo "Prisma studio running. Proceeding to periodically refresh schema." \n\
+  # Avoid modifying the existing client code to prevent bugs when refreshing schema.\n\
+  cp /app /tmp/app_temp -Rf\n \
+  cp /tmp/app_temp /var/local/app_temp -Rf\n \
+  cd /var/local/app_temp\n \
   while true; do\n\
     echo "Waiting 10 seconds before next schema refresh..."\n\
     sleep 10\n\
