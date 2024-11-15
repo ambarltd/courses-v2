@@ -3,7 +3,6 @@ FROM node:20.11.1
 # Define build arguments
 ARG DB_TYPE=postgres
 ARG STUDIO_PORT=5555
-ARG REFRESH_INTERVAL=10
 
 WORKDIR /app
 
@@ -24,13 +23,22 @@ RUN mkdir prisma && \
 # Create a start script that handles schema introspection and generation
 RUN echo '#!/bin/sh\n\
 refresh_schema() {\n\
-  echo "Refreshing MongoDB schema..."\n\
-  npx prisma db pull --force \n\
+  echo "Refreshing schema..."\n\
+  OLD_MD5=$(md5sum prisma/schema.prisma)\n\
+  npx prisma db pull --force\n\
+  # pull + generate does not appear to refresh the studio \
+  # but not doing npx prisma generate does appear to break the studio. \
+  # thus we must pull again to check for changes, but we also need to generate again to keep studio working\
+  npx prisma generate\n#\
+  NEW_MD5=$(md5sum prisma/schema.prisma)\n\
   if [ $? -eq 0 ]; then\n\
-    echo "Schema pulled successfully, generating Prisma Client..."\n\
-    npx prisma generate\n\
+    if [ "$OLD_MD5" != "$NEW_MD5" ]; then\n\
+      echo "Schema changed. Schema reload needed. Exiting to trigger container restart."\n\
+      exit 1\n\
+    fi\n\
+    echo "Schema unchanged."\n\
   else\n\
-    echo "Failed to pull schema. Exiting to trigger container restart..."\n\
+    echo "Failed to refresh schema. Exiting to trigger container restart."\n\
     exit 1\n\
   fi\n\
 }\n\
@@ -38,12 +46,14 @@ refresh_schema() {\n\
 if [ "$DB_TYPE" = "mongo" ]; then \n\
   export DATABASE_URL="$MONGO_DATABASE_URL"\n\
   echo "MongoDB detected - initializing..."\n\
-  refresh_schema\n\
-  # Start Prisma Studio in background\n\
-  npx prisma studio --port $STUDIO_PORT --hostname 0.0.0.0 & \n\
-  # Periodic refresh loop\n\
+  sleep 15\n\
+  npx prisma db pull --force\n\
+  npx prisma generate\n\
+  npx prisma studio --port $STUDIO_PORT --hostname 0.0.0.0 > /tmp/prisma-studio.log 2>&1 & \n\
+  echo "Prisma studio running. Proceeding to periodically refresh schema." \n\
   while true; do\n\
-    sleep $REFRESH_INTERVAL\n\
+    echo "Waiting 10 seconds before next schema refresh..."\n\
+    sleep 10\n\
     refresh_schema\n\
   done\n\
 else \n\
@@ -56,7 +66,6 @@ RUN chmod +x /app/start.sh
 
 ENV POSTGRES_DATABASE_URL=""
 ENV MONGO_DATABASE_URL=""
-ENV REFRESH_INTERVAL=300
 EXPOSE $STUDIO_PORT
 
 CMD ["/app/start.sh"]
