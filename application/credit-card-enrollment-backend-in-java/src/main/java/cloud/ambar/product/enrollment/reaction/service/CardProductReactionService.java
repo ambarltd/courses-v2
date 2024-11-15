@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,7 +73,7 @@ public class CardProductReactionService extends Reactor {
                     .causationID(eventData.getEventId())
                     .aggregateId(request.getId())
                     .version(aggregate.getAggregateVersion() + 1)
-                    .timestamp(LocalDateTime.now())
+                    .timestamp(OffsetDateTime.now())
                     .metadata("{}")
                     .data(objectMapper.writeValueAsString(
                             EnrollmentDeclinedEventData.builder()

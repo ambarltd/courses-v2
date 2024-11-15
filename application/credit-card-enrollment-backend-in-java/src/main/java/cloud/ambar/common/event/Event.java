@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -52,7 +52,7 @@ public class Event {
     private String metadata;
 
     @Column(name="recorded_on")
-    private LocalDateTime timestamp;
+    private OffsetDateTime timestamp;
 
     @Column(name="event_name")
     private String eventName;

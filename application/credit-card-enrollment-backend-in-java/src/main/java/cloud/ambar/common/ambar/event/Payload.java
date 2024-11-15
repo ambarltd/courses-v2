@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
@@ -36,6 +36,6 @@ public class Payload {
     private String eventName;
 
     @JsonProperty("recorded_on")
-    private LocalDateTime recordedOn;
+    private OffsetDateTime recordedOn;
 
 }

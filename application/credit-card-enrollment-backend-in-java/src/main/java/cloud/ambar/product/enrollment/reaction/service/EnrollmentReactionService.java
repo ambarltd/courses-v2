@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
@@ -66,7 +66,7 @@ public class EnrollmentReactionService extends Reactor {
                 .causationID(eventData.getEventId())
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
-                .timestamp(LocalDateTime.now())
+                .timestamp(OffsetDateTime.now())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentDeclinedEventData.builder()
@@ -89,7 +89,7 @@ public class EnrollmentReactionService extends Reactor {
                 .causationID(eventData.getEventId())
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
-                .timestamp(LocalDateTime.now())
+                .timestamp(OffsetDateTime.now())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentPendingReviewEventData.builder()

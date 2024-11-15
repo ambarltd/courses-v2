@@ -17,7 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -69,7 +69,7 @@ public class EnrollmentProjectionService implements Projector {
         final EnrollmentRequest enrollment = getOrThrow(id);
         enrollment.setStatus(status.name());
         switch (status) {
-            case ACCEPTED, DECLINED -> enrollment.setReviewedDate(LocalDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME));
+            case ACCEPTED, DECLINED -> enrollment.setReviewedDate(OffsetDateTime.now().format(DateTimeFormatter.RFC_1123_DATE_TIME));
         }
         return enrollment;
     }

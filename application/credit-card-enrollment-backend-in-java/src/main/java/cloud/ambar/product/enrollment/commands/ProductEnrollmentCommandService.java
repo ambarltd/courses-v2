@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
@@ -70,7 +70,7 @@ public class ProductEnrollmentCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(1)
-                .timestamp(LocalDateTime.now())
+                .timestamp(OffsetDateTime.now())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentRequestedEventData.builder()
