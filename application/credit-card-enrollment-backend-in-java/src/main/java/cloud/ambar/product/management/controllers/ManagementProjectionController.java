@@ -1,10 +1,13 @@
 package cloud.ambar.product.management.controllers;
 
 import cloud.ambar.common.ambar.event.AmbarEvent;
+import cloud.ambar.common.ambar.response.Ambar;
 import cloud.ambar.common.ambar.response.AmbarResponse;
 import cloud.ambar.common.projection.ProjectionController;
 import cloud.ambar.product.management.projection.ProductManagementProjectionService;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Controller
 @RequiredArgsConstructor
 public class ManagementProjectionController extends ProjectionController {
+    private static final Logger log = LogManager.getLogger(ManagementProjectionController.class);
 
     private final ProductManagementProjectionService productManagementProjectionService;
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection")
-    public AmbarResponse handleEvent(@RequestBody AmbarEvent ambarEvent) {
-        return processEvent(ambarEvent, productManagementProjectionService);
+    public AmbarResponse handleEvent(@RequestBody String ambarEvent) {
+        log.info(ambarEvent);
+        return Ambar.retryResponse("err");//processEvent(ambarEvent, productManagementProjectionService);
     }
 }
