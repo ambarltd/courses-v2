@@ -1,7 +1,6 @@
 package cloud.ambar.product.management.controllers;
 
 import cloud.ambar.common.ambar.event.AmbarEvent;
-import cloud.ambar.common.ambar.response.Ambar;
 import cloud.ambar.common.ambar.response.AmbarResponse;
 import cloud.ambar.common.projection.ProjectionController;
 import cloud.ambar.product.management.projection.ProductManagementProjectionService;
@@ -28,8 +27,8 @@ public class ManagementProjectionController extends ProjectionController {
     private final ProductManagementProjectionService productManagementProjectionService;
 
     @PostMapping(value = "/api/v1/credit_card_product/product/projection")
-    public AmbarResponse handleEvent(@RequestBody String ambarEvent) {
+    public AmbarResponse handleEvent(@RequestBody AmbarEvent ambarEvent) {
         log.info(ambarEvent);
-        return Ambar.retryResponse("err");//processEvent(ambarEvent, productManagementProjectionService);
+        return processEvent(ambarEvent, productManagementProjectionService);
     }
 }
