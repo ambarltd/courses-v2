@@ -29,7 +29,6 @@ refresh_schema() {\n\
   if [ $? -eq 0 ]; then\n\
     echo "Schema pulled successfully, generating Prisma Client..."\n\
     npx prisma generate\n\
-    sed -i "/^model/,/^}/ { /^}/ s/^}/  @@readonly\n}/ }" prisma/schema.prisma\n\
   else\n\
     echo "Failed to pull schema. Exiting to trigger container restart..."\n\
     exit 1\n\
