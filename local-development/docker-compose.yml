@@ -198,7 +198,7 @@ services:
   frontend-database-explorer-postgres:
     container_name: frontend-database-explorer-postgres
     build:
-      context: ./../application/frontend-database-explorer
+      context: docker-build/frontend-database-explorer
       args:
         - DB_TYPE=postgres
         - STUDIO_PORT=5555
@@ -226,7 +226,7 @@ services:
   frontend-database-explorer-mongo:
     container_name: frontend-database-explorer-mongo
     build:
-      context: ./../application/frontend-database-explorer
+      context: docker-build/frontend-database-explorer
       args:
         - DB_TYPE=mongo
         - STUDIO_PORT=5556

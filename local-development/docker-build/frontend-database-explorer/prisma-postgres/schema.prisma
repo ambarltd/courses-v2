@@ -23,5 +23,4 @@ model event_store {
 
   @@map("event_store")
   @@schema("public")
-  @@readonly
 }
