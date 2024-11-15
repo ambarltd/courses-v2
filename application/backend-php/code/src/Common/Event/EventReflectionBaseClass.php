@@ -93,6 +93,8 @@ abstract class EventReflectionBaseClass
 
     /**
      * @return array<class-string<Event>>
+     *
+     * @throws EventException\EventMappingReflectionError
      */
     public static function allEventClasses(): array
     {
@@ -103,6 +105,8 @@ abstract class EventReflectionBaseClass
 
     /**
      * @return array<string>
+     *
+     * @throws EventException\EventMappingReflectionError
      */
     public static function allEventNames(): array
     {
