@@ -9,6 +9,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.List;
 import java.util.UUID;
 
+import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
+
 public abstract class Reactor {
     protected abstract void react(final Payload event) throws JsonProcessingException;
 
@@ -23,9 +25,5 @@ public abstract class Reactor {
             aggregate.apply(event);
         }
         return aggregate;
-    }
-
-    protected String deterministicEventId(final String causationId) {
-        return UUID.nameUUIDFromBytes((causationId + "REACTION").getBytes()).toString();
     }
 }

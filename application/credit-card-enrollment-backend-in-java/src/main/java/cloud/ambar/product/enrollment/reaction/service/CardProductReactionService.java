@@ -6,6 +6,7 @@ import cloud.ambar.common.event.store.EventRepository;
 import cloud.ambar.common.exceptions.UnexpectedEventException;
 import cloud.ambar.common.reaction.Reactor;
 import cloud.ambar.product.enrollment.aggregate.EnrollmentAggregate;
+import cloud.ambar.product.enrollment.aggregate.EnrollmentStatus;
 import cloud.ambar.product.enrollment.events.EnrollmentDeclinedEventData;
 import cloud.ambar.product.enrollment.projection.models.EnrollmentRequest;
 import cloud.ambar.product.enrollment.projection.store.EnrollmentProjectionRepository;
@@ -19,7 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
+
+import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 
 @Service
 @RequiredArgsConstructor
@@ -48,9 +51,21 @@ public class CardProductReactionService extends Reactor {
     }
 
     private void declineRequest(Payload eventData, EnrollmentRequest request) {
+        if (!(request.getStatus().equalsIgnoreCase(EnrollmentStatus.REQUESTED.name()) ||
+                request.getStatus().equalsIgnoreCase(EnrollmentStatus.PENDING.name()))) {
+            log.info("Request status does not require a decline. Status: " + request.getStatus());
+            return;
+        }
+        final String eventId = generateDeterministicId(eventData.getEventId());
+
+        Optional<Event> priorEntry = eventStore.findByEventId(eventId);
+        if (priorEntry.isPresent()) {
+            log.info("Found event for eventId, skipping processing");
+            return;
+        }
+
         try {
             final EnrollmentAggregate aggregate = hydrateAggregateForId(eventStore, request.getId());
-            final String eventId = UUID.randomUUID().toString();
             final Event event = Event.builder()
                     .eventName(EnrollmentDeclinedEventData.EVENT_NAME)
                     .eventId(eventId)

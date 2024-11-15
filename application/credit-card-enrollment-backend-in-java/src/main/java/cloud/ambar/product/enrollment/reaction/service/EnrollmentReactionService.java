@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 import static cloud.ambar.product.enrollment.util.Constants.MINIMUM_ANNUAL_INCOME_FOR_ENROLLMENT;
 
 @Service
@@ -36,7 +37,7 @@ public class EnrollmentReactionService extends Reactor {
             log.info("Handling reaction for EnrollmentRequestedEvent.");
             final EnrollmentRequestedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentRequestedEventData.class);
 
-            final String newEventId = deterministicEventId(event.getEventId());
+            final String newEventId = generateDeterministicId(event.getEventId() + "REACTION");
             final Optional<Event> priorEntry = eventStore.findByEventId(newEventId);
             if (priorEntry.isPresent()) {
                 log.info("Found event for eventId - skipping...");

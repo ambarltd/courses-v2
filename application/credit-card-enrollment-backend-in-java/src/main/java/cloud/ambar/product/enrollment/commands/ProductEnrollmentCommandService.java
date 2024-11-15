@@ -22,6 +22,9 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
+import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
+import static cloud.ambar.common.util.IdGenerator.generateRandomId;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -48,7 +51,7 @@ public class ProductEnrollmentCommandService {
         }
 
         final String compositeId = command.getUserId() + command.getProductId();
-        final String eventId = UUID.nameUUIDFromBytes(compositeId.getBytes()).toString();
+        final String eventId = generateDeterministicId(compositeId);
         // First part of validation is to check if this event has already been processed. We expect to create a new
         // unique aggregate from this and subsequent events. If it is already present, then we are processing a duplicate
         // event.
@@ -61,7 +64,7 @@ public class ProductEnrollmentCommandService {
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
         // the resultant event with related details (product definition) and write this to our event store.
-        final String aggregateId = UUID.randomUUID().toString();
+        final String aggregateId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(EnrollmentRequestedEventData.EVENT_NAME)
                 .eventId(eventId)

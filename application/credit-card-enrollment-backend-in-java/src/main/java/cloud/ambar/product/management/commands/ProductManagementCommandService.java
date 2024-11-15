@@ -39,6 +39,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
+import static cloud.ambar.common.util.IdGenerator.generateRandomId;
+
 @Service
 // @Transactional
 // We define this on a Method level instead, as some handle methods will call multiple private helpers to write multiple
@@ -58,7 +61,7 @@ public class ProductManagementCommandService {
     @Transactional
     public void handle(final DefineCreditCardProductCommand command) throws JsonProcessingException {
         log.info("Handling " + ProductDefinedEventData.EVENT_NAME + " command.");
-        final String eventId = UUID.nameUUIDFromBytes(command.getProductIdentifierForAggregateIdHash().getBytes()).toString();
+        final String eventId = generateDeterministicId(command.getProductIdentifierForAggregateIdHash());
         // First part of validation is to check if this event has already been processed. We expect to create a new
         // unique aggregate from this and subsequent events. If it is already present, then we are processing a duplicate
         // event.
@@ -84,7 +87,7 @@ public class ProductManagementCommandService {
 
         // Finally, we have passed all the validations, and want to 'accept' (store) the result event. So we will create
         // the resultant event with related details (product definition) and write this to our event store.
-        final String aggregateId = UUID.randomUUID().toString();
+        final String aggregateId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductDefinedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -131,7 +134,7 @@ public class ProductManagementCommandService {
         log.info("Product is currently inactive, updating to active!");
 
         //  3. Update the aggregate (write new event to store)
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductActivatedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -181,7 +184,7 @@ public class ProductManagementCommandService {
         log.info("Product is currently inactive, updating to active!");
 
         //  3. Update the aggregate (write new event to store)
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductDeactivatedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -233,7 +236,7 @@ public class ProductManagementCommandService {
 
     private Event saveProductBackgroundChangedEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
         final String aggregateId = command.getId();
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductBackgroundChangedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -258,7 +261,7 @@ public class ProductManagementCommandService {
 
     private Event saveProductCreditLimitChangeEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
         final String aggregateId = command.getId();
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductCreditLimitChangedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -283,7 +286,7 @@ public class ProductManagementCommandService {
 
     private Event saveProductPaymentCycleChangedEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
         final String aggregateId = command.getId();
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductPaymentCycleChangedEventData.EVENT_NAME)
                 .eventId(eventId)
@@ -308,7 +311,7 @@ public class ProductManagementCommandService {
 
     private Event saveProductAnnualFeeChangeEvent(ModifyCreditCardCommand command, CreditCardProductAggregate aggregate) throws JsonProcessingException {
         final String aggregateId = command.getId();
-        final String eventId = UUID.randomUUID().toString();
+        final String eventId = generateRandomId();
         final Event event = Event.builder()
                 .eventName(ProductAnnualFeeChangedEventData.EVENT_NAME)
                 .eventId(eventId)
