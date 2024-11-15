@@ -145,6 +145,7 @@ services:
     image: ambarltd/emulator:v1.2-1
     container_name: ambar-emulator
     restart: always
+    init: true
     volumes:
       - ./ambar-config.yaml:/opt/emulator/config/config.yaml
       - ./data/ambar-emulator:/root/.local/share/ambar-emulator
