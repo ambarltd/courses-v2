@@ -96,6 +96,8 @@ abstract class EventReflectionBaseClass
      */
     public static function allEventClasses(): array
     {
+        self::setup();
+
         return array_values(self::$eventNamesToEventClasses);
     }
 
@@ -104,6 +106,8 @@ abstract class EventReflectionBaseClass
      */
     public static function allEventNames(): array
     {
+        self::setup();
+
         return array_values(self::$eventClassesToEventNames);
     }
 
