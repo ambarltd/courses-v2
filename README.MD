@@ -1,4 +1,4 @@
-# Event Sourcing Course - Example
+# Event Sourcing Course - Example Application
 
 This repository contains an example event sourced application, used in Ambar's Event Sourcing course. You can take
 (or retake) the course for free [in this link](https://ambar.cloud/esd).
