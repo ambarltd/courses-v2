@@ -14,7 +14,11 @@ cd courses-v2/local-development
 ./dev_start.sh
 ```
 
-Now open your browser to `localhost:8080` and try the application out!
+Now open your browser to `localhost:8080` and try the application out! You will receive 
+further instructions in the top menu.
+
+![Application Screenshot](.github/docs-images/ApplicationScreenshot.png)
+
 
 ## Contents
 
