@@ -1,4 +1,4 @@
-# Event Sourcing Course - Example
+# Event Sourcing Course - Example Application
 
 This repository contains an example event sourced application, used in Ambar's Event Sourcing course. You can take
 (or retake) the course for free [in this link](https://ambar.cloud/esd).
@@ -14,7 +14,11 @@ cd courses-v2/local-development
 ./dev_start.sh
 ```
 
-Now open your browser to `localhost:8080` and try the application out!
+Now open your browser to `localhost:8080` and try the application out! You will receive 
+further instructions in the top menu.
+
+![Application Screenshot](.github/docs-images/ApplicationScreenshot.png)
+
 
 ## Contents
 
