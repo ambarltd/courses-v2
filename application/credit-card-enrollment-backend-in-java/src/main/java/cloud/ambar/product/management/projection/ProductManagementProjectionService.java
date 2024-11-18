@@ -41,9 +41,10 @@ public class ProductManagementProjectionService implements Projector {
                 creditCardProduct.setId(event.getAggregateId());
                 creditCardProduct.setName(data.getName());
                 creditCardProduct.setActive(false);
-                creditCardProduct.setRewardType(data.getReward());
-                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents()/100);
-                creditCardProduct.setBackgroundColorHex(data.getCardBackgroundHex());
+                creditCardProduct.setReward(data.getReward());
+                creditCardProduct.setAnnualFeeInCents(data.getAnnualFeeInCents());
+                creditCardProduct.setCreditLimitInCents(data.getCreditLimitInCents());
+                creditCardProduct.setHexColor(data.getCardBackgroundHex());
             }
             case ProductActivatedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductActivatedEvent");
@@ -59,13 +60,13 @@ public class ProductManagementProjectionService implements Projector {
                 log.info("Handling projection for ProductDeactivatedEvent");
                 final ProductAnnualFeeChangedEventData data = objectMapper.readValue(event.getData(), ProductAnnualFeeChangedEventData.class);
                 creditCardProduct = getProductOrThrow(event);
-                creditCardProduct.setAnnualFee(data.getAnnualFeeInCents()/100);
+                creditCardProduct.setAnnualFeeInCents(data.getAnnualFeeInCents()/100);
             }
             case ProductBackgroundChangedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductBackgroundChangedEvent");
                 final ProductBackgroundChangedEventData data = objectMapper.readValue(event.getData(), ProductBackgroundChangedEventData.class);
                 creditCardProduct = getProductOrThrow(event);
-                creditCardProduct.setBackgroundColorHex(data.getCardBackgroundHex());
+                creditCardProduct.setHexColor(data.getCardBackgroundHex());
             }
             // For now Ambar is sending all events. But we could update the filter to only give us events related to
             // the properties of products which we actually display.

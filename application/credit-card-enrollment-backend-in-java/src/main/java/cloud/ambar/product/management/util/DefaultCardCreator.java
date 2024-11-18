@@ -34,10 +34,8 @@ public class DefaultCardCreator implements ApplicationRunner {
         } catch (InterruptedException e) {
             // Do nothing.
         }
-        commandService.handle(STARTER);
         commandService.handle(BASIC);
         commandService.handle(BASIC_CASH_BACK);
         commandService.handle(BASIC_POINTS);
-        commandService.handle(PLATINUM);
     }
 }

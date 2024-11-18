@@ -98,13 +98,6 @@ services:
         condition: service_healthy
       mongo-projection:
         condition: service_healthy
-    healthcheck:
-      test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080?docker_healthcheck=true 2>&1 | grep '200 OK'" ]
-      timeout: 2s
-      interval: 60s
-      retries: 10
-      start_period: 20s
-      start_interval: 5s
     expose:
       - 8080
     networks:

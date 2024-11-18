@@ -40,6 +40,7 @@ import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 import static cloud.ambar.common.util.IdGenerator.generateRandomId;
+import static cloud.ambar.common.util.RecordedOnHelper.recordedNow;
 
 @Service
 // @Transactional
@@ -94,7 +95,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(1)
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                     ProductDefinedEventData.builder()
@@ -141,7 +142,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 // The top level event EventName, aggregateId, and timestamp really capture everything there is to know
                 // about this event.
@@ -191,7 +192,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 // The top level event EventName, aggregateId, and timestamp really capture everything there is to know
                 // about this event.
@@ -243,7 +244,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{\"prior_value\":\"" + aggregate.getCardBackgroundHex() + "\"}")
                 .data(objectMapper.writeValueAsString(
                         ProductBackgroundChangedEventData.builder()
@@ -268,7 +269,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{\"prior_value\":" + aggregate.getCreditLimitInCents() + "}")
                 .data(objectMapper.writeValueAsString(
                         ProductCreditLimitChangedEventData.builder()
@@ -293,7 +294,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{\"prior_value\":\"" + aggregate.getPaymentCycle() + "\"}")
                 .data(objectMapper.writeValueAsString(
                         ProductPaymentCycleChangedEventData.builder()
@@ -318,7 +319,7 @@ public class ProductManagementCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(aggregate.getAggregateVersion())
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{\"prior_value\":" + aggregate.getAnnualFeeInCents() + "}")
                 .data(objectMapper.writeValueAsString(
                         ProductAnnualFeeChangedEventData.builder()

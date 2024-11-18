@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 import static cloud.ambar.common.util.IdGenerator.generateRandomId;
+import static cloud.ambar.common.util.RecordedOnHelper.recordedNow;
 
 @Service
 @Transactional
@@ -70,7 +71,7 @@ public class ProductEnrollmentCommandService {
                 .causationID(eventId)
                 .aggregateId(aggregateId)
                 .version(1)
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentRequestedEventData.builder()

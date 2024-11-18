@@ -12,8 +12,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -52,7 +50,7 @@ public class Event {
     private String metadata;
 
     @Column(name="recorded_on")
-    private OffsetDateTime timestamp;
+    private String recordedOn;
 
     @Column(name="event_name")
     private String eventName;

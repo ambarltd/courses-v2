@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
+import static cloud.ambar.common.util.RecordedOnHelper.recordedNow;
 import static cloud.ambar.product.enrollment.util.Constants.MINIMUM_ANNUAL_INCOME_FOR_ENROLLMENT;
 
 @Service
@@ -66,7 +67,7 @@ public class EnrollmentReactionService extends Reactor {
                 .causationID(eventData.getEventId())
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentDeclinedEventData.builder()
@@ -89,7 +90,7 @@ public class EnrollmentReactionService extends Reactor {
                 .causationID(eventData.getEventId())
                 .aggregateId(eventData.getAggregateId())
                 .version(2) // The EnrollmentRequest will be the first event in the agg, this reaction will create event #2
-                .timestamp(OffsetDateTime.now())
+                .recordedOn(recordedNow())
                 .metadata("{}")
                 .data(objectMapper.writeValueAsString(
                         EnrollmentPendingReviewEventData.builder()

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
+import static cloud.ambar.common.util.RecordedOnHelper.recordedNow;
 
 @Service
 @RequiredArgsConstructor
@@ -73,7 +74,7 @@ public class CardProductReactionService extends Reactor {
                     .causationID(eventData.getEventId())
                     .aggregateId(request.getId())
                     .version(aggregate.getAggregateVersion() + 1)
-                    .timestamp(OffsetDateTime.now())
+                    .recordedOn(recordedNow())
                     .metadata("{}")
                     .data(objectMapper.writeValueAsString(
                             EnrollmentDeclinedEventData.builder()
