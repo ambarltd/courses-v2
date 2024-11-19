@@ -27,9 +27,7 @@ const endpoints = {
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
-  "list-credit-card-products": domains.card + "/product/list-items",
-  "activate-product": domains.card + "/product/activate",
-  "deactivate-product": domains.card + "/product/deactivate"
+  "list-credit-card-products": domains.card + "/product/list-items"
 }
 
 // Accept JSON bodies
