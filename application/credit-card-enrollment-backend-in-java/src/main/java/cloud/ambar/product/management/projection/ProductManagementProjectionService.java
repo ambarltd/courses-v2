@@ -42,6 +42,7 @@ public class ProductManagementProjectionService implements Projector {
                 creditCardProduct.setName(data.getName());
                 creditCardProduct.setActive(false);
                 creditCardProduct.setReward(data.getReward());
+                creditCardProduct.setPaymentCycle(data.getPaymentCycle());
                 creditCardProduct.setAnnualFeeInCents(data.getAnnualFeeInCents());
                 creditCardProduct.setCreditLimitInCents(data.getCreditLimitInCents());
                 creditCardProduct.setHexColor(data.getCardBackgroundHex());

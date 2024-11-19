@@ -18,6 +18,7 @@ public class CreditCardProduct {
     @JsonProperty("isActive")
     private boolean active;
     private String reward;
+    private String paymentCycle;
     private int annualFeeInCents;
     private int creditLimitInCents;
     private String hexColor;
