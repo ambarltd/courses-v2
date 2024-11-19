@@ -19,6 +19,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class CardProduct {
     @Id
     private String id;
-    @JsonProperty("isActive")
     private boolean active;
+    private String name;
 }

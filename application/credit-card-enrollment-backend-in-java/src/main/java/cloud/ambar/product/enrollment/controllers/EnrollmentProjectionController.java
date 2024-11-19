@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/credit_card_product/enrollment/projection")
+@RequestMapping("/api/v1/credit_card_enrollment/enrollment/projection")
 public class EnrollmentProjectionController extends ProjectionController {
 
     private final EnrollmentCardProductProjectionService cardProductProjectionService;

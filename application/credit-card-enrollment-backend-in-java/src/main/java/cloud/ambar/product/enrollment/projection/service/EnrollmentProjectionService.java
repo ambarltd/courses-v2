@@ -8,7 +8,9 @@ import cloud.ambar.product.enrollment.events.EnrollmentAcceptedEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentDeclinedEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentPendingReviewEventData;
 import cloud.ambar.product.enrollment.events.EnrollmentRequestedEventData;
+import cloud.ambar.product.enrollment.projection.models.CardProduct;
 import cloud.ambar.product.enrollment.projection.models.EnrollmentRequest;
+import cloud.ambar.product.enrollment.projection.store.EnrollmentCardProductProjectionRepository;
 import cloud.ambar.product.enrollment.projection.store.EnrollmentProjectionRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +29,7 @@ public class EnrollmentProjectionService implements Projector {
     private static final Logger log = LogManager.getLogger(EnrollmentProjectionService.class);
 
     private final EnrollmentProjectionRepository enrollmentProjectionRepository;
+    private final EnrollmentCardProductProjectionRepository enrollmentCardProductProjectionRepository;
 
     private final ObjectMapper objectMapper;
 
@@ -36,9 +39,11 @@ public class EnrollmentProjectionService implements Projector {
         switch (event.getEventName()) {
             case EnrollmentRequestedEventData.EVENT_NAME -> {
                 final EnrollmentRequestedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentRequestedEventData.class);
+                final CardProduct p = getProductDetails(eventData.getProductId());
                 enrollment = new EnrollmentRequest();
                 final String id = eventData.getUserId() + "-" + eventData.getProductId();
                 enrollment.setId(id);
+                enrollment.setProductName(p.getName());
                 enrollment.setUserId(eventData.getUserId());
                 enrollment.setProductId(eventData.getProductId());
                 enrollment.setStatus(EnrollmentStatus.REQUESTED.name());
@@ -63,6 +68,16 @@ public class EnrollmentProjectionService implements Projector {
         }
 
         enrollmentProjectionRepository.save(enrollment);
+    }
+
+    private CardProduct getProductDetails(String productId) {
+        Optional<CardProduct> cardProduct = enrollmentCardProductProjectionRepository.findById(productId);
+        if (cardProduct.isEmpty()) {
+            final String msg = "Unable to find CardProduct in projection repository for id: " + productId;
+            log.error(msg);
+            throw new RuntimeException(msg);
+        }
+        return cardProduct.get();
     }
 
     private EnrollmentRequest getAndSetStatus(String id, EnrollmentStatus status) {

@@ -15,7 +15,8 @@ const app = Express()
 const domains = {
   identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
   security: process.env.DOMAIN_SECURITY + "/api/v1/security",
-  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card_product"
+  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card_product",
+  enrollment: process.env.DOMAIN_CARD_ENROLLMENT + "/api/v1/credit_card_enrollment"
 }
 
 const endpoints = {
@@ -27,7 +28,9 @@ const endpoints = {
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
-  "list-credit-card-products": domains.card + "/product/list-items"
+  "list-credit-card-products": domains.card + "/product/list-items",
+  "request-card-enrollment": domains.enrollment + "/enrollment",
+  "list-user-enrollments": domains.enrollment + "/enrollment/list-enrollments"
 }
 
 // Accept JSON bodies
@@ -113,7 +116,7 @@ app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
-app.post('/card/products', authenticated,  cardToggle);
+app.get('/user/enrollments', authenticated, routeUserEnrollments);
 
 async function userDetails(token) {
   const response = await fetch(endpoints["user-details"], {
@@ -420,6 +423,33 @@ async function routeCardProducts(req, res) {
     locals: {
       title: "Card Products",
       products: r
+    }
+  });
+}
+
+async function routeUserEnrollments(req, res) {
+  const contents = {};
+
+  const response = await fetch(endpoints["list-user-enrollments"], {
+    method: "POST",
+    body: JSON.stringify(contents, null, 2),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-With-Session-Token': req.session.token
+    }
+  });
+  const r = await response.json()
+  if (!response.ok) {
+    const error = getError(r);
+    errorPage(res, error);
+    return;
+  }
+
+  return res.render("card/enrollments", {
+    layout: layouts.main,
+    locals: {
+      title: "Card Enrollment Requests",
+      enrollments: r
     }
   });
 }

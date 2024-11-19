@@ -26,7 +26,7 @@ import java.util.NoSuchElementException;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/credit_card_product/enrollment")
+@RequestMapping("/api/v1/credit_card_enrollment/enrollment")
 public class EnrollmentCommandController {
     private static final Logger log = LogManager.getLogger(EnrollmentCommandController.class);
 

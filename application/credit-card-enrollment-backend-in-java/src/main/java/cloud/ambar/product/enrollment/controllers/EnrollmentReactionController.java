@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/credit_card_product/enrollment/reaction")
+@RequestMapping("/api/v1/credit_card_enrollment/enrollment/reaction")
 public class EnrollmentReactionController extends ReactionController {
 
     private final EnrollmentReactionService enrollmentReactionService;

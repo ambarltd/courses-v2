@@ -8,6 +8,8 @@ import cloud.ambar.product.enrollment.projection.store.EnrollmentCardProductProj
 import cloud.ambar.product.management.events.ProductActivatedEventData;
 import cloud.ambar.product.management.events.ProductDeactivatedEventData;
 import cloud.ambar.product.management.events.ProductDefinedEventData;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,17 +22,21 @@ import java.util.Optional;
 public class EnrollmentCardProductProjectionService implements Projector {
     private static final Logger log = LogManager.getLogger(EnrollmentCardProductProjectionService.class);
 
+    private final ObjectMapper om;
+
     private final EnrollmentCardProductProjectionRepository enrollmentCardProductProjectionRepository;
 
     @Override
-    public void project(Payload event) {
+    public void project(Payload event) throws JsonProcessingException {
         final CardProduct creditCardProduct;
         switch (event.getEventName()) {
             case ProductDefinedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductDefinedEvent");
+                final ProductDefinedEventData eventData = om.readValue(event.getData(), ProductDefinedEventData.class);
                 creditCardProduct = new CardProduct();
                 creditCardProduct.setId(event.getAggregateId());
                 creditCardProduct.setActive(false);
+                creditCardProduct.setName(eventData.getName());
             }
             case ProductActivatedEventData.EVENT_NAME -> {
                 log.info("Handling projection for ProductActivatedEvent");

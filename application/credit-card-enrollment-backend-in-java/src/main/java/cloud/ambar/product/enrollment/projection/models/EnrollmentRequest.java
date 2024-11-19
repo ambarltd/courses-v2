@@ -18,6 +18,7 @@ public class EnrollmentRequest {
     private String userId;
     @Indexed
     private String productId;
+    private String productName;
     private String requestedDate;
     @Indexed
     private String status;

@@ -28,7 +28,7 @@ public class EnrollmentQueryController {
 
     private final ObjectMapper objectMapper;
 
-    @PostMapping(value = "/api/v1/credit_card_product/enrollment/list-enrollments")
+    @PostMapping(value = "/api/v1/credit_card_enrollment/enrollment/list-enrollments")
     public String listItems(@RequestHeader("X-With-Session-Token") String sessionToken) throws JsonProcessingException {
         // Get the session token and make sure there is a user associated with it.
         final UserSession session = getSessionForToken(sessionToken);
