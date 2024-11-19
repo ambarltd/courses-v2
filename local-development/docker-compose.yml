@@ -9,6 +9,7 @@ services:
       DOMAIN_IDENTITY: "http://172.30.0.106:8080"
       DOMAIN_SECURITY: "http://172.30.0.106:8080"
       DOMAIN_CREDIT_CARD_PRODUCT: "http://172.30.0.109:8080"
+      DOMAIN_CARD_ENROLLMENT: "http://172.30.0.109:8080"
       POSTGRES_DATABASE_URL: "postgresql://my_es_username:my_es_password@172.30.0.107:5432/my_es_database?schema=public"
       MONGODB_DATABASE_URL: "mongodb://my_mongo_username:my_mongo_password@172.30.0.108:27017/projections?authSource=admin"
     depends_on:
