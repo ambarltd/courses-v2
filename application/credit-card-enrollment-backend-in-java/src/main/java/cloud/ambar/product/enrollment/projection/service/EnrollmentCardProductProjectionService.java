@@ -53,6 +53,8 @@ public class EnrollmentCardProductProjectionService implements Projector {
             // Throwing this will tell ambar to keep going despite something unexpected.
             default -> throw new UnexpectedEventException(event.getEventName());
         }
+
+        enrollmentCardProductProjectionRepository.save(creditCardProduct);
     }
 
     private CardProduct getProductOrThrow(String id) {
