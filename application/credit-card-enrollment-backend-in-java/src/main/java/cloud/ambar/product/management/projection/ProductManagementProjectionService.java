@@ -86,5 +86,4 @@ public class ProductManagementProjectionService implements Projector {
         }
         return product.get();
     }
-
 }

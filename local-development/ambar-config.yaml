@@ -126,10 +126,28 @@ data_destinations:
     sources:
       - postgres_source
 
-  - id: CreditCardProduct_Product_ProductListItem
-    description: CreditCardProduct_Product_ProductListItem
+  - id: Java_Backend_Card_Products
+    description: Project card products latest state information
     type: http-push
     endpoint: http://172.30.0.109:8080/api/v1/credit_card_product/product/projection
+    username: username
+    password: password
+    sources:
+      - postgres_source
+
+  - id: Java_Backend_Card_Products_For_Enrollments
+    description: Card products for Enrollment (application) projections
+    type: http-push
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/projection/card_products
+    username: username
+    password: password
+    sources:
+      - postgres_source
+
+  - id: Java_Backend_User_Enrollments
+    description: The users enrollments
+    type: http-push
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/projection/card_products
     username: username
     password: password
     sources:

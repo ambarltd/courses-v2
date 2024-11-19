@@ -14,6 +14,35 @@ generator dbml {
   output   = "./dbml"
 }
 
+model CardProduct {
+  id     String @id @default(auto()) @map("_id") // Maps to the MongoDB _id field
+  active Boolean
+  name   String
+  @@map("EnrollmentProducts") // Maps to the specified MongoDB collection
+}
+
+model EnrollmentRequest {
+  id            String @id @default(auto()) @map("_id")
+  userId        String @index
+  productId     String @index
+  productName   String
+  requestedDate String
+  status        String @index
+  reviewedDate  String
+  @@map("Enrollments")
+}
+
+model CreditCardProduct {
+  id                String  @id @default(auto()) @map("_id")
+  name              String
+  active            Boolean @map("isActive")
+  reward            String
+  annualFeeInCents  Int
+  creditLimitInCents Int
+  hexColor          String
+  @@map("ProductListItems")
+}
+
 // This will make Prisma introspect your MongoDB database
 // Run: prisma db pull
 // Then the models will be automatically generated based on your existing collections
