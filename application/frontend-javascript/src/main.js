@@ -424,44 +424,6 @@ async function routeCardProducts(req, res) {
   });
 }
 
-async function cardToggle(req, res) {
-  const productId = req.body.productId;
-  const active = req.body.active;
-
-  if (!productId) {
-    return res.status(400).json({ error: 'Product ID is required' });
-  }
-
-  try {
-    // Make the appropriate fetch request based on the product's current status
-    const endpoint = active === "true"
-        ? endpoints["deactivate-product"] + "/" + productId
-        : endpoints["activate-product"] + "/" + productId;
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      body: '{}',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    });
-
-    // Bit of a hack, the request -> event -> projection will take some time.
-    // Realistically you would update the interface locally, and refresh state async
-    await sleep(2000);
-
-    // After successfully toggling the product status, render the updated product list
-    return await routeCardProducts(req, res);
-  } catch (error) {
-    console.error('Error in cardToggle:', error);
-    return await routeCardProducts(req, res);
-  }
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 app.get('/event-bus-yml', (req, res) => {
   try {
     const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
