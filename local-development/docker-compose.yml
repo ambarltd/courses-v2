@@ -145,6 +145,13 @@ services:
     image: ambarltd/emulator:v1.4-multiarch
     container_name: ambar-emulator
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "ls", "/root/.local/share/ambar-emulator/state.json" ]
+      timeout: 5s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 5s
     volumes:
       - ./ambar-config.yaml:/opt/emulator/config/config.yaml
       - ./data/ambar-emulator:/root/.local/share/ambar-emulator
