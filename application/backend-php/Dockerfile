@@ -1,4 +1,4 @@
-FROM ambarltd/courses-v2-php
+FROM ambarltd/courses-v2-php:v1.1
 
 RUN mkdir -p /symfony_tmp/cache/
 RUN mkdir -p /symfony_tmp/cache/production/
