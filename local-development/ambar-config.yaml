@@ -152,3 +152,21 @@ data_destinations:
     password: password
     sources:
       - postgres_source
+
+  - id: Java_Backend_Card_Products_For_Enrollments_reactions
+    description: Card products for Enrollment (application) reactions
+    type: http-push
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/reaction/card_products
+    username: username
+    password: password
+    sources:
+      - postgres_source
+
+  - id: Java_Backend_User_Enrollments_reactions
+    description: The users enrollments reactions
+    type: http-push
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/reaction/enrollments
+    username: username
+    password: password
+    sources:
+      - postgres_source

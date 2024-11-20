@@ -442,21 +442,21 @@ async function routeRequestedEnrollment(req, res) {
   });
   const r = await response.json()
 
-  console.log(JSON.stringify(r))
-
-  if (!response.ok) {
-    const error = getError(r);
-    errorPage(res, error);
-    return;
-  }
-
-  return res.render("card/enrollments", {
-    layout: layouts.main,
-    locals: {
-      title: "Card Enrollment Requests",
-      enrollments: r
-    }
-  });
+  // console.log(r)
+  //
+  // if (!response.ok) {
+  //   const error = getError(r);
+  //   errorPage(res, error);
+  //   return;
+  // }
+  //
+  // return res.render("card/enrollments", {
+  //   layout: layouts.main,
+  //   locals: {
+  //     title: "Card Enrollment Requests",
+  //     enrollments: r
+  //   }
+  // });
 }
 
 async function routeUserEnrollments(req, res) {
