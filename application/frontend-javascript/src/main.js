@@ -430,22 +430,20 @@ async function routeCardProducts(req, res) {
 
 async function routeRequestedEnrollment(req, res) {
 
-  console.log('Request body: ' + req.body)
-
-  const contents = {
-    productId: req.body.productId,
-    annualIncome: req.body.annualIncome
-  };
+  console.log('Request body: ' + JSON.stringify(req.body))
 
   const response = await fetch(endpoints["request-card-enrollment"], {
     method: "POST",
-    body: JSON.stringify(contents, null, 2),
+    body: JSON.stringify(req.body, null, 2),
     headers: {
       'Content-Type': 'application/json',
       'X-With-Session-Token': req.session.token
     }
   });
   const r = await response.json()
+
+  console.log(JSON.stringify(r))
+
   if (!response.ok) {
     const error = getError(r);
     errorPage(res, error);

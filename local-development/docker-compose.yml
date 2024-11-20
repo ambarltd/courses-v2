@@ -2,6 +2,7 @@ services:
 
   frontend-app:
     container_name: frontend-app
+    command: node --watch --inspect=0.0.0.0:9229 /app/src/main.js
     build:
       context: ./../application/frontend-javascript/
     restart: always
@@ -24,13 +25,16 @@ services:
       start_interval: 3s
     volumes:
       - ./ambar-config.yaml:/ambar-yml/ambar-config.yaml:ro
+      - ../application/frontend-javascript/src:/app/src
     networks:
       development:
         ipv4_address: 172.30.0.105
     expose:
       - 8080
+      - 9229
     ports:
       - "8080:8080"
+      - "9229:9229"
 
   backend-php:
     container_name: backend-php
