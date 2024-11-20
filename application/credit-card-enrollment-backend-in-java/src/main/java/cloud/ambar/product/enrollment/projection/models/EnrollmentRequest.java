@@ -22,5 +22,7 @@ public class EnrollmentRequest {
     private String requestedDate;
     @Indexed
     private String status;
+    private String statusCode;
+    private String statusReason;
     private String reviewedDate;
 }

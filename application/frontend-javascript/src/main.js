@@ -440,7 +440,7 @@ async function routeRequestedEnrollment(req, res) {
       'X-With-Session-Token': req.session.token
     }
   });
-  const r = await response.json()
+  // const r = await response.json()
 
   // console.log(r)
   //

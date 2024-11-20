@@ -41,7 +41,7 @@ public class EnrollmentProjectionService implements Projector {
                 final EnrollmentRequestedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentRequestedEventData.class);
                 final CardProduct p = getProductDetails(eventData.getProductId());
                 enrollment = new EnrollmentRequest();
-                final String id = eventData.getUserId() + "-" + eventData.getProductId();
+                final String id = event.getAggregateId();
                 enrollment.setId(id);
                 enrollment.setProductName(p.getName());
                 enrollment.setUserId(eventData.getUserId());
@@ -50,16 +50,16 @@ public class EnrollmentProjectionService implements Projector {
                 enrollment.setRequestedDate(event.getRecordedOn().format(DateTimeFormatter.RFC_1123_DATE_TIME));
             }
             case EnrollmentPendingReviewEventData.EVENT_NAME -> {
-                final EnrollmentPendingReviewEventData eventData = objectMapper.readValue(event.getData(), EnrollmentPendingReviewEventData.class);
-                enrollment = getAndSetStatus(eventData.getId(), EnrollmentStatus.REQUESTED);
+                enrollment = getAndSetStatus(event.getAggregateId(), EnrollmentStatus.REQUESTED);
             }
             case EnrollmentAcceptedEventData.EVENT_NAME -> {
-                final EnrollmentAcceptedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentAcceptedEventData.class);
-                enrollment = getAndSetStatus(eventData.getId(), EnrollmentStatus.ACCEPTED);
+                enrollment = getAndSetStatus(event.getAggregateId(), EnrollmentStatus.ACCEPTED);
             }
             case EnrollmentDeclinedEventData.EVENT_NAME -> {
                 final EnrollmentDeclinedEventData eventData = objectMapper.readValue(event.getData(), EnrollmentDeclinedEventData.class);
-                enrollment = getAndSetStatus(eventData.getId(), EnrollmentStatus.DECLINED);
+                enrollment = getAndSetStatus(event.getAggregateId(), EnrollmentStatus.DECLINED);
+                enrollment.setStatusCode(eventData.getReasonCode());
+                enrollment.setStatusReason(eventData.getReasonDescription());
             }
             // For now Ambar is sending all events. But we could update the filter to only give us events related to
             // the properties of products which we actually display.
