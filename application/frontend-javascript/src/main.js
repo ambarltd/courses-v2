@@ -116,6 +116,7 @@ app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
+app.post('/card/enrollment', authenticated, routeRequestedEnrollment);
 app.get('/user/enrollments', authenticated, routeUserEnrollments);
 
 async function userDetails(token) {
@@ -427,6 +428,39 @@ async function routeCardProducts(req, res) {
   });
 }
 
+async function routeRequestedEnrollment(req, res) {
+
+  console.log('Request body: ' + req.body)
+
+  const contents = {
+    productId: req.body.productId,
+    annualIncome: req.body.annualIncome
+  };
+
+  const response = await fetch(endpoints["request-card-enrollment"], {
+    method: "POST",
+    body: JSON.stringify(contents, null, 2),
+    headers: {
+      'Content-Type': 'application/json',
+      'X-With-Session-Token': req.session.token
+    }
+  });
+  const r = await response.json()
+  if (!response.ok) {
+    const error = getError(r);
+    errorPage(res, error);
+    return;
+  }
+
+  return res.render("card/enrollments", {
+    layout: layouts.main,
+    locals: {
+      title: "Card Enrollment Requests",
+      enrollments: r
+    }
+  });
+}
+
 async function routeUserEnrollments(req, res) {
   const contents = {};
 
@@ -493,4 +527,3 @@ app.get("*", authenticated, render("404", { title: "Not Found" }))
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`)
 })
-
