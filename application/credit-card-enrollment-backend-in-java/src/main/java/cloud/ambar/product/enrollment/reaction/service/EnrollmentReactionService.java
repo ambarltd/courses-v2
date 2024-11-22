@@ -84,7 +84,7 @@ public class EnrollmentReactionService extends Reactor {
 
     private void moveRequestToPending(Payload eventData, String eventId) throws JsonProcessingException {
         final Event event = Event.builder()
-                .eventName(EnrollmentDeclinedEventData.EVENT_NAME)
+                .eventName(EnrollmentPendingReviewEventData.EVENT_NAME)
                 .eventId(eventId)
                 .correlationId(eventData.getAggregateId())
                 .causationID(eventData.getEventId())
