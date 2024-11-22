@@ -1,4 +1,4 @@
-package cloud.ambar.product.enrollment.reaction.service;
+package cloud.ambar.product.enrollment.reaction;
 
 import cloud.ambar.common.ambar.event.Payload;
 import cloud.ambar.common.event.Event;
@@ -16,7 +16,6 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 import java.util.Optional;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
