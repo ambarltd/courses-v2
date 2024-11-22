@@ -34,8 +34,6 @@ public class DefaultCardCreator implements ApplicationRunner {
 
     private final ProductManagementCommandService commandService;
 
-    private final ProductManagementQueryService queryService;
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         log.info("Defining initial card products");
@@ -44,44 +42,6 @@ public class DefaultCardCreator implements ApplicationRunner {
         commandService.handle(BASIC);
         commandService.handle(BASIC_CASH_BACK);
         commandService.handle(BASIC_POINTS);
-
-        log.info("Listing all cards to randomly activate and deactivate them...!");
-        List<CreditCardProduct> products = queryService.getAllCreditCardProducts();
-
-        Random random = new Random();
-        // Generate a random duration between 5 and 10 minutes (in milliseconds)
-        long minMillis = TimeUnit.MINUTES.toMillis(5);
-        long maxMillis = TimeUnit.MINUTES.toMillis(10);
-        long randomMillis;
-
-        products.forEach(p -> {
-            if (!p.isActive()) {
-                try {
-                    commandService.handle(new ActivateCreditCardProductCommand(p.getId()));
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        });
-
-        while (true) {
-            products = queryService.getAllCreditCardProducts();
-            randomMillis = minMillis + (long) (random.nextDouble() * (maxMillis - minMillis));
-            sleep(randomMillis);
-
-            CreditCardProduct card = products.get(random.nextInt(products.size()));
-            log.info("Selected card " + card.getName());
-            log.info("Flipping active status.");
-            if (card.isActive()) {
-                try {
-                    commandService.handle(new DeactivateCreditCardProductCommand(card.getId()));
-                } catch (Exception e) {
-                    // We might get an exception back if it was the last active card. We can just move on.
-                }
-            } else {
-                commandService.handle(new ActivateCreditCardProductCommand(card.getId()));
-            }
-        }
     }
     private void sleep(long millis) {
         log.info("Sleeping for " + millis + " milliseconds.");

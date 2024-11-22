@@ -24,6 +24,7 @@ public abstract class Aggregate implements IAggregate {
     public void apply(final Event event) {
         log.info("Applying Event: " + event);
         this.validateEvent(event);
+        log.info("Transforming Event: " + event);
         transform(event);
 
         this.aggregateVersion++;
