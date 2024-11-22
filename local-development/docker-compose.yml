@@ -180,9 +180,16 @@ services:
         ipv4_address: 172.30.0.108
 
   ambar-emulator:
-    image: ambarltd/emulator:v1.4
+    image: ambarltd/emulator:v1.5
     container_name: ambar-emulator
     restart: always
+    healthcheck:
+      test: [ "CMD-SHELL", "ls", "/root/.local/share/ambar-emulator/state.json" ]
+      timeout: 5s
+      interval: 60s
+      retries: 10
+      start_period: 20s
+      start_interval: 5s
     volumes:
       - ./ambar-config.yaml:/opt/emulator/config/config.yaml
       - ./data/ambar-emulator:/root/.local/share/ambar-emulator
