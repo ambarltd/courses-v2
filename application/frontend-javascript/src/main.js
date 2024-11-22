@@ -432,31 +432,25 @@ async function routeRequestedEnrollment(req, res) {
 
   console.log('Request body: ' + JSON.stringify(req.body))
 
-  const response = await fetch(endpoints["request-card-enrollment"], {
-    method: "POST",
-    body: JSON.stringify(req.body, null, 2),
-    headers: {
-      'Content-Type': 'application/json',
-      'X-With-Session-Token': req.session.token
-    }
-  });
-  // const r = await response.json()
+  try {
+    const response = await fetch(endpoints["request-card-enrollment"], {
+      method: "POST",
+      body: JSON.stringify(req.body, null, 2),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': req.session.token
+      }
+    });
+    // Forward status and body directly from the downstream service to the frontend
+    const responseBody = await response.text(); // Using text to handle any response format
+    res.status(response.status).send(responseBody);
 
-  // console.log(r)
-  //
-  // if (!response.ok) {
-  //   const error = getError(r);
-  //   errorPage(res, error);
-  //   return;
-  // }
-  //
-  // return res.render("card/enrollments", {
-  //   layout: layouts.main,
-  //   locals: {
-  //     title: "Card Enrollment Requests",
-  //     enrollments: r
-  //   }
-  // });
+  } catch (error) {
+    console.error('Error making enrollment request:', error);
+
+    // Handle server errors and send a generic error response
+    res.status(500).json({ message: 'An error occurred while processing your request.' });
+  }
 }
 
 async function routeUserEnrollments(req, res) {

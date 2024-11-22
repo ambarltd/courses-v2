@@ -31,7 +31,7 @@
                 <div class="flex items-center space-x-4">
                     {{#if this.isActive}}
                         <button class="px-4 py-2 bg-blue-600 text-white text-sm rounded"
-                                onclick="openForm('{{this.id}}', '{{this.name}}')">
+                                onclick="openForm('{{this.id}}', '{{this.name}}')" id="{{this.id}}">
                             Apply
                         </button>
                     {{/if}}
@@ -73,17 +73,31 @@
     </div>
 </div>
 
+<!-- Error Modal -->
+<div id="errorModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 max-w-md">
+        <h3 class="text-lg font-semibold mb-4">Previous Application found</h3>
+        <p>Your request has not been processed due to a prior request for this card. Please see
+        <a id="statusLink" href="/user/enrollments" target="_blank" class="text-blue-600 hover:underline">enrollments</a>
+ for more details</p>
+        <button onclick="closeError()"
+                class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
+            Close
+        </button>
+    </div>
+</div>
+
 <script>
     function openForm(productId, productName) {
-        console.log("Submitting application for: " + productId + ", " + productName)
+        console.log("Submitting application for: " + productId + ", " + productName);
         document.getElementById('formModal').classList.remove('hidden');
+
         document.getElementById('requestForm').onsubmit = async function (event) {
             event.preventDefault();
 
             const income = document.getElementById('annualIncome').value;
 
             try {
-
                 const response = await fetch('/card/enrollment', {
                     method: 'POST',
                     headers: {
@@ -96,15 +110,29 @@
                     })
                 });
 
-                if (response.ok) {
-                    // Close form modal
+                if (response.status === 200) {
+                    // Handle success response
                     document.getElementById('formModal').classList.add('hidden');
 
                     // Show confirmation with link
                     document.getElementById('statusLink').textContent = `View status for ${productName} application`;
                     document.getElementById('statusLink').href = '/user/enrollments';
                     document.getElementById('confirmationModal').classList.remove('hidden');
+                } else if (response.status === 409) {
+                    // Handle conflict response
+                    const errorData = await response.json();
+                    console.error('Conflict:', errorData.message || 'Conflict occurred');
+                    document.getElementById('formModal').classList.add('hidden');
+
+                    // Show error modal
+                    document.getElementById('errorModal').classList.remove('hidden');
+
+                    // disable the apply button from applications until more reloads
+                    // bg-blue-600
+                    document.getElementById(productId).disabled = true;
+                    document.getElementById(productId).textContent = "Unavailable"
                 } else {
+                    // Handle other failures
                     console.error('Request failed:', response.statusText);
                     alert('Failed to submit request. Please try again.');
                 }
@@ -117,5 +145,8 @@
 
     function closeConfirmation() {
         document.getElementById('confirmationModal').classList.add('hidden');
+    }
+    function closeError() {
+        document.getElementById('errorModal').classList.add('hidden');
     }
 </script>
