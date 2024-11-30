@@ -15,8 +15,8 @@ const app = Express()
 const domains = {
   identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
   security: process.env.DOMAIN_SECURITY + "/api/v1/security",
-  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card_product",
-  enrollment: process.env.DOMAIN_CARD_ENROLLMENT + "/api/v1/credit_card_enrollment"
+  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card/product",
+  enrollment: process.env.DOMAIN_CARD_ENROLLMENT + "/api/v1/credit_card/enrollment"
 }
 
 const endpoints = {
@@ -28,9 +28,9 @@ const endpoints = {
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
-  "list-credit-card-products": domains.card + "/product/list-items",
-  "request-card-enrollment": domains.enrollment + "/enrollment",
-  "list-user-enrollments": domains.enrollment + "/enrollment/list-enrollments"
+  "list-credit-card-products": domains.card + "/list-items",
+  "request-card-enrollment": domains.enrollment + "/request",
+  "list-user-enrollments": domains.enrollment + "/list"
 }
 
 // Accept JSON bodies
