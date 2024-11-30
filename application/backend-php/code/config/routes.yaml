@@ -22,10 +22,10 @@ security_session_controller_for_projection_reaction:
   resource: ../src/BoundedContext/Security/Session/ControllerForProjectionReaction/
   type: attribute
 
-creditcardproduct_product_controller:
-  resource: ../src/BoundedContext/CreditCardProduct/Product/Controller/
+creditcard_product_controller:
+  resource: ../src/BoundedContext/CreditCard/Product/Controller/
   type: attribute
 
-creditcardproduct_product_controller_for_projection_reaction:
-  resource: ../src/BoundedContext/CreditCardProduct/Product/ControllerForProjectionReaction
+creditcard_product_controller_for_projection_reaction:
+  resource: ../src/BoundedContext/CreditCard/Product/ControllerForProjectionReaction
   type: attribute
