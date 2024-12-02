@@ -1,57 +1,23 @@
 package cloud.ambar.common.event;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.SuperBuilder;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "event_store", indexes = {
-        @Index(name = "event_store_idx_event_aggregate_id_version", columnList = "aggregate_id, aggregate_version", unique = true),
-        @Index(name = "event_store_idx_event_causation_id", columnList = "causation_id", unique = true),
-        @Index(name = "event_store_idx_event_correlation_id", columnList = "correlation_id"),
-        @Index(name = "event_store_idx_occurred_on", columnList = "recorded_on")
-})
-public class Event {
-    @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+import java.time.Instant;
 
-    @Column(name="event_id")
-    private String eventId;
+@SuperBuilder
+@Getter
+public abstract class Event {
+    @NonNull protected String eventId;
 
-    @Column(name="aggregate_id")
-    private String aggregateId;
+    @NonNull protected Integer aggregateVersion;
 
-    @Column(name="causation_id")
-    private String causationID;
+    @NonNull protected String aggregateId;
 
-    @Column(name="correlation_id")
-    private String correlationId;
+    @NonNull protected String causationId;
 
-    @Column(name="aggregate_version")
-    private long version;
+    @NonNull protected String correlationId;
 
-    @Column(name="json_payload")
-    private String data;
-
-    @Column(name="json_metadata")
-    private String metadata;
-
-    @Column(name="recorded_on")
-    private String recordedOn;
-
-    @Column(name="event_name")
-    private String eventName;
+    @NonNull protected Instant recordedOn;
 }

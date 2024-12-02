@@ -1,7 +1,7 @@
-In a CQRS and EventSourcing system, an aggregate plays a crucial role by handling commands and applying state changes 
-based on past events. When a command is received, the aggregate is hydrated by replaying the relevant events from the 
-event store to rebuild its current state. The aggregate is used to validate the command, apply any necessary changes, and 
-produces new events that reflect the state transitions.
+In an Event Sourcing system, an aggregate interprets current state in an immediately consistent fashion, based on 
+past events. The process of taking events from an serializedEvent store and instantiating an aggregate from them is called
+aggregate hydration or aggregate reconstitution.
 
-This pattern ensures that the aggregate maintains integrity while supporting event-sourced models where past events are 
-the authoritative source of truth.
+An aggregate is typically hydrated in a command handler, or a reaction handler, when appending new events to the 
+system. Why? Because we want to check the current state of the system from aggregates in an immediately consistent
+fashion.

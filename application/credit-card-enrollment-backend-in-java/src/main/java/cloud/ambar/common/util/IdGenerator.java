@@ -1,9 +1,9 @@
 package cloud.ambar.common.util;
 
-import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 
 public class IdGenerator {
 
@@ -16,23 +16,19 @@ public class IdGenerator {
         }
 
         try {
-            // Use SHA-256 to hash the input string
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] hashBytes = digest.digest(seed.getBytes());
+            byte[] firstHash = digest.digest(seed.getBytes());
+            byte[] secondHash = digest.digest(firstHash);
+            byte[] combinedHash = new byte[firstHash.length + secondHash.length];
 
-            // Convert hash bytes to a base-36 string (alphanumeric representation)
-            BigInteger hashValue = new BigInteger(1, hashBytes);
-            String alphanumericId = hashValue.toString(36);
+            System.arraycopy(firstHash, 0, combinedHash, 0, firstHash.length);
+            System.arraycopy(secondHash, 0, combinedHash, firstHash.length, secondHash.length);
 
-            // Ensure the result is exactly 56 characters long
-            if (alphanumericId.length() > 56) {
-                alphanumericId = alphanumericId.substring(0, 56);
-            } else if (alphanumericId.length() < 56) {
-                // Pad with leading zeros if necessary
-                alphanumericId = String.format("%1$" + 56 + "s", alphanumericId).replace(' ', '0');
-            }
+            String base64Encoded = Base64.getEncoder().encodeToString(combinedHash);
+            String cleanId = base64Encoded.replaceAll("[^A-Za-z0-9]", "0");
 
-            return alphanumericId;
+            return cleanId.substring(0, ID_LENGTH);
+
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException("Error generating deterministic ID: SHA-256 algorithm not found", e);
         }
