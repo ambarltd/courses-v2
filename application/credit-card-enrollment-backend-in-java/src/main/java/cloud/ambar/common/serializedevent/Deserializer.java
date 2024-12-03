@@ -8,6 +8,7 @@ import cloud.ambar.creditcard.product.event.ProductActivated;
 import cloud.ambar.creditcard.product.event.ProductDeactivated;
 import cloud.ambar.creditcard.product.event.ProductDefined;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,6 +16,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class Deserializer {
     public Event deserialize(SerializedEvent serializedEvent) {
         return switch (serializedEvent.getEventName()) {

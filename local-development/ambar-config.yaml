@@ -126,46 +126,28 @@ data_destinations:
     sources:
       - postgres_source
 
-  - id: Java_Backend_Card_Products
-    description: Project card products latest state information
+  - id: CreditCard_Enrollment_IsCardProductActive
+    description: CreditCard_Enrollment_IsCardProductActive
     type: http-push
-    endpoint: http://172.30.0.109:8080/api/v1/credit_card_product/product/projection
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card/enrollment/projection/is_card_product_active
     username: username
     password: password
     sources:
       - postgres_source
 
-  - id: Java_Backend_Card_Products_For_Enrollments
-    description: Card products for Enrollment (application) projections
+  - id: CreditCard_Enrollment_EnrollmentList
+    description: CreditCard_Enrollment_EnrollmentList
     type: http-push
-    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/projection/card_products
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card/enrollment/projection/enrollment_list
     username: username
     password: password
     sources:
       - postgres_source
 
-  - id: Java_Backend_User_Enrollments
-    description: The users enrollments
+  - id: CreditCard_Enrollment_ReviewEnrollment
+    description: CreditCard_Enrollment_ReviewEnrollment
     type: http-push
-    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/projection/enrollments
-    username: username
-    password: password
-    sources:
-      - postgres_source
-
-  - id: Java_Backend_Card_Products_For_Enrollments_reactions
-    description: Card products for Enrollment (application) reactions
-    type: http-push
-    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/reaction/card_products
-    username: username
-    password: password
-    sources:
-      - postgres_source
-
-  - id: Java_Backend_User_Enrollments_reactions
-    description: The users enrollments reactions
-    type: http-push
-    endpoint: http://172.30.0.109:8080/api/v1/credit_card_enrollment/enrollment/reaction/enrollments
+    endpoint: http://172.30.0.109:8080/api/v1/credit_card/enrollment/reaction/review_enrollment
     username: username
     password: password
     sources:

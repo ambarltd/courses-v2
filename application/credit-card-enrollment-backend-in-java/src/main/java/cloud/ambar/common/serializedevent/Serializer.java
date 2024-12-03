@@ -7,12 +7,14 @@ import cloud.ambar.creditcard.enrollment.event.EnrollmentSubmittedForReview;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@RequiredArgsConstructor
 public class Serializer {
     private final ObjectMapper objectMapper = new ObjectMapper();
 

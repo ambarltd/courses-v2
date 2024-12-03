@@ -28,7 +28,7 @@ public class SerializedEvent {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     @JsonProperty("id")
-    private Long id;
+    private Integer id;
 
     @Column(name="event_id")
     @JsonProperty("event_id")
@@ -48,7 +48,7 @@ public class SerializedEvent {
 
     @Column(name="aggregate_version")
     @JsonProperty("aggregate_version")
-    private long aggregateVersion;
+    private Integer aggregateVersion;
 
     @Column(name="json_payload")
     @JsonProperty("json_payload")

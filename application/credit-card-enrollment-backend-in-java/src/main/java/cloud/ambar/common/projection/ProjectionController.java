@@ -3,11 +3,13 @@ package cloud.ambar.common.projection;
 import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
 import cloud.ambar.common.ambar.httpresponse.AmbarResponseFactory;
 import cloud.ambar.common.serializedevent.Deserializer;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@RequiredArgsConstructor
 public abstract class ProjectionController {
-    protected Deserializer deserializer;
+    protected final Deserializer deserializer;
     private static final Logger log = LogManager.getLogger(ProjectionController.class);
     protected String processHttpRequest(final AmbarHttpRequest ambarHttpRequest, final ProjectionHandler projectionService) {
         try {
@@ -19,7 +21,7 @@ public abstract class ProjectionController {
             log.error("Failed to process projection http request.");
             log.error(e);
             log.error(e.getMessage());
-            return AmbarResponseFactory.retryResponse(e.getMessage());
+            return AmbarResponseFactory.retryResponse(e);
         }
     }
 }

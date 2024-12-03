@@ -3,12 +3,15 @@ package cloud.ambar.common.reaction;
 import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
 import cloud.ambar.common.ambar.httpresponse.AmbarResponseFactory;
 import cloud.ambar.common.serializedevent.Deserializer;
+import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@RequiredArgsConstructor
 public abstract class ReactionController {
-    protected Deserializer deserializer;
+    protected final Deserializer deserializer;
     private static final Logger log = LogManager.getLogger(ReactionController.class);
+
     public String processHttpRequest(final AmbarHttpRequest ambarHttpRequest, final ReactionHandler reactionHandler) {
         try {
             log.info("Reaction received http request: " + ambarHttpRequest);
@@ -19,7 +22,7 @@ public abstract class ReactionController {
             log.error("Failed to process reaction http request.");
             log.error(e);
             log.error(e.getMessage());
-            return AmbarResponseFactory.retryResponse(e.getMessage());
+            return AmbarResponseFactory.retryResponse(e);
         }
     }
 }

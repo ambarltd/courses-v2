@@ -18,7 +18,7 @@ public class EnrollmentQueryController {
 
     private final GetUserEnrollmentsQueryHandler getUserEnrollmentsQueryHandler;
 
-    @PostMapping(value = "/api/v1/credit_card_enrollment/enrollment/list-enrollments")
+    @PostMapping(value = "/api/v1/credit_card/enrollment/list-enrollments")
     public List<EnrollmentListItem> listEnrollments(
             @RequestHeader("X-With-Session-Token") String sessionToken
     ) {
