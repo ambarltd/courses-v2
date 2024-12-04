@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SessionService {
     private static final Logger log = LogManager.getLogger(SessionService.class);
-    private final SessionProjectionRepository sessionProjectionRepository;
+    private final SessionRepository sessionRepository;
 
     public String authenticatedUserIdFromSessionToken(final String sessionToken) {
-        log.info("Looking up session details for token: " + sessionToken);
-        return sessionProjectionRepository.getBySessionToken(sessionToken).orElseThrow().getUserId();
+        log.info("Looking up session details for token: {}", sessionToken);
+        return sessionRepository.authenticatedUserIdFromSessionToken(sessionToken).orElseThrow();
     }
 }

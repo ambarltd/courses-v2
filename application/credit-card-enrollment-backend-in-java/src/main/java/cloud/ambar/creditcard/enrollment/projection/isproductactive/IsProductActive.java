@@ -2,15 +2,15 @@ package cloud.ambar.creditcard.enrollment.projection.isproductactive;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class IsProductActive {
-    private final ProductRepository productRepository;
+    private final ProductActiveStatusRepository productActiveStatusRepository;
 
     public boolean isProductActive(final String productId) {
-        return productRepository.findById(productId)
-                .map(ProductActiveStatus::getActive)
-                .orElse(false);
+        return productActiveStatusRepository.isThereAnActiveProductWithId(productId);
     }
 }

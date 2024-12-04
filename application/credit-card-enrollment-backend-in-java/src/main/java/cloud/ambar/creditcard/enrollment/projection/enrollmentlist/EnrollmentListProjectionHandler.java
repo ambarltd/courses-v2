@@ -10,8 +10,10 @@ import cloud.ambar.creditcard.enrollment.event.EnrollmentSubmittedForReview;
 import cloud.ambar.creditcard.product.event.ProductDefined;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class EnrollmentListProjectionHandler extends ProjectionHandler {
     private final EnrollmentRepository enrollmentRepository;
@@ -32,14 +34,14 @@ public class EnrollmentListProjectionHandler extends ProjectionHandler {
                     .status(EnrollmentStatus.REQUESTED.name())
                     .build());
         } else if (event instanceof EnrollmentSubmittedForReview) {
-            Enrollment enrollment = enrollmentRepository.findById(event.getAggregateId()).orElseThrow();
+            Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.SUBMITTED_FOR_REVIEW.name());
         } else if (event instanceof EnrollmentAccepted) {
-            Enrollment enrollment = enrollmentRepository.findById(event.getAggregateId()).orElseThrow();
+            Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.ACCEPTED.name());
             enrollment.setReviewedDate(event.getRecordedOn());
         } else if (event instanceof EnrollmentDeclined) {
-            Enrollment enrollment = enrollmentRepository.findById(event.getAggregateId()).orElseThrow();
+            Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.DECLINED.name());
             enrollment.setReviewedDate(event.getRecordedOn());
         }

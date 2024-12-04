@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @AllArgsConstructor
 @Getter
 @Setter
-@Document(collection = "CreditCard_Enrollment_ProductName")
 public class ProductName {
     @Id @NonNull private String id;
     @NonNull private String name;

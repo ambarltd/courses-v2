@@ -8,10 +8,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.List;
 
 @RestController
+@RequestScope
 @RequiredArgsConstructor
 public class EnrollmentQueryController {
     private final SessionService sessionService;

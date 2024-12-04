@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 @RequiredArgsConstructor
 public abstract class ReactionController {
-    protected final Deserializer deserializer;
+    private final Deserializer deserializer;
     private static final Logger log = LogManager.getLogger(ReactionController.class);
 
     public String processHttpRequest(final AmbarHttpRequest ambarHttpRequest, final ReactionHandler reactionHandler) {

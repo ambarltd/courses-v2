@@ -2,11 +2,13 @@ package cloud.ambar.creditcard.enrollment.projection.enrollmentlist;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class GetEnrollmentList {
     private final EnrollmentRepository enrollmentRepository;
@@ -18,7 +20,7 @@ public class GetEnrollmentList {
                         .userId(enrollment.getUserId())
                         .productId(enrollment.getProductId())
                         .productName(
-                                productNameRepository.findById(enrollment.getProductId())
+                                productNameRepository.findOneById(enrollment.getProductId())
                                         .orElseThrow()
                                         .getName())
                         .requestedDate(enrollment.getRequestedDate())

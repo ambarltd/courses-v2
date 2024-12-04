@@ -11,12 +11,14 @@ import cloud.ambar.creditcard.enrollment.exception.InactiveProductException;
 import cloud.ambar.creditcard.enrollment.projection.isproductactive.IsProductActive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Instant;
 
 import static cloud.ambar.common.util.IdGenerator.generateRandomId;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class EnrollmentCommandHandler {
     private final EventStore eventStore;

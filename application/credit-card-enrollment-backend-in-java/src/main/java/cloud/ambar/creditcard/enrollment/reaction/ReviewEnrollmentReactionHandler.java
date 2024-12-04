@@ -12,12 +12,14 @@ import cloud.ambar.creditcard.enrollment.event.EnrollmentDeclined;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentSubmittedForReview;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Instant;
 
 import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class ReviewEnrollmentReactionHandler extends ReactionHandler {
     private final EventStore eventStore;
