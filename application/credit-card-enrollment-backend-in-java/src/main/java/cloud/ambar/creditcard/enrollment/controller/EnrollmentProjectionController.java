@@ -1,6 +1,6 @@
 package cloud.ambar.creditcard.enrollment.controller;
 
-import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
+import cloud.ambar.common.ambar.AmbarHttpRequest;
 import cloud.ambar.common.projection.MongoTransactionalAPI;
 import cloud.ambar.common.projection.ProjectionController;
 import cloud.ambar.common.serializedevent.Deserializer;

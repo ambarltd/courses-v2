@@ -39,7 +39,7 @@ public class EventStoreInitializer {
     }
 
     @Bean
-    ApplicationRunner initDatabase() {
+    ApplicationRunner initEventStore() {
         return args -> {
             // Create table
             log.info("Creating table " + eventStoreTableName);

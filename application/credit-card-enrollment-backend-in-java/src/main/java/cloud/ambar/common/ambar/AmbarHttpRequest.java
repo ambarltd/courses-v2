@@ -1,4 +1,4 @@
-package cloud.ambar.common.ambar.httprequest;
+package cloud.ambar.common.ambar;
 
 import cloud.ambar.common.serializedevent.SerializedEvent;
 import com.fasterxml.jackson.annotation.JsonProperty;

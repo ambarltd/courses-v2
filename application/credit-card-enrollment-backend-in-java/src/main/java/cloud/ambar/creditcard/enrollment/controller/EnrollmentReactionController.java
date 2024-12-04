@@ -1,6 +1,6 @@
 package cloud.ambar.creditcard.enrollment.controller;
 
-import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
+import cloud.ambar.common.ambar.AmbarHttpRequest;
 import cloud.ambar.common.reaction.ReactionController;
 import cloud.ambar.common.serializedevent.Deserializer;
 import cloud.ambar.creditcard.enrollment.reaction.ReviewEnrollmentReactionHandler;

@@ -1,7 +1,7 @@
 package cloud.ambar.common.reaction;
 
-import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
-import cloud.ambar.common.ambar.httpresponse.AmbarResponseFactory;
+import cloud.ambar.common.ambar.AmbarHttpRequest;
+import cloud.ambar.common.ambar.AmbarResponseFactory;
 import cloud.ambar.common.serializedevent.Deserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;

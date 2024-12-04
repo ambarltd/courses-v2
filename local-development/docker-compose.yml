@@ -16,6 +16,8 @@ services:
     depends_on:
       backend-php:
         condition: service_healthy
+      backend-java:
+        condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080 2>&1 | grep '200 OK'" ]
       timeout: 2s

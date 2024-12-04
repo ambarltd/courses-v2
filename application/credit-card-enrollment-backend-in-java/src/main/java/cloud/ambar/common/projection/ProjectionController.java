@@ -1,7 +1,7 @@
 package cloud.ambar.common.projection;
 
-import cloud.ambar.common.ambar.httprequest.AmbarHttpRequest;
-import cloud.ambar.common.ambar.httpresponse.AmbarResponseFactory;
+import cloud.ambar.common.ambar.AmbarHttpRequest;
+import cloud.ambar.common.ambar.AmbarResponseFactory;
 import cloud.ambar.common.event.Event;
 import cloud.ambar.common.serializedevent.Deserializer;
 import lombok.RequiredArgsConstructor;
