@@ -11,7 +11,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 
 @Configuration
-public class MongoTransactionalApiConfig {
+public class MongoConfig {
     @Value("${app.mongodb.transactional-api.uri}")
     private String mongodbUri;
 
@@ -26,6 +26,14 @@ public class MongoTransactionalApiConfig {
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, mongoDatabaseName).withSession(session);
 
         return new MongoTransactionalAPI(mongoTemplate, session);
+    }
+
+    @Bean
+    public MongoInitializerApi mongoInitializerApi() {
+        MongoClient mongoClient = MongoClients.create(mongodbUri);
+        MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, mongoDatabaseName);
+
+        return new MongoInitializerApi(mongoTemplate);
     }
 }
 

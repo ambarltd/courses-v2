@@ -70,7 +70,7 @@ services:
       timeout: 2s
       interval: 60s
       retries: 10
-      start_period: 20s
+      start_period: 40s
       start_interval: 5s
     expose:
       - 8080
@@ -105,6 +105,13 @@ services:
         condition: service_healthy
       mongo-projection:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080/docker_healthcheck 2>&1 | grep 'HTTP/1.1 200'"]
+      timeout: 2s
+      interval: 60s
+      retries: 10
+      start_period: 40s
+      start_interval: 5s
     expose:
       - 8080
     networks:
@@ -197,6 +204,10 @@ services:
       - ./data/ambar-emulator:/root/.local/share/ambar-emulator
     depends_on:
       backend-php:
+        condition: service_healthy
+      backend-java:
+        condition: service_healthy
+      postgres-event-store:
         condition: service_healthy
     networks:
       development:
