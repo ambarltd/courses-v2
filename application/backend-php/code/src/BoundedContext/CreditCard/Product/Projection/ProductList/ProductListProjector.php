@@ -11,7 +11,7 @@ use Galeas\Api\BoundedContext\CreditCard\Product\Event\ProductDefined;
 use Galeas\Api\Common\Event\Event;
 use Galeas\Api\Service\QueueProcessor\EventProjector;
 
-class ProductListItemProjector extends EventProjector
+class ProductListProjector extends EventProjector
 {
     public function __construct(DocumentManager $projectionDocumentManager)
     {

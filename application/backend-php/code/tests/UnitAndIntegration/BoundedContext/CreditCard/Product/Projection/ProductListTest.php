@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Galeas\Api\UnitAndIntegration\BoundedContext\CreditCard\Product\Projection;
 
 use Galeas\Api\BoundedContext\CreditCard\Product\Projection\ProductList\ListProducts;
-use Galeas\Api\BoundedContext\CreditCard\Product\Projection\ProductList\ProductListItemProjector;
+use Galeas\Api\BoundedContext\CreditCard\Product\Projection\ProductList\ProductListProjector;
 use PHPUnit\Framework\Assert;
 use Tests\Galeas\Api\UnitAndIntegration\ResetsEventStoreAndProjectionsIntegrationTest;
 use Tests\Galeas\Api\UnitAndIntegration\Util\SampleEvents;
@@ -15,7 +15,7 @@ class ProductListTest extends ResetsEventStoreAndProjectionsIntegrationTest
     public function testEvents(): void
     {
         $productListProjector = $this->getContainer()
-            ->get(ProductListItemProjector::class)
+            ->get(ProductListProjector::class)
         ;
         $listProducts = $this->getContainer()
             ->get(ListProducts::class)

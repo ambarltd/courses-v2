@@ -23,17 +23,17 @@ class ProductController extends BaseController
     }
 
     /**
-     * @RequestSchema(name="V1_CreditCard_Product_ListItems")
+     * @RequestSchema(name="V1_CreditCard_Product_ListProducts")
      *
-     * @ResponseSchema(name="V1_CreditCard_Product_ListItems")
+     * @ResponseSchema(name="V1_CreditCard_Product_ListProducts")
      */
-    #[Route('/credit_card/product/list-items', name: 'V1_CreditCard_Product_ListItems', methods: ['POST'])]
-    public function listItems(Request $request): Response
+    #[Route('/credit_card/product/list-products', name: 'V1_CreditCard_Product_ListProducts', methods: ['POST'])]
+    public function listProducts(Request $request): Response
     {
         return $this->jsonPostRequestJsonResponse(
             $request,
-            'Request/V1_CreditCard_Product_ListItems.json',
-            'Response/V1_CreditCard_Product_ListItems.json',
+            'Request/V1_CreditCard_Product_ListProducts.json',
+            'Response/V1_CreditCard_Product_ListProducts.json',
             ListProductsQuery::class,
             $this->listProductsQueryHandler,
             null,
