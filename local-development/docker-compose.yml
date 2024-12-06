@@ -16,7 +16,7 @@ services:
     depends_on:
       backend-php:
         condition: service_healthy
-      backend-java:
+      backend-credit-card-enrollment:
         condition: service_healthy
     healthcheck:
       test: [ "CMD-SHELL", "wget --spider --server-response --timeout=5 http://localhost:8080 2>&1 | grep '200 OK'" ]
@@ -78,10 +78,12 @@ services:
       development:
         ipv4_address: 172.30.0.106
 
-  backend-java:
-    container_name: backend-java
+  backend-credit-card-enrollment:
+    container_name: backend-credit-card-enrollment
     build:
-      context: ./../application/credit-card-enrollment-backend-in-java
+      # Change the credit card enrollment portion 
+      # to the language you're most comfortable in.
+      context: ./../application/backend-credit-card-enrollment/backend-java
     restart: always
     environment:
       EVENT_STORE_HOST: "172.30.0.107"
@@ -205,7 +207,7 @@ services:
     depends_on:
       backend-php:
         condition: service_healthy
-      backend-java:
+      backend-credit-card-enrollment:
         condition: service_healthy
       postgres-event-store:
         condition: service_healthy
