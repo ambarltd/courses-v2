@@ -64,12 +64,12 @@ function authenticatedOrNot(req, res, next) {
   return next();
 }
 
-function authenticate(req, { token, userId, email, requestedEmail, verified }) {
+function authenticate(req, { token }) {
   req.session.token = token;
-  req.session.email = email;
-  req.session.requestedEmail = requestedEmail;
-  req.session.userId = userId;
-  req.session.verified = verified;
+  // req.session.email = email;
+  // req.session.requestedEmail = requestedEmail;
+  // req.session.userId = userId;
+  // req.session.verified = verified;
 }
 
 function unauthenticate(req) {
@@ -119,7 +119,7 @@ app.get('/card/products', authenticated, routeCardProducts);
 app.post('/card/enrollment', authenticated, routeRequestedEnrollment);
 app.get('/card/enrollments', authenticated, routeCardEnrollments);
 
-async function userDetails(token) {
+async function fetchUserDetails(token) {
   const response = await fetch(endpoints["user-details"], {
       method: "POST",
       body: '{}',
@@ -158,135 +158,146 @@ const metadata = {
   deviceOrientation: "unknown"
 };
 
-function renderUserDetails(req, res, { successMessage, failureMessage }) {
+async function renderUserDetails(req, res, { successMessage, failureMessage }) {
+
+  const { email, userId, verified, requestedEmail } = await fetchUserDetails(req.session.token);
   res.render("details", {
     layout: layouts.main,
     locals: {
       title: "User details",
-      email: req.session.email,
-      userId: req.session.userId,
-      requestedEmail: req.session.requestedEmail,
-      verified: req.session.verified,
+      email: email,
+      userId: userId,
+      requestedEmail: requestedEmail,
+      verified: verified,
       successMessage,
       failureMessage
     }
   });
 }
-function routeUserDetails(req, res) {
-  return renderUserDetails(req, res, {});
+async function routeUserDetails(req, res) {
+  try {
+    return await renderUserDetails(req, res, {});
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    errorPage(res, "Failed to fetch user details.");
+  }
 }
 
 async function routeUserDetailsPost(req, res) {
-  const token = req.session.token;
-  const { password, newEmailRequested } = req.body;
-  const contents = { metadata, password, newEmailRequested };
+  try {
+    const token = req.session.token;
+    const { password, newEmailRequested } = req.body;
+    const contents = { metadata, password, newEmailRequested };
 
-  const response = await fetch(endpoints["request-primary-email-change"], {
+    const response = await fetch(endpoints["request-primary-email-change"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {
         'Content-Type': 'application/json',
         'X-With-Session-Token': token
       }
-  });
+    });
 
-  const r = await response.json()
+    const r = await response.json()
 
-  if (!response.ok) {
-    const error = getError(r);
-    return renderUserDetails(req, res, { failureMessage: error });
+    if (!response.ok) {
+      const error = getError(r);
+      return await renderUserDetails(req, res, { failureMessage: error });
+    }
+
+    return await renderUserDetails(req, res, { successMessage: "Details changed successfully" });
+  } catch (error) {
+    console.error("Error updating user details:", error);
+    errorPage(res, "Failed to update user details.");
   }
-
-
-  { // update user details.
-    const { email, userId, verified, requestedEmail } = await userDetails(token);
-    authenticate(req, { token, email, userId, verified, requestedEmail });
-  }
-  return renderUserDetails(req, res, { successMessage: "Details changed successfully" });
 }
 
 async function routeVerifyEmail(req,res) {
-  const verificationCode = req.query.code;
-  const contents = { verificationCode, metadata };
+  try {
+    const verificationCode = req.query.code;
+    const contents = { verificationCode, metadata };
 
-  if (req.session.token) {
+    if (req.session.token) {
       unauthenticate(req);
       await fetch(endpoints["sign-out"], {
-          method: "POST",
-          body: JSON.stringify(contents, null, 2),
-          headers: {
-            'Content-Type': 'application/json',
-            'X-With-Session-Token': req.session.token
-          }
+        method: "POST",
+        body: JSON.stringify(contents, null, 2),
+        headers: {
+          'Content-Type': 'application/json',
+          'X-With-Session-Token': req.session.token
+        }
       });
-  }
+    }
 
-
-  const response = await fetch(endpoints["verify-primary-email"], {
+    const response = await fetch(endpoints["verify-primary-email"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {'Content-Type': 'application/json'}
-  });
-  const r = await response.json();
-
-  if (!response.ok) {
-    const error = getError(r);
-    res.render("verify-email", {
-      layout: layouts.signedOut,
-      locals: { title: "Verify email", error },
     });
-    return;
-  }
+    const r = await response.json();
 
-  res.render(`verify-email`, {
-    layout: layouts.signedOut,
-    locals: { title: "Verify email" },
-  })
+    if (!response.ok) {
+      const error = getError(r);
+      res.render("verify-email", {
+        layout: layouts.signedOut,
+        locals: { title: "Verify email", error },
+      });
+      return;
+    }
+
+    res.render(`verify-email`, {
+      layout: layouts.signedOut,
+      locals: { title: "Verify email" },
+    })
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    errorPage(res, "Failed to verify email.");
+  }
 }
 
 async function routeSignIn(req, res) {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-  const contents = {
-    withUsernameOrEmail: email,
-    withPassword: password,
-    byDeviceLabel: "desktop",
-    metadata
-  }
-  const response = await fetch(endpoints["sign-in"], {
+    const contents = {
+      withUsernameOrEmail: email,
+      withPassword: password,
+      byDeviceLabel: "desktop",
+      metadata
+    }
+    const response = await fetch(endpoints["sign-in"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {'Content-Type': 'application/json'}
-  });
-
-  const r = await response.json();
-  if (!response.ok) {
-    const rawError = getError(r);
-    const error =
-      rawError == "Security_Session_SignIn_UserNotFound"
-      ? "Invalid email or password. Or unverified email."
-      : rawError
-
-    res.render("sign-in", {
-      layout: layouts.signedOut,
-      locals: { title: "Sign in", error },
     });
-    return;
-  }
 
-  const token = r.sessionTokenCreated;
-  if (typeof token !== "string") {
-    res.send(`Failure. ${JSON.stringify(r)}`);
-    return;
-  }
+    const r = await response.json();
+    if (!response.ok) {
+      const rawError = getError(r);
+      const error =
+          rawError == "Security_Session_SignIn_UserNotFound"
+              ? "Invalid email or password. Or unverified email."
+              : rawError
 
-  try {
-    const { email, userId, verified, requestedEmail } = await userDetails(token);
-    authenticate(req, { token, email, userId, requestedEmail, verified });
-  } catch (e) {
-    errorPage(res, e);
+      res.render("sign-in", {
+        layout: layouts.signedOut,
+        locals: { title: "Sign in", error },
+      });
+      return;
+    }
+
+    const token = r.sessionTokenCreated;
+    if (typeof token !== "string") {
+      res.send(`Failure. ${JSON.stringify(r)}`);
+      return;
+    }
+
+    authenticate(req, { token });
+    res.redirect("/");
+  } catch (error) {
+    console.error("Error signing in:", error);
+    errorPage(res, "Failed to sign in.");
   }
-  res.redirect("/");
 };
 
 // Parse error from a failure response
@@ -301,68 +312,78 @@ function getError({ errors, errorIdentifier, errorMessage }) {
 }
 
 async function routeSignUp(req, res) {
-  const { email, password, username } = req.body;
-  const contents = {
-    primaryEmail: email,
-    password: password,
-    username: username,
-    termsOfUseAccepted: true,
-    metadata
-  }
+  try {
+    const { email, password, username } = req.body;
+    const contents = {
+      primaryEmail: email,
+      password: password,
+      username: username,
+      termsOfUseAccepted: true,
+      metadata
+    }
 
-  const response = await fetch(endpoints["sign-up"], {
+    const response = await fetch(endpoints["sign-up"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {'Content-Type': 'application/json'}
-  });
-
-  const r = await response.json()
-
-  if (!response.ok) {
-    const rawError = getError(r);
-    const error =
-      rawError == "Identity_User_SignUp_InvalidPassword"
-      ? "Invalid password. A password must have between 10 and 64 characters and contain a number, an upper case letter, a lower case letter and a special character."
-      : rawError;
-
-    res.render("sign-up", {
-      layout: layouts.signedOut,
-      locals: { title: "Sign-up", error, username, email }
     });
-    return;
-  }
 
-  if (typeof r.userId === "string") {
-    res.redirect(`/sign-up-success`);
-    return;
-  }
+    const r = await response.json()
 
-  res.send(`Unexpected response. ${JSON.stringify(r)}`);
+    if (!response.ok) {
+      const rawError = getError(r);
+      const error =
+          rawError == "Identity_User_SignUp_InvalidPassword"
+              ? "Invalid password. A password must have between 6 and 64 characters."
+              : rawError;
+
+      res.render("sign-up", {
+        layout: layouts.signedOut,
+        locals: { title: "Sign-up", error, username, email }
+      });
+      return;
+    }
+
+    if (typeof r.userId === "string") {
+      res.redirect(`/sign-up-success`);
+      return;
+    }
+
+    res.send(`Unexpected response. ${JSON.stringify(r)}`);
+  } catch (error) {
+    console.error("Error signing up:", error);
+    errorPage(res, "Failed to sign up.");
+  }
 }
 
 async function routeLogout(req, res) {
-  const token = req.session.token;
-  const contents = { metadata };
-  unauthenticate(req);
+  try {
+    const token = req.session.token;
+    const contents = { metadata };
+    unauthenticate(req);
 
-  const response = await fetch(endpoints["sign-out"], {
+    const response = await fetch(endpoints["sign-out"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {
         'Content-Type': 'application/json',
         'X-With-Session-Token': token
       }
-  });
+    });
 
-  const r = await response.json()
+    const r = await response.json()
 
-  if (!response.ok) {
-    const error = getError(r);
-    errorPage(res, error);
-    return;
+    if (!response.ok) {
+      const error = getError(r);
+      errorPage(res, error);
+      return;
+    }
+
+    res.redirect("/sign-in");
+  } catch (error) {
+    console.error("Error signing out:", error);
+    errorPage(res, "Failed to signing out.");
   }
-
-  res.redirect("/sign-in");
 }
 
 function errorPage(res, error) {
@@ -452,9 +473,7 @@ async function routeRequestedEnrollment(req, res) {
 
   } catch (error) {
     console.error('Error making enrollment request:', error);
-
-    // Handle server errors and send a generic error response
-    res.status(500).json({ message: 'An error occurred while processing your request.' });
+    errorPage(res, "Failed to make card enrollment request.");
   }
 }
 

@@ -25,10 +25,10 @@
                                 {{#if this.isActive}} Accepting New Enrollments {{ else }} Not Accepting New Enrollments {{/if}}
                             </p>
                             <p class="text-xs font-medium text-gray-700">
-                                Credit Limit (in cents): ${{formatCentsToDecimal this.creditLimitInCents}}
+                                Credit Limit: ${{formatCentsToDecimal this.creditLimitInCents}}
                             </p>
                             <p class="text-xs font-medium text-gray-700">
-                                Annual Fee (in cents): ${{formatCentsToDecimal this.annualFeeInCents}}
+                                Annual Fee: ${{formatCentsToDecimal this.annualFeeInCents}}
                             </p>
                             <p class="text-xs font-medium text-gray-700">
                                 Payment Cycle: {{this.paymentCycle}}
@@ -41,7 +41,7 @@
                             {{#if this.isActive}}
                                 <button class="px-4 py-2 bg-blue-600 text-white text-xs rounded"
                                         onclick="openForm('{{this.id}}', '{{this.name}}')" id="{{this.id}}">
-                                    Request
+                                    Request Enrollment
                                 </button>
                             {{/if}}
                         </div>
