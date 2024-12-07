@@ -59,7 +59,7 @@ services:
       MONGODB_PROJECTION_DATABASE_NAME: "projections"
       MONGODB_PROJECTION_DATABASE_USERNAME: "my_mongo_username"
       MONGODB_PROJECTION_DATABASE_PASSWORD: "my_mongo_password"
-      SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
+      SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 2592000
     depends_on:
       postgres-event-store:
         condition: service_healthy    
@@ -101,7 +101,7 @@ services:
       MONGODB_PROJECTION_DATABASE_NAME: "projections"
       MONGODB_PROJECTION_DATABASE_USERNAME: "my_mongo_username"
       MONGODB_PROJECTION_DATABASE_PASSWORD: "my_mongo_password"
-      SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 3600
+      SESSION_TOKENS_EXPIRE_AFTER_SECONDS: 2592000
     depends_on:
       postgres-event-store:
         condition: service_healthy

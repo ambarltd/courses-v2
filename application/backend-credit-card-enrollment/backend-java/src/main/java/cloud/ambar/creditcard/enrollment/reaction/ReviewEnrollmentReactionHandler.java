@@ -10,6 +10,7 @@ import cloud.ambar.creditcard.enrollment.aggregate.EnrollmentStatus;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentAccepted;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentDeclined;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
+import cloud.ambar.creditcard.enrollment.projection.enrollmentlist.GetEnrollmentList;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -20,9 +21,11 @@ import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 @Service
 @RequestScope
 public class ReviewEnrollmentReactionHandler extends ReactionHandler {
+    private final GetEnrollmentList getEnrollmentList;
 
-    public ReviewEnrollmentReactionHandler(EventStore eventStore) {
+    public ReviewEnrollmentReactionHandler(EventStore eventStore, GetEnrollmentList getEnrollmentList) {
         super(eventStore);
+        this.getEnrollmentList = getEnrollmentList;
     }
 
     public void react(final Event event) {
@@ -44,6 +47,21 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
             if (eventStore.doesEventAlreadyExist(reactionEventId)) {
                 return;
             }
+
+            if (getEnrollmentList.isThereAnyAcceptedEnrollmentForUserAndProduct(enrollment.getUserId(), enrollment.getProductId())) {
+                eventStore.saveEvent(EnrollmentDeclined.builder()
+                        .eventId(reactionEventId)
+                        .aggregateId(enrollment.getAggregateId())
+                        .aggregateVersion(enrollment.getAggregateVersion() + 1)
+                        .causationId(causationId)
+                        .correlationId(correlationId)
+                        .recordedOn(Instant.now())
+                        .reasonCode("ALREADY_ACCEPTED")
+                        .reasonDescription("There is already an accepted enrollment for the same user and product.")
+                        .build());
+                return;
+            }
+
 
             if (enrollment.getAnnualIncomeInCents() < 1500000) {
                 eventStore.saveEvent(EnrollmentDeclined.builder()

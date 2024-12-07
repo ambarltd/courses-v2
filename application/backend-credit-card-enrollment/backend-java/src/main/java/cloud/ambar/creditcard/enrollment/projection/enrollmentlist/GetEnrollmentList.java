@@ -1,5 +1,6 @@
 package cloud.ambar.creditcard.enrollment.projection.enrollmentlist;
 
+import cloud.ambar.creditcard.enrollment.aggregate.EnrollmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -29,5 +30,11 @@ public class GetEnrollmentList {
                         .reviewedDate(enrollment.getReviewedDate())
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public boolean isThereAnyAcceptedEnrollmentForUserAndProduct(final String userId, final String productId) {
+        return enrollmentRepository.findAllByUserId(userId)
+                .stream()
+                .anyMatch(enrollment -> enrollment.getProductId().equals(productId) && enrollment.getStatus().equals(EnrollmentStatus.ACCEPTED.name()));
     }
 }
