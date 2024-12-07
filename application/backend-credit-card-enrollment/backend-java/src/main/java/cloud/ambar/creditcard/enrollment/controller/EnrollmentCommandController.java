@@ -3,7 +3,6 @@ package cloud.ambar.creditcard.enrollment.controller;
 import cloud.ambar.common.sessionauth.SessionService;
 import cloud.ambar.creditcard.enrollment.commandhandler.EnrollmentCommandHandler;
 import cloud.ambar.creditcard.enrollment.commandhandler.RequestEnrollmentCommand;
-import cloud.ambar.creditcard.enrollment.commandhandler.SubmitEnrollmentForReviewCommand;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +18,7 @@ public class EnrollmentCommandController {
 
     private final EnrollmentCommandHandler enrollmentService;
 
-    @PostMapping("/request")
+    @PostMapping("/request-enrollment")
     @ResponseStatus(HttpStatus.OK)
     public void requestEnrollment(
             @RequestHeader("X-With-Session-Token") String sessionToken,
@@ -28,23 +27,9 @@ public class EnrollmentCommandController {
                 .builder()
                 .userId(sessionService.authenticatedUserIdFromSessionToken(sessionToken))
                 .productId(request.getProductId())
-                .annualIncome(request.getAnnualIncome())
+                .annualIncomeInCents(request.getAnnualIncomeInCents())
                 .build();
 
         enrollmentService.handle(command);
     }
-
-
-    @PostMapping("/submit_for_review")
-    @ResponseStatus(HttpStatus.OK)
-    public void submitForReview(
-            @RequestHeader("X-With-Session-Token") String sessionToken,
-            @Valid @RequestBody SubmitEnrollmentForReviewHttpRequest request) {
-        final SubmitEnrollmentForReviewCommand command = SubmitEnrollmentForReviewCommand
-                .builder()
-                .enrollmentId(request.getEnrollmentId())
-                .userId(sessionService.authenticatedUserIdFromSessionToken(sessionToken))
-                .build();
-
-        enrollmentService.handle(command);
-    }}
+}

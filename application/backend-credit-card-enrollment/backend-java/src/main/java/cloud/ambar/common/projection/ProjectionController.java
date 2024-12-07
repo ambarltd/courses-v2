@@ -10,6 +10,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 public abstract class ProjectionController {
     private final Deserializer deserializer;
@@ -51,9 +54,19 @@ public abstract class ProjectionController {
             mongoTransactionalAPI.commitTransaction();
             return AmbarResponseFactory.successResponse();
         } catch (Exception e) {
+            if (e.getMessage() != null && e.getMessage().startsWith("Unknown event type")) {
+                log.warn("Unknown event type. Skipping projection.");
+                log.warn(e);
+                return AmbarResponseFactory.successResponse();
+            }
+
             log.error("Failed to process projection http request.");
             log.error(e);
             log.error(e.getMessage());
+            String stackTraceString = Arrays.stream(e.getStackTrace())
+                    .map(StackTraceElement::toString)
+                    .collect(Collectors.joining("\n"));
+            log.error(stackTraceString);
             if (mongoTransactionalAPI.isTransactionActive()) {
                 mongoTransactionalAPI.abortTransaction();
             }

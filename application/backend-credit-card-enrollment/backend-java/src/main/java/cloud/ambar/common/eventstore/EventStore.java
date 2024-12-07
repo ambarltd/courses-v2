@@ -33,8 +33,8 @@ public class EventStore {
             throw new RuntimeException("No events found for aggregateId: " + aggregateId);
         }
 
-        final Event creationEvent = events.removeFirst();
-        final List<Event> transformationEvents = events.stream().toList();
+        final Event creationEvent = events.getFirst();
+        final List<Event> transformationEvents = events.subList(1, events.size());
 
         Aggregate aggregate;
         if (creationEvent instanceof CreationEvent<?>) {

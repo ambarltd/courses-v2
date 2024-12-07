@@ -6,7 +6,6 @@ import cloud.ambar.creditcard.enrollment.aggregate.EnrollmentStatus;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentAccepted;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentDeclined;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
-import cloud.ambar.creditcard.enrollment.event.EnrollmentSubmittedForReview;
 import cloud.ambar.creditcard.product.event.ProductDefined;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,9 +32,6 @@ public class EnrollmentListProjectionHandler extends ProjectionHandler {
                     .requestedDate(event.getRecordedOn())
                     .status(EnrollmentStatus.REQUESTED.name())
                     .build());
-        } else if (event instanceof EnrollmentSubmittedForReview) {
-            Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
-            enrollment.setStatus(EnrollmentStatus.SUBMITTED_FOR_REVIEW.name());
         } else if (event instanceof EnrollmentAccepted) {
             Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.ACCEPTED.name());

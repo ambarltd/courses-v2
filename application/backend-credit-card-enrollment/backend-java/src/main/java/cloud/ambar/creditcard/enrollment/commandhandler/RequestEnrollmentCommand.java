@@ -9,5 +9,5 @@ import lombok.NonNull;
 public class RequestEnrollmentCommand {
     @NonNull private String userId;
     @NonNull private String productId;
-    @NonNull private Integer annualIncome;
+    @NonNull private Integer annualIncomeInCents;
 }

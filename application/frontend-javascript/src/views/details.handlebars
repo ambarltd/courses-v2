@@ -1,5 +1,5 @@
-<div class="flex md:flex-row flex-col mx-10 md:mx-0">
-  <div class="flex-1 md:mr-10">
+<div class="flex md:flex-row flex-col mx-10 md:mx-0 items-center justify-center">
+  <div class="flex-1 md:pl-20 md:pr-10" style="max-width: 400px">
     <div class="mb-5">
       <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Current email</label>
       <input
@@ -38,7 +38,7 @@
     {{else}}
       <form method="POST" action="/user/details">
 
-        <h2 class="text-lg font-large text-gray-900 my-5 font-semibold">Change your email address</h2>
+        <h2 class="text-md font-medium text-gray-900 my-5 font-semibold">Change your email address</h2>
 
         {{#if locals.failureMessage}}
           <p class="mt-2 text-sm text-red-600">{{locals.failureMessage}}</p>
@@ -68,5 +68,5 @@
 
   </div>
 
-  <img src="/assets/images/illustration-3.png" width="400px">
+  <img src="/assets/images/illustration-3.png" style="width: 350px; height: fit-content">
 </div>

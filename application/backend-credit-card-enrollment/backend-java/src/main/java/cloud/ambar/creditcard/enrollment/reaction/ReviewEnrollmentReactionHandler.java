@@ -9,7 +9,7 @@ import cloud.ambar.creditcard.enrollment.aggregate.Enrollment;
 import cloud.ambar.creditcard.enrollment.aggregate.EnrollmentStatus;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentAccepted;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentDeclined;
-import cloud.ambar.creditcard.enrollment.event.EnrollmentSubmittedForReview;
+import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -26,7 +26,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
     }
 
     public void react(final Event event) {
-        if (event instanceof EnrollmentSubmittedForReview) {
+        if (event instanceof EnrollmentRequested) {
             final AggregateAndEventIdsInLastEvent aggregateAndEventIdsInLastEvent = eventStore.findAggregate(event.getAggregateId());
             final Aggregate aggregate = aggregateAndEventIdsInLastEvent.getAggregate();
             final String causationId = aggregateAndEventIdsInLastEvent.getEventIdOfLastEvent();
@@ -36,19 +36,18 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                 throw new RuntimeException("Aggregate not found");
             }
 
-            if (!EnrollmentStatus.SUBMITTED_FOR_REVIEW.toString().equals(enrollment.getStatus())) {
+            if (!EnrollmentStatus.REQUESTED.toString().equals(enrollment.getStatus())) {
                 return;
             }
 
-            final String eventId = generateDeterministicId("ReviewedEnrollment" + event.getEventId());
-
-            if (eventStore.doesEventAlreadyExist(eventId)) {
+            final String reactionEventId = generateDeterministicId("ReviewedEnrollment" + event.getEventId());
+            if (eventStore.doesEventAlreadyExist(reactionEventId)) {
                 return;
             }
 
-            if (enrollment.getAnnualIncomeInCents() < 100000) {
+            if (enrollment.getAnnualIncomeInCents() < 1500000) {
                 eventStore.saveEvent(EnrollmentDeclined.builder()
-                        .eventId(eventId)
+                        .eventId(reactionEventId)
                         .aggregateId(enrollment.getAggregateId())
                         .aggregateVersion(enrollment.getAggregateVersion() + 1)
                         .causationId(causationId)
@@ -59,7 +58,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                         .build());
             } else {
                 eventStore.saveEvent(EnrollmentAccepted.builder()
-                        .eventId(eventId)
+                        .eventId(reactionEventId)
                         .aggregateId(enrollment.getAggregateId())
                         .aggregateVersion(enrollment.getAggregateVersion() + 1)
                         .causationId(causationId)

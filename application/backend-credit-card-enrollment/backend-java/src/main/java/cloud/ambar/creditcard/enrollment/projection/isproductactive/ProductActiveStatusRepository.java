@@ -16,13 +16,16 @@ public class ProductActiveStatusRepository {
     private final MongoTransactionalAPI mongoTransactionalAPI;
 
     public boolean isThereAnActiveProductWithId(final String productId) {
-        return mongoTransactionalAPI.operate().count(
+        Optional<ProductActiveStatus> productActiveStatus = Optional.ofNullable(mongoTransactionalAPI.operate().findOne(
                 Query.query(
                         Criteria.where("id").is(productId)
                                 .and("active").is(true)
                 ),
+                ProductActiveStatus.class,
                 "CreditCard_Enrollment_ProductActiveStatus"
-        ) != 0;
+        ));
+
+        return productActiveStatus.isPresent() && productActiveStatus.get().getActive();
     }
 
     public Optional<ProductActiveStatus> findOneById(final String productId) {

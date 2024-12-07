@@ -15,8 +15,8 @@ const app = Express()
 const domains = {
   identity: process.env.DOMAIN_IDENTITY + "/api/v1/identity",
   security: process.env.DOMAIN_SECURITY + "/api/v1/security",
-  card: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card/product",
-  enrollment: process.env.DOMAIN_CARD_ENROLLMENT + "/api/v1/credit_card/enrollment"
+  cardProduct: process.env.DOMAIN_CREDIT_CARD_PRODUCT + "/api/v1/credit_card/product",
+  cardEnrollment: process.env.DOMAIN_CARD_ENROLLMENT + "/api/v1/credit_card/enrollment"
 }
 
 const endpoints = {
@@ -28,9 +28,9 @@ const endpoints = {
   "refresh-token": domains.security + "/session/refresh-token",
   "sign-in": domains.security + "/session/sign-in",
   "sign-out": domains.security + "/session/sign-out",
-  "list-credit-card-products": domains.card + "/list-items",
-  "request-card-enrollment": domains.enrollment + "/request",
-  "list-user-enrollments": domains.enrollment + "/list"
+  "list-credit-card-products": domains.cardProduct + "/list-products",
+  "request-card-enrollment": domains.cardEnrollment + "/request-enrollment",
+  "list-user-enrollments": domains.cardEnrollment + "/list-enrollments"
 }
 
 // Accept JSON bodies
@@ -117,7 +117,7 @@ app.post('/sign-up', unauthenticated,  routeSignUp);
 app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
 app.post('/card/enrollment', authenticated, routeRequestedEnrollment);
-app.get('/user/enrollments', authenticated, routeUserEnrollments);
+app.get('/card/enrollments', authenticated, routeCardEnrollments);
 
 async function userDetails(token) {
   const response = await fetch(endpoints["user-details"], {
@@ -136,7 +136,6 @@ async function userDetails(token) {
   }
 
   const { userId, primaryEmailStatus } = r;
-  console.log(primaryEmailStatus);
   const { email, requestedEmail, verified } =
     ("unverifiedEmail" in primaryEmailStatus)
     ? { email: primaryEmailStatus.unverifiedEmail.email, requestedEmail: null, verified: false }
@@ -292,7 +291,7 @@ async function routeSignIn(req, res) {
 
 // Parse error from a failure response
 function getError({ errors, errorIdentifier, errorMessage }) {
-  return (errors.length > 0 && errorMessage.length > 0)
+  return (errors !== undefined && errors.length > 0 && errorMessage.length > 0)
     ? `${errorMessage}: ${errors.join(". ")}`
     : errorMessage.length > 0
     ? errorMessage
@@ -402,30 +401,35 @@ async function routeVerificationEmails(req, res) {
 }
 
 async function routeCardProducts(req, res) {
-  const contents = {};
+  try {
+    const contents = {};
 
-  const response = await fetch(endpoints["list-credit-card-products"], {
+    const response = await fetch(endpoints["list-credit-card-products"], {
       method: "POST",
       body: JSON.stringify(contents, null, 2),
       headers: {
         'Content-Type': 'application/json',
         'X-With-Session-Token': req.session.token
       }
-  });
-  const r = await response.json()
-  if (!response.ok) {
-    const error = getError(r);
-    errorPage(res, error);
-    return;
-  }
-
-  return res.render("card/products", {
-    layout: layouts.main,
-    locals: {
-      title: "Card Products",
-      products: r
+    });
+    const r = await response.json()
+    if (!response.ok) {
+      const error = getError(r);
+      errorPage(res, error);
+      return;
     }
-  });
+
+    return res.render("card/products", {
+      layout: layouts.main,
+      locals: {
+        title: "Card Products",
+        products: r
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching card products:", error);
+    errorPage(res, "Failed to fetch card products.");
+  }
 }
 
 async function routeRequestedEnrollment(req, res) {
@@ -443,6 +447,7 @@ async function routeRequestedEnrollment(req, res) {
     });
     // Forward status and body directly from the downstream service to the frontend
     const responseBody = await response.text(); // Using text to handle any response format
+    console.log('Response body: ' + responseBody)
     res.status(response.status).send(responseBody);
 
   } catch (error) {
@@ -453,31 +458,36 @@ async function routeRequestedEnrollment(req, res) {
   }
 }
 
-async function routeUserEnrollments(req, res) {
-  const contents = {};
+async function routeCardEnrollments(req, res) {
+  try {
+    const contents = {};
 
-  const response = await fetch(endpoints["list-user-enrollments"], {
-    method: "POST",
-    body: JSON.stringify(contents, null, 2),
-    headers: {
-      'Content-Type': 'application/json',
-      'X-With-Session-Token': req.session.token
+    const response = await fetch(endpoints["list-user-enrollments"], {
+      method: "POST",
+      body: JSON.stringify(contents, null, 2),
+      headers: {
+        'Content-Type': 'application/json',
+        'X-With-Session-Token': req.session.token
+      }
+    });
+    const r = await response.json()
+    if (!response.ok) {
+      const error = getError(r);
+      errorPage(res, error);
+      return;
     }
-  });
-  const r = await response.json()
-  if (!response.ok) {
-    const error = getError(r);
-    errorPage(res, error);
-    return;
+
+    return res.render("card/enrollments", {
+      layout: layouts.main,
+      locals: {
+        title: "Card Enrollment Requests",
+        enrollments: r
+      }
+    });
+  } catch (error) {
+    console.error("Error fetching card enrollments:", error);
+    errorPage(res, "Failed to fetch card enrollments.");
   }
-
-  return res.render("card/enrollments", {
-    layout: layouts.main,
-    locals: {
-      title: "Card Enrollment Requests",
-      enrollments: r
-    }
-  });
 }
 
 app.get('/event-bus-yml', (req, res) => {

@@ -126,10 +126,10 @@ data_destinations:
     sources:
       - postgres_source
 
-  - id: CreditCardProduct_Product_ProductListItem
-    description: CreditCardProduct_Product_ProductListItem
+  - id: CreditCard_Product_ProductList
+    description: CreditCard_Product_ProductList
     type: http-push
-    endpoint: http://172.30.0.106:8080/api/v1/credit_card/enrollment/projection/is_card_product_active
+    endpoint: http://172.30.0.106:8080/api/v1/credit_card/product/projection/product_list
     username: username
     password: password
     sources:

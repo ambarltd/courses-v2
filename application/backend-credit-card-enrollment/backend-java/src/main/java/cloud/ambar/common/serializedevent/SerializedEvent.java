@@ -26,7 +26,7 @@ import lombok.*;
 })
 public class SerializedEvent {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonProperty("id")
     private Integer id;
 

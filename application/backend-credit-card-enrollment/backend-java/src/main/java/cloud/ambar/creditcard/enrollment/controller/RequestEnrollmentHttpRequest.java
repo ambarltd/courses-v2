@@ -7,5 +7,5 @@ import lombok.Data;
 @Data
 public class RequestEnrollmentHttpRequest {
     @NotNull private String productId;
-    @Positive private int annualIncome;
+    @Positive private int annualIncomeInCents;
 }
