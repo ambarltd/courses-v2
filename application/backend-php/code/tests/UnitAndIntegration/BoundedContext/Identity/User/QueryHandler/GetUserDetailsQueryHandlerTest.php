@@ -22,6 +22,7 @@ class GetUserDetailsQueryHandlerTest extends HandlerUnitTest
             'getUserDetails',
             [
                 'userId' => 'user_id_1',
+                'username' => 'username_123',
                 'primaryEmailStatus' => [
                     'verifiedEmail' => [
                         'email' => 'email_address_1',
@@ -32,6 +33,7 @@ class GetUserDetailsQueryHandlerTest extends HandlerUnitTest
         Assert::assertEquals(
             [
                 'userId' => 'user_id_1',
+                'username' => 'username_123',
                 'primaryEmailStatus' => [
                     'verifiedEmail' => [
                         'email' => 'email_address_1',

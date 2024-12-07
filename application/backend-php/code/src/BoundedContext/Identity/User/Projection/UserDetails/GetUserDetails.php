@@ -19,7 +19,7 @@ class GetUserDetails
     }
 
     /**
-     * @return array{userId: string, primaryEmailStatus: array{unverifiedEmail: array{email: string}}|array{verifiedButRequestedNewEmail: array{requestedEmail: string, verifiedEmail: string}}|array{verifiedEmail: array{email: string}}}
+     * @return array{userId: string, username: string, primaryEmailStatus: array{unverifiedEmail: array{email: string}}|array{verifiedButRequestedNewEmail: array{requestedEmail: string, verifiedEmail: string}}|array{verifiedEmail: array{email: string}}}
      *
      * @throws ProjectionCannotRead
      */
@@ -42,6 +42,7 @@ class GetUserDetails
             ) {
                 return [
                     'userId' => $userDetails->userId(),
+                    'username' => $userDetails->username(),
                     'primaryEmailStatus' => [
                         'verifiedButRequestedNewEmail' => [
                             'requestedEmail' => $userDetails->unverifiedEmail(),
