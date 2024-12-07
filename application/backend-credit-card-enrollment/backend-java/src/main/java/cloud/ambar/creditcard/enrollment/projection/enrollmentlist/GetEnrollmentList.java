@@ -27,7 +27,8 @@ public class GetEnrollmentList {
                                         .getName())
                         .requestedDate(enrollment.getRequestedDate())
                         .status(enrollment.getStatus())
-                        .reviewedDate(enrollment.getReviewedDate())
+                        .statusReason(enrollment.getStatusReason())
+                        .reviewedOn(enrollment.getReviewedOn())
                         .build())
                 .collect(Collectors.toList());
     }

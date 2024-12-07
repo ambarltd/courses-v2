@@ -16,5 +16,6 @@ public class Enrollment {
     @NonNull private String productId;
     @NonNull private Instant requestedDate;
     @NonNull private String status;
-    private Instant reviewedDate;
+    private String statusReason;
+    private Instant reviewedOn;
 }

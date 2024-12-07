@@ -13,5 +13,6 @@ public class EnrollmentListItem {
     @NonNull private String productName;
     @NonNull private Instant requestedDate;
     @NonNull private String status;
-    private Instant reviewedDate;
+    private String statusReason;
+    private Instant reviewedOn;
 }

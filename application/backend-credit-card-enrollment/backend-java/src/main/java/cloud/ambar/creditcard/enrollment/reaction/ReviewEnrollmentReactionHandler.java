@@ -57,7 +57,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                         .correlationId(correlationId)
                         .recordedOn(Instant.now())
                         .reasonCode("ALREADY_ACCEPTED")
-                        .reasonDescription("There is already an accepted enrollment for the same user and product.")
+                        .reasonDescription("You were already accepted to this product.")
                         .build());
                 return;
             }

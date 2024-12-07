@@ -1,7 +1,5 @@
 {{>blur-background}}
 
-
-
 <div class="w-full px-4">
     <div class="flex flex-col md:flex-row justify-center items-center">
         <div class="order-last md:order-first pt-8 pr-0 md:pr-16 md:pt-0 flex justify-center w-full md:w-auto">
@@ -9,8 +7,7 @@
         </div>
         <ul class="order-first md:order-last">
             {{#each locals.products}}
-                <li class="p-3 hover:bg-slate-400/25 focus:bg-slate-400/25 active:bg-slate-400/25"
-                    style="background-color: {{#if this.isActive}}{{this.hexColor}}{{else}}#f0f0f0{{/if}};">
+                <li class="p-3 hover:bg-slate-400/25 focus:bg-slate-400/25 active:bg-slate-400/25">
                     <div class="flex items-center space-x-8 rtl:space-x-reverse">
                         <div class="flex-shrink-0">
                             <div class="w-8 h-8 rounded-full"
@@ -40,7 +37,7 @@
                         <div class="flex items-center space-x-8">
                             {{#if this.isActive}}
                                 <button class="px-4 py-2 bg-blue-600 text-white text-xs rounded"
-                                        onclick="openForm('{{this.id}}', '{{this.name}}')" id="{{this.id}}">
+                                        onclick="openForm('{{this.id}}')" id="{{this.id}}">
                                     Request Enrollment
                                 </button>
                             {{/if}}
@@ -52,44 +49,46 @@
     </div>
 </div>
 
-<!-- Popup Form Modal -->
 <div id="formModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-md">
-        <h3 class="text-sm font-semibold mb-4">Request Enrollment</h3>
+        <h3 class="text-md font-semibold mb-4">Request Enrollment</h3>
         <form id="requestForm">
-            <div class="mb-4">
-                <label for="annualIncome" class="block text-xs font-medium text-gray-700">Annual Income ($)</label>
-                <input type="number" id="annualIncome" name="annualIncome" required
-                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+            <div class="mb-8 mt-6">
+                <label for="annualIncome" class="block text-sm font-medium text-gray-700">Annual Income ($)</label>
+                <input type="number"
+                       id="annualIncome"
+                       name="annualIncome"
+                       required
+                       min="0"
+                       placeholder="Enter annual income"
+                       class="text-xs mt-2 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white hover:bg-gray-50 transition-colors duration-200">
             </div>
             <button type="submit"
-                    class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+                    class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-900">
                 Submit
             </button>
         </form>
     </div>
 </div>
 
-<!-- Confirmation Modal -->
 <div id="confirmationModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-md">
-        <h3 class="text-sm font-semibold mb-4">Request Submitted</h3>
-        <p>Your request has been submitted successfully. View status: </p>
-        <a id="statusLink" href="/user/enrollments" target="_blank" class="text-blue-600 hover:underline">Here</a>
-        <button onclick="closeConfirmation()"
-                class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
-            Close
-        </button>
+        <h3 class="text-md font-semibold mb-4">Enrollment Request Submitted</h3>
+        <p class="text-sm">
+            Your request has been submitted successfully.
+        </p>
+        <a id="statusLink" href="/card/enrollments">
+            <button class="mt-4 bg-blue-600 text-white text-sm px-4 py-2 rounded hover:bg-blue-900">
+                View Enrollments
+            </button>
+        </a>
     </div>
 </div>
 
-<!-- Error Modal -->
 <div id="errorModal" class="hidden fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center z-50">
     <div class="bg-white rounded-lg p-6 max-w-md">
-        <h3 class="text-sm font-semibold mb-4">Previous Application found</h3>
-        <p>Your request has not been processed due to a prior request for this card. Please see
-        <a id="statusLink" href="/user/enrollments" target="_blank" class="text-blue-600 hover:underline">enrollments</a>
- for more details</p>
+        <h3 class="text-md font-semibold mb-4">Something went wrong!</h3>
+        <p class="text-sm">Your request has not been processed.</p>
         <button onclick="closeError()"
                 class="mt-4 bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">
             Close
@@ -98,10 +97,8 @@
 </div>
 
 <script>
-    function openForm(productId, productName) {
-        console.log("Submitting application for: " + productId + ", " + productName);
+    function openForm(productId) {
         document.getElementById('formModal').classList.remove('hidden');
-
         document.getElementById('requestForm').onsubmit = async function (event) {
             event.preventDefault();
 
@@ -121,41 +118,19 @@
                 });
 
                 if (response.status === 200) {
-                    // Handle success response
                     document.getElementById('formModal').classList.add('hidden');
-
-                    // Show confirmation with link
-                    document.getElementById('statusLink').textContent = `View status for ${productName} application`;
-                    document.getElementById('statusLink').href = '/user/enrollments';
                     document.getElementById('confirmationModal').classList.remove('hidden');
-                } else if (response.status === 409) {
-                    // Handle conflict response
-                    const errorData = await response.json();
-                    console.error('Conflict:', errorData.message || 'Conflict occurred');
-                    document.getElementById('formModal').classList.add('hidden');
-
-                    // Show error modal
-                    document.getElementById('errorModal').classList.remove('hidden');
-
-                    // disable the apply button from applications until more reloads
-                    // bg-blue-600
-                    document.getElementById(productId).disabled = true;
-                    document.getElementById(productId).textContent = "Unavailable"
                 } else {
-                    // Handle other failures
-                    console.error('Request failed:', response.statusText);
-                    alert('Failed to submit request. Please try again.');
+                    document.getElementById('formModal').classList.add('hidden');
+                    document.getElementById('errorModal').classList.remove('hidden');
                 }
             } catch (error) {
-                console.error('Error submitting request:', error);
-                alert('An error occurred while submitting your request. Please try again.');
+                document.getElementById('formModal').classList.add('hidden');
+                document.getElementById('errorModal').classList.remove('hidden');
             }
         };
     }
 
-    function closeConfirmation() {
-        document.getElementById('confirmationModal').classList.add('hidden');
-    }
     function closeError() {
         document.getElementById('errorModal').classList.add('hidden');
     }
