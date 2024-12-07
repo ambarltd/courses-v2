@@ -2,6 +2,7 @@
 <doctrine-mongo-mapping xmlns="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping http://doctrine-project.org/schemas/odm/doctrine-mongo-mapping.xsd">
   <document name="Galeas\Api\BoundedContext\Identity\User\Projection\UserDetails\UserDetails" collection="Identity_User_UserDetails_UserDetails">
     <id type="string" strategy="NONE"/>
+    <field field-name="username" type="string" nullable="false"/>
     <field field-name="verifiedEmail" type="string" nullable="true"/>
     <field field-name="unverifiedEmail" type="string" nullable="true"/>
   </document>
