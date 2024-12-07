@@ -17,6 +17,7 @@ public class GetEnrollmentList {
         return enrollmentRepository.findAllByUserId(userId)
                 .stream()
                 .map(enrollment -> EnrollmentListItem.builder()
+                        .id(enrollment.getId())
                         .userId(enrollment.getUserId())
                         .productId(enrollment.getProductId())
                         .productName(

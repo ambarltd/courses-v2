@@ -36,8 +36,8 @@ public class Serializer {
     private String determineEventName(Event event) {
         return switch (event) {
             case EnrollmentRequested _event -> "CreditCard_Enrollment_EnrollmentRequested";
-            case EnrollmentDeclined _event -> "CreditCard_Enrollment_EnrollmentDeclined";
             case EnrollmentAccepted _event -> "CreditCard_Enrollment_EnrollmentAccepted";
+            case EnrollmentDeclined _event -> "CreditCard_Enrollment_EnrollmentDeclined";
             case null -> throw new RuntimeException("Event is null");
             default -> {
                 throw new RuntimeException("Unknown event type: " + event.getClass().getName());
@@ -53,7 +53,10 @@ public class Serializer {
                 jsonPayload.put("annualIncomeInCents", enrollmentRequested.getAnnualIncomeInCents());
                 jsonPayload.put("productId", enrollmentRequested.getProductId());
                 jsonPayload.put("userId", enrollmentRequested.getUserId());
-            } else if (event instanceof EnrollmentDeclined enrollmentDeclined) {
+            } else if (event instanceof EnrollmentAccepted enrollmentAccepted) {
+                jsonPayload.put("reasonCode", enrollmentAccepted.getReasonCode());
+                jsonPayload.put("reasonDescription", enrollmentAccepted.getReasonDescription());
+            }  else if (event instanceof EnrollmentDeclined enrollmentDeclined) {
                 jsonPayload.put("reasonCode", enrollmentDeclined.getReasonCode());
                 jsonPayload.put("reasonDescription", enrollmentDeclined.getReasonDescription());
             } else {

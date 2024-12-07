@@ -36,10 +36,12 @@ public class EnrollmentListProjectionHandler extends ProjectionHandler {
             Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.ACCEPTED.name());
             enrollment.setReviewedDate(event.getRecordedOn());
+            enrollmentRepository.save(enrollment);
         } else if (event instanceof EnrollmentDeclined) {
             Enrollment enrollment = enrollmentRepository.findOneById(event.getAggregateId()).orElseThrow();
             enrollment.setStatus(EnrollmentStatus.DECLINED.name());
             enrollment.setReviewedDate(event.getRecordedOn());
+            enrollmentRepository.save(enrollment);
         }
     }
 }

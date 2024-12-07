@@ -1,6 +1,7 @@
 package cloud.ambar.common.serializedevent;
 
 import cloud.ambar.common.event.Event;
+import cloud.ambar.creditcard.enrollment.event.EnrollmentAccepted;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentDeclined;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
 import cloud.ambar.creditcard.product.event.ProductActivated;
@@ -29,6 +30,16 @@ public class Deserializer {
                     .annualIncomeInCents(payloadInt(serializedEvent.getJsonPayload(), "annualIncomeInCents"))
                     .productId(payloadString(serializedEvent.getJsonPayload(), "productId"))
                     .userId(payloadString(serializedEvent.getJsonPayload(), "userId"))
+                    .build();
+            case "CreditCard_Enrollment_EnrollmentAccepted" -> EnrollmentAccepted.builder()
+                    .eventId(serializedEvent.getEventId())
+                    .aggregateId(serializedEvent.getAggregateId())
+                    .aggregateVersion(serializedEvent.getAggregateVersion())
+                    .correlationId(serializedEvent.getCorrelationId())
+                    .causationId(serializedEvent.getCausationId())
+                    .recordedOn(toInstant(serializedEvent.getRecordedOn()))
+                    .reasonCode(payloadString(serializedEvent.getJsonPayload(), "reasonCode"))
+                    .reasonDescription(payloadString(serializedEvent.getJsonPayload(), "reasonDescription"))
                     .build();
             case "CreditCard_Enrollment_EnrollmentDeclined" -> EnrollmentDeclined.builder()
                     .eventId(serializedEvent.getEventId())

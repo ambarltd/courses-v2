@@ -64,6 +64,8 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                         .causationId(causationId)
                         .correlationId(correlationId)
                         .recordedOn(Instant.now())
+                        .reasonCode("ALL_CHECKS_PASSED")
+                        .reasonDescription("All checks passed.")
                         .build());
             }
         }

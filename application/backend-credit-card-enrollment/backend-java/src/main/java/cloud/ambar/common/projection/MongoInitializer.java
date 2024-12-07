@@ -26,8 +26,8 @@ public class MongoInitializer {
             mongoInitializerApi.operate().createCollection("CreditCard_Enrollment_ProductActiveStatus");
             log.info("Created collections");
 
-            log.info("Creating indexese");
-            mongoInitializerApi.operate().indexOps("CreditCard_Enrollment")
+            log.info("Creating indexes");
+            mongoInitializerApi.operate().indexOps("CreditCard_Enrollment_Enrollment")
                     .ensureIndex(new Index().on("userId", org.springframework.data.domain.Sort.Direction.ASC));
             log.info("Created indexes");
         };
