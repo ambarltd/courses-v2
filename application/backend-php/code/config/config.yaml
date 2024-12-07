@@ -49,12 +49,12 @@ doctrine_mongodb:
                     prefix: Galeas\Api\BoundedContext\Security\Session\Projection
                     dir: '%kernel.project_dir%/src/BoundedContext/Security/Session/Projection/MongoMapping'
                     alias: Galeas\Api\BoundedContext\Security\Session\Projection
-                Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection:
+                Galeas\Api\BoundedContext\CreditCard\Product\Projection:
                     type: xml
                     is_bundle: false
-                    prefix: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
-                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCardProduct/Product/Projection/MongoMapping'
-                    alias: Galeas\Api\BoundedContext\CreditCardProduct\Product\Projection
+                    prefix: Galeas\Api\BoundedContext\CreditCard\Product\Projection
+                    dir: '%kernel.project_dir%/src/BoundedContext/CreditCard/Product/Projection/MongoMapping'
+                    alias: Galeas\Api\BoundedContext\CreditCard\Product\Projection
                 Galeas\Api\Service\ODM:
                     type: xml
                     is_bundle: false

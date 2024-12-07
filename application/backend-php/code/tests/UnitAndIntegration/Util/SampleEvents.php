@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\Galeas\Api\UnitAndIntegration\Util;
 
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductActivated;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDeactivated;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\ProductDefined;
+use Galeas\Api\BoundedContext\CreditCard\Product\Event\ProductActivated;
+use Galeas\Api\BoundedContext\CreditCard\Product\Event\ProductDeactivated;
+use Galeas\Api\BoundedContext\CreditCard\Product\Event\ProductDefined;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\AbandonedEmailRetaken;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailAbandoned;
 use Galeas\Api\BoundedContext\Identity\TakenEmail\Event\EmailTaken;

@@ -22,8 +22,9 @@ class UserDetailsProjector extends EventProjector
     {
         switch (true) {
             case $event instanceof SignedUp:
-                $this->saveOne(UserDetails::fromUserIdAndEmails(
+                $this->saveOne(UserDetails::fromUserIdUsernameAndEmails(
                     $event->aggregateId()->id(),
+                    $event->username(),
                     null,
                     $event->primaryEmail()
                 ));

@@ -76,6 +76,7 @@ class DBMigration
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('GRANT SELECT ON TABLE %s TO %s;', $this->eventStoreTableName, $this->eventStoreCreateReplicationUserWithUsername));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE PUBLICATION %s FOR TABLE %s;', $this->eventStoreCreateReplicationPublication, $this->eventStoreTableName));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE UNIQUE INDEX event_store_idx_event_aggregate_id_version ON %s(aggregate_id, aggregate_version);', $this->eventStoreTableName));
+            $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE UNIQUE INDEX event_store_idx_event_id ON %s(event_id);', $this->eventStoreTableName));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_event_causation_id ON %s(causation_id);', $this->eventStoreTableName));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_event_correlation_id ON %s(correlation_id);', $this->eventStoreTableName));
             $this->executeStatementAndIgnoreExceptions($logErrors, \sprintf('CREATE INDEX event_store_idx_occurred_on ON %s(recorded_on);', $this->eventStoreTableName));

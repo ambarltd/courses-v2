@@ -8,6 +8,8 @@ class UserDetails
 {
     private string $id;
 
+    private string $username;
+
     private ?string $verifiedEmail;
 
     private ?string $unverifiedEmail;
@@ -17,6 +19,11 @@ class UserDetails
     public function userId(): string
     {
         return $this->id;
+    }
+
+    public function username(): string
+    {
+        return $this->username;
     }
 
     public function verifiedEmail(): ?string
@@ -44,13 +51,15 @@ class UserDetails
         return $this;
     }
 
-    public static function fromUserIdAndEmails(
+    public static function fromUserIdUsernameAndEmails(
         string $userId,
+        string $username,
         ?string $verifiedEmail,
         ?string $requestedEmail
     ): self {
         $userDetails = new self();
         $userDetails->id = $userId;
+        $userDetails->username = $username;
         $userDetails->verifiedEmail = null;
         $userDetails->unverifiedEmail = null;
 

@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Galeas\Api\Console;
 
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Command\DefineProductCommand;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\CommandHandler\DefineProductHandler;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidPaymentCycle;
-use Galeas\Api\BoundedContext\CreditCardProduct\Product\Event\InvalidReward;
+use Galeas\Api\BoundedContext\CreditCard\Product\Command\DefineProductCommand;
+use Galeas\Api\BoundedContext\CreditCard\Product\CommandHandler\DefineProductHandler;
+use Galeas\Api\BoundedContext\CreditCard\Product\Event\InvalidPaymentCycle;
+use Galeas\Api\BoundedContext\CreditCard\Product\Event\InvalidReward;
 use Galeas\Api\CommonException\EventStoreCannotRead;
 use Galeas\Api\CommonException\EventStoreCannotWrite;
 use Galeas\Api\Primitive\PrimitiveCreation\NoRandomnessAvailable;

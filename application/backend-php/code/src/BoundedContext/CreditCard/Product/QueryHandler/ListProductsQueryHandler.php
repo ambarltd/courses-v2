@@ -1,0 +1,29 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Galeas\Api\BoundedContext\CreditCard\Product\QueryHandler;
+
+use Galeas\Api\BoundedContext\CreditCard\Product\Projection\ProductList\ListProducts;
+use Galeas\Api\BoundedContext\CreditCard\Product\Query\ListProductsQuery;
+use Galeas\Api\CommonException\ProjectionCannotRead;
+
+class ListProductsQueryHandler
+{
+    private ListProducts $listProducts;
+
+    public function __construct(ListProducts $listProducts)
+    {
+        $this->listProducts = $listProducts;
+    }
+
+    /**
+     * @return array<array{id: string, name: string, isActive: bool, paymentCycle: string, annualFeeInCents: int, creditLimitInCents: int, reward: string}>
+     *
+     * @throws ProjectionCannotRead
+     */
+    public function handle(ListProductsQuery $listProductsQuery): array
+    {
+        return $this->listProducts->list();
+    }
+}

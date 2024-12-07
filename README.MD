@@ -28,9 +28,16 @@ This example application contains an event sourced financial institution that al
 2. Verify your email
 3. Sign in / sign out
 4. View credit card products you can enrol in (Platinum and Starter)
+5. Request an enrollment into a credit card product
 
-The application is written in PHP, but we will soon have an extra feature (5. Credit Card Enrolment), 
-implemented in multiple languages.
+The code for `1.`, `2.`, `3.`, and `4.`, is written in PHP, and lives 
+at `application/backend-php`. The code for `5.` is written in other languages 
+to help you understand event sourcing in your preferred language.
+
+By default `5` is deployed with Java. But if you'd like to change that, 
+simply head to `local-development/docker-compose.yml` and change the 
+`credit-card-enrollment` to use the directory corresponding to your 
+preferred language.
 
 ## Building More
 
@@ -50,9 +57,10 @@ To make sense of this application, please review the slides and recordings you r
 
 ```markdown
 
-application/                # Source code
-├── frontend-javascript/    # Source code for the frontend
-└── backend-php/            # Source code for the backend
+application/                         # Source code
+├── frontend-javascript/             # Source code for the frontend
+└── backend-php/                     # Source code for the backend (parts 1-4)
+└── backend-credit-card-enrollment/  # Source code for the backend (part 5)
 
 cloud-deployment-examples/  # Infrastructure code examples, in case you ever want to deploy this to the cloud.
 
@@ -61,8 +69,8 @@ local-development/          # Local development environment defined with Docker 
 │
 ├── docker-compose.yml      # Docker Compose definition
 │                           #     Includes an event store (Postgres), projection db (Mongo),
-│                           #     backend (PHP + Nginx), frontend (JavaScript + Nginx),
-│                           #     and an Ambar emulator (for projections and reactions)
+│                           #     backends, frontend (JavaScript + Nginx), and an Ambar 
+│                           #     emulator (for projections and reactions)
 │
 │
 ├── ambar-config.yml        # Configuration for Ambar emulator
