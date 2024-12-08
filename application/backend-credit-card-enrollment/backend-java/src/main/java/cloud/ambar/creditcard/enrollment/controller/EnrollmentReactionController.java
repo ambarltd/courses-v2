@@ -1,6 +1,7 @@
 package cloud.ambar.creditcard.enrollment.controller;
 
 import cloud.ambar.common.ambar.AmbarHttpRequest;
+import cloud.ambar.common.eventstore.EventStore;
 import cloud.ambar.common.reaction.ReactionController;
 import cloud.ambar.common.serializedevent.Deserializer;
 import cloud.ambar.creditcard.enrollment.reaction.ReviewEnrollmentReactionHandler;
@@ -19,9 +20,10 @@ public class EnrollmentReactionController extends ReactionController {
     private final ReviewEnrollmentReactionHandler reviewEnrollmentReactionHandler;
 
     public EnrollmentReactionController(
+            EventStore eventStore,
             Deserializer deserializer,
             ReviewEnrollmentReactionHandler reviewEnrollmentReactionHandler) {
-        super(deserializer);
+        super(eventStore, deserializer);
         this.reviewEnrollmentReactionHandler = reviewEnrollmentReactionHandler;
     }
 

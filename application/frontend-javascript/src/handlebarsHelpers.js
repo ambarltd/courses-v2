@@ -21,5 +21,8 @@ export const helpers = {
     };
 
     return date.toLocaleString('en-GB', options);
+  },
+  isNonEmptyArray: function (array) {
+    return Array.isArray(array) && array.length > 0;
   }
 };
