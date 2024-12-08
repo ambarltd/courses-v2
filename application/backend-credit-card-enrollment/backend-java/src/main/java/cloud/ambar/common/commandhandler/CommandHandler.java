@@ -4,6 +4,7 @@ import cloud.ambar.common.eventstore.EventStore;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class CommandHandler {
+abstract public class CommandHandler {
     final protected EventStore eventStore;
+    protected abstract void handleCommand(Command command);
 }

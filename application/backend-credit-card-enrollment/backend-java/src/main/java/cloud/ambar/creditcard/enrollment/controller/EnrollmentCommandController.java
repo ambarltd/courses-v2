@@ -1,22 +1,32 @@
 package cloud.ambar.creditcard.enrollment.controller;
 
+import cloud.ambar.common.commandhandler.CommandController;
+import cloud.ambar.common.eventstore.EventStore;
 import cloud.ambar.common.sessionauth.SessionService;
-import cloud.ambar.creditcard.enrollment.commandhandler.EnrollmentCommandHandler;
+import cloud.ambar.creditcard.enrollment.commandhandler.RequestEnrollmentCommandHandler;
 import cloud.ambar.creditcard.enrollment.commandhandler.RequestEnrollmentCommand;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 @RestController
 @RequestScope
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/credit_card/enrollment")
-public class EnrollmentCommandController {
+public class EnrollmentCommandController extends CommandController {
     private final SessionService sessionService;
 
-    private final EnrollmentCommandHandler enrollmentService;
+    private final RequestEnrollmentCommandHandler requestEnrollmentCommandHandler;
+
+    public EnrollmentCommandController(
+            EventStore eventStore,
+            SessionService sessionService,
+            RequestEnrollmentCommandHandler requestEnrollmentCommandHandler
+    ) {
+        super(eventStore);
+        this.sessionService = sessionService;
+        this.requestEnrollmentCommandHandler = requestEnrollmentCommandHandler;
+    }
 
     @PostMapping("/request-enrollment")
     @ResponseStatus(HttpStatus.OK)
@@ -30,6 +40,6 @@ public class EnrollmentCommandController {
                 .annualIncomeInCents(request.getAnnualIncomeInCents())
                 .build();
 
-        enrollmentService.handle(command);
+        processCommand(command, requestEnrollmentCommandHandler);
     }
 }

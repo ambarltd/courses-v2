@@ -2,6 +2,7 @@ package cloud.ambar.common.reaction;
 
 import cloud.ambar.common.ambar.AmbarHttpRequest;
 import cloud.ambar.common.ambar.AmbarResponseFactory;
+import cloud.ambar.common.eventstore.EventStore;
 import cloud.ambar.common.serializedevent.Deserializer;
 import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class ReactionController {
+    private final EventStore eventStore;
     private final Deserializer deserializer;
     private static final Logger log = LogManager.getLogger(ReactionController.class);
 
@@ -19,7 +21,10 @@ public abstract class ReactionController {
         try {
             log.info("Reaction received http request: " + ambarHttpRequest);
 
+            eventStore.beginTransaction();
             reactionHandler.react(deserializer.deserialize(ambarHttpRequest.getSerializedEvent()));
+            eventStore.commitTransaction();
+
             return AmbarResponseFactory.successResponse();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().startsWith("Unknown event type")) {
@@ -35,6 +40,10 @@ public abstract class ReactionController {
                     .map(StackTraceElement::toString)
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
+            if (eventStore.isTransactionActive()) {
+                eventStore.abortTransaction();
+                eventStore.closeSession();
+            }
             return AmbarResponseFactory.retryResponse(e);
         }
     }

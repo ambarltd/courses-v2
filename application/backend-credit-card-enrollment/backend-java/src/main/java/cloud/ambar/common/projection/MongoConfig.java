@@ -35,7 +35,7 @@ public class MongoConfig {
     }
 
     @Bean
-    public MongoInitializerApi mongoInitializerApi() {
+    public MongoNonTransactionalApi mongoNonTransactionalApi() {
         MongoClient mongoClient = MongoClients.create(mongodbUri);
         MongoTemplate mongoTemplate = new MongoTemplate(mongoClient, mongoDatabaseName);
 
@@ -43,7 +43,7 @@ public class MongoConfig {
         MappingMongoConverter converter = (MappingMongoConverter) mongoTemplate.getConverter();
         converter.setTypeMapper(new DefaultMongoTypeMapper(null));
 
-        return new MongoInitializerApi(mongoTemplate);
+        return new MongoNonTransactionalApi(mongoTemplate);
     }
 }
 

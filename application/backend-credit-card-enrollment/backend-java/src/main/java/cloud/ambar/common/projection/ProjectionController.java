@@ -69,6 +69,7 @@ public abstract class ProjectionController {
             log.error(stackTraceString);
             if (mongoTransactionalAPI.isTransactionActive()) {
                 mongoTransactionalAPI.abortTransaction();
+                mongoTransactionalAPI.closeSession();
             }
             return AmbarResponseFactory.retryResponse(e);
         }

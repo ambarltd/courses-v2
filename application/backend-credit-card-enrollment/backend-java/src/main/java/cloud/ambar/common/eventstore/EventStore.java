@@ -9,21 +9,23 @@ import cloud.ambar.common.serializedevent.SerializedEvent;
 import cloud.ambar.common.serializedevent.Serializer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.List;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class EventStore {
     private final EventRepository eventRepository;
     private final Deserializer deserializer;
     private final Serializer serializer;
-
-    public boolean doesEventAlreadyExist(String eventId) {
-        return eventRepository.findByEventId(eventId).isPresent();
-    }
+    private boolean transactionActive = false;
 
     public AggregateAndEventIdsInLastEvent findAggregate(String aggregateId) {
+        if (!transactionActive) {
+            throw new RuntimeException("Transaction must be active to read aggregate from event store!");
+        }
         final List<SerializedEvent> serializedEvents = eventRepository.findAllByAggregateId(aggregateId);
         final List<Event> events = serializedEvents.stream()
                 .map(deserializer::deserialize)
@@ -66,7 +68,50 @@ public class EventStore {
     }
 
     public void saveEvent(Event event) {
-        // todo transactional
+        if (!transactionActive) {
+            throw new RuntimeException("Transaction must be active to write into event store!");
+        }
         eventRepository.save(serializer.serialize(event));
+    }
+
+    public boolean doesEventAlreadyExist(String eventId) {
+        if (!transactionActive) {
+            throw new RuntimeException("Transaction must be active to read event from event store!");
+        }
+        return eventRepository.findByEventId(eventId).isPresent();
+    }
+
+    public void beginTransaction() {
+        if (transactionActive) {
+            throw new RuntimeException("Transaction already active.");
+        }
+        // todo transaction begin
+        transactionActive = true;
+    }
+
+    public void commitTransaction() {
+        if (!transactionActive) {
+            throw new RuntimeException("No transaction to commit.");
+        }
+
+        // todo transaction commit
+        transactionActive = false;
+    }
+
+    public void abortTransaction() {
+        if (!transactionActive) {
+            throw new RuntimeException("No transaction to abort");
+        }
+
+        // todo abort transaction
+        transactionActive = false;
+    }
+
+    public void closeSession() {
+        // todo close session
+    }
+
+    public boolean isTransactionActive() {
+        return transactionActive;
     }
 }

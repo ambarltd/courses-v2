@@ -11,23 +11,23 @@ import org.springframework.stereotype.Component;
 public class MongoInitializer {
     private static final Logger log = LogManager.getLogger(MongoInitializer.class);
 
-    private final MongoInitializerApi mongoInitializerApi;
+    private final MongoNonTransactionalApi mongoNonTransactionalApi;
 
-    public MongoInitializer(MongoInitializerApi mongoInitializerApi) {
-        this.mongoInitializerApi = mongoInitializerApi;
+    public MongoInitializer(MongoNonTransactionalApi mongoNonTransactionalApi) {
+        this.mongoNonTransactionalApi = mongoNonTransactionalApi;
     }
 
     @Bean
     ApplicationRunner initMongo() {
         return args -> {
             log.info("Creating collections");
-            mongoInitializerApi.operate().createCollection("CreditCard_Enrollment_Enrollment");
-            mongoInitializerApi.operate().createCollection("CreditCard_Enrollment_ProductName");
-            mongoInitializerApi.operate().createCollection("CreditCard_Enrollment_ProductActiveStatus");
+            mongoNonTransactionalApi.operate().createCollection("CreditCard_Enrollment_Enrollment");
+            mongoNonTransactionalApi.operate().createCollection("CreditCard_Enrollment_ProductName");
+            mongoNonTransactionalApi.operate().createCollection("CreditCard_Enrollment_ProductActiveStatus");
             log.info("Created collections");
 
             log.info("Creating indexes");
-            mongoInitializerApi.operate().indexOps("CreditCard_Enrollment_Enrollment")
+            mongoNonTransactionalApi.operate().indexOps("CreditCard_Enrollment_Enrollment")
                     .ensureIndex(new Index().on("userId", org.springframework.data.domain.Sort.Direction.ASC));
             log.info("Created indexes");
         };
