@@ -66,10 +66,6 @@ function authenticatedOrNot(req, res, next) {
 
 function authenticate(req, { token }) {
   req.session.token = token;
-  // req.session.email = email;
-  // req.session.requestedEmail = requestedEmail;
-  // req.session.userId = userId;
-  // req.session.verified = verified;
 }
 
 function unauthenticate(req) {
@@ -104,13 +100,13 @@ app.set('views', path.join(__dirname, "views"));
 const static_dir = path.join(path.dirname(__dirname), 'assets');
 app.use("/assets", Express.static(static_dir))
 
-app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign in" }))
-app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign-up" }))
-app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign-up success" }))
+app.get('/sign-in', unauthenticated, renderSignedOut("sign-in", { title: "Sign In" }))
+app.get('/sign-up', unauthenticated, renderSignedOut("sign-up", { title: "Sign Up" }))
+app.get('/sign-up-success', unauthenticated, renderSignedOut("sign-up-success", { title: "Sign Up Success" }))
 app.get('/user/details', authenticated, routeUserDetails)
 app.post('/user/details', authenticated, routeUserDetailsPost)
 app.get('/logout', authenticated, routeLogout)
-app.get('/', authenticated, render("home", { title: "Home" }))
+app.get('/', authenticated, routeHome)
 app.get('/verify-email', authenticatedOrNot, routeVerifyEmail);
 app.post('/sign-in', unauthenticated, routeSignIn);
 app.post('/sign-up', unauthenticated,  routeSignUp);
@@ -118,6 +114,15 @@ app.get('/verification-emails', routeVerificationEmails);
 app.get('/card/products', authenticated, routeCardProducts);
 app.post('/card/enrollment', authenticated, routeRequestedEnrollment);
 app.get('/card/enrollments', authenticated, routeCardEnrollments);
+
+// Default metadata for requests.
+const metadata = {
+  environment: "browser",
+  devicePlatform: "unknown",
+  deviceModel: "unknown",
+  deviceOSVersion: "unknown",
+  deviceOrientation: "unknown"
+};
 
 async function fetchUserDetails(token) {
   const response = await fetch(endpoints["user-details"], {
@@ -135,7 +140,7 @@ async function fetchUserDetails(token) {
     throw new Error(error);
   }
 
-  const { userId, primaryEmailStatus } = r;
+  const { userId, primaryEmailStatus, username } = r;
   const { email, requestedEmail, verified } =
     ("unverifiedEmail" in primaryEmailStatus)
     ? { email: primaryEmailStatus.unverifiedEmail.email, requestedEmail: null, verified: false }
@@ -145,18 +150,25 @@ async function fetchUserDetails(token) {
     ? { email: primaryEmailStatus.verifiedButRequestedNewEmail.verifiedEmail, requestedEmail: primaryEmailStatus.verifiedButRequestedNewEmail.requestedEmail, verified: false }
     : new Error(`Unknown state of primaryEmailStatus. ${JSON.stringify(primaryEmailStatus)}`);
 
-  return { userId, email, requestedEmail, verified };
+  return { userId, email, requestedEmail, verified, username };
 }
 
+async function routeHome(req, res) {
+  try {
+    const { username } = await fetchUserDetails(req.session.token);
 
-// Default metadata for requests.
-const metadata = {
-  environment: "browser",
-  devicePlatform: "unknown",
-  deviceModel: "unknown",
-  deviceOSVersion: "unknown",
-  deviceOrientation: "unknown"
-};
+    res.render("home", {
+      layout: layouts.main,
+      locals: {
+        title: "Home",
+        username
+      }
+    });
+  } catch (error) {
+    console.error("Error on homepage:", error);
+    errorPage(res, "Failed to load homepage");
+  }
+}
 
 async function renderUserDetails(req, res, { successMessage, failureMessage }) {
 
@@ -164,7 +176,7 @@ async function renderUserDetails(req, res, { successMessage, failureMessage }) {
   res.render("details", {
     layout: layouts.main,
     locals: {
-      title: "User details",
+      title: "User Details",
       email: email,
       userId: userId,
       requestedEmail: requestedEmail,
@@ -174,6 +186,7 @@ async function renderUserDetails(req, res, { successMessage, failureMessage }) {
     }
   });
 }
+
 async function routeUserDetails(req, res) {
   try {
     return await renderUserDetails(req, res, {});
@@ -240,14 +253,14 @@ async function routeVerifyEmail(req,res) {
       const error = getError(r);
       res.render("verify-email", {
         layout: layouts.signedOut,
-        locals: { title: "Verify email", error },
+        locals: { title: "Verify Email", error },
       });
       return;
     }
 
     res.render(`verify-email`, {
       layout: layouts.signedOut,
-      locals: { title: "Verify email" },
+      locals: { title: "Verify Email" },
     })
   } catch (error) {
     console.error("Error verifying email:", error);
@@ -281,7 +294,7 @@ async function routeSignIn(req, res) {
 
       res.render("sign-in", {
         layout: layouts.signedOut,
-        locals: { title: "Sign in", error },
+        locals: { title: "Sign In", error },
       });
       return;
     }
@@ -339,7 +352,7 @@ async function routeSignUp(req, res) {
 
       res.render("sign-up", {
         layout: layouts.signedOut,
-        locals: { title: "Sign-up", error, username, email }
+        locals: { title: "Sign Up", error, username, email }
       });
       return;
     }
@@ -518,6 +531,7 @@ app.get('/event-bus-yml', (req, res) => {
     res.status(500).json({ error: 'Error reading YAML file' });
   }
 });
+
 app.get('/event-bus.yml', (req, res) => {
     try {
         const fileContents = readFileSync('/ambar-yml/ambar-config.yaml', 'utf8');
