@@ -33,11 +33,16 @@ public abstract class ReactionController {
             postgresTransactionalEventStore.commitTransaction();
             mongoTransactionalProjectionOperator.commitTransaction();
 
+            postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
+
             return AmbarResponseFactory.successResponse();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().startsWith("Unknown event type")) {
                 log.warn("Unknown event type. Skipping reaction.");
                 log.warn(e);
+                postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
+                mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
                 return AmbarResponseFactory.successResponse();
             }
 
@@ -49,25 +54,8 @@ public abstract class ReactionController {
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
 
-            try {
-                if (postgresTransactionalEventStore.isTransactionActive()) {
-                    postgresTransactionalEventStore.abortTransaction();
-                }
-            } catch (Exception postgresException) {
-                log.error("Failed to abort postgres transaction.");
-                log.error(postgresException);
-                log.error(postgresException.getMessage());
-            }
-
-            try {
-                if (mongoTransactionalProjectionOperator.isTransactionActive()) {
-                    mongoTransactionalProjectionOperator.abortTransaction();
-                }
-            } catch (Exception mongoException) {
-                log.error("Failed to abort mongo transaction.");
-                log.error(mongoException);
-                log.error(mongoException.getMessage());
-            }
+            postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             return AmbarResponseFactory.retryResponse(e);
         }

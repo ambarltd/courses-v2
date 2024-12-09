@@ -4,7 +4,6 @@ import cloud.ambar.common.aggregate.Aggregate;
 import cloud.ambar.common.event.CreationEvent;
 import cloud.ambar.common.event.Event;
 import cloud.ambar.common.event.TransformationEvent;
-import cloud.ambar.common.queryhandler.QueryController;
 import cloud.ambar.common.serializedevent.Deserializer;
 import cloud.ambar.common.serializedevent.SerializedEvent;
 import cloud.ambar.common.serializedevent.Serializer;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class PostgresTransactionalEventStore implements AutoCloseable {
+public class PostgresTransactionalEventStore {
     private static final Logger log = LogManager.getLogger(PostgresTransactionalEventStore.class);
 
     private final Connection connection;
@@ -108,32 +107,21 @@ public class PostgresTransactionalEventStore implements AutoCloseable {
         }
     }
 
-    public void abortTransaction() {
-        if (!isTransactionActive) {
-            throw new RuntimeException("Transaction must be active to abort!");
-        }
+    public void abortDanglingTransactionsAndReturnConnectionToPool() {
+        log.info("PostgresTransactionalEventStore: Aborting dangling transactions and returning connection to pool.");
         try {
             connection.rollback();
             isTransactionActive = false;
         } catch (SQLException e) {
-            throw new RuntimeException("Failed to abort transaction", e);
+            log.error("Failed to abort transaction", e);
         }
-    }
 
-    public boolean isTransactionActive() {
-        return isTransactionActive;
-    }
-
-    // IMPLEMENTATION OF AutoCloseable INTERFACE - cleanly close dangling transactions
-    // when the transaction event store gets garbage collected.
-    // I.e., it will return the event store's connection back to the connection pool.
-    // Note: There is need to close the connection, because that would mess with the library's connection pool.
-    // The transactional event store is meant to be used in @RequestScope, so the connection will be cleaned up
-    // by the library when the transactional event store and its connection are garbage collected.
-    public void close() {
-        if (isTransactionActive) {
-            abortTransaction();
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            log.error("Failed to close connection", e);
         }
+        log.info("Aborted dangling transactions and returning connection to pool");
     }
 
     private List<SerializedEvent> findAllSerializedEventsByAggregateId(String aggregateId) {

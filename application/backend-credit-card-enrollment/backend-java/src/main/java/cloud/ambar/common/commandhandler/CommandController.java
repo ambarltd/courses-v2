@@ -31,6 +31,9 @@ public class CommandController {
             commandHandler.handleCommand(command);
             postgresTransactionalEventStore.commitTransaction();
             mongoTransactionalProjectionOperator.commitTransaction();
+
+            postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
         } catch (Exception e) {
             log.error("Failed to process reaction command.");
             log.error(e);
@@ -41,25 +44,8 @@ public class CommandController {
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
 
-            try {
-                if (postgresTransactionalEventStore.isTransactionActive()) {
-                    postgresTransactionalEventStore.abortTransaction();
-                }
-            } catch (Exception postgresException) {
-                log.error("Failed to abort postgres transaction.");
-                log.error(postgresException);
-                log.error(postgresException.getMessage());
-            }
-
-            try {
-                if (mongoTransactionalProjectionOperator.isTransactionActive()) {
-                    mongoTransactionalProjectionOperator.abortTransaction();
-                }
-            } catch (Exception mongoException) {
-                log.error("Failed to abort mongo transaction.");
-                log.error(mongoException);
-                log.error(mongoException.getMessage());
-            }
+            postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             throw new RuntimeException("Failed to process command with exception: " + e);
         }

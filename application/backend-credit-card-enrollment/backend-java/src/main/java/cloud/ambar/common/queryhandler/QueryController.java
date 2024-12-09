@@ -20,6 +20,7 @@ public class QueryController {
             mongoTransactionalProjectionOperator.startTransaction();
             Object object = queryHandler.handleQuery(query);
             mongoTransactionalProjectionOperator.commitTransaction();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             return object;
         } catch (Exception e) {
@@ -32,15 +33,7 @@ public class QueryController {
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
 
-            try {
-                if (mongoTransactionalProjectionOperator.isTransactionActive()) {
-                    mongoTransactionalProjectionOperator.abortTransaction();
-                }
-            } catch (Exception mongoException) {
-                log.error("Failed to abort mongo transaction.");
-                log.error(mongoException);
-                log.error(mongoException.getMessage());
-            }
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             throw new RuntimeException("Failed to process query with exception: " + e);
         }

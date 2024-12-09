@@ -55,11 +55,16 @@ public abstract class ProjectionController {
             projectionHandler.project(event);
 
             mongoTransactionalProjectionOperator.commitTransaction();
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
+
             return AmbarResponseFactory.successResponse();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().startsWith("Unknown event type")) {
                 log.warn("Unknown event type. Skipping projection.");
                 log.warn(e);
+
+                mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
+
                 return AmbarResponseFactory.successResponse();
             }
 
@@ -70,9 +75,9 @@ public abstract class ProjectionController {
                     .map(StackTraceElement::toString)
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
-            if (mongoTransactionalProjectionOperator.isTransactionActive()) {
-                mongoTransactionalProjectionOperator.abortTransaction();
-            }
+
+            mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
+
             return AmbarResponseFactory.retryResponse(e);
         }
     }
