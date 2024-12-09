@@ -4,7 +4,7 @@ import cloud.ambar.common.ambar.AmbarHttpRequest;
 import cloud.ambar.common.ambar.AmbarResponseFactory;
 import cloud.ambar.common.event.Event;
 import cloud.ambar.common.serializedevent.Deserializer;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -15,21 +15,24 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public abstract class ProjectionController {
+    private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
     private final Deserializer deserializer;
-    private final MongoTransactionalAPI mongoTransactionalAPI;
     private static final Logger log = LogManager.getLogger(ProjectionController.class);
 
-    protected String processHttpRequest(
+    protected String processProjectionHttpRequest(
             final AmbarHttpRequest ambarHttpRequest,
             final ProjectionHandler projectionHandler,
             final String projectionName) {
-        log.info("Projection received http request: {}", ambarHttpRequest);
+        log.info("Reaction controller received http request: " + ambarHttpRequest);
 
         try {
             Event event = deserializer.deserialize(ambarHttpRequest.getSerializedEvent());
 
-            mongoTransactionalAPI.startTransaction();
-            boolean isAlreadyProjected = mongoTransactionalAPI.operate().count(
+            // We start a Mongo transaction because if a projection handler needs to update a projection,
+            // it should do so idempotently by checking if the event has already been projected,
+            // and it should do so with a transaction to not receive dirty reads.
+            mongoTransactionalProjectionOperator.startTransaction();
+            boolean isAlreadyProjected = mongoTransactionalProjectionOperator.operate().count(
                 Query.query(
                         Criteria.where("eventId").is(event.getEventId())
                                 .and("projectionName").is(projectionName)
@@ -41,7 +44,7 @@ public abstract class ProjectionController {
                 return AmbarResponseFactory.successResponse();
             }
 
-            mongoTransactionalAPI.operate().save(
+            mongoTransactionalProjectionOperator.operate().save(
                     ProjectedEvent.builder()
                             .eventId(event.getEventId())
                             .projectionName(projectionName)
@@ -51,7 +54,7 @@ public abstract class ProjectionController {
 
             projectionHandler.project(event);
 
-            mongoTransactionalAPI.commitTransaction();
+            mongoTransactionalProjectionOperator.commitTransaction();
             return AmbarResponseFactory.successResponse();
         } catch (Exception e) {
             if (e.getMessage() != null && e.getMessage().startsWith("Unknown event type")) {
@@ -67,11 +70,19 @@ public abstract class ProjectionController {
                     .map(StackTraceElement::toString)
                     .collect(Collectors.joining("\n"));
             log.error(stackTraceString);
-            if (mongoTransactionalAPI.isTransactionActive()) {
-                mongoTransactionalAPI.abortTransaction();
-                mongoTransactionalAPI.closeSession();
+            if (mongoTransactionalProjectionOperator.isTransactionActive()) {
+                mongoTransactionalProjectionOperator.abortTransaction();
             }
             return AmbarResponseFactory.retryResponse(e);
         }
+    }
+
+    @Builder
+    @Setter
+    @Getter
+    public static class ProjectedEvent {
+        @NonNull
+        private String eventId;
+        @NonNull private String projectionName;
     }
 }

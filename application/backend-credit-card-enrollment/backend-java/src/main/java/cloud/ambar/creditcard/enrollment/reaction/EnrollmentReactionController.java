@@ -1,10 +1,10 @@
-package cloud.ambar.creditcard.enrollment.controller;
+package cloud.ambar.creditcard.enrollment.reaction;
 
 import cloud.ambar.common.ambar.AmbarHttpRequest;
-import cloud.ambar.common.eventstore.EventStore;
 import cloud.ambar.common.reaction.ReactionController;
 import cloud.ambar.common.serializedevent.Deserializer;
-import cloud.ambar.creditcard.enrollment.reaction.ReviewEnrollmentReactionHandler;
+import cloud.ambar.common.projection.MongoTransactionalProjectionOperator;
+import cloud.ambar.common.eventstore.PostgresTransactionalEventStore;
 import jakarta.validation.Valid;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,10 +20,11 @@ public class EnrollmentReactionController extends ReactionController {
     private final ReviewEnrollmentReactionHandler reviewEnrollmentReactionHandler;
 
     public EnrollmentReactionController(
-            EventStore eventStore,
+            PostgresTransactionalEventStore postgresTransactionalEventStore,
+            MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
             Deserializer deserializer,
             ReviewEnrollmentReactionHandler reviewEnrollmentReactionHandler) {
-        super(eventStore, deserializer);
+        super(postgresTransactionalEventStore, mongoTransactionalProjectionOperator, deserializer);
         this.reviewEnrollmentReactionHandler = reviewEnrollmentReactionHandler;
     }
 
@@ -33,6 +34,6 @@ public class EnrollmentReactionController extends ReactionController {
     public String reactWithReviewEnrollment(
             @Valid @RequestBody AmbarHttpRequest request
     ) {
-        return processHttpRequest(request, reviewEnrollmentReactionHandler);
+        return processReactionHttpRequest(request, reviewEnrollmentReactionHandler);
     }
 }

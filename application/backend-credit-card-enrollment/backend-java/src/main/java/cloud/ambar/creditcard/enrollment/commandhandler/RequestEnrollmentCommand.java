@@ -8,7 +8,7 @@ import lombok.NonNull;
 @Builder
 @Getter
 public class RequestEnrollmentCommand extends Command {
-    @NonNull private String userId;
+    @NonNull private String sessionToken;
     @NonNull private String productId;
     @NonNull private Integer annualIncomeInCents;
 }

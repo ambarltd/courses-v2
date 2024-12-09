@@ -1,4 +1,4 @@
-package cloud.ambar.creditcard.enrollment.controller;
+package cloud.ambar.creditcard.enrollment.commandhandler;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

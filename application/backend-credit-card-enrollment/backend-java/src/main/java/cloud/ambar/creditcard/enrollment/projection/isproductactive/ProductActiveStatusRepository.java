@@ -1,6 +1,6 @@
 package cloud.ambar.creditcard.enrollment.projection.isproductactive;
 
-import cloud.ambar.common.projection.MongoTransactionalAPI;
+import cloud.ambar.common.projection.MongoTransactionalProjectionOperator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,10 +13,10 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductActiveStatusRepository {
-    private final MongoTransactionalAPI mongoTransactionalAPI;
+    private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
 
     public boolean isThereAnActiveProductWithId(final String productId) {
-        Optional<ProductActiveStatus> productActiveStatus = Optional.ofNullable(mongoTransactionalAPI.operate().findOne(
+        Optional<ProductActiveStatus> productActiveStatus = Optional.ofNullable(mongoTransactionalProjectionOperator.operate().findOne(
                 Query.query(
                         Criteria.where("id").is(productId)
                                 .and("active").is(true)
@@ -29,7 +29,7 @@ public class ProductActiveStatusRepository {
     }
 
     public Optional<ProductActiveStatus> findOneById(final String productId) {
-        return Optional.ofNullable(mongoTransactionalAPI.operate().findOne(
+        return Optional.ofNullable(mongoTransactionalProjectionOperator.operate().findOne(
                 Query.query(Criteria.where("id").is(productId)),
                 ProductActiveStatus.class,
                 "CreditCard_Enrollment_ProductActiveStatus"
@@ -37,6 +37,6 @@ public class ProductActiveStatusRepository {
     }
 
     public void save(final ProductActiveStatus productActiveStatus) {
-        mongoTransactionalAPI.operate().save(productActiveStatus, "CreditCard_Enrollment_ProductActiveStatus");
+        mongoTransactionalProjectionOperator.operate().save(productActiveStatus, "CreditCard_Enrollment_ProductActiveStatus");
     }
 }

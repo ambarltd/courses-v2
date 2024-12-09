@@ -1,6 +1,6 @@
 package cloud.ambar.creditcard.enrollment.projection.enrollmentlist;
 
-import cloud.ambar.common.projection.MongoTransactionalAPI;
+import cloud.ambar.common.projection.MongoTransactionalProjectionOperator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,14 +13,14 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class ProductNameRepository {
-    private final MongoTransactionalAPI mongoTransactionalAPI;
+    private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
 
     public void save(final ProductName productName) {
-        mongoTransactionalAPI.operate().save(productName, "CreditCard_Enrollment_ProductName");
+        mongoTransactionalProjectionOperator.operate().save(productName, "CreditCard_Enrollment_ProductName");
     }
 
     public Optional<ProductName> findOneById(final String id) {
-        return Optional.ofNullable(mongoTransactionalAPI.operate().findOne(
+        return Optional.ofNullable(mongoTransactionalProjectionOperator.operate().findOne(
                 Query.query(
                         Criteria.where("id").is(id)
                 ),

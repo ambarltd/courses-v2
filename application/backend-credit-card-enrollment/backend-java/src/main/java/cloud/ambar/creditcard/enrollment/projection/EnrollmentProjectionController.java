@@ -1,7 +1,7 @@
-package cloud.ambar.creditcard.enrollment.controller;
+package cloud.ambar.creditcard.enrollment.projection;
 
 import cloud.ambar.common.ambar.AmbarHttpRequest;
-import cloud.ambar.common.projection.MongoTransactionalAPI;
+import cloud.ambar.common.projection.MongoTransactionalProjectionOperator;
 import cloud.ambar.common.projection.ProjectionController;
 import cloud.ambar.common.serializedevent.Deserializer;
 import cloud.ambar.creditcard.enrollment.projection.enrollmentlist.EnrollmentListProjectionHandler;
@@ -24,10 +24,10 @@ public class EnrollmentProjectionController extends ProjectionController {
 
     public EnrollmentProjectionController(
             Deserializer deserializer,
-            MongoTransactionalAPI mongoTransactionalAPI,
+            MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
             IsProductActiveProjectionHandler isProductActiveProjectionHandler,
             EnrollmentListProjectionHandler enrollmentListProjectionHandler) {
-        super(deserializer, mongoTransactionalAPI);
+        super(mongoTransactionalProjectionOperator, deserializer);
         this.isProductActiveProjectionHandler = isProductActiveProjectionHandler;
         this.enrollmentListProjectionHandler = enrollmentListProjectionHandler;
     }
@@ -38,7 +38,7 @@ public class EnrollmentProjectionController extends ProjectionController {
     public String projectIsCardProductActive(
             @Valid @RequestBody AmbarHttpRequest request
     ) {
-        return processHttpRequest(request, isProductActiveProjectionHandler, "CreditCard_Enrollment_IsProductActive");
+        return processProjectionHttpRequest(request, isProductActiveProjectionHandler, "CreditCard_Enrollment_IsProductActive");
     }
     @PostMapping(value = "/enrollment_list",
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -46,6 +46,6 @@ public class EnrollmentProjectionController extends ProjectionController {
     public String projectEnrollmentList(
             @Valid @RequestBody AmbarHttpRequest request
     ) {
-        return processHttpRequest(request, enrollmentListProjectionHandler, "CreditCard_Enrollment_EnrollmentList");
+        return processProjectionHttpRequest(request, enrollmentListProjectionHandler, "CreditCard_Enrollment_EnrollmentList");
     }
 }

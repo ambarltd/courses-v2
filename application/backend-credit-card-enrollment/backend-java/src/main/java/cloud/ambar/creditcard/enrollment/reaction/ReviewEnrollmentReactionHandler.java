@@ -3,8 +3,8 @@ package cloud.ambar.creditcard.enrollment.reaction;
 import cloud.ambar.common.aggregate.Aggregate;
 import cloud.ambar.common.event.Event;
 import cloud.ambar.common.eventstore.AggregateAndEventIdsInLastEvent;
-import cloud.ambar.common.eventstore.EventStore;
 import cloud.ambar.common.reaction.ReactionHandler;
+import cloud.ambar.common.eventstore.PostgresTransactionalEventStore;
 import cloud.ambar.creditcard.enrollment.aggregate.Enrollment;
 import cloud.ambar.creditcard.enrollment.aggregate.EnrollmentStatus;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentAccepted;
@@ -23,14 +23,17 @@ import static cloud.ambar.common.util.IdGenerator.generateDeterministicId;
 public class ReviewEnrollmentReactionHandler extends ReactionHandler {
     private final GetEnrollmentList getEnrollmentList;
 
-    public ReviewEnrollmentReactionHandler(EventStore eventStore, GetEnrollmentList getEnrollmentList) {
-        super(eventStore);
+    public ReviewEnrollmentReactionHandler(
+            PostgresTransactionalEventStore postgresTransactionalEventStore,
+            GetEnrollmentList getEnrollmentList
+    ) {
+        super(postgresTransactionalEventStore);
         this.getEnrollmentList = getEnrollmentList;
     }
 
     public void react(final Event event) {
         if (event instanceof EnrollmentRequested) {
-            final AggregateAndEventIdsInLastEvent aggregateAndEventIdsInLastEvent = eventStore.findAggregate(event.getAggregateId());
+            final AggregateAndEventIdsInLastEvent aggregateAndEventIdsInLastEvent = postgresTransactionalEventStore.findAggregate(event.getAggregateId());
             final Aggregate aggregate = aggregateAndEventIdsInLastEvent.getAggregate();
             final String causationId = aggregateAndEventIdsInLastEvent.getEventIdOfLastEvent();
             final String correlationId = aggregateAndEventIdsInLastEvent.getCorrelationIdOfLastEvent();
@@ -44,12 +47,12 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
             }
 
             final String reactionEventId = generateDeterministicId("ReviewedEnrollment" + event.getEventId());
-            if (eventStore.doesEventAlreadyExist(reactionEventId)) {
+            if (postgresTransactionalEventStore.doesEventAlreadyExist(reactionEventId)) {
                 return;
             }
 
             if (getEnrollmentList.isThereAnyAcceptedEnrollmentForUserAndProduct(enrollment.getUserId(), enrollment.getProductId())) {
-                eventStore.saveEvent(EnrollmentDeclined.builder()
+                postgresTransactionalEventStore.saveEvent(EnrollmentDeclined.builder()
                         .eventId(reactionEventId)
                         .aggregateId(enrollment.getAggregateId())
                         .aggregateVersion(enrollment.getAggregateVersion() + 1)
@@ -64,7 +67,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
 
 
             if (enrollment.getAnnualIncomeInCents() < 1500000) {
-                eventStore.saveEvent(EnrollmentDeclined.builder()
+                postgresTransactionalEventStore.saveEvent(EnrollmentDeclined.builder()
                         .eventId(reactionEventId)
                         .aggregateId(enrollment.getAggregateId())
                         .aggregateVersion(enrollment.getAggregateVersion() + 1)
@@ -75,7 +78,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                         .reasonDescription("Insufficient annual income.")
                         .build());
             } else {
-                eventStore.saveEvent(EnrollmentAccepted.builder()
+                postgresTransactionalEventStore.saveEvent(EnrollmentAccepted.builder()
                         .eventId(reactionEventId)
                         .aggregateId(enrollment.getAggregateId())
                         .aggregateVersion(enrollment.getAggregateVersion() + 1)

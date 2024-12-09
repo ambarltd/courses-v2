@@ -1,10 +1,10 @@
 package cloud.ambar.common.commandhandler;
 
-import cloud.ambar.common.eventstore.EventStore;
+import cloud.ambar.common.eventstore.PostgresTransactionalEventStore;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 abstract public class CommandHandler {
-    final protected EventStore eventStore;
+    final protected PostgresTransactionalEventStore postgresTransactionalEventStore;
     protected abstract void handleCommand(Command command);
 }

@@ -2,9 +2,9 @@ package cloud.ambar.creditcard.enrollment.commandhandler;
 
 import cloud.ambar.common.commandhandler.Command;
 import cloud.ambar.common.commandhandler.CommandHandler;
-import cloud.ambar.common.eventstore.EventStore;
+import cloud.ambar.common.eventstore.PostgresTransactionalEventStore;
+import cloud.ambar.common.sessionauth.SessionService;
 import cloud.ambar.creditcard.enrollment.event.EnrollmentRequested;
-import cloud.ambar.creditcard.enrollment.exception.InactiveProductException;
 import cloud.ambar.creditcard.enrollment.projection.isproductactive.IsProductActive;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.annotation.RequestScope;
@@ -16,10 +16,17 @@ import static cloud.ambar.common.util.IdGenerator.generateRandomId;
 @Service
 @RequestScope
 public class RequestEnrollmentCommandHandler extends CommandHandler {
+    private final SessionService sessionService;
+
     private final IsProductActive isProductActive;
 
-    public RequestEnrollmentCommandHandler(EventStore eventStore, IsProductActive isProductActive) {
-        super(eventStore);
+    public RequestEnrollmentCommandHandler(
+            PostgresTransactionalEventStore postgresTransactionalEventStore,
+            SessionService sessionService,
+            IsProductActive isProductActive
+    ) {
+        super(postgresTransactionalEventStore);
+        this.sessionService = sessionService;
         this.isProductActive = isProductActive;
     }
 
@@ -32,8 +39,10 @@ public class RequestEnrollmentCommandHandler extends CommandHandler {
     }
 
     private void handleRequestEnrollment(final RequestEnrollmentCommand command) {
+        String userId = sessionService.authenticatedUserIdFromSessionToken(command.getSessionToken());
+
         if (!isProductActive.isProductActive(command.getProductId())) {
-            throw new InactiveProductException();
+            throw new RuntimeException("Product is inactive and not eligible for enrollment request.");
         }
 
         final String eventId = generateRandomId();
@@ -45,11 +54,11 @@ public class RequestEnrollmentCommandHandler extends CommandHandler {
                 .correlationId(eventId)
                 .causationId(eventId)
                 .recordedOn(Instant.now())
-                .userId(command.getUserId())
+                .userId(userId)
                 .productId(command.getProductId())
                 .annualIncomeInCents(command.getAnnualIncomeInCents())
                 .build();
 
-        eventStore.saveEvent(enrollmentRequested);
+        postgresTransactionalEventStore.saveEvent(enrollmentRequested);
     }
 }

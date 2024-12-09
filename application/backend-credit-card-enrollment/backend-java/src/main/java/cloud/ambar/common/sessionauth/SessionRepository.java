@@ -1,24 +1,27 @@
 package cloud.ambar.common.sessionauth;
 
-import cloud.ambar.common.projection.MongoNonTransactionalApi;
-import lombok.RequiredArgsConstructor;
+import cloud.ambar.common.projection.MongoTransactionalProjectionOperator;
+import jakarta.persistence.Id;
+import lombok.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 import java.time.Instant;
 import java.util.Optional;
 
 @Service
+@RequestScope
 @RequiredArgsConstructor
 public class SessionRepository {
     private static final Logger log = LogManager.getLogger(SessionRepository.class);
     private final SessionConfig sessionConfig;
-    private final MongoNonTransactionalApi mongoNonTransactionalApi;
+    private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
     public Optional<String> authenticatedUserIdFromSessionToken(String sessionToken) {
-        Session session = mongoNonTransactionalApi.operate().findOne(
+        Session session = mongoTransactionalProjectionOperator.operate().findOne(
                 Query.query(
                         Criteria.where("sessionToken").is(sessionToken)
                 ),
@@ -42,5 +45,18 @@ public class SessionRepository {
         }
 
         return Optional.of(session.getUserId());
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @Getter
+    public static class Session {
+        @Id
+        @NonNull
+        private String id;
+        @NonNull private String userId;
+        @NonNull private String sessionToken;
+        @NonNull private Boolean signedOut;
+        @NonNull private Instant tokenLastRefreshedAt;
     }
 }
