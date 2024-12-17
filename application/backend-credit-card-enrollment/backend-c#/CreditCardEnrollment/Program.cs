@@ -24,6 +24,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Credit Card Enrollment API", Version = "v1" });
 });
 
+builder.WebHost.UseKestrel(options =>
+{
+    options.ListenAnyIP(8080); // Binds to 0.0.0.0 for Docker
+    // options.ListenLocalhost(8080); // Binds to localhost
+});
+
 // Check if databases should be initialized
 var initializeDatabases = Environment.GetEnvironmentVariable("INITIALIZE_DATABASES")?.ToLower() != "false";
 
