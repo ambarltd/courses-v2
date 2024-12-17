@@ -54,7 +54,8 @@ public class EnrollmentListProjectionHandler : ProjectionHandler
             UserId = @event.UserId,
             ProductId = @event.ProductId,
             RequestedDate = @event.RecordedOn,
-            Status = EnrollmentStatus.Requested.ToString()
+            Status = EnrollmentStatus.Pending.ToString(),
+            StatusReason = string.Empty // Initialize required property
         });
     }
 
@@ -77,7 +78,7 @@ public class EnrollmentListProjectionHandler : ProjectionHandler
 
         enrollment.Status = EnrollmentStatus.Declined.ToString();
         enrollment.ReviewedOn = @event.RecordedOn;
-        enrollment.StatusReason = @event.ReasonDescription;
+        enrollment.StatusReason = @event.Reason;
 
         await _enrollmentRepository.Save(enrollment);
     }

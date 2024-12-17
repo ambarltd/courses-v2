@@ -14,10 +14,10 @@ public class GetUserEnrollmentsQuery : IQuery<List<EnrollmentListItemDto>>
 
 public class EnrollmentListItemDto
 {
-    public string Id { get; set; }
-    public string ProductName { get; set; }
-    public string Status { get; set; }
-    public string StatusReason { get; set; }
+    public required string Id { get; set; }
+    public required string ProductName { get; set; }
+    public required string Status { get; set; }
+    public required string StatusReason { get; set; }
     public DateTime RequestedDate { get; set; }
     public DateTime? ReviewedOn { get; set; }
 }

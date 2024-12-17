@@ -6,15 +6,15 @@ namespace CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 public class EnrollmentListItem
 {
     [BsonId]
-    public string Id { get; set; }
+    public required string Id { get; set; }
     
-    public string UserId { get; set; }
+    public required string UserId { get; set; }
     
-    public string ProductId { get; set; }
+    public required string ProductId { get; set; }
     
-    public string Status { get; set; }
+    public required string Status { get; set; }
     
-    public string StatusReason { get; set; }
+    public required string StatusReason { get; set; }
     
     public DateTime RequestedDate { get; set; }
     
@@ -24,7 +24,7 @@ public class EnrollmentListItem
 public class ProductName
 {
     [BsonId]
-    public string Id { get; set; }
+    public required string Id { get; set; }
     
-    public string Name { get; set; }
+    public required string Name { get; set; }
 }

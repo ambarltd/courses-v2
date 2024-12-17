@@ -27,7 +27,7 @@ public class GetUserEnrollmentsQueryHandler : QueryHandler<GetUserEnrollmentsQue
     {
         return await MongoOperator.ExecuteInTransaction(async () =>
         {
-            var userId = _sessionService.GetAuthenticatedUserIdFromSessionToken(query.SessionToken);
+            var userId = _sessionService.GetAuthenticatedUserId(query.SessionToken);
             var enrollments = await _enrollmentRepository.FindByUserId(userId);
             var result = new List<EnrollmentListItemDto>();
 
