@@ -54,7 +54,7 @@ public class EnrollmentListProjectionHandler : ProjectionHandler
             UserId = @event.UserId,
             ProductId = @event.ProductId,
             RequestedDate = @event.RecordedOn,
-            Status = EnrollmentStatus.Pending.ToString(),
+            Status = EnrollmentStatus.Requested.ToString(),
             StatusReason = string.Empty
         });
     }

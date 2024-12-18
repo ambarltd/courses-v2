@@ -127,28 +127,26 @@ if (initializeDatabases)
                 !string.IsNullOrEmpty(replicationPassword))
             {
                 logger.LogInformation("Setting up database replication...");
-                
+
                 // Create replication user if it doesn't exist
-                await eventStoreContext.Database.ExecuteSqlAsync(
-                    $"""
+                await eventStoreContext.Database.ExecuteSqlRawAsync(@"
                     DO $$ 
                     BEGIN 
-                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = {replicationUser}) THEN 
-                            CREATE USER {replicationUser} WITH REPLICATION PASSWORD {replicationPassword}; 
+                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = quote_ident($1)) THEN 
+                            EXECUTE 'CREATE USER ' || quote_ident($1) || ' WITH REPLICATION PASSWORD ' || quote_literal($2);
                         END IF; 
-                    END $$
-                    """);
+                    END $$;",
+                    replicationUser, replicationPassword);
 
                 // Create publication if it doesn't exist
-                await eventStoreContext.Database.ExecuteSqlAsync(
-                    $"""
+                await eventStoreContext.Database.ExecuteSqlRawAsync(@"
                     DO $$ 
                     BEGIN 
-                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = {publicationName}) THEN 
-                            CREATE PUBLICATION {publicationName} FOR TABLE {tableName}; 
+                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = quote_ident($1)) THEN 
+                            EXECUTE 'CREATE PUBLICATION ' || quote_ident($1) || ' FOR TABLE ' || quote_ident($2);
                         END IF; 
-                    END $$
-                    """);
+                    END $$;",
+                    publicationName, tableName);
 
                 logger.LogInformation("Database replication configured successfully");
             }

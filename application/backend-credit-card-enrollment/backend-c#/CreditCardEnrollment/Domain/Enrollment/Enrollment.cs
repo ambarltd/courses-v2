@@ -40,8 +40,8 @@ public class Enrollment : Aggregate
 
     public void Accept(string eventId, string correlationId)
     {
-        if (Status != EnrollmentStatus.Pending)
-            throw new InvalidOperationException("Can only accept pending enrollments");
+        if (Status != EnrollmentStatus.Requested)
+            throw new InvalidOperationException("Can only accept requested enrollments");
 
         var @event = new EnrollmentAccepted
         {
@@ -60,8 +60,8 @@ public class Enrollment : Aggregate
 
     public void Decline(string eventId, string correlationId, string reason)
     {
-        if (Status != EnrollmentStatus.Pending)
-            throw new InvalidOperationException("Can only decline pending enrollments");
+        if (Status != EnrollmentStatus.Requested)
+            throw new InvalidOperationException("Can only decline requested enrollments");
 
         var @event = new EnrollmentDeclined
         {
@@ -88,7 +88,7 @@ public class Enrollment : Aggregate
                 UserId = requested.UserId;
                 ProductId = requested.ProductId;
                 AnnualIncomeInCents = requested.AnnualIncomeInCents;
-                Status = EnrollmentStatus.Pending;
+                Status = EnrollmentStatus.Requested;
                 break;
 
             case EnrollmentAccepted:

@@ -2,7 +2,7 @@ namespace CreditCardEnrollment.Domain.Enrollment;
 
 public enum EnrollmentStatus
 {
-    Pending,
+    Requested,
     Accepted,
     Declined
 }
