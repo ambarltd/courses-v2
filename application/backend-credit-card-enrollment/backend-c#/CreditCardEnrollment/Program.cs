@@ -26,8 +26,7 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.WebHost.UseKestrel(options =>
 {
-    options.ListenAnyIP(8080); // Binds to 0.0.0.0 for Docker
-    // options.ListenLocalhost(8080); // Binds to localhost
+    options.ListenAnyIP(8080);
 });
 
 // Check if databases should be initialized
@@ -99,8 +98,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// app.UseHttpsRedirection();
-// app.UseAuthorization();
 app.MapControllers();
 
 // Initialize databases if enabled
@@ -129,24 +126,22 @@ if (initializeDatabases)
                 logger.LogInformation("Setting up database replication...");
 
                 // Create replication user if it doesn't exist
-                await eventStoreContext.Database.ExecuteSqlRawAsync(@"
+                await eventStoreContext.Database.ExecuteSqlRawAsync($@"
                     DO $$ 
                     BEGIN 
-                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = quote_ident($1)) THEN 
-                            EXECUTE 'CREATE USER ' || quote_ident($1) || ' WITH REPLICATION PASSWORD ' || quote_literal($2);
+                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = quote_ident('{replicationUser}')) THEN 
+                            EXECUTE 'CREATE USER ' || quote_ident('{replicationUser}') || ' WITH REPLICATION PASSWORD ' || quote_literal('{replicationPassword}');
                         END IF; 
-                    END $$;",
-                    replicationUser, replicationPassword);
+                    END $$;");
 
                 // Create publication if it doesn't exist
-                await eventStoreContext.Database.ExecuteSqlRawAsync(@"
+                await eventStoreContext.Database.ExecuteSqlRawAsync($@"
                     DO $$ 
                     BEGIN 
-                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = quote_ident($1)) THEN 
-                            EXECUTE 'CREATE PUBLICATION ' || quote_ident($1) || ' FOR TABLE ' || quote_ident($2);
+                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = quote_ident('{publicationName}')) THEN 
+                            EXECUTE 'CREATE PUBLICATION ' || quote_ident('{publicationName}') || ' FOR TABLE ' || quote_ident('{tableName}');
                         END IF; 
-                    END $$;",
-                    publicationName, tableName);
+                    END $$;");
 
                 logger.LogInformation("Database replication configured successfully");
             }
