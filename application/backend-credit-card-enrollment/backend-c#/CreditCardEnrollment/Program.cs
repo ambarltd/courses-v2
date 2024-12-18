@@ -1,5 +1,6 @@
 using CreditCardEnrollment.Application.Services;
 using CreditCardEnrollment.Common.EventStore;
+using CreditCardEnrollment.Common.Projection;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Microsoft.OpenApi.Models;
@@ -73,6 +74,14 @@ if (initializeDatabases)
         var client = sp.GetRequiredService<IMongoClient>();
         var databaseName = Environment.GetEnvironmentVariable("MONGODB_PROJECTION_DATABASE_NAME") ?? "projections";
         return client.GetDatabase(databaseName);
+    });
+
+    // Add MongoDB Transactional Projection Operator
+    builder.Services.AddScoped<IMongoTransactionalProjectionOperator>(sp =>
+    {
+        var client = sp.GetRequiredService<IMongoClient>();
+        var databaseName = Environment.GetEnvironmentVariable("MONGODB_PROJECTION_DATABASE_NAME") ?? "projections";
+        return new MongoTransactionalProjectionOperator(client, databaseName);
     });
 
     // Register business services
