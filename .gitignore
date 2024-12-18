@@ -1,5 +1,6 @@
 .idea
 .vscode
+courses-v2.sln
 .env
 .prod.env
 .terraform

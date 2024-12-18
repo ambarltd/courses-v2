@@ -127,21 +127,29 @@ if (initializeDatabases)
                 !string.IsNullOrEmpty(replicationPassword))
             {
                 logger.LogInformation("Setting up database replication...");
-                await eventStoreContext.Database.ExecuteSqlRawAsync($@"
-                    DO $$
-                    BEGIN
-                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = '{replicationUser}') THEN
-                            CREATE USER {replicationUser} WITH REPLICATION PASSWORD '{replicationPassword}';
-                        END IF;
-                    END $$;
+                
+                // Create replication user if it doesn't exist
+                await eventStoreContext.Database.ExecuteSqlAsync(
+                    $"""
+                    DO $$ 
+                    BEGIN 
+                        IF NOT EXISTS (SELECT FROM pg_user WHERE usename = {replicationUser}) THEN 
+                            CREATE USER {replicationUser} WITH REPLICATION PASSWORD {replicationPassword}; 
+                        END IF; 
+                    END $$
+                    """);
 
-                    DO $$
-                    BEGIN
-                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = '{publicationName}') THEN
-                            CREATE PUBLICATION {publicationName} FOR TABLE {tableName};
-                        END IF;
-                    END $$;
-                ");
+                // Create publication if it doesn't exist
+                await eventStoreContext.Database.ExecuteSqlAsync(
+                    $"""
+                    DO $$ 
+                    BEGIN 
+                        IF NOT EXISTS (SELECT 1 FROM pg_publication WHERE pubname = {publicationName}) THEN 
+                            CREATE PUBLICATION {publicationName} FOR TABLE {tableName}; 
+                        END IF; 
+                    END $$
+                    """);
+
                 logger.LogInformation("Database replication configured successfully");
             }
         }

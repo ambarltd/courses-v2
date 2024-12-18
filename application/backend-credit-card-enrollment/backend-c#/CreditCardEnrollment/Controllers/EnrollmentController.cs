@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using CreditCardEnrollment.Application.Commands.RequestEnrollment;
 using CreditCardEnrollment.Application.Queries.GetUserEnrollments;
 using MediatR;
@@ -7,7 +10,7 @@ using Microsoft.Extensions.Logging;
 namespace CreditCardEnrollment.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/v1/credit_card/enrollment")]
 public class EnrollmentController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -19,40 +22,110 @@ public class EnrollmentController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("request")]
-    public async Task<IActionResult> RequestEnrollment([FromBody] RequestEnrollmentCommand command)
+    [HttpPost("request-enrollment")]
+    public async Task<IActionResult> RequestEnrollment([FromBody] RequestEnrollmentHttpRequest request)
     {
-        _logger.LogInformation("Received enrollment request for product {ProductId}", command.ProductId);
-        try
+        var sessionToken = Request.Headers["X-With-Session-Token"].ToString();
+        if (string.IsNullOrEmpty(sessionToken))
         {
-            await _mediator.Send(command);
-            _logger.LogInformation("Successfully processed enrollment request for product {ProductId}", command.ProductId);
-            return Ok();
+            _logger.LogWarning("Missing X-With-Session-Token header");
+            return BadRequest(new { error = "Missing session token" });
         }
-        catch (Exception ex)
-        {
-            _logger.LogError("Error processing enrollment request for product {ProductId}: {Error}", command.ProductId, ex.Message);
-            throw;
-        }
-    }
 
-    [HttpGet]
-    public async Task<ActionResult<List<EnrollmentListItemDto>>> GetUserEnrollments()
-    {
-        var sessionToken = Request.Headers["Authorization"].ToString();
         var maskedToken = sessionToken.Length > 6 ? sessionToken[..6] + "..." : sessionToken;
-        _logger.LogInformation("Getting enrollments for session {SessionToken}", maskedToken);
+
+        _logger.LogInformation(
+            "Received enrollment request - Product: {ProductId}, Annual Income: {AnnualIncome}, Session: {SessionToken}, Path: {Path}", 
+            request.ProductId, 
+            request.AnnualIncomeInCents,
+            maskedToken,
+            Request.Path);
+
         try
         {
-            var query = new GetUserEnrollmentsQuery(sessionToken);
-            var result = await _mediator.Send(query);
-            // _logger.LogInformation("Retrieved {Count} enrollments for session {SessionToken}", result, maskedToken);
+            var command = new RequestEnrollmentCommand(
+                sessionToken,
+                request.ProductId,
+                request.AnnualIncomeInCents);
+
+            var result = await _mediator.Send(command);
+            
+            _logger.LogInformation(
+                "Successfully processed enrollment request - Product: {ProductId}, Session: {SessionToken}", 
+                request.ProductId,
+                maskedToken);
+            
             return Ok(result);
         }
         catch (Exception ex)
         {
-            _logger.LogError("Error retrieving enrollments for session {SessionToken}: {Error}", maskedToken, ex.Message);
-            throw;
+            _logger.LogError(
+                ex,
+                "Error processing enrollment request - Product: {ProductId}, Session: {SessionToken}, Error: {Error}", 
+                request.ProductId,
+                maskedToken,
+                ex.Message);
+            
+            return StatusCode(500, new { error = "An error occurred while processing the enrollment request" });
         }
+    }
+
+    [HttpPost("list-enrollments")]
+    public async Task<ActionResult<List<EnrollmentListItemDto>>> GetUserEnrollments()
+    {
+        var sessionToken = Request.Headers["X-With-Session-Token"].ToString();
+        if (string.IsNullOrEmpty(sessionToken))
+        {
+            _logger.LogWarning("Missing X-With-Session-Token header");
+            return BadRequest(new { error = "Missing session token" });
+        }
+
+        var maskedToken = sessionToken.Length > 6 ? sessionToken[..6] + "..." : sessionToken;
+        
+        _logger.LogInformation(
+            "Getting enrollments - Session: {SessionToken}, Path: {Path}", 
+            maskedToken,
+            Request.Path);
+        
+        try
+        {
+            var query = new GetUserEnrollmentsQuery(sessionToken);
+            var result = await _mediator.Send(query);
+            
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(
+                ex,
+                "Error retrieving enrollments - Session: {SessionToken}, Error: {Error}",
+                maskedToken,
+                ex.Message);
+            
+            return StatusCode(500, new { error = "An error occurred while retrieving enrollments" });
+        }
+    }
+
+    [HttpGet("{*url}")]
+    [HttpPost("{*url}")]
+    [HttpPut("{*url}")]
+    [HttpDelete("{*url}")]
+    [HttpPatch("{*url}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Route("{*url}", Order = 999)]
+    public IActionResult HandleUnsupportedEndpoint()
+    {
+        var sessionToken = Request.Headers["X-With-Session-Token"].ToString();
+        var maskedToken = !string.IsNullOrEmpty(sessionToken) && sessionToken.Length > 6 
+            ? sessionToken[..6] + "..." 
+            : sessionToken;
+
+        _logger.LogWarning(
+            "Unsupported endpoint accessed - Path: {Path}, Method: {Method}, Session: {SessionToken}", 
+            Request.Path, 
+            Request.Method,
+            maskedToken);
+            
+        return NotFound(new { error = "Endpoint not found" });
     }
 }

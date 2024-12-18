@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 namespace CreditCardEnrollment.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/v1/credit_card/product")]
 public class ProductController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -81,6 +81,23 @@ public class ProductController : ControllerBase
             _logger.LogError(ex, "Error deactivating product: {ProductId}", productId);
             return BadRequest(new { error = ex.Message });
         }
+    }
+
+    [HttpGet("{*url}")]
+    [HttpPost("{*url}")]
+    [HttpPut("{*url}")]
+    [HttpDelete("{*url}")]
+    [HttpPatch("{*url}")]
+    [ApiExplorerSettings(IgnoreApi = true)]
+    [Route("{*url}", Order = 999)]
+    public IActionResult HandleUnsupportedEndpoint()
+    {
+        _logger.LogWarning(
+            "Unsupported endpoint accessed - Path: {Path}, Method: {Method}", 
+            Request.Path, 
+            Request.Method);
+            
+        return NotFound(new { error = "Endpoint not found" });
     }
 }
 
