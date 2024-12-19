@@ -23,17 +23,30 @@ public class ProductActiveStatusProjectionHandler : ProjectionHandler
         _logger.LogInformation("Processing product event: {EventType} for aggregate {AggregateId}", 
             @event.GetType().Name, @event.AggregateId);
 
-        switch (@event)
+        try
         {
-            case ProductDefined productDefined:
-                await HandleProductDefined(productDefined);
-                break;
-            case ProductActivated productActivated:
-                await HandleProductActivated(productActivated);
-                break;
-            case ProductDeactivated productDeactivated:
-                await HandleProductDeactivated(productDeactivated);
-                break;
+            switch (@event)
+            {
+                case ProductDefined productDefined:
+                    await HandleProductDefined(productDefined);
+                    break;
+                case ProductActivated productActivated:
+                    await HandleProductActivated(productActivated);
+                    break;
+                case ProductDeactivated productDeactivated:
+                    await HandleProductDeactivated(productDeactivated);
+                    break;
+                default:
+                    _logger.LogDebug("Event type {EventType} not handled by ProductActiveStatusProjectionHandler", 
+                        @event.GetType().Name);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error processing product event {EventType} for aggregate {AggregateId}", 
+                @event.GetType().Name, @event.AggregateId);
+            throw;
         }
     }
 

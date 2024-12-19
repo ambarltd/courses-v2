@@ -2,7 +2,7 @@ using CreditCardEnrollment.Common.Ambar;
 using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
 using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
-using CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;
+using CreditCardEnrollment.Domain.Product.Projections.ProductActiveStatus;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 
@@ -15,7 +15,7 @@ public class EnrollmentProjectionController(
     IDeserializer deserializer,
     IMongoDatabase database,
     EnrollmentListProjectionHandler enrollmentListHandler,
-    IsProductActiveProjectionHandler isProductActiveHandler,
+    ProductActiveStatusProjectionHandler productActiveStatusHandler,
     ILogger<EnrollmentProjectionController> logger)
     : ProjectionController(mongoOperator, deserializer, database, logger)
 {
@@ -66,7 +66,7 @@ public class EnrollmentProjectionController(
 
         try
         {
-            var result = await ProcessProjectionHttpRequest(request, isProductActiveHandler, "CreditCard_Enrollment_IsProductActive");
+            var result = await ProcessProjectionHttpRequest(request, productActiveStatusHandler, "CreditCard_Enrollment_ProductActiveStatus");
             
             logger.LogInformation(
                 "Completed is_card_product_active projection request. RequestId: {RequestId}, StatusCode: {StatusCode}",
