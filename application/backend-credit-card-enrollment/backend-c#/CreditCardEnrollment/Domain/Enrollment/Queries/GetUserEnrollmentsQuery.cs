@@ -1,15 +1,10 @@
 using CreditCardEnrollment.Common.Query;
 
-namespace CreditCardEnrollment.Application.Queries.GetUserEnrollments;
+namespace CreditCardEnrollment.Domain.Enrollment.Queries;
 
-public class GetUserEnrollmentsQuery : IQuery<List<EnrollmentListItemDto>>
+public class GetUserEnrollmentsQuery(string sessionToken) : IQuery<List<EnrollmentListItemDto>>
 {
-    public string SessionToken { get; }
-
-    public GetUserEnrollmentsQuery(string sessionToken)
-    {
-        SessionToken = sessionToken;
-    }
+    public string SessionToken { get; } = sessionToken;
 }
 
 public class EnrollmentListItemDto

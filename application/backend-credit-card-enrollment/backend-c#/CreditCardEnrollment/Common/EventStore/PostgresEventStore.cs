@@ -4,15 +4,8 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CreditCardEnrollment.Common.EventStore;
 
-public class PostgresEventStore
+public class PostgresEventStore(EventStoreDbContext context)
 {
-    private readonly EventStoreDbContext _context;
-
-    public PostgresEventStore(EventStoreDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task SaveEventAsync(Event @event)
     {
         var serializedEvent = new SerializedEvent
@@ -27,13 +20,13 @@ public class PostgresEventStore
             RecordedOn = @event.RecordedOn
         };
 
-        _context.Events.Add(serializedEvent);
-        await _context.SaveChangesAsync();
+        context.Events.Add(serializedEvent);
+        await context.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<Event>> GetEventsForAggregateAsync(string aggregateId)
     {
-        var serializedEvents = await _context.Events
+        var serializedEvents = await context.Events
             .Where(e => e.AggregateId == aggregateId)
             .OrderBy(e => e.AggregateVersion)
             .ToListAsync();

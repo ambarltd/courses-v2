@@ -1,13 +1,9 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using CreditCardEnrollment.Application.Commands.RequestEnrollment;
-using CreditCardEnrollment.Application.Queries.GetUserEnrollments;
+using CreditCardEnrollment.Domain.Enrollment.Controllers.RequestEnrollment;
+using CreditCardEnrollment.Domain.Enrollment.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
-namespace CreditCardEnrollment.Controllers;
+namespace CreditCardEnrollment.Domain.Enrollment.Controllers;
 
 [ApiController]
 [Route("api/v1/credit_card/enrollment")]

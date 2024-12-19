@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace CreditCardEnrollment.Application.Commands.RequestEnrollment;
+namespace CreditCardEnrollment.Domain.Enrollment.Controllers.RequestEnrollment;
 
 public class RequestEnrollmentHttpRequest
 {

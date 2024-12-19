@@ -9,14 +9,9 @@ public interface IEnrollmentListRepository
     Task Save(EnrollmentListItem enrollment);
 }
 
-public class EnrollmentListRepository : IEnrollmentListRepository
+public class EnrollmentListRepository(IMongoDatabase database) : IEnrollmentListRepository
 {
-    private readonly IMongoCollection<EnrollmentListItem> _collection;
-
-    public EnrollmentListRepository(IMongoDatabase database)
-    {
-        _collection = database.GetCollection<EnrollmentListItem>("enrollments");
-    }
+    private readonly IMongoCollection<EnrollmentListItem> _collection = database.GetCollection<EnrollmentListItem>("enrollments");
 
     public async Task<EnrollmentListItem> FindById(string id)
     {

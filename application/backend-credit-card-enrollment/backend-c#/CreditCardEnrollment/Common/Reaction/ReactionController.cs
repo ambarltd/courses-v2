@@ -7,55 +7,47 @@ using System.Text.Json;
 
 namespace CreditCardEnrollment.Common.Reaction;
 
-public abstract class ReactionController : ControllerBase
+public abstract class ReactionController(
+    PostgresEventStore eventStore,
+    IMongoTransactionalProjectionOperator mongoOperator,
+    ILogger<ReactionController> logger)
+    : ControllerBase
 {
-    private readonly PostgresEventStore _eventStore;
-    private readonly IMongoTransactionalProjectionOperator _mongoOperator;
-    private readonly ILogger<ReactionController> _logger;
-
-    protected ReactionController(
-        PostgresEventStore eventStore,
-        IMongoTransactionalProjectionOperator mongoOperator,
-        ILogger<ReactionController> logger)
-    {
-        _eventStore = eventStore;
-        _mongoOperator = mongoOperator;
-        _logger = logger;
-    }
+    private readonly PostgresEventStore _eventStore = eventStore;
 
     protected async Task<IActionResult> ProcessReactionHttpRequest(AmbarHttpRequest request, ReactionHandler handler)
     {
         try
         {
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Processing reaction request. Event: {SerializedEvent}",
                 JsonDocument.Parse(request.SerializedEvent).RootElement.ToString()
             );
 
             // Execute the reaction within a MongoDB transaction
-            await _mongoOperator.ExecuteInTransaction(async () =>
+            await mongoOperator.ExecuteInTransaction(async () =>
             {
-                _logger.LogInformation("Started MongoDB transaction");
+                logger.LogInformation("Started MongoDB transaction");
                 
                 try
                 {
                     // Process the reaction
                     await handler.React(request.SerializedEvent);
-                    _logger.LogInformation("Successfully processed reaction");
+                    logger.LogInformation("Successfully processed reaction");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError(ex, "Error during reaction processing");
+                    logger.LogError(ex, "Error during reaction processing");
                     throw; // Re-throw to handle in outer catch
                 }
             });
 
-            _logger.LogInformation("Successfully completed reaction processing");
+            logger.LogInformation("Successfully completed reaction processing");
             return Ok();
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            logger.LogError(
                 ex,
                 "Failed to process reaction request. Event: {SerializedEvent}",
                 request.SerializedEvent

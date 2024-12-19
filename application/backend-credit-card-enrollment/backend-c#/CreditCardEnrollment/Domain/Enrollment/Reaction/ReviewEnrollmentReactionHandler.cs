@@ -3,7 +3,6 @@ using CreditCardEnrollment.Common.EventStore;
 using CreditCardEnrollment.Common.Reaction;
 using CreditCardEnrollment.Domain.Enrollment.Events;
 using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
-using Microsoft.Extensions.Logging;
 
 namespace CreditCardEnrollment.Domain.Enrollment.Reaction;
 

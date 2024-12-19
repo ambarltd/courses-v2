@@ -4,14 +4,9 @@ using System.Text.Json;
 
 namespace CreditCardEnrollment.Common.Reaction;
 
-public abstract class ReactionHandler
+public abstract class ReactionHandler(PostgresEventStore eventStore)
 {
-    protected readonly PostgresEventStore EventStore;
-
-    protected ReactionHandler(PostgresEventStore eventStore)
-    {
-        EventStore = eventStore;
-    }
+    protected readonly PostgresEventStore EventStore = eventStore;
 
     public virtual async Task React(string serializedEvent)
     {

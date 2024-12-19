@@ -10,32 +10,21 @@ namespace CreditCardEnrollment.Domain.Enrollment.Projections;
 
 [ApiController]
 [Route("api/v1/credit_card/enrollment/projection")]
-public class EnrollmentProjectionController : ProjectionController
+public class EnrollmentProjectionController(
+    IMongoTransactionalProjectionOperator mongoOperator,
+    IDeserializer deserializer,
+    IMongoDatabase database,
+    EnrollmentListProjectionHandler enrollmentListHandler,
+    IsProductActiveProjectionHandler isProductActiveHandler,
+    ILogger<EnrollmentProjectionController> logger)
+    : ProjectionController(mongoOperator, deserializer, database, logger)
 {
-    private readonly EnrollmentListProjectionHandler _enrollmentListHandler;
-    private readonly IsProductActiveProjectionHandler _isProductActiveHandler;
-    private readonly ILogger<EnrollmentProjectionController> _logger;
-
-    public EnrollmentProjectionController(
-        IMongoTransactionalProjectionOperator mongoOperator,
-        IDeserializer deserializer,
-        IMongoDatabase database,
-        EnrollmentListProjectionHandler enrollmentListHandler,
-        IsProductActiveProjectionHandler isProductActiveHandler,
-        ILogger<EnrollmentProjectionController> logger)
-        : base(mongoOperator, deserializer, database, logger)
-    {
-        _enrollmentListHandler = enrollmentListHandler;
-        _isProductActiveHandler = isProductActiveHandler;
-        _logger = logger;
-    }
-
     [HttpPost("enrollment_list")]
     [Consumes("application/json")]
     [Produces("application/json")]
     public async Task<IActionResult> ProjectEnrollmentList([FromBody] AmbarHttpRequest request)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "Received enrollment_list projection request. RequestId: {RequestId}, ContentLength: {ContentLength}",
             HttpContext.TraceIdentifier,
             request.SerializedEvent.Length
@@ -43,9 +32,9 @@ public class EnrollmentProjectionController : ProjectionController
 
         try
         {
-            var result = await ProcessProjectionHttpRequest(request, _enrollmentListHandler, "CreditCard_Enrollment_EnrollmentList");
+            var result = await ProcessProjectionHttpRequest(request, enrollmentListHandler, "CreditCard_Enrollment_EnrollmentList");
             
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Completed enrollment_list projection request. RequestId: {RequestId}, StatusCode: {StatusCode}",
                 HttpContext.TraceIdentifier,
                 (result as ObjectResult)?.StatusCode ?? (result as StatusCodeResult)?.StatusCode
@@ -55,7 +44,7 @@ public class EnrollmentProjectionController : ProjectionController
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            logger.LogError(
                 ex,
                 "Error processing enrollment_list projection request. RequestId: {RequestId}",
                 HttpContext.TraceIdentifier
@@ -69,7 +58,7 @@ public class EnrollmentProjectionController : ProjectionController
     [Produces("application/json")]
     public async Task<IActionResult> ProjectIsCardProductActive([FromBody] AmbarHttpRequest request)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "Received is_card_product_active projection request. RequestId: {RequestId}, ContentLength: {ContentLength}",
             HttpContext.TraceIdentifier,
             request.SerializedEvent.Length
@@ -77,9 +66,9 @@ public class EnrollmentProjectionController : ProjectionController
 
         try
         {
-            var result = await ProcessProjectionHttpRequest(request, _isProductActiveHandler, "CreditCard_Enrollment_IsProductActive");
+            var result = await ProcessProjectionHttpRequest(request, isProductActiveHandler, "CreditCard_Enrollment_IsProductActive");
             
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Completed is_card_product_active projection request. RequestId: {RequestId}, StatusCode: {StatusCode}",
                 HttpContext.TraceIdentifier,
                 (result as ObjectResult)?.StatusCode ?? (result as StatusCodeResult)?.StatusCode
@@ -89,7 +78,7 @@ public class EnrollmentProjectionController : ProjectionController
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            logger.LogError(
                 ex,
                 "Error processing is_card_product_active projection request. RequestId: {RequestId}",
                 HttpContext.TraceIdentifier

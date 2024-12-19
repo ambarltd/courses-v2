@@ -1,7 +1,7 @@
-using CreditCardEnrollment.Application.Services;
 using CreditCardEnrollment.Common.EventStore;
 using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
+using CreditCardEnrollment.Common.Services;
 using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 using CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;
 using CreditCardEnrollment.Domain.Enrollment.Reaction;

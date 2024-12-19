@@ -1,32 +1,21 @@
-using CreditCardEnrollment.Application.Services;
 using CreditCardEnrollment.Common.EventStore;
-using CreditCardEnrollment.Domain.Enrollment;
+using CreditCardEnrollment.Common.Services;
 using CreditCardEnrollment.Domain.Enrollment.Events;
 using MediatR;
 
-namespace CreditCardEnrollment.Application.Commands.RequestEnrollment;
+namespace CreditCardEnrollment.Domain.Enrollment.Controllers.RequestEnrollment;
 
-public class RequestEnrollmentCommandHandler : IRequestHandler<RequestEnrollmentCommand, string>
+public class RequestEnrollmentCommandHandler(
+    PostgresEventStore eventStore,
+    ISessionService sessionService,
+    IProductService productService)
+    : IRequestHandler<RequestEnrollmentCommand, string>
 {
-    private readonly PostgresEventStore _eventStore;
-    private readonly ISessionService _sessionService;
-    private readonly IProductService _productService;
-
-    public RequestEnrollmentCommandHandler(
-        PostgresEventStore eventStore,
-        ISessionService sessionService,
-        IProductService productService)
-    {
-        _eventStore = eventStore;
-        _sessionService = sessionService;
-        _productService = productService;
-    }
-
     public async Task<string> Handle(RequestEnrollmentCommand command, CancellationToken cancellationToken)
     {
-        var userId = _sessionService.GetAuthenticatedUserId(command.SessionToken);
+        var userId = sessionService.GetAuthenticatedUserId(command.SessionToken);
 
-        if (!await _productService.IsProductActiveAsync(command.ProductId))
+        if (!await productService.IsProductActiveAsync(command.ProductId))
         {
             throw new InvalidOperationException("Product is not active and cannot accept enrollments");
         }
@@ -47,7 +36,7 @@ public class RequestEnrollmentCommandHandler : IRequestHandler<RequestEnrollment
             AnnualIncomeInCents = command.AnnualIncomeInCents
         };
 
-        await _eventStore.SaveEventAsync(enrollmentRequestedEvent);
+        await eventStore.SaveEventAsync(enrollmentRequestedEvent);
 
         return aggregateId;
     }

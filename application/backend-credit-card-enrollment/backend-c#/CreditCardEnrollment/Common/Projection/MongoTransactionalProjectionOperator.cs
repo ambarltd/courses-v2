@@ -2,20 +2,14 @@ using MongoDB.Driver;
 
 namespace CreditCardEnrollment.Common.Projection;
 
-public class MongoTransactionalProjectionOperator : IMongoTransactionalProjectionOperator
+public class MongoTransactionalProjectionOperator(IMongoClient mongoClient, string databaseName)
+    : IMongoTransactionalProjectionOperator
 {
-    private readonly IMongoClient _mongoClient;
-    private readonly string _databaseName;
-
-    public MongoTransactionalProjectionOperator(IMongoClient mongoClient, string databaseName)
-    {
-        _mongoClient = mongoClient;
-        _databaseName = databaseName;
-    }
+    private readonly string _databaseName = databaseName;
 
     public async Task<T> ExecuteInTransaction<T>(Func<Task<T>> operation)
     {
-        using var session = await _mongoClient.StartSessionAsync();
+        using var session = await mongoClient.StartSessionAsync();
         session.StartTransaction();
 
         try
@@ -33,7 +27,7 @@ public class MongoTransactionalProjectionOperator : IMongoTransactionalProjectio
 
     public async Task ExecuteInTransaction(Func<Task> operation)
     {
-        using var session = await _mongoClient.StartSessionAsync();
+        using var session = await mongoClient.StartSessionAsync();
         session.StartTransaction();
 
         try

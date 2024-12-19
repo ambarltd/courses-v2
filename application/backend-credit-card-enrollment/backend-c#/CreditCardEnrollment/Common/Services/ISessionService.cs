@@ -1,4 +1,4 @@
-namespace CreditCardEnrollment.Application.Services;
+namespace CreditCardEnrollment.Common.Services;
 
 public interface ISessionService
 {

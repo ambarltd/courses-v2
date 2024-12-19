@@ -8,26 +8,17 @@ namespace CreditCardEnrollment.Domain.Enrollment.Reaction;
 
 [ApiController]
 [Route("api/v1/credit_card/enrollment/reaction")]
-public class EnrollmentReactionController : ReactionController
+public class EnrollmentReactionController(
+    PostgresEventStore eventStore,
+    IMongoTransactionalProjectionOperator mongoOperator,
+    ILogger<EnrollmentReactionController> logger,
+    ReviewEnrollmentReactionHandler reviewEnrollmentHandler)
+    : ReactionController(eventStore, mongoOperator, logger)
 {
-    private readonly ReviewEnrollmentReactionHandler _reviewEnrollmentHandler;
-    private readonly ILogger<EnrollmentReactionController> _logger;
-
-    public EnrollmentReactionController(
-        PostgresEventStore eventStore,
-        IMongoTransactionalProjectionOperator mongoOperator,
-        ILogger<EnrollmentReactionController> logger,
-        ReviewEnrollmentReactionHandler reviewEnrollmentHandler)
-        : base(eventStore, mongoOperator, logger)
-    {
-        _reviewEnrollmentHandler = reviewEnrollmentHandler;
-        _logger = logger;
-    }
-
     [HttpPost("review_enrollment")]
     public async Task<IActionResult> ReviewEnrollment([FromBody] AmbarHttpRequest request)
     {
-        _logger.LogInformation(
+        logger.LogInformation(
             "Received review_enrollment request. RequestId: {RequestId}, ContentLength: {ContentLength}",
             HttpContext.TraceIdentifier,
             request.SerializedEvent.Length
@@ -35,9 +26,9 @@ public class EnrollmentReactionController : ReactionController
 
         try
         {
-            var result = await ProcessReactionHttpRequest(request, _reviewEnrollmentHandler);
+            var result = await ProcessReactionHttpRequest(request, reviewEnrollmentHandler);
             
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Completed review_enrollment request. RequestId: {RequestId}, StatusCode: {StatusCode}",
                 HttpContext.TraceIdentifier,
                 (result as ObjectResult)?.StatusCode ?? (result as StatusCodeResult)?.StatusCode
@@ -47,7 +38,7 @@ public class EnrollmentReactionController : ReactionController
         }
         catch (Exception ex)
         {
-            _logger.LogError(
+            logger.LogError(
                 ex,
                 "Error processing review_enrollment request. RequestId: {RequestId}",
                 HttpContext.TraceIdentifier

@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace CreditCardEnrollment.Application.Commands.RequestEnrollment;
+namespace CreditCardEnrollment.Domain.Enrollment.Controllers.RequestEnrollment;
 
 public record RequestEnrollmentCommand(
     string SessionToken,
