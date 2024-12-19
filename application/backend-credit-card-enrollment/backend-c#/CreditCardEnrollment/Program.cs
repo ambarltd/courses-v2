@@ -1,9 +1,11 @@
 using CreditCardEnrollment.Common.EventStore;
 using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
+using CreditCardEnrollment.Common.Query;
 using CreditCardEnrollment.Common.Services;
 using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 using CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;
+using CreditCardEnrollment.Domain.Enrollment.Queries;
 using CreditCardEnrollment.Domain.Enrollment.Reaction;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
@@ -44,6 +46,9 @@ if (initializeDatabases)
     // Add MediatR
     builder.Services.AddMediatR(cfg => 
         cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
+    // Register Query Handlers
+    builder.Services.AddScoped<IQueryHandler<GetUserEnrollmentsQuery, List<EnrollmentListItemDto>>, GetUserEnrollmentsQueryHandler>();
 
     // Configure PostgreSQL from environment variables
     builder.Services.AddDbContext<EventStoreDbContext>(options =>
