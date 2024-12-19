@@ -1,6 +1,8 @@
 using CreditCardEnrollment.Application.Services;
 using CreditCardEnrollment.Common.EventStore;
+using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
+using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Microsoft.OpenApi.Models;
@@ -83,6 +85,16 @@ if (initializeDatabases)
         var databaseName = Environment.GetEnvironmentVariable("MONGODB_PROJECTION_DATABASE_NAME") ?? "projections";
         return new MongoTransactionalProjectionOperator(client, databaseName);
     });
+
+    // Register Event Deserializer
+    builder.Services.AddScoped<IDeserializer, Deserializer>();
+
+    // Register Projection Repositories
+    builder.Services.AddScoped<IEnrollmentListRepository, EnrollmentListRepository>();
+    builder.Services.AddScoped<IProductNameRepository, ProductNameRepository>();
+
+    // Register Projection Handlers
+    builder.Services.AddScoped<EnrollmentListProjectionHandler>();
 
     // Register business services
     builder.Services.AddScoped<PostgresEventStore>();
