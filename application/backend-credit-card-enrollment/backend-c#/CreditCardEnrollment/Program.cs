@@ -7,6 +7,7 @@ using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 using CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;
 using CreditCardEnrollment.Domain.Enrollment.Queries;
 using CreditCardEnrollment.Domain.Enrollment.Reaction;
+using CreditCardEnrollment.Domain.Product.Projections.ProductActiveStatus;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Microsoft.OpenApi.Models;
@@ -99,10 +100,12 @@ if (initializeDatabases)
     // Register Projection Repositories
     builder.Services.AddScoped<IEnrollmentListRepository, EnrollmentListRepository>();
     builder.Services.AddScoped<IProductNameRepository, ProductNameRepository>();
+    builder.Services.AddScoped<IProductActiveStatusRepository, ProductActiveStatusRepository>();
 
     // Register Projection Handlers
     builder.Services.AddScoped<EnrollmentListProjectionHandler>();
     builder.Services.AddScoped<IsProductActiveProjectionHandler>();
+    builder.Services.AddScoped<ProductActiveStatusProjectionHandler>();
 
     // Register Reaction Handlers
     builder.Services.AddScoped<ReviewEnrollmentReactionHandler>();

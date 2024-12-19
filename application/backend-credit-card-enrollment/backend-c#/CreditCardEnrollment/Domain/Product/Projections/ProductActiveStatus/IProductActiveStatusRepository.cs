@@ -6,4 +6,5 @@ public interface IProductActiveStatusRepository
 {
     Task<ProductActiveStatus> FindById(string id);
     Task Save(ProductActiveStatus productActiveStatus);
+    Task<bool> IsThereAnActiveProductWithId(string productId);
 }
