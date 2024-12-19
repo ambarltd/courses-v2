@@ -1,5 +1,4 @@
 using CreditCardEnrollment.Domain.Enrollment.Controllers.RequestEnrollment;
-using CreditCardEnrollment.Domain.Enrollment.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -63,42 +62,6 @@ public class EnrollmentController : ControllerBase
                 ex.Message);
             
             return StatusCode(500, new { error = "An error occurred while processing the enrollment request" });
-        }
-    }
-
-    [HttpPost("list-enrollments")]
-    public async Task<ActionResult<List<EnrollmentListItemDto>>> GetUserEnrollments()
-    {
-        var sessionToken = Request.Headers["X-With-Session-Token"].ToString();
-        if (string.IsNullOrEmpty(sessionToken))
-        {
-            _logger.LogWarning("Missing X-With-Session-Token header");
-            return BadRequest(new { error = "Missing session token" });
-        }
-
-        var maskedToken = sessionToken.Length > 6 ? sessionToken[..6] + "..." : sessionToken;
-        
-        _logger.LogInformation(
-            "Getting enrollments - Session: {SessionToken}, Path: {Path}", 
-            maskedToken,
-            Request.Path);
-        
-        try
-        {
-            var query = new GetUserEnrollmentsQuery(sessionToken);
-            var result = await _mediator.Send(query);
-            
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(
-                ex,
-                "Error retrieving enrollments - Session: {SessionToken}, Error: {Error}",
-                maskedToken,
-                ex.Message);
-            
-            return StatusCode(500, new { error = "An error occurred while retrieving enrollments" });
         }
     }
 
