@@ -7,29 +7,21 @@ using Microsoft.Extensions.Logging;
 
 namespace CreditCardEnrollment.Domain.Enrollment.Reaction;
 
-public class ReviewEnrollmentReactionHandler : ReactionHandler
+public class ReviewEnrollmentReactionHandler(
+    PostgresEventStore eventStore,
+    IEnrollmentListRepository enrollmentRepository,
+    ILogger<ReviewEnrollmentReactionHandler> logger)
+    : ReactionHandler(eventStore)
 {
-    private readonly IEnrollmentListRepository _enrollmentRepository;
-    private readonly ILogger<ReviewEnrollmentReactionHandler> _logger;
-
-    public ReviewEnrollmentReactionHandler(
-        PostgresEventStore eventStore,
-        IEnrollmentListRepository enrollmentRepository,
-        ILogger<ReviewEnrollmentReactionHandler> logger) : base(eventStore)
-    {
-        _enrollmentRepository = enrollmentRepository;
-        _logger = logger;
-    }
-
     protected override async Task HandleEvent(Event @event)
     {
         if (@event is not EnrollmentRequested enrollmentRequested)
         {
-            _logger.LogInformation("Ignoring non-EnrollmentRequested event: {EventType}", @event.GetType().Name);
+            logger.LogInformation("Ignoring non-EnrollmentRequested event: {EventType}", @event.GetType().Name);
             return;
         }
 
-        _logger.LogInformation(
+        logger.LogInformation(
             "Processing EnrollmentRequested. AggregateId: {AggregateId}, UserId: {UserId}, ProductId: {ProductId}, AnnualIncome: {AnnualIncome}",
             enrollmentRequested.AggregateId,
             enrollmentRequested.UserId,
@@ -39,13 +31,13 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
 
         // Reconstruct aggregate from events
         var events = await EventStore.GetEventsForAggregateAsync(enrollmentRequested.AggregateId);
-        _logger.LogInformation("Found {EventCount} events for aggregate", events.Count());
+        logger.LogInformation("Found {EventCount} events for aggregate", events.Count());
         
         // Find the creation event
         var creationEvent = events.FirstOrDefault() as EnrollmentRequested;
         if (creationEvent == null)
         {
-            _logger.LogError("Creation event not found for aggregate {AggregateId}", enrollmentRequested.AggregateId);
+            logger.LogError("Creation event not found for aggregate {AggregateId}", enrollmentRequested.AggregateId);
             throw new InvalidOperationException("Creation event not found");
         }
 
@@ -62,7 +54,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
         // Apply subsequent events using public methods
         foreach (var evt in events.Skip(1))
         {
-            _logger.LogInformation("Applying subsequent event: {EventType}", evt.GetType().Name);
+            logger.LogInformation("Applying subsequent event: {EventType}", evt.GetType().Name);
             switch (evt)
             {
                 case EnrollmentAccepted accepted:
@@ -76,7 +68,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
 
         if (enrollment.Status != EnrollmentStatus.Requested)
         {
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Enrollment not in Requested state. Current state: {Status}",
                 enrollment.Status
             );
@@ -89,13 +81,13 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
         var existingEvents = await EventStore.GetEventsForAggregateAsync(enrollment.Id);
         if (existingEvents.Any(e => e.EventId == reactionEventId))
         {
-            _logger.LogInformation("Event already exists: {EventId}", reactionEventId);
+            logger.LogInformation("Event already exists: {EventId}", reactionEventId);
             return;
         }
 
         // Check for existing accepted enrollments
-        var existingEnrollments = await _enrollmentRepository.FindByUserId(enrollment.UserId);
-        _logger.LogInformation(
+        var existingEnrollments = await enrollmentRepository.FindByUserId(enrollment.UserId);
+        logger.LogInformation(
             "Found {Count} existing enrollments for user {UserId}",
             existingEnrollments.Count,
             enrollment.UserId
@@ -105,7 +97,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
             e.ProductId == enrollment.ProductId && 
             e.Status == EnrollmentStatus.Accepted.ToString()))
         {
-            _logger.LogInformation(
+            logger.LogInformation(
                 "User already has accepted enrollment for product {ProductId}",
                 enrollment.ProductId
             );
@@ -120,14 +112,14 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
             // Save the event
             var lastEvent = events.Last();
             await EventStore.SaveEventAsync(lastEvent);
-            _logger.LogInformation("Saved EnrollmentDeclined event (duplicate enrollment)");
+            logger.LogInformation("Saved EnrollmentDeclined event (duplicate enrollment)");
             return;
         }
 
         // Check annual income
         if (enrollment.AnnualIncomeInCents < 1_500_000)
         {
-            _logger.LogInformation(
+            logger.LogInformation(
                 "Annual income {Income} is below minimum requirement of 1,500,000 cents",
                 enrollment.AnnualIncomeInCents
             );
@@ -140,11 +132,11 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
             
             var lastEvent = events.Last();
             await EventStore.SaveEventAsync(lastEvent);
-            _logger.LogInformation("Saved EnrollmentDeclined event (insufficient income)");
+            logger.LogInformation("Saved EnrollmentDeclined event (insufficient income)");
             return;
         }
 
-        _logger.LogInformation("All checks passed, accepting enrollment");
+        logger.LogInformation("All checks passed, accepting enrollment");
 
         // All checks passed
         enrollment.Accept(
@@ -154,6 +146,6 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
         
         var acceptedEvent = events.Last();
         await EventStore.SaveEventAsync(acceptedEvent);
-        _logger.LogInformation("Saved EnrollmentAccepted event");
+        logger.LogInformation("Saved EnrollmentAccepted event");
     }
 }

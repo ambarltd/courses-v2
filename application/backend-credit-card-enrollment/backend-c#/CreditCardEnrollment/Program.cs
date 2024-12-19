@@ -4,6 +4,7 @@ using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
 using CreditCardEnrollment.Domain.Enrollment.Projections.EnrollmentList;
 using CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;
+using CreditCardEnrollment.Domain.Enrollment.Reaction;
 using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Microsoft.OpenApi.Models;
@@ -97,6 +98,9 @@ if (initializeDatabases)
     // Register Projection Handlers
     builder.Services.AddScoped<EnrollmentListProjectionHandler>();
     builder.Services.AddScoped<IsProductActiveProjectionHandler>();
+
+    // Register Reaction Handlers
+    builder.Services.AddScoped<ReviewEnrollmentReactionHandler>();
 
     // Register business services
     builder.Services.AddScoped<PostgresEventStore>();
