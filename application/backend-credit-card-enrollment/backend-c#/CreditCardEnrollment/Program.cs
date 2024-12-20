@@ -15,11 +15,32 @@ using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add logging
+// Add logging with thread information
 var logger = LoggerFactory.Create(config =>
 {
-    config.AddConsole();
+    config.AddConsole(options =>
+    {
+        options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss.fff] ";
+        options.FormatterName = "CustomFormatter";
+    });
+    config.AddConsoleFormatter<CustomConsoleFormatter, ConsoleFormatterOptions>();
 }).CreateLogger("Program");
+
+// Custom console formatter class to include thread information
+public class CustomConsoleFormatter : ConsoleFormatter
+{
+    public CustomConsoleFormatter() : base("CustomFormatter") { }
+
+    public override void Write<TState>(
+        in LogEntry<TState> logEntry,
+        IExternalScopeProvider scopeProvider,
+        TextWriter textWriter)
+    {
+        var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
+        var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
+        textWriter.WriteLine($"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss.fff} [{threadId}] [{logEntry.LogLevel}] {message}");
+    }
+}
 
 logger.LogInformation("Starting Credit Card Enrollment API...");
 logger.LogInformation("Environment: {Environment}", builder.Environment.EnvironmentName);
