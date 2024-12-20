@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace CreditCardEnrollment.Common.Events;
 
 public abstract class Event

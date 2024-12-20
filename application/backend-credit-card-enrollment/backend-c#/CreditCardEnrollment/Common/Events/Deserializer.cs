@@ -36,6 +36,7 @@ public class Deserializer : IDeserializer
                 CorrelationId = serializedEvent.CorrelationId,
                 CausationId = serializedEvent.CausationId,
                 RecordedOn = ToDateTime(serializedEvent.RecordedOn),
+                ReasonCode = PayloadString(serializedEvent.JsonPayload, "reasonCode"),
                 ReasonDescription = PayloadString(serializedEvent.JsonPayload, "reasonDescription"),
                 UserId = PayloadString(serializedEvent.JsonPayload, "userId"),
                 ProductId = PayloadString(serializedEvent.JsonPayload, "productId")
@@ -48,7 +49,8 @@ public class Deserializer : IDeserializer
                 CorrelationId = serializedEvent.CorrelationId,
                 CausationId = serializedEvent.CausationId,
                 RecordedOn = ToDateTime(serializedEvent.RecordedOn),
-                Reason = PayloadString(serializedEvent.JsonPayload, "reasonDescription"),
+                ReasonCode = PayloadString(serializedEvent.JsonPayload, "reasonCode"),
+                ReasonDescription = PayloadString(serializedEvent.JsonPayload, "reasonDescription"),
                 UserId = PayloadString(serializedEvent.JsonPayload, "userId"),
                 ProductId = PayloadString(serializedEvent.JsonPayload, "productId")
             },

@@ -126,7 +126,7 @@ public class EnrollmentListProjectionHandler : ProjectionHandler
         _logger.LogInformation(
             "Handling EnrollmentDeclined event. EnrollmentId: {EnrollmentId}, Reason: {Reason}",
             @event.AggregateId,
-            @event.Reason);
+            @event.ReasonCode);
 
         var enrollment = await _enrollmentRepository.FindById(@event.AggregateId);
         if (enrollment == null)
@@ -139,7 +139,7 @@ public class EnrollmentListProjectionHandler : ProjectionHandler
 
         enrollment.Status = EnrollmentStatus.Declined.ToString();
         enrollment.ReviewedOn = @event.RecordedOn;
-        enrollment.StatusReason = @event.Reason;
+        enrollment.StatusReason = @event.ReasonDescription;
 
         await _enrollmentRepository.Save(enrollment);
         _logger.LogDebug("Successfully updated enrollment status to Declined. EnrollmentId: {EnrollmentId}", @event.AggregateId);

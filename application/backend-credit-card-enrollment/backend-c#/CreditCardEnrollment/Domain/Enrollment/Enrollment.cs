@@ -52,13 +52,15 @@ public class Enrollment : Aggregate
             CausationId = eventId,
             RecordedOn = DateTime.UtcNow,
             UserId = UserId,
-            ProductId = ProductId
+            ProductId = ProductId,
+            ReasonCode = "ALL_CHECKS_PASSED",
+            ReasonDescription = "All checks passed."
         };
 
         Apply(@event);
     }
 
-    public void Decline(string eventId, string correlationId, string reason)
+    public void Decline(string eventId, string correlationId, string reasonCode, string reasonDescription)
     {
         if (Status != EnrollmentStatus.Requested)
             throw new InvalidOperationException("Can only decline requested enrollments");
@@ -73,7 +75,8 @@ public class Enrollment : Aggregate
             RecordedOn = DateTime.UtcNow,
             UserId = UserId,
             ProductId = ProductId,
-            Reason = reason
+            ReasonCode = reasonCode,
+            ReasonDescription = reasonDescription
         };
 
         Apply(@event);

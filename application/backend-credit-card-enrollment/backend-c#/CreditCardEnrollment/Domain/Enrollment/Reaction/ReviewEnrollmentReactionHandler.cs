@@ -96,7 +96,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
                         enrollment.Accept(accepted.EventId, accepted.CorrelationId);
                         break;
                     case EnrollmentDeclined declined:
-                        enrollment.Decline(declined.EventId, declined.CorrelationId, declined.Reason);
+                        enrollment.Decline(declined.EventId, declined.CorrelationId, declined.ReasonCode, declined.ReasonDescription);
                         break;
                     default:
                         _logger.LogWarning(
@@ -154,6 +154,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
                 enrollment.Decline(
                     reactionEventId,
                     enrollmentRequested.CorrelationId,
+                    "ALREADY_ACCEPTED",
                     "You were already accepted to this product."
                 );
                 
@@ -179,6 +180,7 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler
                 enrollment.Decline(
                     reactionEventId,
                     enrollmentRequested.CorrelationId,
+                    "INSUFFICIENT_INCOME",
                     "Insufficient annual income."
                 );
                 

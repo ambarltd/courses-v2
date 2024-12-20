@@ -96,7 +96,8 @@ if (initializeDatabases)
         return new MongoTransactionalProjectionOperator(client, databaseName);
     });
 
-    // Register Event Deserializer
+    // Register Event Serializer and Deserializer
+    builder.Services.AddScoped<ISerializer, Serializer>();
     builder.Services.AddScoped<IDeserializer, Deserializer>();
 
     // Register Projection Repositories
