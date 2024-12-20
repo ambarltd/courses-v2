@@ -18,16 +18,11 @@ using Microsoft.Extensions.Logging.Console;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add logging with thread information
-var logger = LoggerFactory.Create(config =>
-{
-    config.AddConsole(options =>
-    {
-        options.TimestampFormat = "[yyyy-MM-dd HH:mm:ss.fff] ";
-        options.FormatterName = "CustomFormatter";
-    });
-    config.AddConsoleFormatter<CustomConsoleFormatter, ConsoleFormatterOptions>();
-}).CreateLogger("Program");
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole(options => options.FormatterName = nameof(CustomConsoleFormatter));
+builder.Logging.AddConsoleFormatter<CustomConsoleFormatter, ConsoleFormatterOptions>();
 
+var logger = builder.Services.BuildServiceProvider().GetRequiredService<ILogger<Program>>();
 logger.LogInformation("Starting Credit Card Enrollment API...");
 logger.LogInformation("Environment: {Environment}", builder.Environment.EnvironmentName);
 

@@ -4,17 +4,10 @@ using Microsoft.Extensions.Logging.Console;
 
 namespace CreditCardEnrollment.Common.Logging;
 
-public class CustomConsoleFormatterOptions : ConsoleFormatterOptions
-{
-}
-
 public class CustomConsoleFormatter : ConsoleFormatter
 {
-    private readonly CustomConsoleFormatterOptions _options;
-
-    public CustomConsoleFormatter(CustomConsoleFormatterOptions options) : base("CustomFormatter")
+    public CustomConsoleFormatter() : base("CustomFormatter")
     {
-        _options = options;
     }
 
     public override void Write<TState>(
@@ -29,7 +22,7 @@ public class CustomConsoleFormatter : ConsoleFormatter
         }
 
         var threadId = Thread.CurrentThread.ManagedThreadId;
-        var timestamp = DateTimeOffset.Now.ToString(_options.TimestampFormat);
+        var timestamp = DateTimeOffset.Now.ToString("[yyyy-MM-dd HH:mm:ss.fff] ");
         textWriter.WriteLine($"{timestamp} [{threadId}] [{logEntry.LogLevel}] {message}");
     }
 }
