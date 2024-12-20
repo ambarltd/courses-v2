@@ -5,22 +5,14 @@ using Microsoft.Extensions.Logging;
 
 namespace CreditCardEnrollment.Domain.Product.Projections.ProductActiveStatus;
 
-public class ProductActiveStatusProjectionHandler : ProjectionHandler
+public class ProductActiveStatusProjectionHandler(
+    IProductActiveStatusRepository productActiveStatusRepository,
+    ILogger<ProductActiveStatusProjectionHandler> logger)
+    : ProjectionHandler
 {
-    private readonly IProductActiveStatusRepository _productActiveStatusRepository;
-    private readonly ILogger<ProductActiveStatusProjectionHandler> _logger;
-
-    public ProductActiveStatusProjectionHandler(
-        IProductActiveStatusRepository productActiveStatusRepository,
-        ILogger<ProductActiveStatusProjectionHandler> logger)
-    {
-        _productActiveStatusRepository = productActiveStatusRepository;
-        _logger = logger;
-    }
-
     protected override async void Project(Event @event)
     {
-        _logger.LogInformation("Processing product event: {EventType} for aggregate {AggregateId}", 
+        logger.LogInformation("Processing product event: {EventType} for aggregate {AggregateId}", 
             @event.GetType().Name, @event.AggregateId);
 
         try
@@ -37,14 +29,14 @@ public class ProductActiveStatusProjectionHandler : ProjectionHandler
                     await HandleProductDeactivated(productDeactivated);
                     break;
                 default:
-                    _logger.LogDebug("Event type {EventType} not handled by ProductActiveStatusProjectionHandler", 
+                    logger.LogDebug("Event type {EventType} not handled by ProductActiveStatusProjectionHandler", 
                         @event.GetType().Name);
                     break;
             }
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error processing product event {EventType} for aggregate {AggregateId}", 
+            logger.LogError(ex, "Error processing product event {EventType} for aggregate {AggregateId}", 
                 @event.GetType().Name, @event.AggregateId);
             throw;
         }
@@ -52,48 +44,48 @@ public class ProductActiveStatusProjectionHandler : ProjectionHandler
 
     private async Task HandleProductDefined(ProductDefined @event)
     {
-        _logger.LogInformation("Creating new product active status for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Creating new product active status for product {ProductId}", @event.AggregateId);
         
-        await _productActiveStatusRepository.Save(new ProductActiveStatus
+        await productActiveStatusRepository.Save(new ProductActiveStatus
         {
             Id = @event.AggregateId,
             Active = false
         });
         
-        _logger.LogInformation("Product active status created for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Product active status created for product {ProductId}", @event.AggregateId);
     }
 
     private async Task HandleProductActivated(ProductActivated @event)
     {
-        _logger.LogInformation("Activating product status for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Activating product status for product {ProductId}", @event.AggregateId);
         
-        var productStatus = await _productActiveStatusRepository.FindById(@event.AggregateId);
+        var productStatus = await productActiveStatusRepository.FindById(@event.AggregateId);
         if (productStatus == null)
         {
-            _logger.LogWarning("Product status not found for product {ProductId}", @event.AggregateId);
+            logger.LogWarning("Product status not found for product {ProductId}", @event.AggregateId);
             return;
         }
 
         productStatus.Active = true;
-        await _productActiveStatusRepository.Save(productStatus);
+        await productActiveStatusRepository.Save(productStatus);
         
-        _logger.LogInformation("Product status activated for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Product status activated for product {ProductId}", @event.AggregateId);
     }
 
     private async Task HandleProductDeactivated(ProductDeactivated @event)
     {
-        _logger.LogInformation("Deactivating product status for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Deactivating product status for product {ProductId}", @event.AggregateId);
         
-        var productStatus = await _productActiveStatusRepository.FindById(@event.AggregateId);
+        var productStatus = await productActiveStatusRepository.FindById(@event.AggregateId);
         if (productStatus == null)
         {
-            _logger.LogWarning("Product status not found for product {ProductId}", @event.AggregateId);
+            logger.LogWarning("Product status not found for product {ProductId}", @event.AggregateId);
             return;
         }
 
         productStatus.Active = false;
-        await _productActiveStatusRepository.Save(productStatus);
+        await productActiveStatusRepository.Save(productStatus);
         
-        _logger.LogInformation("Product status deactivated for product {ProductId}", @event.AggregateId);
+        logger.LogInformation("Product status deactivated for product {ProductId}", @event.AggregateId);
     }
 }

@@ -1,3 +1,4 @@
+using System.Text.Json;
 using CreditCardEnrollment.Common.Ambar;
 using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
@@ -10,31 +11,57 @@ namespace CreditCardEnrollment.Domain.Enrollment.Projections;
 
 [ApiController]
 [Route("api/v1/credit_card/enrollment/projection")]
-public class EnrollmentProjectionController(
-    IMongoTransactionalProjectionOperator mongoOperator,
-    IDeserializer deserializer,
-    IMongoDatabase database,
-    EnrollmentListProjectionHandler enrollmentListHandler,
-    ProductActiveStatusProjectionHandler productActiveStatusHandler,
-    ILogger<EnrollmentProjectionController> logger)
-    : ProjectionController(mongoOperator, deserializer, database, logger)
+public class EnrollmentProjectionController : ProjectionController
 {
+    private readonly EnrollmentListProjectionHandler _enrollmentListHandler;
+    private readonly ProductActiveStatusProjectionHandler _productActiveStatusHandler;
+    private readonly ILogger<EnrollmentProjectionController> _logger;
+
+    public EnrollmentProjectionController(
+        IMongoTransactionalProjectionOperator mongoOperator,
+        IDeserializer deserializer,
+        IMongoDatabase database,
+        EnrollmentListProjectionHandler enrollmentListHandler,
+        ProductActiveStatusProjectionHandler productActiveStatusHandler,
+        ILogger<EnrollmentProjectionController> logger)
+        : base(mongoOperator, deserializer, database, logger)
+    {
+        _enrollmentListHandler = enrollmentListHandler;
+        _productActiveStatusHandler = productActiveStatusHandler;
+        _logger = logger;
+    }
+
     [HttpPost("enrollment_list")]
     [Consumes("application/json")]
     [Produces("application/json")]
     public async Task<IActionResult> ProjectEnrollmentList([FromBody] AmbarHttpRequest request)
     {
-        logger.LogInformation(
-            "Received enrollment_list projection request. RequestId: {RequestId}, ContentLength: {ContentLength}",
+        _logger.LogInformation(
+            "Received enrollment_list projection request. RequestId: {RequestId}, DataSourceId: {DataSourceId}, DataDestinationId: {DataDestinationId}",
             HttpContext.TraceIdentifier,
-            request.SerializedEvent.Length
+            request?.DataSourceId,
+            request?.DataDestinationId
         );
+
+        if (request?.SerializedEvent == null)
+        {
+            _logger.LogWarning("Invalid request: SerializedEvent is null. RequestId: {RequestId}", HttpContext.TraceIdentifier);
+            return BadRequest(new { error = "SerializedEvent is required" });
+        }
 
         try
         {
-            var result = await ProcessProjectionHttpRequest(request, enrollmentListHandler, "CreditCard_Enrollment_EnrollmentList");
+            _logger.LogDebug(
+                "Processing event. EventId: {EventId}, EventName: {EventName}, AggregateId: {AggregateId}, JsonPayload: {JsonPayload}",
+                request.SerializedEvent.EventId,
+                request.SerializedEvent.EventName,
+                request.SerializedEvent.AggregateId,
+                request.SerializedEvent.JsonPayload
+            );
+
+            var result = await ProcessProjectionHttpRequest(request, _enrollmentListHandler, "CreditCard_Enrollment_EnrollmentList");
             
-            logger.LogInformation(
+            _logger.LogInformation(
                 "Completed enrollment_list projection request. RequestId: {RequestId}, StatusCode: {StatusCode}",
                 HttpContext.TraceIdentifier,
                 (result as ObjectResult)?.StatusCode ?? (result as StatusCodeResult)?.StatusCode
@@ -44,12 +71,14 @@ public class EnrollmentProjectionController(
         }
         catch (Exception ex)
         {
-            logger.LogError(
+            _logger.LogError(
                 ex,
-                "Error processing enrollment_list projection request. RequestId: {RequestId}",
-                HttpContext.TraceIdentifier
+                "Error processing enrollment_list projection request. RequestId: {RequestId}, EventId: {EventId}, EventName: {EventName}",
+                HttpContext.TraceIdentifier,
+                request.SerializedEvent.EventId,
+                request.SerializedEvent.EventName
             );
-            throw; // Let the framework handle the exception
+            return StatusCode(500, new { error = "T Internal server error", message = ex.Message });
         }
     }
 
@@ -58,17 +87,32 @@ public class EnrollmentProjectionController(
     [Produces("application/json")]
     public async Task<IActionResult> ProjectIsCardProductActive([FromBody] AmbarHttpRequest request)
     {
-        logger.LogInformation(
-            "Received is_card_product_active projection request. RequestId: {RequestId}, ContentLength: {ContentLength}",
+        _logger.LogInformation(
+            "Received is_card_product_active projection request. RequestId: {RequestId}, DataSourceId: {DataSourceId}, DataDestinationId: {DataDestinationId}",
             HttpContext.TraceIdentifier,
-            request.SerializedEvent.Length
+            request?.DataSourceId,
+            request?.DataDestinationId
         );
+
+        if (request?.SerializedEvent == null)
+        {
+            _logger.LogWarning("Invalid request: SerializedEvent is null. RequestId: {RequestId}", HttpContext.TraceIdentifier);
+            return BadRequest(new { error = "SerializedEvent is required" });
+        }
 
         try
         {
-            var result = await ProcessProjectionHttpRequest(request, productActiveStatusHandler, "CreditCard_Enrollment_ProductActiveStatus");
+            _logger.LogDebug(
+                "Processing event. EventId: {EventId}, EventName: {EventName}, AggregateId: {AggregateId}, JsonPayload: {JsonPayload}",
+                request.SerializedEvent.EventId,
+                request.SerializedEvent.EventName,
+                request.SerializedEvent.AggregateId,
+                request.SerializedEvent.JsonPayload
+            );
             
-            logger.LogInformation(
+            var result = await ProcessProjectionHttpRequest(request, _productActiveStatusHandler, "CreditCard_Enrollment_ProductActiveStatus");
+            
+            _logger.LogInformation(
                 "Completed is_card_product_active projection request. RequestId: {RequestId}, StatusCode: {StatusCode}",
                 HttpContext.TraceIdentifier,
                 (result as ObjectResult)?.StatusCode ?? (result as StatusCodeResult)?.StatusCode
@@ -78,12 +122,14 @@ public class EnrollmentProjectionController(
         }
         catch (Exception ex)
         {
-            logger.LogError(
+            _logger.LogError(
                 ex,
-                "Error processing is_card_product_active projection request. RequestId: {RequestId}",
-                HttpContext.TraceIdentifier
+                "Error processing is_card_product_active projection request. RequestId: {RequestId}, EventId: {EventId}, EventName: {EventName}",
+                HttpContext.TraceIdentifier,
+                request.SerializedEvent.EventId,
+                request.SerializedEvent.EventName
             );
-            throw; // Let the framework handle the exception
+            return StatusCode(500, new { error = "S Internal server error", message = ex.Message });
         }
     }
 }
