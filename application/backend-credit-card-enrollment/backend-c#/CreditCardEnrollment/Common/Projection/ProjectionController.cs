@@ -91,7 +91,7 @@ public abstract class ProjectionController : ControllerBase
                 projectionName,
                 @event.EventId
             );
-            return Ok();
+            return Ok(new AmbarSuccessResponse());
         }
         catch (Exception ex)
         {
@@ -104,7 +104,7 @@ public abstract class ProjectionController : ControllerBase
                     request.SerializedEvent.EventId,
                     request.SerializedEvent.EventName
                 );
-                return Ok();
+                return Ok(new AmbarSuccessResponse());
             }
 
             _logger.LogError(
@@ -115,12 +115,7 @@ public abstract class ProjectionController : ControllerBase
                 request.SerializedEvent.EventName,
                 request.SerializedEvent.JsonPayload
             );
-            return StatusCode(500, new
-            {
-                error = "Failed to process projection",
-                message = ex.Message,
-                details = ex.ToString()
-            });
+            return Ok(new AmbarRetryResponse(ex));
         }
     }
 }

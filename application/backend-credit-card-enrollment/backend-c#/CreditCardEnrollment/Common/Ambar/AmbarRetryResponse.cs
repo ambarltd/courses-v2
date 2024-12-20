@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace CreditCardEnrollment.Common.Ambar;
 
-public class AmbarResponse
+public class AmbarRetryResponse(Exception exception)
 {
     [JsonPropertyName("status")]
     public string Status { get; set; } = string.Empty;
@@ -12,16 +12,7 @@ public class AmbarResponse
 
     [JsonPropertyName("stackTrace")]
     public string? StackTrace { get; set; }
-}
-
-public static class AmbarResponseFactory
-{
-    public static AmbarResponse SuccessResponse() => new()
-    {
-        Status = "success",
-        Error = "{}"
-    };
-
+    
     public static AmbarResponse RetryResponse(Exception ex) => new()
     {
         Status = "retry",
