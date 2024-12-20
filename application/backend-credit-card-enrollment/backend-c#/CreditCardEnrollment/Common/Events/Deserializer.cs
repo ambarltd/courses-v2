@@ -96,9 +96,29 @@ public class Deserializer : IDeserializer
         if (string.IsNullOrEmpty(recordedOn))
             return DateTime.UtcNow;
 
-        // Parse the date format "yyyy-MM-dd HH:mm:ss.SSSSSS z"
-        if (DateTime.TryParse(recordedOn, out DateTime result))
-            return result;
+        // Handle PostgreSQL timestamp format: "yyyy-MM-dd HH:mm:ss.ffffff UTC"
+        if (recordedOn.EndsWith(" UTC"))
+        {
+            // Remove UTC suffix and parse with microseconds
+            string dateWithoutTz = recordedOn.Substring(0, recordedOn.Length - 4);
+            if (DateTime.TryParseExact(dateWithoutTz, 
+                "yyyy-MM-dd HH:mm:ss.ffffff",
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.AssumeUniversal,
+                out DateTime result))
+            {
+                return DateTime.SpecifyKind(result, DateTimeKind.Utc);
+            }
+        }
+
+        // Fallback to standard parsing
+        if (DateTime.TryParse(recordedOn, 
+            System.Globalization.CultureInfo.InvariantCulture,
+            System.Globalization.DateTimeStyles.AssumeUniversal | System.Globalization.DateTimeStyles.AdjustToUniversal,
+            out DateTime standardResult))
+        {
+            return standardResult;
+        }
 
         throw new ArgumentException($"Invalid date format: {recordedOn}");
     }
