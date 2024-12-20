@@ -49,7 +49,7 @@ public class ProductActiveStatusProjectionHandler(
         await productActiveStatusRepository.Save(new ProductActiveStatus
         {
             Id = @event.AggregateId,
-            Active = false
+            IsActive = false
         });
         
         logger.LogInformation("Product active status created for product {ProductId}", @event.AggregateId);
@@ -66,7 +66,7 @@ public class ProductActiveStatusProjectionHandler(
             return;
         }
 
-        productStatus.Active = true;
+        productStatus.IsActive = true;
         await productActiveStatusRepository.Save(productStatus);
         
         logger.LogInformation("Product status activated for product {ProductId}", @event.AggregateId);
@@ -83,7 +83,7 @@ public class ProductActiveStatusProjectionHandler(
             return;
         }
 
-        productStatus.Active = false;
+        productStatus.IsActive = false;
         await productActiveStatusRepository.Save(productStatus);
         
         logger.LogInformation("Product status deactivated for product {ProductId}", @event.AggregateId);

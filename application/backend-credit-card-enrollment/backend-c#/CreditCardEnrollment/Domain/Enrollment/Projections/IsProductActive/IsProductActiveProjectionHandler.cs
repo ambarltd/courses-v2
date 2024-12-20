@@ -1,6 +1,7 @@
 using CreditCardEnrollment.Common.Events;
 using CreditCardEnrollment.Common.Projection;
 using CreditCardEnrollment.Domain.Product.Events;
+using CreditCardEnrollment.Domain.Product.Projections.ProductActiveStatus;
 using Microsoft.Extensions.Logging;
 
 namespace CreditCardEnrollment.Domain.Enrollment.Projections.IsProductActive;

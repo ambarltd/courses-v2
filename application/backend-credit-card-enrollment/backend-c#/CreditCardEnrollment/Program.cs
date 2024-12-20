@@ -1,5 +1,6 @@
 using CreditCardEnrollment.Common.EventStore;
 using CreditCardEnrollment.Common.Events;
+using CreditCardEnrollment.Common.Logging;
 using CreditCardEnrollment.Common.Projection;
 using CreditCardEnrollment.Common.Query;
 using CreditCardEnrollment.Common.Services;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using MongoDB.Driver;
 using Microsoft.OpenApi.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Console;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,22 +27,6 @@ var logger = LoggerFactory.Create(config =>
     });
     config.AddConsoleFormatter<CustomConsoleFormatter, ConsoleFormatterOptions>();
 }).CreateLogger("Program");
-
-// Custom console formatter class to include thread information
-public class CustomConsoleFormatter : ConsoleFormatter
-{
-    public CustomConsoleFormatter() : base("CustomFormatter") { }
-
-    public override void Write<TState>(
-        in LogEntry<TState> logEntry,
-        IExternalScopeProvider scopeProvider,
-        TextWriter textWriter)
-    {
-        var message = logEntry.Formatter(logEntry.State, logEntry.Exception);
-        var threadId = System.Threading.Thread.CurrentThread.ManagedThreadId;
-        textWriter.WriteLine($"{DateTimeOffset.Now:yyyy-MM-dd HH:mm:ss.fff} [{threadId}] [{logEntry.LogLevel}] {message}");
-    }
-}
 
 logger.LogInformation("Starting Credit Card Enrollment API...");
 logger.LogInformation("Environment: {Environment}", builder.Environment.EnvironmentName);

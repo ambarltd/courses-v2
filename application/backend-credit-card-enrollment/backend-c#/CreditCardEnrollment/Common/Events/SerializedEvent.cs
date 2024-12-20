@@ -14,13 +14,13 @@ public class SerializedEvent
     public required string AggregateId { get; init; }
 
     [JsonPropertyName("causation_id")]
-    public string? CausationId { get; init; }
+    public required string CausationId { get; init; }
 
     [JsonPropertyName("correlation_id")]
-    public string? CorrelationId { get; init; }
+    public required string CorrelationId { get; init; }
 
     [JsonPropertyName("aggregate_version")]
-    public int? AggregateVersion { get; init; }
+    public int AggregateVersion { get; init; }
 
     [JsonPropertyName("json_payload")]
     public required string JsonPayload { get; init; }
@@ -29,7 +29,7 @@ public class SerializedEvent
     public string? JsonMetadata { get; init; }
 
     [JsonPropertyName("recorded_on")]
-    public string? RecordedOn { get; init; }
+    public required string RecordedOn { get; init; }
 
     [JsonPropertyName("event_name")]
     public required string EventName { get; init; }

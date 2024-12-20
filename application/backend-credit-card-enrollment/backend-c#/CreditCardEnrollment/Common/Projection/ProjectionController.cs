@@ -2,7 +2,6 @@ using CreditCardEnrollment.Common.Ambar;
 using CreditCardEnrollment.Common.Events;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
-using System.Text.Json;
 
 namespace CreditCardEnrollment.Common.Projection;
 
@@ -37,7 +36,7 @@ public abstract class ProjectionController : ControllerBase
 
         try
         {
-            var @event = _deserializer.Deserialize(request.SerializedEvent.JsonPayload);
+            var @event = _deserializer.Deserialize(request.SerializedEvent);
 
             await _mongoOperator.ExecuteInTransaction(async () =>
             {

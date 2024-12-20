@@ -10,7 +10,7 @@ public class ProductActiveStatusRepository(
 {
     private const string CollectionName = "CreditCard_Enrollment_ProductActiveStatus";
 
-    public async Task<ProductActiveStatus> FindById(string id)
+    public async Task<ProductActiveStatus?> FindById(string id)
     {
         return await mongoOperator.ExecuteInTransaction(async () =>
         {
@@ -37,11 +37,11 @@ public class ProductActiveStatusRepository(
         {
             var filter = Builders<ProductActiveStatus>.Filter.And(
                 Builders<ProductActiveStatus>.Filter.Eq(x => x.Id, productId),
-                Builders<ProductActiveStatus>.Filter.Eq(x => x.Active, true)
+                Builders<ProductActiveStatus>.Filter.Eq(x => x.IsActive, true)
             );
             var collection = database.GetCollection<ProductActiveStatus>(CollectionName);
             var productActiveStatus = await collection.Find(filter).FirstOrDefaultAsync();
-            return productActiveStatus != null && productActiveStatus.Active;
+            return productActiveStatus != null && productActiveStatus.IsActive;
         });
     }
 }
