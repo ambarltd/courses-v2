@@ -86,7 +86,7 @@ services:
       # Uncomment the below to utilize the java version of the application
       # context: ./../application/backend-credit-card-enrollment/backend-java
       # Uncomment the below to utilize the .net version of the application
-      context: ./../application/backend-credit-card-enrollment/backend-c#/CreditCardEnrollment
+      context: ./../application/backend-credit-card-enrollment/backend-c#
     restart: always
     environment:
       EVENT_STORE_HOST: "172.30.0.107"
