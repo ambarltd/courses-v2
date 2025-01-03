@@ -18,9 +18,10 @@ public class EnrollmentProjectionController : ProjectionController {
     public EnrollmentProjectionController(
         MongoTransactionalProjectionOperator mongoOperator,
         Deserializer deserializer,
+        ILogger<EnrollmentProjectionController> logger,
         IsProductActiveProjectionHandler isProductActiveProjectionHandler,
         EnrollmentListProjectionHandler enrollmentListProjectionHandler)
-        : base(mongoOperator, deserializer) {
+        : base(mongoOperator, deserializer, logger) {
         _isProductActiveProjectionHandler = isProductActiveProjectionHandler;
         _enrollmentListProjectionHandler = enrollmentListProjectionHandler;
     }

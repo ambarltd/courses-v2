@@ -4,9 +4,8 @@ namespace CreditCardEnrollment.Common.Util;
 
 public class MongoSessionPool {
     private readonly IMongoClient _transactionalClient;
-    private readonly string _databaseName;
 
-    public MongoSessionPool(string connectionString, string databaseName) {
+    public MongoSessionPool(string connectionString) {
         var settings = MongoClientSettings.FromConnectionString(connectionString);
         settings.ServerApi = new ServerApi(ServerApiVersion.V1);
 
@@ -19,7 +18,6 @@ public class MongoSessionPool {
         transactionalSettings.ReplicaSetName = "rs0";
 
         _transactionalClient = new MongoClient(transactionalSettings);
-        _databaseName = databaseName;
     }
 
     public IClientSessionHandle StartSession() {

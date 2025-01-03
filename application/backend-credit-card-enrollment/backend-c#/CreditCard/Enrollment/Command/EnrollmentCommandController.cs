@@ -15,8 +15,9 @@ public class EnrollmentCommandController : CommandController {
     public EnrollmentCommandController(
         PostgresTransactionalEventStore postgresTransactionalEventStore,
         MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
+        ILogger<EnrollmentCommandController> logger,
         RequestEnrollmentCommandHandler requestEnrollmentCommandHandler) 
-        : base(postgresTransactionalEventStore, mongoTransactionalProjectionOperator) {
+        : base(postgresTransactionalEventStore, mongoTransactionalProjectionOperator, logger) {
         _requestEnrollmentCommandHandler = requestEnrollmentCommandHandler;
     }
 

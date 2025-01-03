@@ -17,8 +17,8 @@ public class MongoTransactionalProjectionOperator {
     }
 
     public void StartTransaction() {
-        if (_session == null || _session.IsInTransaction) {
-            throw new Exception("Session or transaction to MongoDB already active!");
+        if (_session != null) {
+            throw new Exception("Session to MongoDB already active!");
         }
 
         try {
@@ -68,6 +68,12 @@ public class MongoTransactionalProjectionOperator {
             if (_session.IsInTransaction) {
                 _session.AbortTransaction();
             }
+        } catch (Exception ex) {
+            // todo: log error
+        }
+
+        try {
+            _session.Dispose();
         } catch (Exception ex) {
             // todo: log error
         }

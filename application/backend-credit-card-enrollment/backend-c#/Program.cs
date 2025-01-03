@@ -5,12 +5,16 @@ using CreditCardEnrollment.Common.Query;
 using CreditCardEnrollment.Common.Reaction;
 using CreditCardEnrollment.Common.SerializedEvent;
 using CreditCardEnrollment.Common.Util;
+using Microsoft.Extensions.Logging.Console;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var postgresConnectionString = 
-    $"jdbc:postgresql://{GetEnvVar("EVENT_STORE_HOST")}:{GetEnvVar("EVENT_STORE_PORT")}/" +
-    $"{GetEnvVar("EVENT_STORE_DATABASE_NAME")}?user={GetEnvVar("EVENT_STORE_USER")}&password={GetEnvVar("EVENT_STORE_PASSWORD")}";
+    $"Host={GetEnvVar("EVENT_STORE_HOST")};" +
+    $"Port={GetEnvVar("EVENT_STORE_PORT")};" +
+    $"Database={GetEnvVar("EVENT_STORE_DATABASE_NAME")};" +
+    $"Username={GetEnvVar("EVENT_STORE_USER")};" +
+    $"Password={GetEnvVar("EVENT_STORE_PASSWORD")};";
 var postgresTableName = GetEnvVar("EVENT_STORE_CREATE_TABLE_WITH_NAME");
 builder.Services.AddSingleton(_ => new PostgresConnectionPool(postgresConnectionString));
 builder.Services.AddSingleton(_ => new Deserializer());
@@ -30,7 +34,7 @@ var mongoConnectionString =
     $"{GetEnvVar("MONGODB_PROJECTION_DATABASE_NAME")}" +
     "?serverSelectionTimeoutMS=10000&connectTimeoutMS=10000&authSource=admin";
 var mongoDatabaseName = GetEnvVar("MONGODB_PROJECTION_DATABASE_NAME");
-builder.Services.AddSingleton(_ => new MongoSessionPool(mongoConnectionString, mongoDatabaseName));
+builder.Services.AddSingleton(_ => new MongoSessionPool(mongoConnectionString));
 builder.Services.AddScoped<MongoTransactionalProjectionOperator>(provider =>
 {
     var sessionPool = provider.GetRequiredService<MongoSessionPool>();
@@ -54,6 +58,20 @@ builder.Services.Scan(scan => scan
     .WithScopedLifetime());
 
 builder.Services.AddControllers();
+
+builder.Services.AddLogging(logging =>
+{
+    logging.ClearProviders();
+    logging.AddConsole(options =>
+    {
+        options.FormatterName = "MainLogger";
+        options.LogToStandardErrorThreshold = LogLevel.Error;
+    }).AddConsoleFormatter<Logger, ConsoleFormatterOptions>();
+
+    logging.AddFilter("CreditCardEnrollment", LogLevel.Debug);
+    
+    logging.SetMinimumLevel(LogLevel.Debug);
+});
 
 var app = builder.Build();
 app.MapControllers();

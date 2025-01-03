@@ -36,19 +36,20 @@ public class PostgresTransactionalEventStore
 
         try {
             _connection = _connectionPool.OpenConnection();
-
-            using var command = _connection.CreateCommand();
-            command.CommandText = "SET AUTOCOMMIT TO OFF";
-            command.ExecuteNonQuery();
-
             _activeTransaction = _connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
-        } catch (NpgsqlException ex) {
-            throw new Exception("Failed to start transaction", ex);
+        } catch (Exception ex) {
+            const int max = 500;  
+            throw new Exception("Failed to start transaction with " + 
+                (ex.Message?.Length > max ? ex.Message.Substring(0, max) : ex.Message), ex);
         }
     }
 
     public AggregateAndEventIdsInLastEvent FindAggregate(string aggregateId)
     {
+        if (_activeTransaction == null) {
+            throw new Exception("Transaction must be active to perform operations!");
+        }
+        
         var serializedEvents = FindAllSerializedEventsByAggregateId(aggregateId);
         var events = serializedEvents.Select(e => _deserializer.Deserialize(e)).ToList();
 
@@ -88,11 +89,19 @@ public class PostgresTransactionalEventStore
 
     public void SaveEvent(Event.Event @event)
     {
+        if (_activeTransaction == null) {
+            throw new Exception("Transaction must be active to perform operations!");
+        }
+        
         SaveSerializedEvent(_serializer.Serialize(@event));
     }
 
     public bool DoesEventAlreadyExist(string eventId)
     {
+        if (_activeTransaction == null) {
+            throw new Exception("Transaction must be active to perform operations!");
+        }
+        
         return FindSerializedEventByEventId(eventId) != null;
     }
 
@@ -111,33 +120,27 @@ public class PostgresTransactionalEventStore
 
     public void AbortDanglingTransactionsAndReturnConnectionToPool()
     {
-        if (_activeTransaction == null) {
-            return;
-        }
-        try {
-            _activeTransaction.Rollback();
-            _activeTransaction = null;
-        } catch (Exception ex) {
-            // todo log error
+        if (_activeTransaction != null) {
+            try {
+                _activeTransaction.Rollback();
+                _activeTransaction = null;
+            } catch (Exception ex) {
+                // todo log error
+            }
         }
         
-        if (_connection == null) {
-            return;
-        }
-        try {
-            _connection.Close();
-            _connection = null;
-        } catch (Exception ex) {
-            // todo log error
+        if (_connection != null) {
+            try {
+                _connection.Close();
+                _connection = null;
+            } catch (Exception ex) {
+                // todo log error
+            }
         }
     }
 
     private List<SerializedEvent.SerializedEvent> FindAllSerializedEventsByAggregateId(string aggregateId)
     {
-        if (_activeTransaction == null) {
-            throw new Exception("Transaction must be active to perform operations!");
-        }
-
         var events = new List<SerializedEvent.SerializedEvent>();
         var sql = $"""
             SELECT id, event_id, aggregate_id, causation_id, correlation_id, 
@@ -165,10 +168,6 @@ public class PostgresTransactionalEventStore
 
     private void SaveSerializedEvent(SerializedEvent.SerializedEvent serializedEvent)
     {
-        if (_activeTransaction == null) {
-            throw new Exception("Transaction must be active to perform operations!");
-        }
-
         var sql = $"""
             INSERT INTO {_eventStoreTable} (
                 event_id, aggregate_id, causation_id, correlation_id, 
@@ -200,10 +199,6 @@ public class PostgresTransactionalEventStore
 
     private SerializedEvent.SerializedEvent? FindSerializedEventByEventId(string eventId)
     {
-        if (_activeTransaction == null) {
-            throw new Exception("Transaction must be active to perform operations!");
-        }
-
         var sql = $"""
             SELECT id, event_id, aggregate_id, causation_id, correlation_id, 
                    aggregate_version, json_payload, json_metadata, recorded_on, event_name

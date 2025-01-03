@@ -13,8 +13,9 @@ public class EnrollmentQueryController : QueryController {
 
     public EnrollmentQueryController(
         MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
-        GetUserEnrollmentsQueryHandler getUserEnrollmentsQueryHandler) 
-        : base(mongoTransactionalProjectionOperator) {
+        ILogger<EnrollmentQueryController> logger,
+        GetUserEnrollmentsQueryHandler getUserEnrollmentsQueryHandler
+    ) : base(mongoTransactionalProjectionOperator, logger) {
         _getUserEnrollmentsQueryHandler = getUserEnrollmentsQueryHandler;
     }
 

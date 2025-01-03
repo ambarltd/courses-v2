@@ -18,8 +18,10 @@ public class EnrollmentReactionController : ReactionController {
         PostgresTransactionalEventStore eventStore,
         MongoTransactionalProjectionOperator mongoOperator,
         Deserializer deserializer,
+        ILogger<EnrollmentReactionController> logger,
         ReviewEnrollmentReactionHandler reviewEnrollmentReactionHandler)
-        : base(eventStore, mongoOperator, deserializer) {
+        : base(eventStore, mongoOperator, deserializer, logger
+    ) {
         _reviewEnrollmentReactionHandler = reviewEnrollmentReactionHandler;
     }
 

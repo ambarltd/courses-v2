@@ -8,10 +8,16 @@ namespace CreditCardEnrollment.Common.Projection;
 public abstract class ProjectionController {
     private readonly MongoTransactionalProjectionOperator _mongoOperator;
     private readonly Deserializer _deserializer;
+    private readonly ILogger<ProjectionController> _logger;
 
-    protected ProjectionController(MongoTransactionalProjectionOperator mongoOperator, Deserializer deserializer) {
+    protected ProjectionController(
+        MongoTransactionalProjectionOperator mongoOperator, 
+        Deserializer deserializer,
+        ILogger<ProjectionController> logger
+    ) {
         _mongoOperator = mongoOperator;
         _deserializer = deserializer;
+        _logger = logger;
     }
 
     protected string ProcessProjectionHttpRequest(
@@ -32,6 +38,7 @@ public abstract class ProjectionController {
                 .CountDocuments(filter) != 0;
 
             if (isAlreadyProjected) {
+                _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
                 return AmbarResponseFactory.SuccessResponse();
             }
 
@@ -56,6 +63,7 @@ public abstract class ProjectionController {
             return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) {
             _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            _logger.LogError("Exception in ProcessProjectionHttpRequest: {0}, {1}", ex.Message, ex.StackTrace);
             return AmbarResponseFactory.RetryResponse(ex);
         }
     }

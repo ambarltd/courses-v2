@@ -9,14 +9,18 @@ public abstract class ReactionController {
     private readonly PostgresTransactionalEventStore _postgresTransactionalEventStore;
     private readonly MongoTransactionalProjectionOperator _mongoTransactionalProjectionOperator;
     private readonly Deserializer _deserializer;
+    private readonly ILogger<ReactionController> _logger;
 
     protected ReactionController(
         PostgresTransactionalEventStore postgresTransactionalEventStore,
         MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
-        Deserializer deserializer) {
+        Deserializer deserializer,
+        ILogger<ReactionController> logger
+    ) {
         _postgresTransactionalEventStore = postgresTransactionalEventStore;
         _mongoTransactionalProjectionOperator = mongoTransactionalProjectionOperator;
         _deserializer = deserializer;
+        _logger = logger;
     }
 
     protected string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
@@ -38,6 +42,7 @@ public abstract class ReactionController {
         } catch (Exception ex) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            _logger.LogError("Exception in ProcessReactionHttpRequest: {0}, {1}", ex.Message, ex.StackTrace);
             return AmbarResponseFactory.RetryResponse(ex);
         }
     }
