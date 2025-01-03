@@ -49,9 +49,18 @@ public class MongoTransactionalProjectionOperator {
 
     public void abortDanglingTransactionsAndReturnSessionToPool() {
         log.info("MongoTransactionalProjectionOperator: Aborting dangling transactions and returning connection to pool.");
-        if (session.hasActiveTransaction()) {
-            session.abortTransaction();
+        try {
+            if (session.hasActiveTransaction()) {
+                session.abortTransaction();
+            }
+        } catch (Exception e) {
+            log.error("MongoTransactionalProjectionOperator: Error while aborting transaction: " + e.getMessage());
         }
-        session.close();
+
+        try {
+            session.close();
+        } catch (Exception e) {
+            log.error("MongoTransactionalProjectionOperator: Error while closing session: " + e.getMessage());
+        }
     }
 }
