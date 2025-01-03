@@ -7,7 +7,7 @@ public class DockerHealthcheckEndpoint : ControllerBase {
     [HttpGet("docker_healthcheck")]
     [HttpHead("docker_healthcheck")]
     [Produces("text/plain")] 
-    public IActionResult RequestEnrollment() {
+    public IActionResult DockerHealthCheck() {
         return Ok("OK");
     }
 }

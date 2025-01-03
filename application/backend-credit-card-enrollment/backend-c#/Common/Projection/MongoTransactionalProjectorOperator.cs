@@ -82,12 +82,12 @@ public class MongoTransactionalProjectionOperator {
         _database = null;
     }
     
-    public IFindFluent<TDocument, TDocument> Find<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, FindOptions? options = null)
+    public IReadOnlyList<TDocument> Find<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, FindOptions? options = null)
     {
         var (session, database) = Operate();
         var collection = database.GetCollection<TDocument>(collectionName);
         
-        return collection.Find(session, filter, options);
+        return collection.Find(session, filter, options).ToList();
     } 
     
     public ReplaceOneResult ReplaceOne<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, TDocument replacement, ReplaceOptions? options = null)

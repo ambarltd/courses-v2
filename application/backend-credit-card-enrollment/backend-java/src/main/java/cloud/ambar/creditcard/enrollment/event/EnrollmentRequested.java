@@ -22,7 +22,7 @@ public class EnrollmentRequested extends CreationEvent<Enrollment> {
                 .productId(productId)
                 .enrollmentFirstRequestedOn(recordedOn)
                 .annualIncomeInCents(annualIncomeInCents)
-                .status(EnrollmentStatus.REQUESTED.name())
+                .status(EnrollmentStatus.Requested.name())
                 .build();
     }
 }

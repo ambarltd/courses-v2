@@ -27,10 +27,10 @@ public class EnrollmentRepository {
         ).FirstOrDefault();
     }
 
-    public IEnumerable<Enrollment> FindAllByUserId(string userId) {
+    public IReadOnlyList<Enrollment> FindAllByUserId(string userId) {
         return _mongoOperator.Find<Enrollment>(
             _collectionName,
             e => e.UserId == userId
-        ).ToEnumerable();
+        );
     }
 }

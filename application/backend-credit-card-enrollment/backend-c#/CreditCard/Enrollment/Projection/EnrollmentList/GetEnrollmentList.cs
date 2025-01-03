@@ -13,7 +13,7 @@ public class GetEnrollmentList {
         _productNameRepository = productNameRepository;
     }
 
-    public IEnumerable<EnrollmentListItem> GetList(string userId) {
+    public IReadOnlyList<EnrollmentListItem> GetList(string userId) {
         return _enrollmentRepository.FindAllByUserId(userId)
             .Select(enrollment => new EnrollmentListItem {
                 Id = enrollment.Id,
@@ -25,7 +25,7 @@ public class GetEnrollmentList {
                 Status = enrollment.Status,
                 StatusReason = enrollment.StatusReason,
                 ReviewedOn = enrollment.ReviewedOn
-            });
+            }).ToList();
     }
 
     public bool IsThereAnyAcceptedEnrollmentForUserAndProduct(string userId, string productId) {
