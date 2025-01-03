@@ -13,7 +13,7 @@ public class QueryController {
     private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
     private static final Logger log = LogManager.getLogger(QueryController.class);
 
-    public Object processQuery(final Query query, final QueryHandler queryHandler) {
+    protected Object processQuery(final Query query, final QueryHandler queryHandler) {
         // We start a Mongo transaction because if a query handler needs to read from a projection,
         // it also needs to do so transactionally to not receive dirty reads.
         try {

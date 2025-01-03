@@ -15,7 +15,7 @@ public class CommandController {
     private final MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
     private static final Logger log = LogManager.getLogger(CommandController.class);
 
-    public void processCommand(
+    protected void processCommand(
             final Command command,
             final CommandHandler commandHandler
     ) {
