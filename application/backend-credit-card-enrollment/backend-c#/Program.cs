@@ -11,19 +11,31 @@ var builder = WebApplication.CreateBuilder(args);
 var postgresConnectionString = 
     $"jdbc:postgresql://{GetEnvVar("EVENT_STORE_HOST")}:{GetEnvVar("EVENT_STORE_PORT")}/" +
     $"{GetEnvVar("EVENT_STORE_DATABASE_NAME")}?user={GetEnvVar("EVENT_STORE_USER")}&password={GetEnvVar("EVENT_STORE_PASSWORD")}";
+var postgresTableName = GetEnvVar("EVENT_STORE_CREATE_TABLE_WITH_NAME");
+builder.Services.AddSingleton(_ => new PostgresConnectionPool(postgresConnectionString));
+builder.Services.AddSingleton(_ => new Deserializer());
+builder.Services.AddSingleton(_ => new Serializer());
+builder.Services.AddScoped<PostgresTransactionalEventStore>(provider => {
+    var pool = provider.GetRequiredService<PostgresConnectionPool>();
+    var deserializer = provider.GetRequiredService<Deserializer>();
+    var serializer = provider.GetRequiredService<Serializer>();
+    var eventStoreTable = postgresTableName; 
+
+    return new PostgresTransactionalEventStore(pool, serializer, deserializer, eventStoreTable);
+});
+
 var mongoConnectionString = 
     $"mongodb://{GetEnvVar("MONGODB_PROJECTION_DATABASE_USERNAME")}:{GetEnvVar("MONGODB_PROJECTION_DATABASE_PASSWORD")}@" +
     $"{GetEnvVar("MONGODB_PROJECTION_HOST")}:{GetEnvVar("MONGODB_PROJECTION_PORT")}/" +
     $"{GetEnvVar("MONGODB_PROJECTION_DATABASE_NAME")}" +
     "?serverSelectionTimeoutMS=10000&connectTimeoutMS=10000&authSource=admin";
 var mongoDatabaseName = GetEnvVar("MONGODB_PROJECTION_DATABASE_NAME");
-
-builder.Services.AddSingleton(_ => new PostgresConnectionPool(postgresConnectionString));
 builder.Services.AddSingleton(_ => new MongoSessionPool(mongoConnectionString, mongoDatabaseName));
-builder.Services.AddSingleton(_ => new Deserializer());
-builder.Services.AddSingleton(_ => new Serializer());
-builder.Services.AddScoped<PostgresTransactionalEventStore>();
-builder.Services.AddScoped<MongoTransactionalProjectionOperator>();
+builder.Services.AddScoped<MongoTransactionalProjectionOperator>(provider =>
+{
+    var sessionPool = provider.GetRequiredService<MongoSessionPool>();
+    return new MongoTransactionalProjectionOperator(sessionPool, mongoDatabaseName);
+});
 
 AddScopedInheritors<CommandController>(builder.Services);
 AddScopedInheritors<CommandHandler>(builder.Services);
@@ -38,16 +50,19 @@ builder.Services.Scan(scan => scan
     .FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
     .AddClasses(classes => classes.Where(type => 
         type.Namespace != null && type.Namespace.StartsWith("CreditCardEnrollment.CreditCard")))
-    .AsImplementedInterfaces()
+    .AsSelfWithInterfaces()
     .WithScopedLifetime());
 
+builder.Services.AddControllers();
+
 var app = builder.Build();
+app.MapControllers();
 app.Run();
 return;
 
 static string GetEnvVar(string name) => 
     Environment.GetEnvironmentVariable(name) ?? throw new ArgumentNullException(name);
-    
+
 static void AddScopedInheritors<T>(IServiceCollection services) {
     services.Scan(scan => scan
         .FromAssemblyOf<T>()

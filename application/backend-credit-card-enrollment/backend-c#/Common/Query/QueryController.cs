@@ -9,7 +9,7 @@ public class QueryController {
         _mongoTransactionalProjectionOperator = mongoTransactionalProjectionOperator;
     }
 
-    public object ProcessQuery(Query query, QueryHandler queryHandler) {
+    protected object ProcessQuery(Query query, QueryHandler queryHandler) {
         try {
             _mongoTransactionalProjectionOperator.StartTransaction();
             var result = queryHandler.HandleQuery(query);

@@ -1,48 +1,78 @@
+using CreditCardEnrollment.Common.Util;
 using MongoDB.Driver;
 
 namespace CreditCardEnrollment.Common.Projection;
 
 public class MongoTransactionalProjectionOperator {
-    private readonly IMongoDatabase _mongoDatabase;
-    private readonly IClientSessionHandle _session;
+    private readonly MongoSessionPool _sessionPool;
+    private readonly string _databaseName;
+    private IClientSessionHandle? _session;
+    private IMongoDatabase? _database;
 
-    public MongoTransactionalProjectionOperator(IMongoDatabase mongoDatabase, IClientSessionHandle session) {
-        _mongoDatabase = mongoDatabase;
-        _session = session;
+    public MongoTransactionalProjectionOperator(MongoSessionPool sessionPool, string databaseName) {
+        _sessionPool = sessionPool;
+        _databaseName = databaseName;
+        _session = null;
+        _database = null;
     }
 
     public void StartTransaction() {
-        if (_session.IsInTransaction) {
-            throw new Exception("Transaction to MongoDB already active!");
+        if (_session == null || _session.IsInTransaction) {
+            throw new Exception("Session or transaction to MongoDB already active!");
         }
 
-        var transactionOptions = new TransactionOptions(
-            readConcern: ReadConcern.Snapshot,
-            writeConcern: WriteConcern.WMajority,
-            readPreference: ReadPreference.Primary
-        );
+        try {
+            _session = _sessionPool.StartSession();
 
-        _session.StartTransaction(transactionOptions);
+            var transactionOptions = new TransactionOptions(
+                readConcern: ReadConcern.Snapshot,
+                writeConcern: WriteConcern.WMajority,
+                readPreference: ReadPreference.Primary
+            );
+
+            _session.StartTransaction(transactionOptions);
+            _database = _session.Client.GetDatabase(_databaseName);
+        } catch (Exception ex) {
+            throw new Exception("Failed to start MongoDB transaction", ex);
+        }
     }
 
     public IMongoDatabase Operate() {
-        if (!_session.IsInTransaction) {
+        if (_session == null || !_session.IsInTransaction) {
             throw new Exception("Transaction must be active to read or write to MongoDB!");
         }
-        return _mongoDatabase;
+        return _database ?? throw new Exception("Database is not initialized in the current session.");
     }
 
     public void CommitTransaction() {
-        if (!_session.IsInTransaction) {
+        if (_session == null || !_session.IsInTransaction) {
             throw new Exception("Transaction must be active to commit transaction to MongoDB!");
         }
-        _session.CommitTransaction();
+
+        try {
+            _session.CommitTransaction();
+            _session = null;
+            _database = null;
+        } catch (Exception ex) {
+            throw new Exception("Failed to commit MongoDB transaction", ex);
+        }
     }
 
     public void AbortDanglingTransactionsAndReturnSessionToPool() {
-        if (_session.IsInTransaction) {
-            _session.AbortTransaction();
+        if (_session == null) {
+            _database = null;
+            return;
         }
-        _session.Dispose();
+
+        try {
+            if (_session.IsInTransaction) {
+                _session.AbortTransaction();
+            }
+        } catch (Exception ex) {
+            // todo: log error
+        }
+
+        _session = null;
+        _database = null;
     }
 }

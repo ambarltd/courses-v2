@@ -1,47 +1,52 @@
 using CreditCardEnrollment.Common.SerializedEvent;
 using Npgsql;
 using CreditCardEnrollment.Common.Event;
+using CreditCardEnrollment.Common.Util;
 
 namespace CreditCardEnrollment.Common.EventStore;
 
 public class PostgresTransactionalEventStore
 {
-    private readonly NpgsqlConnection _connection;
+    private readonly PostgresConnectionPool _connectionPool;
     private readonly Serializer _serializer;
     private readonly Deserializer _deserializer;
     private readonly string _eventStoreTable;
+    private NpgsqlConnection? _connection;
     private NpgsqlTransaction? _activeTransaction;
 
     public PostgresTransactionalEventStore(
-        NpgsqlConnection connection,
+        PostgresConnectionPool connectionPool,
         Serializer serializer,
         Deserializer deserializer,
         string eventStoreTable
-        ) {
-        _connection = connection;
+    ) {
+        _connectionPool = connectionPool;
         _serializer = serializer;
         _deserializer = deserializer;
         _eventStoreTable = eventStoreTable;
+        _connection = null;
         _activeTransaction = null;
     }
-    
+
     public void BeginTransaction()
     {
-        if (_activeTransaction != null) {
-            throw new Exception("Transaction already active!");
+        if (_connection != null || _activeTransaction != null) {
+            throw new Exception("Connection or transaction already active!");
         }
 
         try {
+            _connection = _connectionPool.OpenConnection();
+
             using var command = _connection.CreateCommand();
             command.CommandText = "SET AUTOCOMMIT TO OFF";
             command.ExecuteNonQuery();
-        
+
             _activeTransaction = _connection.BeginTransaction(System.Data.IsolationLevel.Serializable);
         } catch (NpgsqlException ex) {
             throw new Exception("Failed to start transaction", ex);
         }
     }
-    
+
     public AggregateAndEventIdsInLastEvent FindAggregate(string aggregateId)
     {
         var serializedEvents = FindAllSerializedEventsByAggregateId(aggregateId);
@@ -83,7 +88,7 @@ public class PostgresTransactionalEventStore
 
     public void SaveEvent(Event.Event @event)
     {
-        SaveSerializedEvent(_serializer.Serialize(@event:));
+        SaveSerializedEvent(_serializer.Serialize(@event));
     }
 
     public bool DoesEventAlreadyExist(string eventId)
@@ -99,9 +104,7 @@ public class PostgresTransactionalEventStore
         try {
             _activeTransaction.Commit();
             _activeTransaction = null;
-        }
-        catch (NpgsqlException ex)
-        {
+        } catch (Exception ex) {
             throw new Exception("Failed to commit transaction", ex);
         }
     }
@@ -117,9 +120,13 @@ public class PostgresTransactionalEventStore
         } catch (Exception ex) {
             // todo log error
         }
-
+        
+        if (_connection == null) {
+            return;
+        }
         try {
             _connection.Close();
+            _connection = null;
         } catch (Exception ex) {
             // todo log error
         }

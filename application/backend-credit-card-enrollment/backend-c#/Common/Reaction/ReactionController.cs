@@ -19,7 +19,7 @@ public abstract class ReactionController {
         _deserializer = deserializer;
     }
 
-    public string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
+    protected string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
         try {
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();

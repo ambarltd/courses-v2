@@ -14,7 +14,7 @@ public class CommandController {
         _mongoTransactionalProjectionOperator = mongoTransactionalProjectionOperator;
     }
 
-    public void ProcessCommand(Command command, CommandHandler commandHandler) {
+    protected void ProcessCommand(Command command, CommandHandler commandHandler) {
         try {
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();
