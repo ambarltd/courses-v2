@@ -1,4 +1,3 @@
-using MongoDB.Driver;
 using CreditCardEnrollment.Common.Ambar;
 using CreditCardEnrollment.Common.SerializedEvent;
 using MongoDB.Bson;
@@ -28,14 +27,12 @@ public abstract class ProjectionController {
             var @event = _deserializer.Deserialize(ambarHttpRequest.SerializedEvent);
 
             _mongoOperator.StartTransaction();
-            var filter = Builders<BsonDocument>.Filter.And(
-                Builders<BsonDocument>.Filter.Eq("eventId", @event.EventId),
-                Builders<BsonDocument>.Filter.Eq("projectionName", projectionName)
-            );
-
-            var isAlreadyProjected = _mongoOperator.Operate()
-                .GetCollection<BsonDocument>("ProjectionIdempotency_ProjectedEvent")
-                .CountDocuments(filter) != 0;
+            var isAlreadyProjected = _mongoOperator
+                .CountDocuments<BsonDocument>(
+                    "ProjectionIdempotency_ProjectedEvent", 
+                    doc => doc["eventId"] == @event.EventId && 
+                           doc["projectionName"] == projectionName
+                ) != 0;
 
             if (isAlreadyProjected) {
                 _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
@@ -48,9 +45,8 @@ public abstract class ProjectionController {
                 { "projectionName", projectionName }
             };
 
-            _mongoOperator.Operate()
-                .GetCollection<BsonDocument>("ProjectionIdempotency_ProjectedEvent")
-                .InsertOne(projectedEvent);
+            _mongoOperator
+                .InsertOne("ProjectionIdempotency_ProjectedEvent", projectedEvent);
 
             projectionHandler.Project(@event);
 

@@ -5,13 +5,15 @@ namespace CreditCardEnrollment.CreditCard.Enrollment.Projection.EnrollmentList;
 
 public class EnrollmentRepository {
     private readonly MongoTransactionalProjectionOperator _mongoOperator;
+    private static string _collectionName = "CreditCard_Enrollment_Enrollment";
 
     public EnrollmentRepository(MongoTransactionalProjectionOperator mongoOperator) {
         _mongoOperator = mongoOperator;
     }
 
     public void Save(Enrollment enrollment) {
-        Collection().ReplaceOne(
+        _mongoOperator.ReplaceOne(
+            _collectionName,
             e => e.Id == enrollment.Id,
             enrollment,
             new ReplaceOptions { IsUpsert = true }
@@ -19,14 +21,16 @@ public class EnrollmentRepository {
     }
 
     public Enrollment? FindOneById(string id) {
-        return Collection().Find(e => e.Id == id).FirstOrDefault();
+        return _mongoOperator.Find<Enrollment>(
+            _collectionName,
+            e => e.Id == id
+        ).FirstOrDefault();
     }
 
     public IEnumerable<Enrollment> FindAllByUserId(string userId) {
-        return Collection().Find(e => e.UserId == userId).ToEnumerable();
-    }
-
-    private IMongoCollection<Enrollment> Collection() {
-        return _mongoOperator.Operate().GetCollection<Enrollment>("CreditCard_Enrollment_Enrollment");
+        return _mongoOperator.Find<Enrollment>(
+            _collectionName,
+            e => e.UserId == userId
+        ).ToEnumerable();
     }
 }

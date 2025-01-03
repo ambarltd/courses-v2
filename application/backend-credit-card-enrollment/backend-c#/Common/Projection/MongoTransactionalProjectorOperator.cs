@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using CreditCardEnrollment.Common.Util;
 using MongoDB.Driver;
 
@@ -20,6 +21,10 @@ public class MongoTransactionalProjectionOperator {
         if (_session != null) {
             throw new Exception("Session to MongoDB already active!");
         }
+        
+        if (_database != null) {
+            throw new Exception("Database already initialized in the current session.");
+        }
 
         try {
             _session = _sessionPool.StartSession();
@@ -37,22 +42,17 @@ public class MongoTransactionalProjectionOperator {
         }
     }
 
-    public IMongoDatabase Operate() {
-        if (_session == null || !_session.IsInTransaction) {
-            throw new Exception("Transaction must be active to read or write to MongoDB!");
-        }
-        return _database ?? throw new Exception("Database is not initialized in the current session.");
-    }
-
     public void CommitTransaction() {
-        if (_session == null || !_session.IsInTransaction) {
+        if (_session == null) {
+            throw new Exception("Session must be active to commit transaction to MongoDB!");
+        }
+        
+        if (!_session.IsInTransaction) {
             throw new Exception("Transaction must be active to commit transaction to MongoDB!");
         }
 
         try {
             _session.CommitTransaction();
-            _session = null;
-            _database = null;
         } catch (Exception ex) {
             throw new Exception("Failed to commit MongoDB transaction", ex);
         }
@@ -80,5 +80,53 @@ public class MongoTransactionalProjectionOperator {
 
         _session = null;
         _database = null;
+    }
+    
+    public IFindFluent<TDocument, TDocument> Find<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, FindOptions? options = null)
+    {
+        var (session, database) = Operate();
+        var collection = database.GetCollection<TDocument>(collectionName);
+        
+        return collection.Find(session, filter, options);
+    } 
+    
+    public ReplaceOneResult ReplaceOne<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, TDocument replacement, ReplaceOptions? options = null)
+    {
+        var (session, database) = Operate();
+        var collection = database.GetCollection<TDocument>(collectionName);
+        
+        return collection.ReplaceOne(session, filter, replacement, options);
+    }
+    
+    public void InsertOne<TDocument>(string collectionName, TDocument document, InsertOneOptions? options = null)
+    {
+        var (session, database) = Operate();
+        var collection = database.GetCollection<TDocument>(collectionName);
+        
+        collection.InsertOne(session, document, options);
+    }
+    
+    public long CountDocuments<TDocument>(string collectionName, Expression<Func<TDocument, bool>> filter, CountOptions? options = null)
+    {
+        var (session, database) = Operate();
+        var collection = database.GetCollection<TDocument>(collectionName);
+        
+        return collection.CountDocuments(session, filter, options);
+    }
+
+    private (IClientSessionHandle, IMongoDatabase) Operate() {
+        if (_session == null) {
+            throw new Exception("Session must be active to read or write to MongoDB!");
+        }
+        
+        if (!_session.IsInTransaction) {
+            throw new Exception("Transaction must be active to read or write to MongoDB!");
+        }
+
+        if (_database == null) {
+            throw new Exception("Database must be initialized in the current session.");
+        }
+
+        return (_session, _database);
     }
 }

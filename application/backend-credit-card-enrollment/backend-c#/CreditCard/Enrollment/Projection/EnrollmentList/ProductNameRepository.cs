@@ -5,24 +5,25 @@ namespace CreditCardEnrollment.CreditCard.Enrollment.Projection.EnrollmentList;
 
 public class ProductNameRepository {
     private readonly MongoTransactionalProjectionOperator _mongoOperator;
+    private static string _collectionName = "CreditCard_Enrollment_ProductName";
 
     public ProductNameRepository(MongoTransactionalProjectionOperator mongoOperator) {
         _mongoOperator = mongoOperator;
     }
 
     public void Save(ProductName productName) {
-        Collection().ReplaceOne(
-            p => p.Id == productName.Id,
-            productName,
+        _mongoOperator.ReplaceOne(
+            _collectionName,
+            p => p.Id == productName.Id, 
+            productName, 
             new ReplaceOptions { IsUpsert = true }
         );
     }
 
     public ProductName? FindOneById(string id) {
-        return Collection().Find(p => p.Id == id).FirstOrDefault();
-    }
-
-    private IMongoCollection<ProductName> Collection() {
-        return _mongoOperator.Operate().GetCollection<ProductName>("CreditCard_Enrollment_ProductName");
+        return _mongoOperator.Find<ProductName>(
+            _collectionName,
+            p => p.Id == id
+        ).FirstOrDefault();
     }
 }

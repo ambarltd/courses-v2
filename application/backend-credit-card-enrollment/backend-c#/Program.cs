@@ -4,7 +4,9 @@ using CreditCardEnrollment.Common.Projection;
 using CreditCardEnrollment.Common.Query;
 using CreditCardEnrollment.Common.Reaction;
 using CreditCardEnrollment.Common.SerializedEvent;
+using CreditCardEnrollment.Common.SessionAuth;
 using CreditCardEnrollment.Common.Util;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.Extensions.Logging.Console;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +51,14 @@ AddScopedInheritors<QueryController>(builder.Services);
 AddScopedInheritors<QueryHandler>(builder.Services);
 AddScopedInheritors<ReactionController>(builder.Services);
 AddScopedInheritors<ReactionHandler>(builder.Services);
+builder.Services.AddScoped<SessionRepository>();
+builder.Services.AddScoped<SessionService>(provider =>
+{
+    var sessionRepository = provider.GetRequiredService<SessionRepository>();
+    var sessionExpirationSeconds = int.Parse(GetEnvVar("SESSION_TOKENS_EXPIRE_AFTER_SECONDS"));
+
+    return new SessionService(sessionRepository, sessionExpirationSeconds);
+});
 
 builder.Services.Scan(scan => scan
     .FromAssemblies(AppDomain.CurrentDomain.GetAssemblies())
@@ -74,6 +84,25 @@ builder.Services.AddLogging(logging =>
 });
 
 var app = builder.Build();
+app.UseExceptionHandler(errorApp =>
+{
+    errorApp.Run(async context =>
+    {
+        var exceptionHandlerPathFeature = context.Features.Get<IExceptionHandlerPathFeature>();
+        var exception = exceptionHandlerPathFeature?.Error;
+        
+        var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
+        logger.LogError(exception, "Unhandled exception: {Message}. Stack Trace: {StackTrace}", exception?.Message, exception?.StackTrace);
+
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        context.Response.ContentType = "application/json";
+        
+        await context.Response.WriteAsJsonAsync(new {
+            error = exception?.Message,
+            stackTrace = exception?.StackTrace
+        });
+    });
+});
 app.MapControllers();
 app.Run();
 return;

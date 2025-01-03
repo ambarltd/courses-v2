@@ -1,6 +1,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using CreditCardEnrollment.Common.Projection;
+using System;
 
 namespace CreditCardEnrollment.Common.SessionAuth;
 
@@ -12,17 +13,19 @@ public class SessionRepository {
     }
 
     public string? AuthenticatedUserIdFromSessionToken(string sessionToken, int sessionExpirationSeconds) {
-        var filter = Builders<BsonDocument>.Filter.Eq("sessionToken", sessionToken);
-        var session = _mongoOperator.Operate()
-            .GetCollection<BsonDocument>("AuthenticationForAllContexts_Session_Session")
-            .Find(filter)
-            .FirstOrDefault();
+        var session = _mongoOperator
+            .Find<BsonDocument>(
+                "AuthenticationForAllContexts_Session_Session", 
+                doc => doc["sessionToken"] == sessionToken
+            ).FirstOrDefault();
 
         if (session == null) return null;
         
         if (session.GetValue("signedOut").AsBoolean) return null;
 
-        var tokenLastRefreshed = session.GetValue("tokenLastRefreshedAt").ToUniversalTime();
+        var tokenLastRefreshedStr = session.GetValue("tokenLastRefreshedAt").AsString;
+        var tokenLastRefreshed = DateTimeOffset.Parse(tokenLastRefreshedStr).UtcDateTime;
+
         if (tokenLastRefreshed < DateTime.UtcNow.AddSeconds(-sessionExpirationSeconds)) return null;
 
         return session.GetValue("userId").AsString;

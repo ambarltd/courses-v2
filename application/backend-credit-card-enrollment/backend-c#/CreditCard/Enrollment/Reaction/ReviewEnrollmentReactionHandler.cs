@@ -22,14 +22,10 @@ public class ReviewEnrollmentReactionHandler : ReactionHandler {
            return;
        }
 
-       var aggregateAndEventIds = _postgresTransactionalEventStore.FindAggregate(@event.AggregateId);
-       var aggregate = aggregateAndEventIds.Aggregate;
+       var aggregateAndEventIds = _postgresTransactionalEventStore.FindAggregate<Aggregate.Enrollment>(@event.AggregateId);
+       var enrollment = aggregateAndEventIds.Aggregate;
        var causationId = aggregateAndEventIds.EventIdOfLastEvent;
        var correlationId = aggregateAndEventIds.CorrelationIdOfLastEvent;
-
-       if (aggregate is not Aggregate.Enrollment enrollment) {
-           throw new InvalidOperationException("Aggregate not found");
-       }
 
        if (enrollment.Status != EnrollmentStatus.Requested) {
            return;

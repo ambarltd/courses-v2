@@ -44,7 +44,7 @@ public class PostgresTransactionalEventStore
         }
     }
 
-    public AggregateAndEventIdsInLastEvent FindAggregate(string aggregateId)
+    public AggregateAndEventIdsInLastEvent<T> FindAggregate<T>(string aggregateId) where T : Aggregate.Aggregate
     {
         if (_activeTransaction == null) {
             throw new Exception("Transaction must be active to perform operations!");
@@ -60,8 +60,8 @@ public class PostgresTransactionalEventStore
         var creationEvent = events.First();
         var transformationEvents = events.Skip(1).ToList();
 
-        Aggregate.Aggregate aggregate;
-        if (creationEvent is CreationEvent<Aggregate.Aggregate> creation) {
+        T aggregate;
+        if (creationEvent is CreationEvent<T> creation) {
             aggregate = creation.CreateAggregate();
         } else {
             throw new Exception("First event is not a creation event");
@@ -71,7 +71,7 @@ public class PostgresTransactionalEventStore
         string correlationIdOfLastEvent = creationEvent.CorrelationId;
 
         foreach (var transformationEvent in transformationEvents) {
-            if (transformationEvent is TransformationEvent<Aggregate.Aggregate> transformation) {
+            if (transformationEvent is TransformationEvent<T> transformation) {
                 aggregate = transformation.TransformAggregate(aggregate);
                 eventIdOfLastEvent = transformationEvent.EventId;
                 correlationIdOfLastEvent = transformationEvent.CorrelationId;
@@ -80,7 +80,7 @@ public class PostgresTransactionalEventStore
             }
         }
 
-        return new AggregateAndEventIdsInLastEvent {
+        return new AggregateAndEventIdsInLastEvent<T> {
             Aggregate = aggregate,
             EventIdOfLastEvent = eventIdOfLastEvent,
             CorrelationIdOfLastEvent = correlationIdOfLastEvent
