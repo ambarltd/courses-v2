@@ -18,7 +18,7 @@ public class EnrollmentListProjectionHandler extends ProjectionHandler {
     private final EnrollmentRepository enrollmentRepository;
     private final ProductNameRepository productNameRepository;
 
-    protected void project(Event event) {
+    public void project(Event event) {
         if (event instanceof ProductDefined) {
             productNameRepository.save(ProductName.builder()
                     .id(event.getAggregateId())

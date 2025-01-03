@@ -28,7 +28,7 @@ public class GetUserEnrollmentsQueryHandler extends QueryHandler {
     }
 
     @Override
-    protected Object handleQuery(Query query) {
+    public Object handleQuery(Query query) {
         if (query instanceof GetUserEnrollmentsQuery) {
             return handleGetUserEnrollments((GetUserEnrollmentsQuery) query);
         } else {
