@@ -1,5 +1,5 @@
+using CreditCardEnrollment.Common.Projection;
+
 namespace CreditCardEnrollment.Common.Query;
 
-public interface IQuery<TResult>
-{
-}
+public abstract class Query { }

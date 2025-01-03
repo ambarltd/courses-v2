@@ -1,44 +1,33 @@
-using CreditCardEnrollment.Common.Ambar;
 using CreditCardEnrollment.Common.EventStore;
 using CreditCardEnrollment.Common.Projection;
-using CreditCardEnrollment.Common.SerializedEvent;
 
-namespace CreditCardEnrollment.Common.Reaction;
+namespace CreditCardEnrollment.Common.Command;
 
-public abstract class ReactionController {
+public class CommandController {
     private readonly PostgresTransactionalEventStore _postgresTransactionalEventStore;
     private readonly MongoTransactionalProjectionOperator _mongoTransactionalProjectionOperator;
-    private readonly Deserializer _deserializer;
 
-    protected ReactionController(
+    public CommandController(
         PostgresTransactionalEventStore postgresTransactionalEventStore,
-        MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator,
-        Deserializer deserializer) {
+        MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator) {
         _postgresTransactionalEventStore = postgresTransactionalEventStore;
         _mongoTransactionalProjectionOperator = mongoTransactionalProjectionOperator;
-        _deserializer = deserializer;
     }
 
-    public string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
+    public void ProcessCommand(Command command, CommandHandler commandHandler) {
         try {
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();
-            reactionHandler.React(_deserializer.Deserialize(ambarHttpRequest.SerializedEvent));
+            commandHandler.HandleCommand(command);
             _postgresTransactionalEventStore.CommitTransaction();
             _mongoTransactionalProjectionOperator.CommitTransaction();
 
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
-
-            return AmbarResponseFactory.SuccessResponse();
-        } catch (Exception ex) when (ex.Message?.StartsWith("Unknown event type") == true) {
-            _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
-            _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
-            return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
-            return AmbarResponseFactory.RetryResponse(ex);
+            throw new Exception($"Failed to process command: {ex.Message}", ex);
         }
     }
 }

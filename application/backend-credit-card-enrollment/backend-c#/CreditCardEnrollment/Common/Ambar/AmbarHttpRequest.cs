@@ -1,5 +1,4 @@
 using System.Text.Json.Serialization;
-using CreditCardEnrollment.Common.Events;
 
 namespace CreditCardEnrollment.Common.Ambar;
 
@@ -18,5 +17,5 @@ public class AmbarHttpRequest
     public required string DataDestinationDescription { get; init; }
     
     [JsonPropertyName("payload")]
-    public required SerializedEvent SerializedEvent { get; init; }
+    public required SerializedEvent.SerializedEvent SerializedEvent { get; init; }
 }

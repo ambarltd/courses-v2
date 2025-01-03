@@ -1,121 +1,62 @@
-using CreditCardEnrollment.Common.Ambar;
-using CreditCardEnrollment.Common.Events;
-using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
+using CreditCardEnrollment.Common.Ambar;
+using CreditCardEnrollment.Common.SerializedEvent;
+using MongoDB.Bson;
 
 namespace CreditCardEnrollment.Common.Projection;
 
-public abstract class ProjectionController : ControllerBase
-{
-    private readonly IMongoTransactionalProjectionOperator _mongoOperator;
-    private readonly IDeserializer _deserializer;
-    private readonly IMongoDatabase _database;
-    private readonly ILogger<ProjectionController> _logger;
+public abstract class ProjectionController {
+    private readonly MongoTransactionalProjectionOperator _mongoOperator;
+    private readonly Deserializer _deserializer;
 
-    protected ProjectionController(
-        IMongoTransactionalProjectionOperator mongoOperator,
-        IDeserializer deserializer,
-        IMongoDatabase database,
-        ILogger<ProjectionController> logger)
-    {
+    protected ProjectionController(MongoTransactionalProjectionOperator mongoOperator, Deserializer deserializer) {
         _mongoOperator = mongoOperator;
         _deserializer = deserializer;
-        _database = database;
-        _logger = logger;
     }
 
-    protected async Task<IActionResult> ProcessProjectionHttpRequest(AmbarHttpRequest request, ProjectionHandler handler, string projectionName)
-    {
-        _logger.LogInformation(
-            "Processing projection request. RequestId: {RequestId}, Projection: {ProjectionName}, EventId: {EventId}, EventName: {EventName}",
-            HttpContext.TraceIdentifier,
-            projectionName,
-            request.SerializedEvent.EventId,
-            request.SerializedEvent.EventName
-        );
+    protected string ProcessProjectionHttpRequest(
+        AmbarHttpRequest ambarHttpRequest,
+        ProjectionHandler projectionHandler,
+        string projectionName) {
+        try {
+            var @event = _deserializer.Deserialize(ambarHttpRequest.SerializedEvent);
 
-        try
-        {
-            var @event = _deserializer.Deserialize(request.SerializedEvent);
-
-            await _mongoOperator.ExecuteInTransaction(async () =>
-            {
-                _logger.LogInformation(
-                    "Started MongoDB transaction for projection {ProjectionName}, EventId: {EventId}",
-                    projectionName,
-                    request.SerializedEvent.EventId
-                );
-
-                var collection = _database.GetCollection<ProjectedEvent>("ProjectionIdempotency_ProjectedEvent");
-                var filter = Builders<ProjectedEvent>.Filter.And(
-                    Builders<ProjectedEvent>.Filter.Eq(p => p.EventId, @event.EventId),
-                    Builders<ProjectedEvent>.Filter.Eq(p => p.ProjectionName, projectionName)
-                );
-
-                var isAlreadyProjected = await collection.Find(filter).AnyAsync();
-                if (isAlreadyProjected)
-                {
-                    _logger.LogInformation(
-                        "Event {EventId} already projected for {ProjectionName}",
-                        @event.EventId,
-                        projectionName
-                    );
-                    return;
-                }
-
-                await collection.InsertOneAsync(new ProjectedEvent(@event.EventId, projectionName));
-                
-                try
-                {
-                    handler.HandleEvent(@event);
-                    _logger.LogInformation(
-                        "Successfully processed projection {ProjectionName} for event {EventId}",
-                        projectionName,
-                        @event.EventId
-                    );
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(
-                        ex,
-                        "Error during projection processing for {ProjectionName}, EventId: {EventId}",
-                        projectionName,
-                        @event.EventId
-                    );
-                    throw;
-                }
-            });
-
-            _logger.LogInformation(
-                "Successfully completed projection {ProjectionName} for event {EventId}",
-                projectionName,
-                @event.EventId
+            _mongoOperator.StartTransaction();
+            var filter = Builders<BsonDocument>.Filter.And(
+                Builders<BsonDocument>.Filter.Eq("eventId", @event.EventId),
+                Builders<BsonDocument>.Filter.Eq("projectionName", projectionName)
             );
-            return Ok(new AmbarSuccessResponse());
-        }
-        catch (Exception ex)
-        {
-            if (ex is ArgumentException argEx && argEx.Message.StartsWith("Unknown event type"))
-            {
-                _logger.LogWarning(
-                    ex,
-                    "Unknown event type in request. Projection: {ProjectionName}, EventId: {EventId}, EventName: {EventName}",
-                    projectionName,
-                    request.SerializedEvent.EventId,
-                    request.SerializedEvent.EventName
-                );
-                return Ok(new AmbarSuccessResponse());
+
+            var isAlreadyProjected = _mongoOperator.Operate()
+                .GetCollection<BsonDocument>("ProjectionIdempotency_ProjectedEvent")
+                .CountDocuments(filter) != 0;
+
+            if (isAlreadyProjected) {
+                return AmbarResponseFactory.SuccessResponse();
             }
 
-            _logger.LogError(
-                ex,
-                "Failed to process projection request. Projection: {ProjectionName}, EventId: {EventId}, EventName: {EventName}, JsonPayload: {JsonPayload}",
-                projectionName,
-                request.SerializedEvent.EventId,
-                request.SerializedEvent.EventName,
-                request.SerializedEvent.JsonPayload
-            );
-            return Ok(new AmbarRetryResponse(ex));
+            var projectedEvent = new BsonDocument
+            {
+                { "eventId", @event.EventId },
+                { "projectionName", projectionName }
+            };
+
+            _mongoOperator.Operate()
+                .GetCollection<BsonDocument>("ProjectionIdempotency_ProjectedEvent")
+                .InsertOne(projectedEvent);
+
+            projectionHandler.Project(@event);
+
+            _mongoOperator.CommitTransaction();
+            _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+
+            return AmbarResponseFactory.SuccessResponse();
+        } catch (Exception ex) when (ex.Message?.StartsWith("Unknown event type") == true) {
+            _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            return AmbarResponseFactory.SuccessResponse();
+        } catch (Exception ex) {
+            _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            return AmbarResponseFactory.RetryResponse(ex);
         }
     }
 }

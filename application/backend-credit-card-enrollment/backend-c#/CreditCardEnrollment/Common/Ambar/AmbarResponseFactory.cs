@@ -1,31 +1,15 @@
-using System.Text.Json.Serialization;
-
 namespace CreditCardEnrollment.Common.Ambar;
-
-public class AmbarResponse
-{
-    [JsonPropertyName("status")]
-    public string Status { get; set; } = string.Empty;
-
-    [JsonPropertyName("error")]
-    public string? Error { get; set; }
-
-    [JsonPropertyName("stackTrace")]
-    public string? StackTrace { get; set; }
-}
 
 public static class AmbarResponseFactory
 {
-    public static AmbarResponse SuccessResponse() => new()
+    public static string RetryResponse(Exception exception)
     {
-        Status = "success",
-        Error = "{}"
-    };
+        var message = exception.Message.Replace("\"", "\\\"");
+        return $"{{\"result\":{{\"error\":{{\"policy\":\"MUST_RETRY\",\"class\":\"{exception.GetType()}\",\"description\":\"message:{message}\"}}}}}}";
+    }
 
-    public static AmbarResponse RetryResponse(Exception ex) => new()
+    public static string SuccessResponse()
     {
-        Status = "retry",
-        Error = ex.Message,
-        StackTrace = ex.StackTrace
-    };
+        return "{\"result\":{\"success\":{}}}";
+    }
 }
