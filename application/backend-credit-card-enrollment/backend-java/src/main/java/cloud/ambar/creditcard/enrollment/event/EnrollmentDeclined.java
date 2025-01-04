@@ -16,7 +16,7 @@ public class EnrollmentDeclined extends TransformationEvent<Enrollment> {
     public Enrollment transformAggregate(Enrollment aggregate) {
         return aggregate.toBuilder()
                 .aggregateVersion(aggregateVersion)
-                .status(EnrollmentStatus.DECLINED.name())
+                .status(EnrollmentStatus.Declined.name())
                 .build();
     }
 }

@@ -81,9 +81,12 @@ services:
   backend-credit-card-enrollment:
     container_name: backend-credit-card-enrollment
     build:
-      # Change the credit card enrollment portion 
+      # Change the credit card enrollment portion
       # to the language you're most comfortable in.
-      context: ./../application/backend-credit-card-enrollment/backend-java
+      # Uncomment the below to utilize the java version of the application
+      # context: ./../application/backend-credit-card-enrollment/backend-java
+      # Uncomment the below to utilize the .net version of the application
+      context: ./../application/backend-credit-card-enrollment/backend-c#
     restart: always
     environment:
       EVENT_STORE_HOST: "172.30.0.107"

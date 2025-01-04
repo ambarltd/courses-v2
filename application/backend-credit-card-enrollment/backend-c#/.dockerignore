@@ -1,0 +1,30 @@
+# .NET build output
+bin/
+obj/
+
+# Development settings
+appsettings.Development.json
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vs
+.vscode
+*.user
+*.suo
+*.sln.docstates
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Logs
+logs/
+*.log
+
+# Temp files
+*.tmp
+*.swp
+*~

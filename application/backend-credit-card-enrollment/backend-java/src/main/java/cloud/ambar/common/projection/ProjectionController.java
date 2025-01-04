@@ -41,6 +41,7 @@ public abstract class ProjectionController {
             ) != 0;
 
             if (isAlreadyProjected) {
+                mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
                 return AmbarResponseFactory.successResponse();
             }
 

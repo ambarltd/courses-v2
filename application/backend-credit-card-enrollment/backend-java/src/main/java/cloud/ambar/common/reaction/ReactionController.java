@@ -19,7 +19,7 @@ public abstract class ReactionController {
     private final Deserializer deserializer;
     private static final Logger log = LogManager.getLogger(ReactionController.class);
 
-    public String processReactionHttpRequest(final AmbarHttpRequest ambarHttpRequest, final ReactionHandler reactionHandler) {
+    protected String processReactionHttpRequest(final AmbarHttpRequest ambarHttpRequest, final ReactionHandler reactionHandler) {
         try {
             log.info("Reaction controller received http request: " + ambarHttpRequest);
 

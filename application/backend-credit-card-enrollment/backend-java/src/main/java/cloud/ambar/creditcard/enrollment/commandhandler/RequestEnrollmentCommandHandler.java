@@ -30,7 +30,7 @@ public class RequestEnrollmentCommandHandler extends CommandHandler {
         this.isProductActive = isProductActive;
     }
 
-    protected void handleCommand(Command command) {
+    public void handleCommand(Command command) {
         if (command instanceof RequestEnrollmentCommand) {
             handleRequestEnrollment((RequestEnrollmentCommand) command);
         } else {

@@ -42,7 +42,7 @@ public class ReviewEnrollmentReactionHandler extends ReactionHandler {
                 throw new RuntimeException("Aggregate not found");
             }
 
-            if (!EnrollmentStatus.REQUESTED.toString().equals(enrollment.getStatus())) {
+            if (!EnrollmentStatus.Requested.toString().equals(enrollment.getStatus())) {
                 return;
             }
 

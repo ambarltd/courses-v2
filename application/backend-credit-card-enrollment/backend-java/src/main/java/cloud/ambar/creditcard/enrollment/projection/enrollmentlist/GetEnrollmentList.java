@@ -36,6 +36,6 @@ public class GetEnrollmentList {
     public boolean isThereAnyAcceptedEnrollmentForUserAndProduct(final String userId, final String productId) {
         return enrollmentRepository.findAllByUserId(userId)
                 .stream()
-                .anyMatch(enrollment -> enrollment.getProductId().equals(productId) && enrollment.getStatus().equals(EnrollmentStatus.ACCEPTED.name()));
+                .anyMatch(enrollment -> enrollment.getProductId().equals(productId) && enrollment.getStatus().equals(EnrollmentStatus.Accepted.name()));
     }
 }

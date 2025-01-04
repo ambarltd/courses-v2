@@ -1,4 +1,6 @@
 .idea
+.vscode
+courses-v2.sln
 .env
 .prod.env
 .terraform
@@ -14,3 +16,4 @@ application/java-credit-card-product-service/target
 *.jar*
 *.class
 *.lst
+.DS_Store

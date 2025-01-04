@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 abstract public class CommandHandler {
     final protected PostgresTransactionalEventStore postgresTransactionalEventStore;
-    protected abstract void handleCommand(Command command);
+    public abstract void handleCommand(Command command);
 }

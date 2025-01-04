@@ -6,5 +6,5 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 abstract public class QueryHandler {
     final protected MongoTransactionalProjectionOperator mongoTransactionalProjectionOperator;
-    protected abstract Object handleQuery(Query query);
+    public abstract Object handleQuery(Query query);
 }
