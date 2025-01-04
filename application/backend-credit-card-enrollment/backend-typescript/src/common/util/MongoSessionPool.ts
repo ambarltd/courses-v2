@@ -26,7 +26,7 @@ export class MongoSessionPool {
         return this.transactionalClient.startSession();
     }
 
-    async close(): Promise<void> {
-        await this.transactionalClient.close();
+    getClient(): MongoClient {
+        return this.transactionalClient;
     }
 }
