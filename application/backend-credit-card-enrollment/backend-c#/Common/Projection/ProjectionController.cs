@@ -24,6 +24,7 @@ public abstract class ProjectionController {
         ProjectionHandler projectionHandler,
         string projectionName) {
         try {
+            _logger.LogDebug("Starting to process projection for event name: {EventName}", ambarHttpRequest.SerializedEvent.EventName);
             var @event = _deserializer.Deserialize(ambarHttpRequest.SerializedEvent);
 
             _mongoOperator.StartTransaction();

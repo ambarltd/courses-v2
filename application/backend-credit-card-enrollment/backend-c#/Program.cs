@@ -78,9 +78,10 @@ builder.Services.AddLogging(logging =>
         options.LogToStandardErrorThreshold = LogLevel.Error;
     }).AddConsoleFormatter<Logger, ConsoleFormatterOptions>();
 
-    logging.AddFilter("CreditCardEnrollment", LogLevel.Debug);
-    
     logging.SetMinimumLevel(LogLevel.Debug);
+    
+    logging.AddFilter("CreditCardEnrollment", LogLevel.Debug);
+    logging.AddFilter("Microsoft", LogLevel.Information);
 });
 
 var app = builder.Build();

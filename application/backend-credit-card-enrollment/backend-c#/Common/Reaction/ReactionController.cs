@@ -25,6 +25,7 @@ public abstract class ReactionController {
 
     protected string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
         try {
+            _logger.LogDebug("Starting to process reaction for event name: {EventName}", ambarHttpRequest.SerializedEvent.EventName);
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();
             reactionHandler.React(_deserializer.Deserialize(ambarHttpRequest.SerializedEvent));

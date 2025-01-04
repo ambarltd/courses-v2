@@ -16,6 +16,7 @@ public class QueryController {
 
     protected object ProcessQuery(Query query, QueryHandler queryHandler) {
         try {
+            _logger.LogDebug("Starting to process query: {QueryType}", query.GetType().Name);
             _mongoTransactionalProjectionOperator.StartTransaction();
             var result = queryHandler.HandleQuery(query);
             _mongoTransactionalProjectionOperator.CommitTransaction();

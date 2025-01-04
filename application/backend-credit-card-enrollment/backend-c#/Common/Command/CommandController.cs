@@ -20,6 +20,7 @@ public class CommandController {
 
     protected void ProcessCommand(Command command, CommandHandler commandHandler) {
         try {
+            _logger.LogDebug("Starting to process command: {CommandType}", command.GetType().Name);
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();
             commandHandler.HandleCommand(command);

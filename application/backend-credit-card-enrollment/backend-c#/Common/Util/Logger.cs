@@ -6,9 +6,7 @@ namespace CreditCardEnrollment.Common.Util;
 
 public class Logger : ConsoleFormatter
 {
-    public Logger() : base("MainLogger")
-    {
-    }
+    public Logger() : base("MainLogger") { }
 
     public override void Write<TState>(
         in LogEntry<TState> logEntry,
@@ -21,7 +19,12 @@ public class Logger : ConsoleFormatter
         }
 
         var threadId = Thread.CurrentThread.ManagedThreadId;
+        var category = logEntry.Category ?? "Unknown";  
         var timestamp = DateTimeOffset.Now.ToString("[yyyy-MM-dd HH:mm:ss.fff] ");
-        textWriter.WriteLine($"{timestamp} [{threadId}] [{logEntry.LogLevel}] {message}");
+        textWriter.WriteLine($"{timestamp} [{threadId}] [{category}] [{logEntry.LogLevel}] {message}");
+        
+        if (logEntry.Exception != null) {
+            textWriter.WriteLine($"Exception: {logEntry.Exception}");
+        }
     }
 }
