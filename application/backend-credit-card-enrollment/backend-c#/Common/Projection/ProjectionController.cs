@@ -24,7 +24,11 @@ public abstract class ProjectionController {
         ProjectionHandler projectionHandler,
         string projectionName) {
         try {
-            _logger.LogDebug("Starting to process projection for event name: {EventName}", ambarHttpRequest.SerializedEvent.EventName);
+            _logger.LogDebug(
+                "Starting to process projection for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                projectionHandler.GetType().Name
+            );
             var @event = _deserializer.Deserialize(ambarHttpRequest.SerializedEvent);
 
             _mongoOperator.StartTransaction();
@@ -37,6 +41,11 @@ public abstract class ProjectionController {
 
             if (isAlreadyProjected) {
                 _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+                _logger.LogDebug(
+                    "Duplication projection ignored for event name: {EventName} using handler: {HandlerName}", 
+                    ambarHttpRequest.SerializedEvent.EventName,
+                    projectionHandler.GetType().Name
+                );
                 return AmbarResponseFactory.SuccessResponse();
             }
 
@@ -54,13 +63,30 @@ public abstract class ProjectionController {
             _mongoOperator.CommitTransaction();
             _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
 
+            _logger.LogDebug(
+                "Projection successfully processed for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                projectionHandler.GetType().Name
+            );
             return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) when (ex.Message?.StartsWith("Unknown event type") == true) {
             _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            
+            _logger.LogDebug(
+                "Unknown event in projection ignored for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                projectionHandler.GetType().Name
+            );
             return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) {
             _mongoOperator.AbortDanglingTransactionsAndReturnSessionToPool();
-            _logger.LogError("Exception in ProcessProjectionHttpRequest: {0}, {1}", ex.Message, ex.StackTrace);
+            _logger.LogError(
+                "Exception in ProcessProjectionHttpRequest: {0}, {1}. For event name: {EventName} using handler: {HandlerName}", 
+                ex.Message, 
+                ex.StackTrace,
+                ambarHttpRequest.SerializedEvent.EventName,
+                projectionHandler.GetType().Name
+            );
             return AmbarResponseFactory.RetryResponse(ex);
         }
     }

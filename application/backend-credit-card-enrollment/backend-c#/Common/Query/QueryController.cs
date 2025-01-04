@@ -22,6 +22,7 @@ public class QueryController {
             _mongoTransactionalProjectionOperator.CommitTransaction();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
 
+            _logger.LogDebug("Successfully processed query: {QueryType}", query.GetType().Name);
             return result;
         } catch (Exception ex) {
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();

@@ -25,7 +25,11 @@ public abstract class ReactionController {
 
     protected string ProcessReactionHttpRequest(AmbarHttpRequest ambarHttpRequest, ReactionHandler reactionHandler) {
         try {
-            _logger.LogDebug("Starting to process reaction for event name: {EventName}", ambarHttpRequest.SerializedEvent.EventName);
+            _logger.LogDebug(
+                "Starting to process reaction for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                reactionHandler.GetType().Name
+            );
             _postgresTransactionalEventStore.BeginTransaction();
             _mongoTransactionalProjectionOperator.StartTransaction();
             reactionHandler.React(_deserializer.Deserialize(ambarHttpRequest.SerializedEvent));
@@ -35,6 +39,11 @@ public abstract class ReactionController {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
 
+            _logger.LogDebug(
+                "Reaction successfully processed for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                reactionHandler.GetType().Name
+            );
             return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) when (ex.Message?.StartsWith("Unknown event type") == true) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();

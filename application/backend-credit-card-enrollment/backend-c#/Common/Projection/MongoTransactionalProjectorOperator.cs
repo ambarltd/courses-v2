@@ -7,12 +7,18 @@ namespace CreditCardEnrollment.Common.Projection;
 public class MongoTransactionalProjectionOperator {
     private readonly MongoSessionPool _sessionPool;
     private readonly string _databaseName;
+    private readonly ILogger<MongoTransactionalProjectionOperator> _logger;
     private IClientSessionHandle? _session;
     private IMongoDatabase? _database;
 
-    public MongoTransactionalProjectionOperator(MongoSessionPool sessionPool, string databaseName) {
+    public MongoTransactionalProjectionOperator(
+        MongoSessionPool sessionPool,
+        string databaseName, 
+        ILogger<MongoTransactionalProjectionOperator> logger
+    ) {
         _sessionPool = sessionPool;
         _databaseName = databaseName;
+        _logger = logger;
         _session = null;
         _database = null;
     }
@@ -69,13 +75,13 @@ public class MongoTransactionalProjectionOperator {
                 _session.AbortTransaction();
             }
         } catch (Exception ex) {
-            // todo: log error
+            _logger.LogError(ex, "Failed to abort Mongo transaction");
         }
 
         try {
             _session.Dispose();
         } catch (Exception ex) {
-            // todo: log error
+            _logger.LogError(ex, "Failed to release Mongo session");
         }
 
         _session = null;

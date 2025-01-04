@@ -26,8 +26,9 @@ builder.Services.AddScoped<PostgresTransactionalEventStore>(provider => {
     var deserializer = provider.GetRequiredService<Deserializer>();
     var serializer = provider.GetRequiredService<Serializer>();
     var eventStoreTable = postgresTableName; 
+    var logger = provider.GetRequiredService<ILogger<PostgresTransactionalEventStore>>();
 
-    return new PostgresTransactionalEventStore(pool, serializer, deserializer, eventStoreTable);
+    return new PostgresTransactionalEventStore(pool, serializer, deserializer, eventStoreTable, logger);
 });
 
 var mongoConnectionString = 
@@ -40,7 +41,8 @@ builder.Services.AddSingleton(_ => new MongoSessionPool(mongoConnectionString));
 builder.Services.AddScoped<MongoTransactionalProjectionOperator>(provider =>
 {
     var sessionPool = provider.GetRequiredService<MongoSessionPool>();
-    return new MongoTransactionalProjectionOperator(sessionPool, mongoDatabaseName);
+    var logger = provider.GetRequiredService<ILogger<MongoTransactionalProjectionOperator>>();
+    return new MongoTransactionalProjectionOperator(sessionPool, mongoDatabaseName, logger);
 });
 
 AddScopedInheritors<CommandController>(builder.Services);

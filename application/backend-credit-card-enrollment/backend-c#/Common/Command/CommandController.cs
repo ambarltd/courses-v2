@@ -29,6 +29,7 @@ public class CommandController {
 
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            _logger.LogDebug("Successfully processed command: {CommandType}", command.GetType().Name);
         } catch (Exception ex) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();

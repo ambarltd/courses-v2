@@ -11,6 +11,7 @@ public class PostgresTransactionalEventStore
     private readonly Serializer _serializer;
     private readonly Deserializer _deserializer;
     private readonly string _eventStoreTable;
+    private readonly ILogger<PostgresTransactionalEventStore> _logger;
     private NpgsqlConnection? _connection;
     private NpgsqlTransaction? _activeTransaction;
 
@@ -18,12 +19,14 @@ public class PostgresTransactionalEventStore
         PostgresConnectionPool connectionPool,
         Serializer serializer,
         Deserializer deserializer,
-        string eventStoreTable
+        string eventStoreTable,
+        ILogger<PostgresTransactionalEventStore> logger
     ) {
         _connectionPool = connectionPool;
         _serializer = serializer;
         _deserializer = deserializer;
         _eventStoreTable = eventStoreTable;
+        _logger = logger;
         _connection = null;
         _activeTransaction = null;
     }
@@ -125,7 +128,7 @@ public class PostgresTransactionalEventStore
                 _activeTransaction.Rollback();
                 _activeTransaction = null;
             } catch (Exception ex) {
-                // todo log error
+                _logger.LogError(ex, "Failed to rollback PG transaction");
             }
         }
         
@@ -134,7 +137,7 @@ public class PostgresTransactionalEventStore
                 _connection.Close();
                 _connection = null;
             } catch (Exception ex) {
-                // todo log error
+                _logger.LogError(ex, "Failed to release PG connection");
             }
         }
     }
@@ -192,7 +195,6 @@ public class PostgresTransactionalEventStore
         try {
             command.ExecuteNonQuery();
         } catch (Exception ex) {
-            // todo log error
             throw new Exception($"Failed to save event: {serializedEvent.EventId}", ex);
         }
     }
