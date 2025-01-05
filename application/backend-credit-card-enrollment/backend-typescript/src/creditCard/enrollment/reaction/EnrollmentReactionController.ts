@@ -5,15 +5,17 @@ import { PostgresTransactionalEventStore } from '../../../common/eventStore/Post
 import { MongoTransactionalProjectionOperator } from '../../../common/projection/MongoTransactionalProjectionOperator';
 import { Deserializer } from '../../../common/serializedEvent/Deserializer';
 import {Request, Response, Router} from "express";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentReactionController extends ReactionController {
     public readonly router: Router;
 
     constructor(
-        eventStore: PostgresTransactionalEventStore,
-        mongoOperator: MongoTransactionalProjectionOperator,
-        deserializer: Deserializer,
-        private readonly reviewEnrollmentReactionHandler: ReviewEnrollmentReactionHandler
+        @inject(PostgresTransactionalEventStore) eventStore: PostgresTransactionalEventStore,
+        @inject(MongoTransactionalProjectionOperator) mongoOperator: MongoTransactionalProjectionOperator,
+        @inject(Deserializer) deserializer: Deserializer,
+        @inject(ReviewEnrollmentReactionHandler) private readonly reviewEnrollmentReactionHandler: ReviewEnrollmentReactionHandler
     ) {
         super(eventStore, mongoOperator, deserializer);
         this.router = Router();

@@ -4,15 +4,17 @@ import {SessionService} from "../../../common/sessionAuth/SessionService";
 import {EnrollmentListItem} from "../projection/enrollmentList/EnrollmentListItem";
 import {GetEnrollmentList} from "../projection/enrollmentList/GetEnrollmentList";
 import {MongoTransactionalProjectionOperator} from "../../../common/projection/MongoTransactionalProjectionOperator";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class GetUserEnrollmentsQueryHandler extends QueryHandler {
     private readonly sessionService: SessionService;
     private readonly getEnrollmentList: GetEnrollmentList;
 
     constructor(
-        mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
-        sessionService: SessionService,
-        getEnrollmentList: GetEnrollmentList
+        @inject(MongoTransactionalProjectionOperator) mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
+        @inject(SessionService) sessionService: SessionService,
+        @inject(GetEnrollmentList) getEnrollmentList: GetEnrollmentList
     ) {
         super(mongoTransactionalProjectionOperator);
         this.sessionService = sessionService;

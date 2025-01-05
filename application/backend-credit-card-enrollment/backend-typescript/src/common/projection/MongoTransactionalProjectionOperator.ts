@@ -15,14 +15,16 @@ import {
 } from 'mongodb';
 import { MongoSessionPool } from '../util/MongoSessionPool';
 import { log } from '../util/Logger';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class MongoTransactionalProjectionOperator {
     private session: ClientSession | null = null;
     private db: Db | null = null;
 
     constructor(
-        private readonly sessionPool: MongoSessionPool,
-        private readonly databaseName: string
+        @inject(MongoSessionPool) private readonly sessionPool: MongoSessionPool,
+        @inject("mongoDatabaseName") private readonly databaseName: string
     ) {}
 
     async startTransaction(): Promise<void> {

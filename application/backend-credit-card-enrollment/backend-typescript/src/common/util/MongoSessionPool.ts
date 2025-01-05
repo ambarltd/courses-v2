@@ -1,9 +1,11 @@
 import { MongoClient, ClientSession, ServerApiVersion } from 'mongodb';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class MongoSessionPool {
     private readonly transactionalClient: MongoClient;
 
-    constructor(connectionString: string) {
+    constructor(@inject("mongoConnectionString") connectionString: string) {
         const settings = {
             maxPoolSize: 20,
             minPoolSize: 5,

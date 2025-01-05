@@ -3,15 +3,17 @@ import { QueryController } from '../../../common/query/QueryController';
 import { MongoTransactionalProjectionOperator } from '../../../common/projection/MongoTransactionalProjectionOperator';
 import { GetUserEnrollmentsQueryHandler } from './GetUserEnrollmentsQueryHandler';
 import { GetUserEnrollmentsQuery } from './GetUserEnrollmentsQuery';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentQueryController extends QueryController {
     public readonly router: Router;
 
     private readonly getUserEnrollmentsQueryHandler: GetUserEnrollmentsQueryHandler;
 
     constructor(
-        mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
-        getUserEnrollmentsQueryHandler: GetUserEnrollmentsQueryHandler
+        @inject(MongoTransactionalProjectionOperator) mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
+        @inject(GetUserEnrollmentsQueryHandler) getUserEnrollmentsQueryHandler: GetUserEnrollmentsQueryHandler
     ) {
         super(mongoTransactionalProjectionOperator);
         this.getUserEnrollmentsQueryHandler = getUserEnrollmentsQueryHandler;

@@ -3,7 +3,9 @@ import { SerializedEvent } from './SerializedEvent';
 import {EnrollmentRequested} from "../../creditCard/enrollment/event/EnrollmentRequested";
 import {EnrollmentAccepted} from "../../creditCard/enrollment/event/EnrollmentAccepted";
 import {EnrollmentDeclined} from "../../creditCard/enrollment/event/EnrollmentDeclined";
+import {injectable} from "tsyringe";
 
+@injectable()
 export class Serializer {
     serialize(event: Event): SerializedEvent {
         return {

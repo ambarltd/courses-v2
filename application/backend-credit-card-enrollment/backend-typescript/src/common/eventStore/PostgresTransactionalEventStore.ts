@@ -9,17 +9,19 @@ import { TransformationEvent } from '../event/TransformationEvent';
 import { Aggregate } from '../aggregate/Aggregate';
 import { log } from '../util/Logger';
 import { AggregateAndEventIdsInLastEvent } from './AggregateAndEventIdsInLastEvent';
+import {inject, injectable} from "tsyringe";
 
 
+@injectable()
 export class PostgresTransactionalEventStore {
     private connection: PoolClient | null = null;
     private activeTransaction = false;
 
     constructor(
-        private readonly connectionPool: PostgresConnectionPool,
-        private readonly serializer: Serializer,
-        private readonly deserializer: Deserializer,
-        private readonly eventStoreTable: string
+        @inject(PostgresConnectionPool) private readonly connectionPool: PostgresConnectionPool,
+        @inject(Serializer) private readonly serializer: Serializer,
+        @inject(Deserializer) private readonly deserializer: Deserializer,
+        @inject("eventStoreTable") private readonly eventStoreTable: string
     ) {}
 
     async beginTransaction(): Promise<void> {

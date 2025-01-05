@@ -1,11 +1,13 @@
 import { EnrollmentRepository } from './EnrollmentRepository';
 import { EnrollmentListItem } from './EnrollmentListItem';
 import { ProductNameRepository } from './ProductNameRepository';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class GetEnrollmentList {
     constructor(
-        private readonly enrollmentRepository: EnrollmentRepository,
-        private readonly productNameRepository: ProductNameRepository
+        @inject(EnrollmentRepository) private readonly enrollmentRepository: EnrollmentRepository,
+        @inject(ProductNameRepository) private readonly productNameRepository: ProductNameRepository
     ) {}
 
     async getList(userId: string): Promise<EnrollmentListItem[]> {

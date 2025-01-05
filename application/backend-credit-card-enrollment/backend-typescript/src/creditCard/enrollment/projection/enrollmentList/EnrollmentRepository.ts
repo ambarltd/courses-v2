@@ -1,10 +1,14 @@
 import {Enrollment} from "./Enrollment";
 import {MongoTransactionalProjectionOperator} from "../../../../common/projection/MongoTransactionalProjectionOperator";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentRepository {
     private readonly collectionName = 'CreditCard_Enrollment_Enrollment';
 
-    constructor(private readonly mongoOperator: MongoTransactionalProjectionOperator) {}
+    constructor(
+        @inject(MongoTransactionalProjectionOperator) private readonly mongoOperator: MongoTransactionalProjectionOperator
+    ) {}
 
     async save(enrollment: Enrollment): Promise<void> {
         await this.mongoOperator.replaceOne(

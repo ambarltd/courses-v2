@@ -5,15 +5,17 @@ import { RequestEnrollmentCommand } from './RequestEnrollmentCommand';
 import { EnrollmentRequested } from '../event/EnrollmentRequested';
 import {SessionService} from "../../../common/sessionAuth/SessionService";
 import {IsProductActive} from "../projection/isProductActive/IsProductActive";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class RequestEnrollmentCommandHandler extends CommandHandler {
     private readonly sessionService: SessionService;
     private readonly isProductActive: IsProductActive;
 
     constructor(
-        postgresTransactionalEventStore: PostgresTransactionalEventStore,
-        sessionService: SessionService,
-        isProductActive: IsProductActive
+        @inject(PostgresTransactionalEventStore) postgresTransactionalEventStore: PostgresTransactionalEventStore,
+        @inject(SessionService) sessionService: SessionService,
+        @inject(IsProductActive) isProductActive: IsProductActive
     ) {
         super(postgresTransactionalEventStore);
         this.sessionService = sessionService;

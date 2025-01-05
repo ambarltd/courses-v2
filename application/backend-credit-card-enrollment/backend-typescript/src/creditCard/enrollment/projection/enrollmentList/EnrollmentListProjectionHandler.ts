@@ -8,11 +8,13 @@ import {ProductDefined} from "../../../product/event/ProductDefined";
 import {ProductNameRepository} from "./ProductNameRepository";
 import {ProductName} from "./ProductName";
 import {EnrollmentStatus} from "../../aggregate/EnrollmentStatus";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentListProjectionHandler extends ProjectionHandler {
     constructor(
-        private readonly enrollmentRepository: EnrollmentRepository,
-        private readonly productNameRepository: ProductNameRepository
+        @inject(EnrollmentRepository) private readonly enrollmentRepository: EnrollmentRepository,
+        @inject(ProductNameRepository) private readonly productNameRepository: ProductNameRepository
     ) {
         super();
     }

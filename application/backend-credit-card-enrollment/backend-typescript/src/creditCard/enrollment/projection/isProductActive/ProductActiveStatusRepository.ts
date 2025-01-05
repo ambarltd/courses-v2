@@ -1,10 +1,14 @@
 import {ProductActiveStatus} from "./ProductActiveStatus";
 import {MongoTransactionalProjectionOperator} from "../../../../common/projection/MongoTransactionalProjectionOperator";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class ProductActiveStatusRepository {
     private readonly collectionName = 'CreditCard_Enrollment_ProductActiveStatus';
 
-    constructor(private readonly mongoOperator: MongoTransactionalProjectionOperator) {}
+    constructor(
+        @inject(MongoTransactionalProjectionOperator) private readonly mongoOperator: MongoTransactionalProjectionOperator
+    ) {}
 
     async isThereAnActiveProductWithId(productId: string): Promise<boolean> {
         const results = await this.mongoOperator.find<ProductActiveStatus>(

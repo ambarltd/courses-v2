@@ -1,10 +1,14 @@
 import { Document, Filter } from 'mongodb';
 import {MongoTransactionalProjectionOperator} from "../projection/MongoTransactionalProjectionOperator";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class SessionRepository {
     private readonly mongoOperator: MongoTransactionalProjectionOperator;
 
-    constructor(mongoOperator: MongoTransactionalProjectionOperator) {
+    constructor(
+        @inject(MongoTransactionalProjectionOperator) mongoOperator: MongoTransactionalProjectionOperator
+    ) {
         this.mongoOperator = mongoOperator;
     }
 

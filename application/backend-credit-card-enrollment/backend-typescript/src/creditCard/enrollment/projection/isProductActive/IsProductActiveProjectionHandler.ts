@@ -4,9 +4,13 @@ import { ProductActiveStatusRepository } from './ProductActiveStatusRepository';
 import { ProductActivated } from '../../../product/event/ProductActivated';
 import { ProductDeactivated } from '../../../product/event/ProductDeactivated';
 import { ProductDefined } from '../../../product/event/ProductDefined';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class IsProductActiveProjectionHandler extends ProjectionHandler {
-    constructor(private readonly productActiveStatusRepository: ProductActiveStatusRepository) {
+    constructor(
+        @inject(ProductActiveStatusRepository) private readonly productActiveStatusRepository: ProductActiveStatusRepository
+    ) {
         super();
     }
 

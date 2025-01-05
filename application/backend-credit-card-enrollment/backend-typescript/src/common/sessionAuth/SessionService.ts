@@ -1,10 +1,15 @@
 import { SessionRepository } from './SessionRepository';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class SessionService {
     private readonly sessionRepository: SessionRepository;
     private readonly sessionExpirationSeconds: number;
 
-    constructor(sessionRepository: SessionRepository, sessionExpirationSeconds: number) {
+    constructor(
+        @inject(SessionRepository) sessionRepository: SessionRepository,
+        @inject("sessionExpirationSeconds") sessionExpirationSeconds: number
+    ) {
         this.sessionRepository = sessionRepository;
         this.sessionExpirationSeconds = sessionExpirationSeconds;
     }

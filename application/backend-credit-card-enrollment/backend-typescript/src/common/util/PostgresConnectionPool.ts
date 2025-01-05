@@ -1,9 +1,11 @@
 import { Pool, PoolConfig, PoolClient } from 'pg';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class PostgresConnectionPool {
     private readonly pool: Pool;
 
-    constructor(connectionString: string) {
+    constructor(@inject("postgresConnectionString") connectionString: string) {
         const config: PoolConfig = {
             connectionString,
             max: 10,

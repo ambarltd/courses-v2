@@ -5,15 +5,17 @@ import { AmbarHttpRequest } from '../../../common/ambar/AmbarHttpRequest';
 import {ProjectionController} from "../../../common/projection/ProjectionController";
 import {IsProductActiveProjectionHandler} from "./isProductActive/IsProductActiveProjectionHandler";
 import {EnrollmentListProjectionHandler} from "./enrollmentList/EnrollmentListProjectionHandler";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentProjectionController extends ProjectionController{
     public readonly router: Router;
 
     constructor(
-        mongoOperator: MongoTransactionalProjectionOperator,
-        deserializer: Deserializer,
-        private readonly isProductActiveProjectionHandler: IsProductActiveProjectionHandler,
-        private readonly enrollmentListProjectionHandler: EnrollmentListProjectionHandler
+        @inject(MongoTransactionalProjectionOperator) mongoOperator: MongoTransactionalProjectionOperator,
+        @inject(Deserializer) deserializer: Deserializer,
+        @inject(IsProductActiveProjectionHandler )private readonly isProductActiveProjectionHandler: IsProductActiveProjectionHandler,
+        @inject(EnrollmentListProjectionHandler) private readonly enrollmentListProjectionHandler: EnrollmentListProjectionHandler
     ) {
         super(mongoOperator, deserializer);
         this.router = Router();

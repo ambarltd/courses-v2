@@ -5,16 +5,18 @@ import { MongoTransactionalProjectionOperator } from '../../../common/projection
 import { RequestEnrollmentCommandHandler } from './RequestEnrollmentCommandHandler';
 import { RequestEnrollmentCommand } from './RequestEnrollmentCommand';
 import { RequestEnrollmentHttpRequest } from './RequestEnrollmentHttpRequest';
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class EnrollmentCommandController extends CommandController {
     public readonly router: Router;
 
     private readonly requestEnrollmentCommandHandler: RequestEnrollmentCommandHandler;
 
     constructor(
-        postgresTransactionalEventStore: PostgresTransactionalEventStore,
-        mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
-        requestEnrollmentCommandHandler: RequestEnrollmentCommandHandler
+        @inject(PostgresTransactionalEventStore) postgresTransactionalEventStore: PostgresTransactionalEventStore,
+        @inject(MongoTransactionalProjectionOperator) mongoTransactionalProjectionOperator: MongoTransactionalProjectionOperator,
+        @inject(RequestEnrollmentCommandHandler) requestEnrollmentCommandHandler: RequestEnrollmentCommandHandler
     ) {
         super(postgresTransactionalEventStore, mongoTransactionalProjectionOperator);
         this.requestEnrollmentCommandHandler = requestEnrollmentCommandHandler;

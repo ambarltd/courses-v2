@@ -7,11 +7,13 @@ import { IdGenerator } from '../../../common/util/IdGenerator';
 import {GetEnrollmentList} from "../projection/enrollmentList/GetEnrollmentList";
 import {Enrollment} from "../aggregate/Enrollment";
 import {Event} from "../../../common/event/Event";
+import {inject, injectable} from "tsyringe";
 
+@injectable()
 export class ReviewEnrollmentReactionHandler extends ReactionHandler {
     constructor(
-        eventStore: PostgresTransactionalEventStore,
-        private readonly getEnrollmentList: GetEnrollmentList,
+        @inject(PostgresTransactionalEventStore)eventStore: PostgresTransactionalEventStore,
+        @inject(GetEnrollmentList) private readonly getEnrollmentList: GetEnrollmentList,
     ) {
         super(eventStore);
     }

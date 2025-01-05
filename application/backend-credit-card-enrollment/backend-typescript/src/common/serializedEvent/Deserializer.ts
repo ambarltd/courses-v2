@@ -6,8 +6,9 @@ import {EnrollmentDeclined} from "../../creditCard/enrollment/event/EnrollmentDe
 import {ProductActivated} from "../../creditCard/product/event/ProductActivated";
 import {ProductDeactivated} from "../../creditCard/product/event/ProductDeactivated";
 import {ProductDefined} from "../../creditCard/product/event/ProductDefined";
+import {injectable} from "tsyringe";
 
-
+@injectable()
 export class Deserializer {
     deserialize(serializedEvent: SerializedEvent): Event {
         const recordedOn = this.parseDateTime(serializedEvent.recordedOn);
