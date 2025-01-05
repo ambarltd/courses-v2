@@ -48,6 +48,11 @@ public abstract class ReactionController {
         } catch (Exception ex) when (ex.Message?.StartsWith("Unknown event type") == true) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
             _mongoTransactionalProjectionOperator.AbortDanglingTransactionsAndReturnSessionToPool();
+            _logger.LogDebug(
+                "Unknown event in reaction ignored for event name: {EventName} using handler: {HandlerName}", 
+                ambarHttpRequest.SerializedEvent.EventName,
+                reactionHandler.GetType().Name
+            );
             return AmbarResponseFactory.SuccessResponse();
         } catch (Exception ex) {
             _postgresTransactionalEventStore.AbortDanglingTransactionsAndReturnConnectionToPool();
