@@ -21,7 +21,7 @@ jobs:
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Start Application
         working-directory: local-development
-        run: ./dev_start.sh
+        run: ./scripts/linux/dev_start.sh
       - name: Run Tests
-        working-directory: local-development/php-backend-scripts
+        working-directory: local-development/scripts/php-backend-scripts
         run: ./dev_all.sh
