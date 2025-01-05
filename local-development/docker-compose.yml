@@ -83,9 +83,9 @@ services:
     build:
       # Change the credit card enrollment codebase to the language you're most comfortable in.
       # Simply uncomment your preferred codebase below.
-      # context: ./../application/backend-credit-card-enrollment/backend-java
+      context: ./../application/backend-credit-card-enrollment/backend-java
       # context: ./../application/backend-credit-card-enrollment/backend-c#
-      context: ./../application/backend-credit-card-enrollment/backend-typescript
+      # context: ./../application/backend-credit-card-enrollment/backend-typescript
     restart: always
     environment:
       EVENT_STORE_HOST: "172.30.0.107"

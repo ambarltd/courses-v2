@@ -30,6 +30,19 @@ builder.Services.AddScoped<PostgresTransactionalEventStore>(provider => {
 
     return new PostgresTransactionalEventStore(pool, serializer, deserializer, eventStoreTable, logger);
 });
+builder.Services.AddSingleton<PostgresInitializer>(provider => {
+    var pool = provider.GetRequiredService<PostgresConnectionPool>();
+    var logger = provider.GetRequiredService<ILogger<PostgresInitializer>>();
+    return new PostgresInitializer(
+        pool,
+        GetEnvVar("EVENT_STORE_DATABASE_NAME"),
+        GetEnvVar("EVENT_STORE_CREATE_TABLE_WITH_NAME"),
+        GetEnvVar("EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME"),
+        GetEnvVar("EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD"),
+        GetEnvVar("EVENT_STORE_CREATE_REPLICATION_PUBLICATION"),
+        logger
+    );
+});
 
 var mongoConnectionString = 
     $"mongodb://{GetEnvVar("MONGODB_PROJECTION_DATABASE_USERNAME")}:{GetEnvVar("MONGODB_PROJECTION_DATABASE_PASSWORD")}@" +
@@ -43,6 +56,15 @@ builder.Services.AddScoped<MongoTransactionalProjectionOperator>(provider =>
     var sessionPool = provider.GetRequiredService<MongoSessionPool>();
     var logger = provider.GetRequiredService<ILogger<MongoTransactionalProjectionOperator>>();
     return new MongoTransactionalProjectionOperator(sessionPool, mongoDatabaseName, logger);
+});
+builder.Services.AddSingleton<MongoInitializer>(provider => {
+    var pool = provider.GetRequiredService<MongoSessionPool>();
+    var logger = provider.GetRequiredService<ILogger<MongoInitializer>>();
+    return new MongoInitializer(
+        pool,
+        GetEnvVar("MONGODB_PROJECTION_DATABASE_NAME"),
+        logger
+    );
 });
 
 AddScopedInheritors<CommandController>(builder.Services);
@@ -87,6 +109,14 @@ builder.Services.AddLogging(logging =>
 });
 
 var app = builder.Build();
+
+// Initialize databases
+var postgresInitializer = app.Services.GetRequiredService<PostgresInitializer>();
+var mongoInitializer = app.Services.GetRequiredService<MongoInitializer>();
+postgresInitializer.Initialize();
+mongoInitializer.Initialize();
+
+// Register app exception handler
 app.UseExceptionHandler(errorApp =>
 {
     errorApp.Run(async context =>
@@ -106,6 +136,8 @@ app.UseExceptionHandler(errorApp =>
         });
     });
 });
+
+// Run app
 app.MapControllers();
 app.Run();
 return;

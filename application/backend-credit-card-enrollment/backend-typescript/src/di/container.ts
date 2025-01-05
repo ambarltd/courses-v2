@@ -23,28 +23,30 @@ import {EnrollmentProjectionController} from "../creditCard/enrollment/projectio
 import {EnrollmentQueryController} from "../creditCard/enrollment/query/EnrollmentQueryController";
 import {EnrollmentCommandController} from "../creditCard/enrollment/command/EnrollmentCommandController";
 import {EnrollmentReactionController} from "../creditCard/enrollment/reaction/EnrollmentReactionController";
+import {MongoInitializerService} from "../common/util/MongoInitializer";
 
 function registerEnvironmentVariables() {
     const postgresConnectionString =
         `postgresql://${getEnvVar("EVENT_STORE_USER")}:${getEnvVar("EVENT_STORE_PASSWORD")}@` +
         `${getEnvVar("EVENT_STORE_HOST")}:${getEnvVar("EVENT_STORE_PORT")}/` +
         `${getEnvVar("EVENT_STORE_DATABASE_NAME")}`;
-
-    const eventStoreTable = getEnvVar("EVENT_STORE_CREATE_TABLE_WITH_NAME");
+    container.register("postgresConnectionString", { useValue: postgresConnectionString });
+    container.register("eventStoreTable", { useValue: getEnvVar('EVENT_STORE_CREATE_TABLE_WITH_NAME')});
+    container.register("eventStoreDatabaseName", {useValue: getEnvVar('EVENT_STORE_DATABASE_NAME')});
+    container.register("eventStoreCreateReplicationUserWithUsername", { useValue: getEnvVar('EVENT_STORE_CREATE_REPLICATION_USER_WITH_USERNAME')});
+    container.register("eventStoreCreateReplicationUserWithPassword", { useValue: getEnvVar('EVENT_STORE_CREATE_REPLICATION_USER_WITH_PASSWORD')});
+    container.register("eventStoreCreateReplicationPublication", {useValue: getEnvVar('EVENT_STORE_CREATE_REPLICATION_PUBLICATION')});
 
     const mongoConnectionString =
         `mongodb://${getEnvVar("MONGODB_PROJECTION_DATABASE_USERNAME")}:${getEnvVar("MONGODB_PROJECTION_DATABASE_PASSWORD")}@` +
         `${getEnvVar("MONGODB_PROJECTION_HOST")}:${getEnvVar("MONGODB_PROJECTION_PORT")}/` +
         `${getEnvVar("MONGODB_PROJECTION_DATABASE_NAME")}` +
         "?serverSelectionTimeoutMS=10000&connectTimeoutMS=10000&authSource=admin";
-
     const mongoDatabaseName = getEnvVar("MONGODB_PROJECTION_DATABASE_NAME");
-    const sessionExpirationSeconds = parseInt(getEnvVar("SESSION_TOKENS_EXPIRE_AFTER_SECONDS"));
-
-    container.register("postgresConnectionString", { useValue: postgresConnectionString });
-    container.register("eventStoreTable", { useValue: eventStoreTable });
     container.register("mongoConnectionString", { useValue: mongoConnectionString });
     container.register("mongoDatabaseName", { useValue: mongoDatabaseName });
+
+    const sessionExpirationSeconds = parseInt(getEnvVar("SESSION_TOKENS_EXPIRE_AFTER_SECONDS"));
     container.register("sessionExpirationSeconds", { useValue: sessionExpirationSeconds });
 }
 
@@ -56,6 +58,7 @@ function registerSingletons() {
     // common/util
     container.registerSingleton(PostgresConnectionPool);
     container.registerSingleton(MongoSessionPool);
+    container.registerSingleton(MongoInitializerService);
 }
 
 function registerScoped<T>(token: constructor<T>) {

@@ -4,8 +4,12 @@ import { EnrollmentProjectionController } from './creditCard/enrollment/projecti
 import { EnrollmentQueryController } from "./creditCard/enrollment/query/EnrollmentQueryController";
 import { EnrollmentCommandController } from "./creditCard/enrollment/command/EnrollmentCommandController";
 import { EnrollmentReactionController } from "./creditCard/enrollment/reaction/EnrollmentReactionController";
+import { container } from 'tsyringe';
 import { configureDependencies } from './di/container';
 import { scopedContainer } from './di/scopedContainer';
+import {MongoInitializerService} from "./common/util/MongoInitializer";
+import {PostgresInitializerService} from "./common/util/PostgresInitializer";
+import {log} from "./common/util/Logger";
 
 // Configure dependency injection
 configureDependencies();
@@ -41,13 +45,26 @@ app.get('/docker_healthcheck', (req, res) => res.send('OK'));
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-    console.error('Unhandled error:', err);
+    log.error('Unhandled error:', err);
     res.status(500).json({
         error: err.message,
         stack: 'Available in logs'
     });
 });
 
-app.listen(8080, () => {
-    console.log('Server is running on port 8080');
-});
+const mongoInitializer = container.resolve(MongoInitializerService);
+const postgresInitializer = container.resolve(PostgresInitializerService);
+
+Promise.all([
+    postgresInitializer.initialize(),
+    mongoInitializer.initialize()
+])
+    .then(() => {
+        app.listen(8080, () => {
+            console.log('Server is running on port 8080');
+        });
+    })
+    .catch(error => {
+        console.error('Failed to initialize databases:', error);
+        process.exit(1);
+    });
