@@ -4,7 +4,7 @@ import { MongoSessionPool } from './MongoSessionPool';
 import { log } from './Logger';
 
 @injectable()
-export class MongoInitializerService {
+export class MongoInitializer {
     private readonly client: MongoClient;
 
     constructor(

@@ -7,8 +7,8 @@ import { EnrollmentReactionController } from "./creditCard/enrollment/reaction/E
 import { container } from 'tsyringe';
 import { configureDependencies } from './di/container';
 import { scopedContainer } from './di/scopedContainer';
-import {MongoInitializerService} from "./common/util/MongoInitializer";
-import {PostgresInitializerService} from "./common/util/PostgresInitializer";
+import {MongoInitializer} from "./common/util/MongoInitializer";
+import {PostgresInitializer} from "./common/util/PostgresInitializer";
 import {log} from "./common/util/Logger";
 
 // Configure dependency injection
@@ -52,8 +52,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
     });
 });
 
-const mongoInitializer = container.resolve(MongoInitializerService);
-const postgresInitializer = container.resolve(PostgresInitializerService);
+const mongoInitializer = container.resolve(MongoInitializer);
+const postgresInitializer = container.resolve(PostgresInitializer);
 
 Promise.all([
     postgresInitializer.initialize(),

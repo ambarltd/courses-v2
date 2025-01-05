@@ -3,7 +3,7 @@ import { PostgresConnectionPool } from './PostgresConnectionPool';
 import { log } from './Logger';
 
 @injectable()
-export class PostgresInitializerService {
+export class PostgresInitializer {
     constructor(
         @inject(PostgresConnectionPool) private readonly connectionPool: PostgresConnectionPool,
         @inject("eventStoreDatabaseName") private readonly eventStoreDatabaseName: string,

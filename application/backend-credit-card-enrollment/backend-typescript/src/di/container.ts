@@ -23,7 +23,8 @@ import {EnrollmentProjectionController} from "../creditCard/enrollment/projectio
 import {EnrollmentQueryController} from "../creditCard/enrollment/query/EnrollmentQueryController";
 import {EnrollmentCommandController} from "../creditCard/enrollment/command/EnrollmentCommandController";
 import {EnrollmentReactionController} from "../creditCard/enrollment/reaction/EnrollmentReactionController";
-import {MongoInitializerService} from "../common/util/MongoInitializer";
+import {MongoInitializer} from "../common/util/MongoInitializer";
+import {PostgresInitializer} from "../common/util/PostgresInitializer";
 
 function registerEnvironmentVariables() {
     const postgresConnectionString =
@@ -58,7 +59,8 @@ function registerSingletons() {
     // common/util
     container.registerSingleton(PostgresConnectionPool);
     container.registerSingleton(MongoSessionPool);
-    container.registerSingleton(MongoInitializerService);
+    container.registerSingleton(MongoInitializer);
+    container.registerSingleton(PostgresInitializer);
 }
 
 function registerScoped<T>(token: constructor<T>) {
