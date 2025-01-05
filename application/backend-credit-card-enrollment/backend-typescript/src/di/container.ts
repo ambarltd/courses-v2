@@ -26,11 +26,9 @@ import {EnrollmentReactionController} from "../creditCard/enrollment/reaction/En
 
 function registerEnvironmentVariables() {
     const postgresConnectionString =
-        `Host=${getEnvVar("EVENT_STORE_HOST")};` +
-        `Port=${getEnvVar("EVENT_STORE_PORT")};` +
-        `Database=${getEnvVar("EVENT_STORE_DATABASE_NAME")};` +
-        `Username=${getEnvVar("EVENT_STORE_USER")};` +
-        `Password=${getEnvVar("EVENT_STORE_PASSWORD")};`;
+        `postgresql://${getEnvVar("EVENT_STORE_USER")}:${getEnvVar("EVENT_STORE_PASSWORD")}@` +
+        `${getEnvVar("EVENT_STORE_HOST")}:${getEnvVar("EVENT_STORE_PORT")}/` +
+        `${getEnvVar("EVENT_STORE_DATABASE_NAME")}`;
 
     const eventStoreTable = getEnvVar("EVENT_STORE_CREATE_TABLE_WITH_NAME");
 

@@ -11,17 +11,17 @@ import {injectable} from "tsyringe";
 @injectable()
 export class Deserializer {
     deserialize(serializedEvent: SerializedEvent): Event {
-        const recordedOn = this.parseDateTime(serializedEvent.recordedOn);
-        const payload = JSON.parse(serializedEvent.jsonPayload);
+        const recordedOn = this.parseDateTime(serializedEvent.recorded_on);
+        const payload = JSON.parse(serializedEvent.json_payload);
 
-        switch (serializedEvent.eventName) {
+        switch (serializedEvent.event_name) {
             case 'CreditCard_Enrollment_EnrollmentRequested':
                 return new EnrollmentRequested(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn,
                     payload.userId,
                     payload.productId,
@@ -30,11 +30,11 @@ export class Deserializer {
 
             case 'CreditCard_Enrollment_EnrollmentAccepted':
                 return new EnrollmentAccepted(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn,
                     payload.reasonCode,
                     payload.reasonDescription
@@ -42,11 +42,11 @@ export class Deserializer {
 
             case 'CreditCard_Enrollment_EnrollmentDeclined':
                 return new EnrollmentDeclined(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn,
                     payload.reasonCode,
                     payload.reasonDescription
@@ -54,31 +54,31 @@ export class Deserializer {
 
             case 'CreditCard_Product_ProductActivated':
                 return new ProductActivated(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn
                 );
 
             case 'CreditCard_Product_ProductDeactivated':
                 return new ProductDeactivated(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn
                 );
 
             case 'CreditCard_Product_ProductDefined':
                 return new ProductDefined(
-                    serializedEvent.eventId,
-                    serializedEvent.aggregateId,
-                    serializedEvent.aggregateVersion,
-                    serializedEvent.correlationId,
-                    serializedEvent.causationId,
+                    serializedEvent.event_id,
+                    serializedEvent.aggregate_id,
+                    serializedEvent.aggregate_version,
+                    serializedEvent.correlation_id,
+                    serializedEvent.causation_id,
                     recordedOn,
                     payload.name,
                     payload.interestInBasisPoints,
@@ -91,7 +91,7 @@ export class Deserializer {
                 );
 
             default:
-                throw new Error(`Unknown event type: ${serializedEvent.eventName}`);
+                throw new Error(`Unknown event type: ${serializedEvent.event_name}`);
         }
     }
 

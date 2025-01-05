@@ -163,21 +163,21 @@ export class PostgresTransactionalEventStore {
         `;
 
         const values = [
-            serializedEvent.eventId,
-            serializedEvent.aggregateId,
-            serializedEvent.causationId,
-            serializedEvent.correlationId,
-            serializedEvent.aggregateVersion,
-            serializedEvent.jsonPayload,
-            serializedEvent.jsonMetadata,
-            serializedEvent.recordedOn,
-            serializedEvent.eventName
+            serializedEvent.event_id,
+            serializedEvent.aggregate_id,
+            serializedEvent.causation_id,
+            serializedEvent.correlation_id,
+            serializedEvent.aggregate_version,
+            serializedEvent.json_payload,
+            serializedEvent.json_metadata,
+            serializedEvent.recorded_on,
+            serializedEvent.event_name
         ];
 
         try {
             await this.connection.query(sql, values);
         } catch (error) {
-            throw new Error(`Failed to save event: ${serializedEvent.eventId}: ${error}`);
+            throw new Error(`Failed to save event: ${serializedEvent.event_id}: ${error}`);
         }
     }
 
@@ -202,15 +202,15 @@ export class PostgresTransactionalEventStore {
     private mapRowToSerializedEvent(row: any): SerializedEvent {
         return {
             id: row.id,
-            eventId: row.event_id,
-            aggregateId: row.aggregate_id,
-            causationId: row.causation_id,
-            correlationId: row.correlation_id,
-            aggregateVersion: row.aggregate_version,
-            jsonPayload: row.json_payload,
-            jsonMetadata: row.json_metadata,
-            recordedOn: row.recorded_on,
-            eventName: row.event_name
+            event_id: row.event_id,
+            aggregate_id: row.aggregate_id,
+            causation_id: row.causation_id,
+            correlation_id: row.correlation_id,
+            aggregate_version: row.aggregate_version,
+            json_payload: row.json_payload,
+            json_metadata: row.json_metadata,
+            recorded_on: row.recorded_on,
+            event_name: row.event_name
         };
     }
 

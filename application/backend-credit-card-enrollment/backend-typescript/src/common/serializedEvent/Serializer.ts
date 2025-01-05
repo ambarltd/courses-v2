@@ -9,15 +9,15 @@ import {injectable} from "tsyringe";
 export class Serializer {
     serialize(event: Event): SerializedEvent {
         return {
-            eventId: event.eventId,
-            aggregateId: event.aggregateId,
-            aggregateVersion: event.aggregateVersion,
-            correlationId: event.correlationId,
-            causationId: event.causationId,
-            recordedOn: this.formatDateTime(event.recordedOn),
-            eventName: this.determineEventName(event),
-            jsonPayload: this.createJsonPayload(event),
-            jsonMetadata: '{}'
+            event_id: event.eventId,
+            aggregate_id: event.aggregateId,
+            aggregate_version: event.aggregateVersion,
+            correlation_id: event.correlationId,
+            causation_id: event.causationId,
+            recorded_on: this.formatDateTime(event.recordedOn),
+            event_name: this.determineEventName(event),
+            json_payload: this.createJsonPayload(event),
+            json_metadata: '{}'
         };
     }
 

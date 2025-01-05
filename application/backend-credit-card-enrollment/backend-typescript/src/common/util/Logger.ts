@@ -19,7 +19,7 @@ const customFormat = printf(({ level, message, timestamp, context, ...metadata }
 });
 
 export const logger = winston.createLogger({
-    level: process.env.LOG_LEVEL || 'info',
+    level: 'debug', // see winston.config.npm.levels.debug
     format: combine(
         timestamp(),
         customFormat

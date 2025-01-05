@@ -6,5 +6,5 @@ export abstract class CommandHandler {
         protected readonly postgresTransactionalEventStore: PostgresTransactionalEventStore
     ) {}
 
-    abstract handleCommand(command: Command): void;
+    abstract handleCommand(command: Command): Promise<void>;
 }

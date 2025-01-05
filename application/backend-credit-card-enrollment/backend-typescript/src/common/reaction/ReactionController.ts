@@ -19,7 +19,7 @@ export abstract class ReactionController {
     ): Promise<string> {
         try {
             log.debug(
-                `Starting to process reaction for event name: ${ambarHttpRequest.payload.eventName} using handler: ${reactionHandler.constructor.name}`
+                `Starting to process reaction for event name: ${ambarHttpRequest.payload.event_name} using handler: ${reactionHandler.constructor.name}`
             );
             await this.postgresTransactionalEventStore.beginTransaction();
             await this.mongoTransactionalProjectionOperator.startTransaction();
@@ -31,13 +31,16 @@ export abstract class ReactionController {
             await this.mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             log.debug(
-                `Reaction successfully processed for event name: ${ambarHttpRequest.payload.eventName} using handler: ${reactionHandler.constructor.name}`
+                `Reaction successfully processed for event name: ${ambarHttpRequest.payload.event_name} using handler: ${reactionHandler.constructor.name}`
             );
             return AmbarResponseFactory.successResponse();
         } catch (error) {
             if (error instanceof Error && error.message.startsWith('Unknown event type')) {
                 await this.postgresTransactionalEventStore.abortDanglingTransactionsAndReturnConnectionToPool();
                 await this.mongoTransactionalProjectionOperator.abortDanglingTransactionsAndReturnSessionToPool();
+                log.debug(
+                    `Unknown event in reaction ignored for event name: ${ambarHttpRequest.payload.event_name} using handler: ${reactionHandler.constructor.name}`
+                );
                 return AmbarResponseFactory.successResponse();
             }
 

@@ -1,12 +1,12 @@
 export interface SerializedEvent {
     id?: number;
-    eventId: string;
-    aggregateId: string;
-    causationId: string;
-    correlationId: string;
-    aggregateVersion: number;
-    jsonPayload: string;
-    jsonMetadata: string;
-    recordedOn: string;
-    eventName: string;
+    event_id: string;
+    aggregate_id: string;
+    causation_id: string;
+    correlation_id: string;
+    aggregate_version: number;
+    json_payload: string;
+    json_metadata: string;
+    recorded_on: string;
+    event_name: string;
 }

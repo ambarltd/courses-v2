@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 import express from 'express';
-import { EnrollmentProjectionController } from './src/creditCard/enrollment/projection/EnrollmentProjectionController';
-import { EnrollmentQueryController } from "./src/creditCard/enrollment/query/EnrollmentQueryController";
-import { EnrollmentCommandController } from "./src/creditCard/enrollment/command/EnrollmentCommandController";
-import { EnrollmentReactionController } from "./src/creditCard/enrollment/reaction/EnrollmentReactionController";
-import { configureDependencies } from './src/di/container';
-import { scopedContainer } from './src/di/scopedContainer';
+import { EnrollmentProjectionController } from './creditCard/enrollment/projection/EnrollmentProjectionController';
+import { EnrollmentQueryController } from "./creditCard/enrollment/query/EnrollmentQueryController";
+import { EnrollmentCommandController } from "./creditCard/enrollment/command/EnrollmentCommandController";
+import { EnrollmentReactionController } from "./creditCard/enrollment/reaction/EnrollmentReactionController";
+import { configureDependencies } from './di/container';
+import { scopedContainer } from './di/scopedContainer';
 
 // Configure dependency injection
 configureDependencies();

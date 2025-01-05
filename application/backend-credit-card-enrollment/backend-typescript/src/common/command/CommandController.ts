@@ -15,7 +15,7 @@ export class CommandController {
             log.debug(`Starting to process command: ${command.constructor.name}`);
             await this.postgresTransactionalEventStore.beginTransaction();
             await this.mongoTransactionalProjectionOperator.startTransaction();
-            commandHandler.handleCommand(command);
+            await commandHandler.handleCommand(command);
             await this.postgresTransactionalEventStore.commitTransaction();
             await this.mongoTransactionalProjectionOperator.commitTransaction();
 

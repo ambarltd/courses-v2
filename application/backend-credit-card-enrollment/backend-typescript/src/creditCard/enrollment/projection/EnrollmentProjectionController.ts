@@ -8,7 +8,7 @@ import {EnrollmentListProjectionHandler} from "./enrollmentList/EnrollmentListPr
 import {inject, injectable} from "tsyringe";
 
 @injectable()
-export class EnrollmentProjectionController extends ProjectionController{
+export class EnrollmentProjectionController extends ProjectionController {
     public readonly router: Router;
 
     constructor(

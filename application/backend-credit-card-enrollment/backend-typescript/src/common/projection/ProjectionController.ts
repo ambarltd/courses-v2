@@ -18,7 +18,7 @@ export abstract class ProjectionController {
     ): Promise<string> {
         try {
             log.debug(
-                `Starting to process projection for event name: ${ambarHttpRequest.payload.eventName} using handler: ${projectionHandler.constructor.name}`
+                `Starting to process projection for event name: ${ambarHttpRequest.payload.event_name} using handler: ${projectionHandler.constructor.name}`
             );
 
             const event = this.deserializer.deserialize(ambarHttpRequest.payload);
@@ -36,7 +36,7 @@ export abstract class ProjectionController {
             if (isAlreadyProjected) {
                 await this.mongoOperator.abortDanglingTransactionsAndReturnSessionToPool();
                 log.debug(
-                    `Duplication projection ignored for event name: ${ambarHttpRequest.payload.eventName} using handler: ${projectionHandler.constructor.name}`
+                    `Duplication projection ignored for event name: ${ambarHttpRequest.payload.event_name} using handler: ${projectionHandler.constructor.name}`
                 );
                 return AmbarResponseFactory.successResponse();
             }
@@ -53,7 +53,7 @@ export abstract class ProjectionController {
             await this.mongoOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
             log.debug(
-                `Projection successfully processed for event name: ${ambarHttpRequest.payload.eventName} using handler: ${projectionHandler.constructor.name}`
+                `Projection successfully processed for event name: ${ambarHttpRequest.payload.event_name} using handler: ${projectionHandler.constructor.name}`
             );
             return AmbarResponseFactory.successResponse();
 
@@ -62,14 +62,14 @@ export abstract class ProjectionController {
                 await this.mongoOperator.abortDanglingTransactionsAndReturnSessionToPool();
 
                 log.debug(
-                    `Unknown event in projection ignored for event name: ${ambarHttpRequest.payload.eventName} using handler: ${projectionHandler.constructor.name}`
+                    `Unknown event in projection ignored for event name: ${ambarHttpRequest.payload.event_name} using handler: ${projectionHandler.constructor.name}`
                 );
                 return AmbarResponseFactory.successResponse();
             }
 
             await this.mongoOperator.abortDanglingTransactionsAndReturnSessionToPool();
             log.error(
-                `Exception in ProcessProjectionHttpRequest: ${ex}. For event name: ${ambarHttpRequest.payload.eventName} using handler: ${projectionHandler.constructor.name}`
+                `Exception in ProcessProjectionHttpRequest: ${ex}. For event name: ${ambarHttpRequest.payload.event_name} using handler: ${projectionHandler.constructor.name}`
             );
             return AmbarResponseFactory.retryResponse(ex as Error);
         }
