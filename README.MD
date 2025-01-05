@@ -11,7 +11,8 @@ navigate to `local-development` and run `dev_start.sh`.
 ```bash
 git clone git@github.com:ambarltd/courses-v2.git
 cd courses-v2/local-development
-./dev_start.sh
+./scripts/linux/dev_start.sh # if you're on linux
+./scripts/linux/dev_start.sh # if you're on mac
 ```
 
 Now open your browser to `localhost:8080` and try the application out! You will receive 
@@ -32,12 +33,13 @@ This example application contains an event sourced financial institution that al
 
 The code for `1.`, `2.`, `3.`, and `4.`, is written in PHP, and lives 
 at `application/backend-php`. The code for `5.` is written in other languages 
-to help you understand event sourcing in your preferred language.
+to help you understand event sourcing in your preferred language. Currently,
+`5.` is available in Java, C#, and Typescript.
 
 By default `5` is deployed with Java. But if you'd like to change that, 
 simply head to `local-development/docker-compose.yml` and change the 
-`credit-card-enrollment` to use the directory corresponding to your 
-preferred language.
+`backend-credit-card-enrollment` service to use the directory corresponding 
+to your preferred language. 
 
 ## Building More
 
@@ -45,8 +47,13 @@ If you change the code, simply redeploy your Docker containers, and refresh your
 
 ```bash
 cd courses-v2/local-development
-./dev_start.sh
-./dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
+# For Linux
+./scripts/linux/dev_start.sh 
+./scripts/linux/dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
+# For Mac
+./scripts/linux/dev_start.sh 
+./scripts/linux/dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
+# Windows support (todo) - feel free to add a Pull Request ;)
 ```
 
 ## Making Sense of the Code
@@ -77,8 +84,7 @@ local-development/          # Local development environment defined with Docker 
 │                           #     Needed for projections and reactions as per 
 │                           #     https://hub.docker.com/r/ambarltd/emulator
 │
-├── dev_start.sh            # Starts the application's containers and gives you first steps!
-└── dev_shutdown.sh         # Stops the application's Docker containers
+├── scripts.                # Scripts to start/stop the application's containers.
 ```
 
 ## Support
