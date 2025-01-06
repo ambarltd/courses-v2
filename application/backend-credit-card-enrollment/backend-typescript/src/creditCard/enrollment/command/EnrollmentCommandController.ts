@@ -6,6 +6,7 @@ import { RequestEnrollmentCommandHandler } from './RequestEnrollmentCommandHandl
 import { RequestEnrollmentCommand } from './RequestEnrollmentCommand';
 import { RequestEnrollmentHttpRequest } from './RequestEnrollmentHttpRequest';
 import {inject, injectable} from "tsyringe";
+import {typeSafeCoercion} from "../../../common/util/TypeSafeCoercion";
 
 @injectable()
 export class EnrollmentCommandController extends CommandController {
@@ -31,7 +32,7 @@ export class EnrollmentCommandController extends CommandController {
             return;
         }
 
-        const requestBody: RequestEnrollmentHttpRequest = req.body;
+        const requestBody = typeSafeCoercion<RequestEnrollmentHttpRequest>(req.body);
         const command = new RequestEnrollmentCommand(
             sessionToken,
             requestBody.productId,

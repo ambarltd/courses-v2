@@ -1,12 +1,13 @@
 import { Event } from '../event/Event';
 import { SerializedEvent } from './SerializedEvent';
-import {EnrollmentRequested} from "../../creditCard/enrollment/event/EnrollmentRequested";
-import {EnrollmentAccepted} from "../../creditCard/enrollment/event/EnrollmentAccepted";
-import {EnrollmentDeclined} from "../../creditCard/enrollment/event/EnrollmentDeclined";
-import {ProductActivated} from "../../creditCard/product/event/ProductActivated";
-import {ProductDeactivated} from "../../creditCard/product/event/ProductDeactivated";
-import {ProductDefined} from "../../creditCard/product/event/ProductDefined";
-import {injectable} from "tsyringe";
+import { EnrollmentRequested } from "../../creditCard/enrollment/event/EnrollmentRequested";
+import { EnrollmentAccepted } from "../../creditCard/enrollment/event/EnrollmentAccepted";
+import { EnrollmentDeclined } from "../../creditCard/enrollment/event/EnrollmentDeclined";
+import { ProductActivated } from "../../creditCard/product/event/ProductActivated";
+import { ProductDeactivated } from "../../creditCard/product/event/ProductDeactivated";
+import { ProductDefined } from "../../creditCard/product/event/ProductDefined";
+import { injectable } from "tsyringe";
+import { typeSafeCoercion } from "../util/TypeSafeCoercion";
 
 @injectable()
 export class Deserializer {
@@ -16,79 +17,79 @@ export class Deserializer {
 
         switch (serializedEvent.event_name) {
             case 'CreditCard_Enrollment_EnrollmentRequested':
-                return new EnrollmentRequested(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<EnrollmentRequested>(new EnrollmentRequested(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn,
-                    payload.userId,
-                    payload.productId,
-                    payload.annualIncomeInCents
-                );
+                    this.parseString(payload.userId),
+                    this.parseString(payload.productId),
+                    this.parseNumber(payload.annualIncomeInCents)
+                ));
 
             case 'CreditCard_Enrollment_EnrollmentAccepted':
-                return new EnrollmentAccepted(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<EnrollmentAccepted>(new EnrollmentAccepted(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn,
-                    payload.reasonCode,
-                    payload.reasonDescription
-                );
+                    this.parseString(payload.reasonCode),
+                    this.parseString(payload.reasonDescription)
+                ));
 
             case 'CreditCard_Enrollment_EnrollmentDeclined':
-                return new EnrollmentDeclined(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<EnrollmentDeclined>(new EnrollmentDeclined(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn,
-                    payload.reasonCode,
-                    payload.reasonDescription
-                );
+                    this.parseString(payload.reasonCode),
+                    this.parseString(payload.reasonDescription)
+                ));
 
             case 'CreditCard_Product_ProductActivated':
-                return new ProductActivated(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<ProductActivated>(new ProductActivated(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn
-                );
+                ));
 
             case 'CreditCard_Product_ProductDeactivated':
-                return new ProductDeactivated(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<ProductDeactivated>(new ProductDeactivated(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn
-                );
+                ));
 
             case 'CreditCard_Product_ProductDefined':
-                return new ProductDefined(
-                    serializedEvent.event_id,
-                    serializedEvent.aggregate_id,
-                    serializedEvent.aggregate_version,
-                    serializedEvent.correlation_id,
-                    serializedEvent.causation_id,
+                return typeSafeCoercion<ProductDefined>(new ProductDefined(
+                    this.parseString(serializedEvent.event_id),
+                    this.parseString(serializedEvent.aggregate_id),
+                    this.parseNumber(serializedEvent.aggregate_version),
+                    this.parseString(serializedEvent.correlation_id),
+                    this.parseString(serializedEvent.causation_id),
                     recordedOn,
-                    payload.name,
-                    payload.interestInBasisPoints,
-                    payload.annualFeeInCents,
-                    payload.paymentCycle,
-                    payload.creditLimitInCents,
-                    payload.maxBalanceTransferAllowedInCents,
-                    payload.reward,
-                    payload.cardBackgroundHex
-                );
+                    this.parseString(payload.name),
+                    this.parseNumber(payload.interestInBasisPoints),
+                    this.parseNumber(payload.annualFeeInCents),
+                    this.parseString(payload.paymentCycle),
+                    this.parseNumber(payload.creditLimitInCents),
+                    this.parseNumber(payload.maxBalanceTransferAllowedInCents),
+                    this.parseString(payload.reward),
+                    this.parseString(payload.cardBackgroundHex)
+                ));
 
             default:
                 throw new Error(`Unknown event type: ${serializedEvent.event_name}`);
@@ -102,6 +103,21 @@ export class Deserializer {
         const parsed = new Date(dateStr.slice(0, -4) + 'Z');
         if (isNaN(parsed.getTime())) {
             throw new Error(`Invalid date format: ${dateStr}`);
+        }
+        return parsed;
+    }
+
+    private parseString(value: any): string {
+        if (typeof value !== 'string') {
+            throw new Error(`Expected string but got ${typeof value}`);
+        }
+        return value;
+    }
+
+    private parseNumber(value: any): number {
+        const parsed = Number(value);
+        if (isNaN(parsed)) {
+            throw new Error(`Expected number but got ${typeof value}`);
         }
         return parsed;
     }
