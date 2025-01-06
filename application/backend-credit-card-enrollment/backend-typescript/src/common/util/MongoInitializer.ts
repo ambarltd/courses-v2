@@ -64,7 +64,6 @@ export class MongoInitializer {
                 { userId: 1 },
                 {
                     background: true,
-                    name: 'userId_asc'
                 }
             );
             log.debug('Index created on CreditCard_Enrollment_Enrollment.userId');

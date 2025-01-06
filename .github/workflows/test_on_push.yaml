@@ -20,8 +20,8 @@ jobs:
           ref: ${{github.event.pull_request.head.ref}}
           repository: ${{github.event.pull_request.head.repo.full_name}}
       - name: Start Application
-        working-directory: local-development
-        run: ./scripts/linux/dev_start.sh
+        working-directory: local-development/scripts/linux
+        run: ./dev_start.sh
       - name: Run Tests
         working-directory: local-development/scripts/php-backend-scripts
         run: ./dev_all.sh
