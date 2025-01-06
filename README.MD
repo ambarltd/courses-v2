@@ -10,9 +10,9 @@ navigate to `local-development` and run `dev_start.sh`.
 
 ```bash
 git clone git@github.com:ambarltd/courses-v2.git
-cd courses-v2/local-development
-./scripts/linux/dev_start.sh # if you're on linux
-./scripts/mac/dev_start.sh # if you're on mac
+cd courses-v2/local-development/scripts/linux/ # if you're on linux
+cd courses-v2/local-development/scripts/mac/ # if you're on mac
+./dev_start.sh
 ```
 
 Now open your browser to `localhost:8080` and try the application out! You will receive 
@@ -46,13 +46,14 @@ to your preferred language.
 If you change the code, simply redeploy your Docker containers, and refresh your browser.
 
 ```bash
-cd courses-v2/local-development
-# For Linux
-./scripts/linux/dev_start.sh 
-./scripts/linux/dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
-# For Mac
-./scripts/mac/dev_start.sh 
-./scripts/mac/dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
+cd courses-v2/local-development/scripts/linux/ # For Linux
+cd courses-v2/local-development/scripts/mac/ # For Mac
+
+./dev_start.sh 
+./dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
+
+./dev_start.sh 
+./dev_start_with_data_deletion.sh # use this if you want to delete your existing event store, and projection db
 # Windows support (todo) - feel free to add a Pull Request ;)
 ```
 
