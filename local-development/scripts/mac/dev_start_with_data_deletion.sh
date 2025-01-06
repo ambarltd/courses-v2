@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+cd ../../
+
 echo "Going into root mode to delete some docker volumes"
 sudo echo "Root mode: OK"
 docker compose down
