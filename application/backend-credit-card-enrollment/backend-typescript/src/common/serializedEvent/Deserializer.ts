@@ -7,7 +7,6 @@ import { ProductActivated } from "../../creditCard/product/event/ProductActivate
 import { ProductDeactivated } from "../../creditCard/product/event/ProductDeactivated";
 import { ProductDefined } from "../../creditCard/product/event/ProductDefined";
 import { injectable } from "tsyringe";
-import { typeSafeCoercion } from "../util/TypeSafeCoercion";
 
 @injectable()
 export class Deserializer {
@@ -17,7 +16,7 @@ export class Deserializer {
 
         switch (serializedEvent.event_name) {
             case 'CreditCard_Enrollment_EnrollmentRequested':
-                return typeSafeCoercion<EnrollmentRequested>(new EnrollmentRequested(
+                return new EnrollmentRequested(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
@@ -27,10 +26,10 @@ export class Deserializer {
                     this.parseString(payload.userId),
                     this.parseString(payload.productId),
                     this.parseNumber(payload.annualIncomeInCents)
-                ));
+                );
 
             case 'CreditCard_Enrollment_EnrollmentAccepted':
-                return typeSafeCoercion<EnrollmentAccepted>(new EnrollmentAccepted(
+                return new EnrollmentAccepted(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
@@ -39,10 +38,10 @@ export class Deserializer {
                     recordedOn,
                     this.parseString(payload.reasonCode),
                     this.parseString(payload.reasonDescription)
-                ));
+                );
 
             case 'CreditCard_Enrollment_EnrollmentDeclined':
-                return typeSafeCoercion<EnrollmentDeclined>(new EnrollmentDeclined(
+                return new EnrollmentDeclined(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
@@ -51,30 +50,30 @@ export class Deserializer {
                     recordedOn,
                     this.parseString(payload.reasonCode),
                     this.parseString(payload.reasonDescription)
-                ));
+                );
 
             case 'CreditCard_Product_ProductActivated':
-                return typeSafeCoercion<ProductActivated>(new ProductActivated(
+                return new ProductActivated(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
                     this.parseString(serializedEvent.correlation_id),
                     this.parseString(serializedEvent.causation_id),
                     recordedOn
-                ));
+                );
 
             case 'CreditCard_Product_ProductDeactivated':
-                return typeSafeCoercion<ProductDeactivated>(new ProductDeactivated(
+                return new ProductDeactivated(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
                     this.parseString(serializedEvent.correlation_id),
                     this.parseString(serializedEvent.causation_id),
                     recordedOn
-                ));
+                );
 
             case 'CreditCard_Product_ProductDefined':
-                return typeSafeCoercion<ProductDefined>(new ProductDefined(
+                return new ProductDefined(
                     this.parseString(serializedEvent.event_id),
                     this.parseString(serializedEvent.aggregate_id),
                     this.parseNumber(serializedEvent.aggregate_version),
@@ -89,7 +88,7 @@ export class Deserializer {
                     this.parseNumber(payload.maxBalanceTransferAllowedInCents),
                     this.parseString(payload.reward),
                     this.parseString(payload.cardBackgroundHex)
-                ));
+                );
 
             default:
                 throw new Error(`Unknown event type: ${serializedEvent.event_name}`);

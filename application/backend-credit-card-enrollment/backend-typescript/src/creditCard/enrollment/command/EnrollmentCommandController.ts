@@ -4,9 +4,9 @@ import { PostgresTransactionalEventStore } from '../../../common/eventStore/Post
 import { MongoTransactionalProjectionOperator } from '../../../common/projection/MongoTransactionalProjectionOperator';
 import { RequestEnrollmentCommandHandler } from './RequestEnrollmentCommandHandler';
 import { RequestEnrollmentCommand } from './RequestEnrollmentCommand';
-import { RequestEnrollmentHttpRequest } from './RequestEnrollmentHttpRequest';
+import {requestEnrollmentHttpRequestSchema} from './RequestEnrollmentHttpRequest';
 import {inject, injectable} from "tsyringe";
-import {typeSafeCoercion} from "../../../common/util/TypeSafeCoercion";
+import {parseWithValidation} from "../../../common/util/ParseWithValidation";
 
 @injectable()
 export class EnrollmentCommandController extends CommandController {
@@ -32,7 +32,7 @@ export class EnrollmentCommandController extends CommandController {
             return;
         }
 
-        const requestBody = typeSafeCoercion<RequestEnrollmentHttpRequest>(req.body);
+        const requestBody = parseWithValidation(req.body, requestEnrollmentHttpRequestSchema);
         const command = new RequestEnrollmentCommand(
             sessionToken,
             requestBody.productId,
