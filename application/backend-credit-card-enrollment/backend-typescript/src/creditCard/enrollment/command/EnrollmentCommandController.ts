@@ -4,9 +4,8 @@ import { PostgresTransactionalEventStore } from '../../../common/eventStore/Post
 import { MongoTransactionalProjectionOperator } from '../../../common/projection/MongoTransactionalProjectionOperator';
 import { RequestEnrollmentCommandHandler } from './RequestEnrollmentCommandHandler';
 import { RequestEnrollmentCommand } from './RequestEnrollmentCommand';
-import {requestEnrollmentHttpRequestSchema} from './RequestEnrollmentHttpRequest';
 import {inject, injectable} from "tsyringe";
-import {parseWithValidation} from "../../../common/util/ParseWithValidation";
+import { z } from 'zod';
 
 @injectable()
 export class EnrollmentCommandController extends CommandController {
@@ -32,7 +31,7 @@ export class EnrollmentCommandController extends CommandController {
             return;
         }
 
-        const requestBody = parseWithValidation(req.body, requestEnrollmentHttpRequestSchema);
+        const requestBody = requestSchema.parse(req.body);
         const command = new RequestEnrollmentCommand(
             sessionToken,
             requestBody.productId,
@@ -43,3 +42,8 @@ export class EnrollmentCommandController extends CommandController {
         res.status(200).json({});
     }
 }
+
+const requestSchema = z.object({
+    productId: z.string(),
+    annualIncomeInCents: z.number().min(0, "Annual income cannot be negative").max(1_000_000_000, "Annual income is too high")
+});
